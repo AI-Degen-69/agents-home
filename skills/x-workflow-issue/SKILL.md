@@ -19,9 +19,9 @@ This workflow defines the end-to-end lifecycle orchestrator for discovering open
 
 ---
 
-## 1. Default Behavior — Invoked Without Arguments (`/x-workflow-issue`)
+## 1. Always Start With Discovery (`/x-workflow-issue` — with or without arguments)
 
-When invoked with no issue number or arguments, this skill acts as the **Discovery Station**:
+Every invocation of this skill begins with the **Discovery Station**, regardless of arguments. Never skip discovery to jump straight into orchestration:
 
 1. **List all open issues:**
    Run:
@@ -37,11 +37,20 @@ When invoked with no issue number or arguments, this skill acts as the **Discove
    Stop and ask the operator which issue to proceed with. Do NOT pick silently.
 5. **Route non-issue states:** no open issues and the operator has a brand-new idea → `i-create-issue`. No open issues and nothing new → say so and route to `pipeline-triage`.
 
+### 1b. Execution Mode Gate (mandatory, after issue selection)
+
+Once the operator picks an issue, STOP and present exactly two options:
+
+1. **Step-by-step mode (default recommendation):** run one station at a time. After each station completes, report its summary and **halt — wait for explicit operator approval before starting the next station.** The operator reviews the plan (II), the build (III), the PR (IV/V), etc., one gate at a time.
+2. **Full orchestration mode:** run Stations II → VII end-to-end without halting, reporting a summary after each station, finishing only after Station V merge + Station VI prune + Station VII presentation.
+
+Do NOT infer the mode from how the request was phrased, and do NOT start Station II until the operator has explicitly chosen a mode.
+
 ---
 
-## 2. Orchestration Mode — Invoked With an Issue Number (`/x-workflow-issue <number>`)
+## 2. Orchestration Mode — After Issue and Mode Are Confirmed
 
-When invoked with an issue number (or once an issue is confirmed by the operator), this skill orchestrates the remaining pipeline stations sequentially:
+Only after the operator selected an issue (step 4) AND an execution mode (step 1b), orchestrate the pipeline stations. In step-by-step mode, insert a mandatory approval halt after every station; in full orchestration mode, run sequentially with per-station reports:
 
 ### Step 1: Assignment & Setup
 - Read the issue details: `gh issue view <number> --comments`
@@ -99,7 +108,11 @@ When invoked with an issue number (or once an issue is confirmed by the operator
 ## 🧠 סיכום:
 בשורות בודדות בעברית פשוטה: מה תמונת המצב הכוללת של המשימות הפתוחות, ולמה סדר הביצוע הזה יחסוך שבירת קוד ובנייה כפולה.
 
-👉 **שלב הבא:** `/ii-plan-issue <id>` — צלילה לתכנון, נעילת מגבלות איכות ויצירת תוכנית משימות לביצוע.
+👉 **שלב הבא:** בחר את ה-Issue להתחלה, ואז בחר מצב ביצוע:
+* **🚶 מצב צעד-צעד (מומלץ):** תחנה אחת בכל פעם — עצירה ואישור שלך בין כל תחנה.
+* **🚀 מצב תזמור מלא:** ריצה רציפה מתכנון (II) ועד מיזוג, ניקוי והצגת ה-PR (VII) — עם דיווח בכל תחנה.
+
+רק לאחר בחירת Issue + מצב נמשך ל-`/ii-plan-issue <id>`.
 ```
 
 ### במצב תזמור (End-to-End Orchestration):
