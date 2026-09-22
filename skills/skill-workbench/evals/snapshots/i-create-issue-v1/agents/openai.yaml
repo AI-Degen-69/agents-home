@@ -1,0 +1,4 @@
+interface:
+  display_name: "Idea Intake"
+  short_description: "Turns raw operator ideas into ready-for-agent GitHub issues."
+  default_prompt: "Capture my raw idea as a ready-for-agent GitHub issue using the repo's intake template."

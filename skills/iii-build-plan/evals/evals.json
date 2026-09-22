@@ -1,0 +1,84 @@
+{
+  "skill_name": "iii-build-plan",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes. Case 3 is the negative case.",
+  "evals": [
+    {
+      "id": "single-task-halt",
+      "prompt": "Run /iii-build-plan on a tasks/plan.md with 3 open tasks. Execute only the next open task.",
+      "expected_output": "Exactly one task implemented with minimal clean code, code-simplification applied, one local commit in <type>(<scope>): <summary> (#<issue>) format, the task marked [x] in tasks/plan.md, then halt for inspection. No second task started.",
+      "files": [],
+      "assertions": [
+        "Only the single next open task is implemented",
+        "The task is marked [x] in tasks/plan.md",
+        "Exactly one local commit is created for the task",
+        "Execution halts after the single task for inspection"
+      ]
+    },
+    {
+      "id": "auto-visual-hebrew-report",
+      "prompt": "Run /iii-build-plan auto on a tasks/plan.md with one UI task and one backend task. Report at the end.",
+      "expected_output": "All tasks executed sequentially with domain routing, final report in Hebrew with a visual section (table/diagram/flow), per-skill breakdown, and a two-line concise summary of problem and fix plus next step /iv-review-build-and-pr. No files-changed section.",
+      "files": [],
+      "assertions": [
+        "All open tasks in tasks/plan.md are executed sequentially",
+        "UI task routes to frontend-ui-engineering",
+        "Backend task routes to test-driven-development",
+        "Final report contains a visual explanation section",
+        "Final report ends with a concise problem and fix summary",
+        "Final report has no files-changed section",
+        "Final report points to /iv-review-build-and-pr as the next step"
+      ]
+    },
+    {
+      "id": "negative-no-plan-halt",
+      "prompt": "Run /iii-build-plan in a repo with no tasks/plan.md.",
+      "expected_output": "The skill must not invent work: halt with 'No plan found! Run /ii-plan-issue first.' No code written, no commit created.",
+      "files": [],
+      "assertions": [
+        "No code is written when tasks/plan.md is missing",
+        "No commit is created when tasks/plan.md is missing",
+        "The halt message directs the operator to /ii-plan-issue"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "single-task-halt",
+      "prompt": "Run /iii-build-plan on a tasks/plan.md with 3 open tasks. Execute only the next open task.",
+      "expected_output": "Exactly one task implemented with minimal clean code, code-simplification applied, one local commit in <type>(<scope>): <summary> (#<issue>) format, the task marked [x] in tasks/plan.md, then halt for inspection. No second task started.",
+      "files": [],
+      "assertions": [
+        "Only the single next open task is implemented",
+        "The task is marked [x] in tasks/plan.md",
+        "Exactly one local commit is created for the task",
+        "Execution halts after the single task for inspection"
+      ]
+    },
+    {
+      "id": "auto-visual-hebrew-report",
+      "prompt": "Run /iii-build-plan auto on a tasks/plan.md with one UI task and one backend task. Report at the end.",
+      "expected_output": "All tasks executed sequentially with domain routing, final report in Hebrew with a visual section (table/diagram/flow), per-skill breakdown, and a two-line concise summary of problem and fix plus next step /iv-review-build-and-pr. No files-changed section.",
+      "files": [],
+      "assertions": [
+        "All open tasks in tasks/plan.md are executed sequentially",
+        "UI task routes to frontend-ui-engineering",
+        "Backend task routes to test-driven-development",
+        "Final report contains a visual explanation section",
+        "Final report ends with a concise problem and fix summary",
+        "Final report has no files-changed section",
+        "Final report points to /iv-review-build-and-pr as the next step"
+      ]
+    },
+    {
+      "id": "negative-no-plan-halt",
+      "prompt": "Run /iii-build-plan in a repo with no tasks/plan.md.",
+      "expected_output": "The skill must not invent work: halt with 'No plan found! Run /ii-plan-issue first.' No code written, no commit created.",
+      "files": [],
+      "assertions": [
+        "No code is written when tasks/plan.md is missing",
+        "No commit is created when tasks/plan.md is missing",
+        "The halt message directs the operator to /ii-plan-issue"
+      ]
+    }
+  ]
+}

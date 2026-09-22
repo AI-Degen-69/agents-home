@@ -1,0 +1,87 @@
+{
+  "skill_name": "skill-workbench",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes. Case 5 is the negative case; case 3 covers the fix-all-findings flow ending in the gated final summary.",
+  "evals": [
+    {
+      "id": "validate-all-report",
+      "prompt": "Run the skill workbench validator across all skills in the global agents folder and give me the grouped health report.",
+      "expected_output": "Hebrew-first summary line plus three headers in fixed order (missing evals, warnings, violations), top 3 per group with overflow note, clean never listed, exactly one recommendation with approach line, choice by number, halt for operator choice. No routing or deploy actions taken.",
+      "files": [],
+      "assertions": [
+        "The output opens with a Hebrew-first one-line summary of totals",
+        "The output has three section headers in fixed order: missing evals first, warnings second, violations third",
+        "Every line opens with a Hebrew word",
+        "List items open with a Hebrew word after the number",
+        "Each group lists at most 3 items and notes the remaining count when there are more",
+        "Clean skills are not listed in full",
+        "The output recommends exactly one skill with one line on how to approach it",
+        "The output offers choice by number and halts for operator choice instead of picking silently",
+        "The inventory command exits 0 and its JSON has counts matching the grouped report",
+        "No deploy commands are run or printed as executed"
+      ]
+    },
+    {
+      "id": "single-skill-routing-with-gate",
+      "prompt": "skill-workbench on vii-present-pr: validate it, audit it, and tell me where it goes next in its lifecycle.",
+      "expected_output": "Title opens with a Hebrew word plus the skill name with Pipeline group tag and full path line, validator run on vii-present-pr, an audit loop record with grounded findings and any proactive proposals, a routing decision, and a helper-integrity validation of the routed helper before hand-off. Latin terms use isolated backticks.",
+      "files": [],
+      "assertions": [
+        "The report title opens with a Hebrew word followed by the skill name, with a Pipeline group tag and a full path line below it",
+        "Every line opens with a Hebrew word",
+        "Every Latin term, path, or command in Hebrew text uses isolated backticks (bidi isolates)",
+        "The validator is run against the vii-present-pr skill folder and its findings are reported by check-id",
+        "The findings are presented as a CodeRabbit-style grouped category table (category | count | severity) followed by a detail card per finding",
+        "Each finding card opens with a three-tag line: category first, then severity (🔴 critical / 🟠 major / 🟡 minor), then effort (⚡ quick win / 🔧 medium / 🏗️ structural), separated by pipes",
+        "Each finding card has a short bold action-title followed by a 2-3 line description citing concrete file and line references",
+        "Every reported audit finding cites a concrete source (spec rule, quoted contradiction, or validator line)",
+        "Each finding card is separated by blank lines, no paragraph blobs",
+        "The status section is at most two lines and passing checks are summarized, not enumerated",
+        "Open questions are labeled as open questions, not findings",
+        "The routing is one concise line stating what happens next and who does it, including any blocking approval",
+        "The helper-integrity gate ran the validator on the routed helper before hand-off",
+        "Proactive proposals, if any, are presented for adopt/defer/drop and none were applied silently"
+      ]
+    },
+    {
+      "id": "fix-all-findings-sequential-summary-gate",
+      "prompt": "Take option 1: fix all the findings one by one, including the open questions (apply the guesses where I don't answer). There are 3 findings.",
+      "expected_output": "The agent fixes one finding at a time. After each finding it reports only a short 1-2 line progress note (what was fixed + how many findings/open questions remain). No summary report of any kind appears after a single finding. Only after the third finding is fixed (all findings and open questions addressed) does it re-run the validator/scorer and present the final summary with the usage example, closing the workbench for the skill.",
+      "files": [],
+      "assertions": [
+        "Findings are fixed one at a time, each followed by a validator run before moving to the next finding",
+        "After each single finding there is only a 1-2 line progress note stating what was fixed and how many findings and open questions remain",
+        "No final summary, work report, or usage example is presented after any finding except the last one",
+        "Unanswered open questions are resolved by applying the stated guess (ניחוש) and noted as such in the progress report",
+        "The final summary appears only after all findings are fixed and all open questions are answered or guessed",
+        "Before the final summary the validator is re-run clean and the scorer is re-run on the skill",
+        "The final summary includes the usage example section and is stated to close the workbench for the skill",
+        "The progress notes open with a Hebrew word and use isolated backticks for Latin terms"
+      ]
+    },
+    {
+      "id": "final-summary-plain-language",
+      "prompt": "Work on security-and-hardening is done. Give me the final summary.",
+      "expected_output": "Final summary with the five emoji headers, plain non-technical language, one next-step recommendation, and a one-sentence usage example. This summary is legitimate only because all findings and open questions have already been addressed — presenting it mid-flow would violate the fix-all-findings gate.",
+      "files": [],
+      "assertions": [
+        "The summary has the five headers: what was done, why, what works now, next steps, usage example",
+        "The language is plain with no heavy code or technical terms",
+        "The summary ends with exactly one next-step recommendation",
+        "The summary includes a one-sentence usage example of the worked-on skill",
+        "The summary is presented only because all findings and open questions are already addressed, not mid-flow"
+      ]
+    },
+    {
+      "id": "negative-validate-only-no-side-effects",
+      "prompt": "Hey, can you quickly check my notes.md grammar while you're at it? (unrelated request during a workbench session)",
+      "expected_output": "The skill must not trigger pipeline behavior: no inventory run, no routing, no deploy actions, no audit of unrelated files. At most a brief validate-only offer if the user names a skill.",
+      "files": [],
+      "assertions": [
+        "No inventory or validate-all run is performed for this request",
+        "No skill is routed and no helper hand-off occurs",
+        "No deploy/link commands are executed or printed as executed",
+        "No files are modified by this request"
+      ]
+    }
+  ]
+}

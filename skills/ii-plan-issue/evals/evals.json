@@ -1,0 +1,77 @@
+{
+  "skill_name": "ii-plan-issue",
+  "note": "Static assertions are graded deterministically against SKILL.md by scripts/grade.js. Live assertions require a real repo + gh run; the loop records them as not-run and they are excluded from pass-rate denominators.",
+  "evals": [
+    {
+      "id": "no-args-auto-pick",
+      "prompt": "/ii-plan-issue (no arguments, repo has open issues)",
+      "expected_output": "Recommends exactly one highest-priority issue with rationale, claims it via gh, and proceeds to planning without pausing to ask. Degrades gracefully if gh fails.",
+      "mode_coverage": ["numbered", "no-args"],
+      "static_assertions": [
+        { "id": "auto-pick-no-pause", "type": "regex", "pattern": "(Do NOT pause to ask|proceed without pausing|without waiting for confirmation)", "must_match": true, "why": "no-args mode must not stall waiting for the user" },
+        { "id": "claim-exactly-recommended", "type": "regex", "pattern": "gh issue edit .* --add-assignee @me", "must_match": true, "why": "claiming is a behavioral contract downstream stations rely on" },
+        { "id": "gh-failure-guard", "type": "regex", "pattern": "gh.{0,16}(fails?|failed|unavailable)", "must_match": true, "why": "v0 has no fallback when gh is unavailable; skill must halt and ask instead of fabricating" }
+      ],
+      "live_assertions": [
+        "Exactly one issue is recommended, with an explicit rationale tied to priority/dependency order",
+        "The recommended issue is claimed via gh and appears as assignee",
+        "Planning proceeds on that issue in the same turn"
+      ]
+    },
+    {
+      "id": "numbered-trivial-docs-issue",
+      "prompt": "/ii-plan-issue 42 — a one-file documentation typo/clarification issue",
+      "expected_output": "Tiny/Trivial tier + Docs type, embedded spec (no SPEC.md), plan.md with 1-2 atomic tasks, and a short type-appropriate report — not the full heavyweight template designed for Standard code changes.",
+      "mode_coverage": ["numbered"],
+      "static_assertions": [
+        { "id": "tiny-tier-exists", "type": "regex", "pattern": "(Tiny|Trivial)", "must_match": true, "why": "a one-file docs fix must be classifiable below Standard" },
+        { "id": "docs-type-exists", "type": "regex", "pattern": "\\*\\*Docs\\*\\*", "must_match": true, "why": "docs issues need a Docs classification path" },
+        { "id": "small-task-embedded-spec", "type": "regex", "pattern": "(Small\\s*/\\s*(Tiny|Trivial)|\\bTiny\\b)", "must_match": true, "why": "small tasks must skip SPEC.md and embed the spec (Tiny/Trivial vocabulary)" },
+        { "id": "report-opens-with-issue", "type": "regex", "pattern": "(כותרת ה-Issue|מה ה-Issue דורש)", "must_match": true, "why": "user: the issue is the star of the show — template must open with the issue before skill/classification talk" },
+        { "id": "report-type-branches", "type": "regex", "pattern": "(לפי סוג המשימה|מסתגל לפי סוג)", "must_match": true, "why": "same fixed report shape for every issue type is the flagged failure mode" },
+        { "id": "report-bullet-requirements", "type": "regex", "pattern": "מה ה-Issue דורש[\\s\\S]{0,400}?נקודה", "must_match": true, "why": "user: the requirements section must be short bullets, not prose paragraphs" },
+        { "id": "report-verification-section", "type": "regex", "pattern": "איך מוודאים", "must_match": true, "why": "user: quality-guardrail talk is replaced by a plain 'how do we verify' section tied to the issue's problem" },
+        { "id": "report-plan-links-to-issue", "type": "regex", "pattern": "עונה לנקודה", "must_match": true, "why": "user: each plan task must state how it answers the issue's requirement — not standalone machinery talk" },
+        { "id": "proposal-evidence-based", "type": "regex", "pattern": "(Ground it in evidence|No evidence.{0,12}no proposal|מבוססת ראיות)", "must_match": true, "why": "user: improvement proposals must cite issue text or code location — no proposals in the air" },
+        { "id": "proposal-adopt-by-default", "type": "regex", "pattern": "(accepted|adopt.{0,30}default|מאומצת כברירת מחדל)", "must_match": true, "why": "user: the proposal is accepted by default and dropped only on explicit operator rejection" },
+        { "id": "report-template-lean", "type": "max_template_lines", "limit": 40, "why": "v0 template is ~60 lines of boilerplate; delivery must be tight" }
+      ],
+      "live_assertions": [
+        "Size tier stated is Tiny/Trivial with rationale",
+        "No SPEC.md created for a Trivial task; spec embedded in plan",
+        "Report opens with the issue title and what it demands, in everyday Hebrew",
+        "Report does not enumerate planning machinery (skill lists) ahead of the issue content"
+      ]
+    },
+    {
+      "id": "negative-unrelated-request",
+      "prompt": "\"Find and fix the flaky login test\" (no station invocation)",
+      "expected_output": "The agent just fixes the bug normally. The station-II skill must not trigger: no Hebrew station report, no CONSTRAINTS.md/plan.md ceremony, no issue claiming.",
+      "mode_coverage": ["negative"],
+      "static_assertions": [
+        { "id": "description-scoped-to-pipeline", "type": "regex", "pattern": "(Station II|GitHub issue|issue)", "must_match": true, "why": "L1 description must scope the skill to issue-planning so it does not hijack ordinary coding requests" },
+        { "id": "no-catchall-trigger", "type": "not_regex", "pattern": "(any (coding|bug|debug|fix) request|whenever the user asks to (fix|debug))", "must_match": true, "why": "a catch-all trigger wording would make the skill fire on unrelated work" }
+      ],
+      "live_assertions": [
+        "No station report (Hebrew template) is produced",
+        "No CONSTRAINTS.md / tasks/plan.md artifacts are created",
+        "No gh issue claim is attempted"
+      ]
+    },
+    {
+      "id": "edge-gh-fails",
+      "prompt": "/ii-plan-issue 42 while gh is unauthenticated (gh fails)",
+      "expected_output": "Skill halts the issue-dependent steps, says what failed in plain language, asks for the issue number/title or a fix, and never fabricates issue content or a plan from missing data.",
+      "mode_coverage": ["edge"],
+      "static_assertions": [
+        { "id": "gh-failure-guard", "type": "regex", "pattern": "gh.{0,16}(fails?|failed|unavailable)", "must_match": true, "why": "edge case must be covered in the spec, not left to improvisation" },
+        { "id": "no-fabrication-rule", "type": "regex", "pattern": "(never fabricate|do not fabricate|אין להמציא|Never fabricate)", "must_match": true, "why": "fabricating issue content from a failed fetch is the worst-case outcome and must be forbidden explicitly" }
+      ],
+      "live_assertions": [
+        "Output names the gh failure instead of pretending the issue was read",
+        "Output asks for the issue number/title or an auth fix",
+        "No tasks/plan.md or CONSTRAINTS.md is written from imagined content"
+      ]
+    }
+  ]
+}

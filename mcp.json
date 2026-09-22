@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "agent-skills": {
+      "type": "http",
+      "url": "https://agentskills.io/mcp",
+      "headers": {
+        "Accept": "application/json, text/event-stream"
+      }
+    }
+  }
+}

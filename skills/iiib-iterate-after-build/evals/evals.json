@@ -1,0 +1,80 @@
+{
+  "skill_name": "iiib-iterate-after-build",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes. Case 3 is the negative case.",
+  "evals": [
+    {
+      "id": "bug-routes-to-debug",
+      "prompt": "Run /iiib-iterate-after-build with: the save button crashes with a console error after the latest build.",
+      "expected_output": "The item is classified as Bug lane, routed to investigate plus debugging-and-error-recovery, root cause named before any fix, minimal fix applied, code-simplification run, one local commit created, no push, no PR, browser or targeted-test verification reported in Hebrew.",
+      "files": [],
+      "assertions": [
+        "The item is classified into the Bug lane with an observable reason",
+        "Root cause is named before the fix is applied",
+        "Exactly one local commit is created for the fix",
+        "No push to origin and no PR is opened",
+        "The final report is in Hebrew and points to /iv-review-build-and-pr"
+      ]
+    },
+    {
+      "id": "ui-change-routes-to-frontend",
+      "prompt": "Run /iiib-iterate-after-build with: the title is off-center on mobile, otherwise everything works.",
+      "expected_output": "The item is classified as UI lane, routed to frontend-ui-engineering, rebuilt minimally, verified with a browser check at mobile width, committed locally, reported in Hebrew.",
+      "files": [],
+      "assertions": [
+        "The item is classified into the UI lane with an observable reason",
+        "The fix is implemented without debugging ceremony",
+        "Verification includes a browser check",
+        "No push to origin and no PR is opened"
+      ]
+    },
+    {
+      "id": "negative-no-push",
+      "prompt": "Run /iiib-iterate-after-build with any correction list on a clean checkout.",
+      "expected_output": "The skill must never push or open a PR: all fixes stay as local commits and the handoff goes to /iv-review-build-and-pr.",
+      "files": [],
+      "assertions": [
+        "No git push is executed",
+        "No PR is opened",
+        "The handoff directs the operator to /iv-review-build-and-pr"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "bug-routes-to-debug",
+      "prompt": "Run /iiib-iterate-after-build with: the save button crashes with a console error after the latest build.",
+      "expected_output": "The item is classified as Bug lane, routed to investigate plus debugging-and-error-recovery, root cause named before any fix, minimal fix applied, code-simplification run, one local commit created, no push, no PR, browser or targeted-test verification reported in Hebrew.",
+      "files": [],
+      "assertions": [
+        "The item is classified into the Bug lane with an observable reason",
+        "Root cause is named before the fix is applied",
+        "Exactly one local commit is created for the fix",
+        "No push to origin and no PR is opened",
+        "The final report is in Hebrew and points to /iv-review-build-and-pr"
+      ]
+    },
+    {
+      "id": "ui-change-routes-to-frontend",
+      "prompt": "Run /iiib-iterate-after-build with: the title is off-center on mobile, otherwise everything works.",
+      "expected_output": "The item is classified as UI lane, routed to frontend-ui-engineering, rebuilt minimally, verified with a browser check at mobile width, committed locally, reported in Hebrew.",
+      "files": [],
+      "assertions": [
+        "The item is classified into the UI lane with an observable reason",
+        "The fix is implemented without debugging ceremony",
+        "Verification includes a browser check",
+        "No push to origin and no PR is opened"
+      ]
+    },
+    {
+      "id": "negative-no-push",
+      "prompt": "Run /iiib-iterate-after-build with any correction list on a clean checkout.",
+      "expected_output": "The skill must never push or open a PR: all fixes stay as local commits and the handoff goes to /iv-review-build-and-pr.",
+      "files": [],
+      "assertions": [
+        "No git push is executed",
+        "No PR is opened",
+        "The handoff directs the operator to /iv-review-build-and-pr"
+      ]
+    }
+  ]
+}

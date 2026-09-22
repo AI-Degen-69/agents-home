@@ -1,0 +1,86 @@
+{
+  "skill_name": "vii-present-pr",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The pipeline just merged the PR that fixes the login timeout bug (issue #42). Build the visual page for it.",
+      "expected_output": "A standalone HTML page with exactly one centerpiece (Before/After split or a small demo), at most 3 blocks total, customer-simple words, and a 1-2 step try-it-yourself guide pointing at the real app screen — never test runners.",
+      "files": [],
+      "expectations": [
+        "The HTML file is standalone with inline CSS and vanilla JS only",
+        "The page has exactly one centerpiece visual and at most 3 blocks total",
+        "The try-it-yourself steps point at the real application screen, not at the generated page",
+        "No test-runner commands appear anywhere in the page or the chat summary",
+        "The chat summary follows the Hebrew output contract with issue and PR links"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Explain visually how the request retry logic works in the current codebase — no PR, no issue, just the concept.",
+      "expected_output": "An explain-mode page with a story walk or simple map as centerpiece, customer-simple words, and no PR links or status badge.",
+      "files": [],
+      "expectations": [
+        "No PR links or status badge appear in the output",
+        "No files table, code blocks, or architecture jargon appear unless asked",
+        "The words stay customer-simple with no unexplained dev terms"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "A one-line typo fix was just merged. Present it.",
+      "expected_output": "A minimal page: one-line plain summary plus a tiny before/after line. No flow, no demo, done.",
+      "files": [],
+      "expectations": [
+        "The page contains a one-line plain summary",
+        "The page contains no flow chart and no interactive demo",
+        "The page stays within 3 blocks total"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "The pipeline merged a retry-with-fallback change (app -> cache -> DB). Last 2 pages were before/after dark panels. Build the visual page — it must look different.",
+      "expected_output": "A page with sequence lifelines or stepped dataflow Canvas, step-play or flow controls, article or rail skeleton, and a rotated accent palette — not before/after dark repeat.",
+      "files": [],
+      "expectations": [
+        "The page uses sequence or dataflow centerpiece, not before/after",
+        "The page includes one interaction set: step-play, slider, tabs, or flow",
+        "The page uses a different skeleton or palette from a plain dark before/after"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Present PR #51: the config-driven rate limit change. It ships a slider demo, a big-numbers panel, a system map, and a before/after split — the agent that drafted it wanted all four. Apply the skill's block budget before delivering.",
+      "expected_output": "The page keeps exactly one centerpiece (the slider demo, since rate limits are a what-if-X-changes story) plus at most 2 supports that add new info. The map and the before/after split are dropped or merged — never four blocks.",
+      "files": [],
+      "expectations": [
+        "The delivered page has at most 3 blocks total: 1 centerpiece + up to 2 supports",
+        "Exactly one block is the centerpiece; no page carries four visuals",
+        "Every kept support block adds information the centerpiece does not already show",
+        "Dropped blocks are named in the reasoning, not silently pasted into the page"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Present PR #52: the dashboard empty-state fix. Session history says the last 2 pages both used the bugfix red accent (#f17c78) on the dark hero-demo skeleton. Build this page without breaking the anti-repetition rule.",
+      "expected_output": "The page rotates all three axes required by Core Rule 3: a different centerpiece family, a different accent palette (not bugfix red on dark), and a different page skeleton from hero-demo — unless the content truly demands otherwise, which this empty-state fix does not.",
+      "files": [],
+      "expectations": [
+        "The page does not reuse the accent palette of the last 2 pages (no #f17c78 on the dark shell)",
+        "The page does not reuse the hero-demo skeleton from the last 2 pages",
+        "The centerpiece family differs from the last 2 pages' centerpiece family",
+        "The pick is logged in thinking in the Core Rule 3 shape: last 2 were [X,Y], so this one is [Z] + palette [P] + skeleton [S]"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Present PR #53: a new feature with no obvious story shape. The operator says: just reuse whatever you did last time, it looked fine.",
+      "expected_output": "The agent does not copy the last page. It re-runs the Step 2 classification for THIS change, picks per the decision rule, and only if the content truly demands the same pick does it reuse — explaining why in the report. Operator convenience never overrides Core Rule 3.",
+      "files": [],
+      "expectations": [
+        "Step 2 classification runs for this change instead of copying the previous page",
+        "If the same centerpiece/palette/skeleton is reused, the content demand is stated explicitly",
+        "The chat report never claims operator instruction as license to skip the rotation rule"
+      ]
+    }
+  ]
+}

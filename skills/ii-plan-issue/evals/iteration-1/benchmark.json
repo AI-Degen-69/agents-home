@@ -1,0 +1,50 @@
+{
+  "skill": "ii-plan-issue",
+  "iteration": 1,
+  "graded_at": "2026-09-17T02:51:06Z",
+  "configurations": {
+    "v0_baseline": {
+      "source": "evals/snapshots/v0-SKILL.md",
+      "static_pass_rate": 0.615,
+      "static_passed": 8,
+      "static_total": 13,
+      "audit": {
+        "phantom-skill-refs": "fail (5 missing: agent-skills, orch-pipeline, modern-web-guidance, generative_ui, debug-optimize-lcp)",
+        "skill-length": "pass (144 lines)"
+      },
+      "results_file": "v0-results.json"
+    },
+    "v1_refined": {
+      "source": "SKILL.md (global: C:/Users/Tiger/.agents/skills/ii-plan-issue/)",
+      "static_pass_rate": 1.0,
+      "static_passed": 13,
+      "static_total": 13,
+      "audit": {
+        "phantom-skill-refs": "pass",
+        "skill-length": "pass (123 lines, shorter than v0)",
+        "l1-description": "pass",
+        "structured-sections": "pass",
+        "hybrid-architecture": "pass",
+        "canonical-examples": "pass"
+      },
+      "results_file": "v1-results.json"
+    }
+  },
+  "mechanical_changes_applied": [
+    "L1 description rewritten as trigger-context + outputs (search-optimized abstract)",
+    "Phantom skill references removed (5 nonexistent skills); routing table mapped to real skills, incl. idea-refine for Research",
+    "Report template restructured issue-first: issue title + plain-Hebrew problem statement before classification",
+    "Report template de-boilerplated: no skill/tool enumeration in chat output (lives in plan.md rows); type-adaptive branches; drop-empty-section rule",
+    "Hard clarity gate: ambiguous => ask 2-3 questions before locking; clear => explicit skip line (fixes 'never interviews')",
+    "gh-failure guard section: halt, report failure, ask for issue number/auth; never fabricate (אין להמציא)",
+    "Tiny size tier added below Small; SPEC.md ceremony limited to Standard/Large",
+    "Step 5 capped at exactly one proposal with an explicit skip-if-nothing-valuable rule",
+    "Prime directive added: the issue is the star of the show"
+  ],
+  "open_failures": [],
+  "not_run": {
+    "live_assertions": "13 live assertions across 4 cases require a real repo + gh run; recorded as not-run, excluded from rates. Next iteration should run 2-3 of them in a scratch repo.",
+    "behavioral": "recommend-claim-proceed flow, interview-question ordering, negative trigger behavior — need in-vivo runs"
+  },
+  "multiple_trials": "not run this iteration (static grading is deterministic; trials apply to live runs)"
+}

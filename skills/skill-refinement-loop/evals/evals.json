@@ -1,0 +1,55 @@
+{
+  "skill_name": "skill-refinement-loop",
+  "note": "Workbench-generated eval set (agentskills.io format) — created during the 2026-09-17 onboarding audit because SKILL.md referenced evals/evals.json but the file did not exist. Assertions are static (graded against the skill spec and artifacts), so they can run without live subagents.",
+  "evals": [
+    {
+      "id": "intake-before-editing",
+      "prompt": "Take my vii-present-pr skill and refine it — it produces the same HTML structure for every PR regardless of the change shape.",
+      "expected_output": "Phase 0 intake questions asked BEFORE any modification: skill pointer confirmed, what the skill should do, what 'good' looks like, plus helpful classification questions.",
+      "files": [],
+      "assertions": [
+        "The response asks Phase 0 intake questions before editing any skill file",
+        "The response does not propose concrete skill edits before the intake block is recorded",
+        "The intake block records skill pointer, purpose, and success definition"
+      ]
+    },
+    {
+      "id": "eval-set-created-before-rewrite",
+      "prompt": "Refine my skill X. It never triggers when it should.",
+      "expected_output": "Phase 1 order respected: classify (capability/preference), success definition, eval set with shape variation and a negative case, then run/grade/improve — never skipping straight to a rewrite.",
+      "files": [],
+      "assertions": [
+        "The response classifies the skill as capability or preference before Phase 1b",
+        "The response writes a measurable success definition (outcome/style/efficiency) before building evals",
+        "The eval set includes at least one negative case (should not trigger)",
+        "No skill rewrite is proposed before eval artifacts exist"
+      ]
+    },
+    {
+      "id": "progress-notes-then-final-summary",
+      "prompt": "Refine my skill X with these 3 change requests: shorten the output, change the visual style, and make the description broader so it triggers differently.",
+      "expected_output": "The three change requests are processed one at a time. After each request only a 1-2 line progress note appears (what was applied + graded, how many requests remain). No loop record, final summary, or usage example appears after a single request. Only after the third request is applied and its eval cases pass clean does the agent present the loop record and the final summary, closing the loop for the skill.",
+      "files": [],
+      "assertions": [
+        "Change requests are processed one at a time, each with its relevant eval cases rerun and graded before the next request",
+        "After each single request there is only a 1-2 line progress note stating what was done and how many requests remain",
+        "No loop record, final summary, or usage example is presented after any request except the last one",
+        "The loop record is presented only after all requests in the batch are applied and graded",
+        "The final summary appears only after the loop record and appears only when every request is addressed and the relevant eval cases pass clean",
+        "The final summary includes a one-sentence usage example and is stated to close the loop for the skill",
+        "If a request required an operator decision, the agent stopped and asked instead of presenting a final summary before the decision"
+      ]
+    },
+    {
+      "id": "negative-unrelated-request",
+      "prompt": "What's the capital of France?",
+      "expected_output": "The refinement loop does not trigger; no intake questions, no eval scaffolding, no file modifications.",
+      "files": [],
+      "assertions": [
+        "No intake questions are asked",
+        "No eval directories or files are created",
+        "No skill files are modified"
+      ]
+    }
+  ]
+}

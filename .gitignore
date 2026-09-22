@@ -1,0 +1,4 @@
+# Harness transient state and OS junk — never canonical (per docs/issue-to-PR-pipeline.md artifact homes)
+.freebuff/
+desktop.ini
+icon_*.ico

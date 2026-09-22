@@ -1,0 +1,55 @@
+{
+  "skill_name": "vii-present-pr-example-eval-set",
+  "note": "Worked example of the agentskills.io evals/evals.json format. Replace skill_name and cases with the target skill's eval set during Phase 1c. Each assertion must be checkable, not vibes.",
+  "evals": [
+    {
+      "id": "one-line-fix",
+      "prompt": "Present PR #238: retire the last visible Live state — one-line config fix",
+      "expected_output": "A short visual explanation: hero + ELI5 + before/after + files table. No flow cards. No filler sections.",
+      "files": [],
+      "assertions": [
+        "The output contains a hero section",
+        "The output contains an ELI5 section",
+        "The output contains a before/after comparison",
+        "Flow cards are absent for this one-line-fix input",
+        "The files table has exactly 1 row for this single-file change",
+        "The output does not contain a step-by-step flow section"
+      ]
+    },
+    {
+      "id": "multi-file-refactor",
+      "prompt": "Present PR #240: max_pair_cost caps the chase only — config change with docs update",
+      "expected_output": "A fuller visual explanation appropriate to the change: hero, ELI5, before/after, files table with 2 rows, and a short flow only if the change has a clear cause→effect chain.",
+      "files": [],
+      "assertions": [
+        "The output contains a hero section",
+        "The output contains an ELI5 section",
+        "The output contains a before/after comparison",
+        "The files table has 2 rows for this two-file change",
+        "A flow section is present only if the change has a clear cause→effect chain",
+        "The output does not pad with sections that add no information"
+      ]
+    },
+    {
+      "id": "negative-case-should-not-trigger",
+      "prompt": "What is the weather today?",
+      "expected_output": "The skill should not produce a PR presentation. If it triggers, that's a too-broad description and a regression to fix.",
+      "files": [],
+      "assertions": [
+        "No PR presentation HTML is produced",
+        "If any HTML is produced, it is not a vii-present-pr style showcase"
+      ]
+    },
+    {
+      "id": "edge-case-empty-pr-body",
+      "prompt": "Present a PR whose body is empty and only a title exists",
+      "expected_output": "The skill should still produce a usable explanation from the title, and note explicitly that the body is empty rather than fabricating content.",
+      "files": [],
+      "assertions": [
+        "The output contains a hero section derived from the title",
+        "The output explicitly notes that the PR body is empty",
+        "The output does not fabricate a body or fake diff details"
+      ]
+    }
+  ]
+}

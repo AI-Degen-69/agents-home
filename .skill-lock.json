@@ -1,0 +1,571 @@
+{
+  "version": 3,
+  "skills": {
+    "ast-grep": {
+      "source": "ast-grep/agent-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/ast-grep/agent-skill.git",
+      "skillPath": "ast-grep/skills/ast-grep/SKILL.md",
+      "skillFolderHash": "ef60f77564e2d47d0cba25a809daa3af8f0c469b",
+      "installedAt": "2026-06-22T09:16:56.503Z",
+      "updatedAt": "2026-06-22T09:16:56.503Z"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/skills.git",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "skillFolderHash": "76a98a285cb0434f3d39e1a873823556330e398b",
+      "installedAt": "2026-07-02T00:46:28.601Z",
+      "updatedAt": "2026-07-20T01:07:36.2Z"
+    },
+    "log-analysis": {
+      "source": "akillness/oh-my-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/akillness/oh-my-skills.git",
+      "skillPath": ".agent-skills/log-analysis/SKILL.md",
+      "skillFolderHash": "ea2d3cd5417bb7f071a8b03ab2c821f0f52c1f12",
+      "installedAt": "2026-07-20T00:43:18.716Z",
+      "updatedAt": "2026-07-20T00:43:18.716Z"
+    },
+    "pattern-detection": {
+      "source": "akillness/oh-my-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/akillness/oh-my-skills.git",
+      "skillPath": ".agent-skills/pattern-detection/SKILL.md",
+      "skillFolderHash": "3fb87f8508b12d2a1266e830af30593cbf10c332",
+      "installedAt": "2026-07-20T00:43:26.645Z",
+      "updatedAt": "2026-07-20T00:43:26.645Z"
+    },
+    "grimoire-polymarket": {
+      "source": "franalgaba/grimoire",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/franalgaba/grimoire.git",
+      "skillPath": "skills/grimoire-polymarket/SKILL.md",
+      "skillFolderHash": "9b15203e255ce635218ab00386da227a519762c9",
+      "installedAt": "2026-07-20T02:35:16.875Z",
+      "updatedAt": "2026-07-20T02:35:16.875Z"
+    },
+    "polymarket-api": {
+      "source": "agentmc15/polymarket-trader",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/agentmc15/polymarket-trader.git",
+      "skillPath": ".claude/skills/polymarket-api/SKILL.md",
+      "skillFolderHash": "d078994dde78d7ba66766f670890792f2793c362",
+      "installedAt": "2026-07-20T02:35:29.458Z",
+      "updatedAt": "2026-07-20T02:35:29.458Z"
+    },
+    "deploy-to-vercel": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/deploy-to-vercel/SKILL.md",
+      "skillFolderHash": "1378aa506439f26c809dbcfc61515cbd70f93d69",
+      "installedAt": "2026-07-20T20:06:41.055Z",
+      "updatedAt": "2026-07-20T20:06:41.055Z"
+    },
+    "i-have-adhd": {
+      "source": "ayghri/i-have-adhd",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/ayghri/i-have-adhd.git",
+      "skillPath": "skills/i-have-adhd/SKILL.md",
+      "skillFolderHash": "871e88cbe9b167670c170c53c8173c68609a2ae9",
+      "installedAt": "2026-08-08T09:16:06.777Z",
+      "updatedAt": "2026-09-04T05:56:48.694Z"
+    },
+    "api-and-interface-design": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/api-and-interface-design/SKILL.md",
+      "skillFolderHash": "f7eefe1133c8540d00f279a171053cc9551ec5c4",
+      "installedAt": "2026-09-03T09:20:12.112Z",
+      "updatedAt": "2026-09-03T09:20:12.112Z"
+    },
+    "browser-testing-with-devtools": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/browser-testing-with-devtools/SKILL.md",
+      "skillFolderHash": "42be59520831f02c46bce7bed1aac6ab0592947c",
+      "installedAt": "2026-09-03T09:20:12.114Z",
+      "updatedAt": "2026-09-03T09:20:12.114Z"
+    },
+    "ci-cd-and-automation": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/ci-cd-and-automation/SKILL.md",
+      "skillFolderHash": "34db321777a17e268ac425f0f7f2501dda55c955",
+      "installedAt": "2026-09-03T09:20:12.116Z",
+      "updatedAt": "2026-09-03T09:20:12.116Z"
+    },
+    "code-review-and-quality": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/code-review-and-quality/SKILL.md",
+      "skillFolderHash": "8c26aef07c0ac94770d48ed68e72c0fd585420a6",
+      "installedAt": "2026-09-03T09:20:12.118Z",
+      "updatedAt": "2026-09-03T09:20:12.118Z"
+    },
+    "code-simplification": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/code-simplification/SKILL.md",
+      "skillFolderHash": "15b6e21924188ee46402a8c91963162fd9056c7d",
+      "installedAt": "2026-09-03T09:20:12.12Z",
+      "updatedAt": "2026-09-03T09:20:12.12Z"
+    },
+    "constraint-driven-development": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/constraint-driven-development/SKILL.md",
+      "skillFolderHash": "1a25910ac583dc0cd2f481ee6a27d883dc3a72dc",
+      "installedAt": "2026-09-03T09:20:12.121Z",
+      "updatedAt": "2026-09-03T09:20:12.121Z"
+    },
+    "context-engineering": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/context-engineering/SKILL.md",
+      "skillFolderHash": "453c3e8d973ddb10402b7c4e6b0d7fce295a43a8",
+      "installedAt": "2026-09-03T09:20:12.123Z",
+      "updatedAt": "2026-09-03T09:20:12.123Z"
+    },
+    "debugging-and-error-recovery": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/debugging-and-error-recovery/SKILL.md",
+      "skillFolderHash": "97a66b4d4750b1b5108da8633104bb1e020275ab",
+      "installedAt": "2026-09-03T09:20:12.124Z",
+      "updatedAt": "2026-09-03T09:20:12.124Z"
+    },
+    "deprecation-and-migration": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/deprecation-and-migration/SKILL.md",
+      "skillFolderHash": "452a130309afc52a26beceb21f1467936e53a37c",
+      "installedAt": "2026-09-03T09:20:12.126Z",
+      "updatedAt": "2026-09-03T09:20:12.126Z"
+    },
+    "documentation-and-adrs": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/documentation-and-adrs/SKILL.md",
+      "skillFolderHash": "85f57bdd7dcddaa589c6f36e8ac87423005c3de0",
+      "installedAt": "2026-09-03T09:20:12.127Z",
+      "updatedAt": "2026-09-03T09:20:12.127Z"
+    },
+    "doubt-driven-development": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/doubt-driven-development/SKILL.md",
+      "skillFolderHash": "385c1dbda7db05fac824808e18239ee9d29cfce7",
+      "installedAt": "2026-09-03T09:20:12.129Z",
+      "updatedAt": "2026-09-03T09:20:12.129Z"
+    },
+    "frontend-ui-engineering": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/frontend-ui-engineering/SKILL.md",
+      "skillFolderHash": "893e7558baef6a0773aec4c152ca8bccd544fa03",
+      "installedAt": "2026-09-03T09:20:12.13Z",
+      "updatedAt": "2026-09-03T09:20:12.13Z"
+    },
+    "git-workflow-and-versioning": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/git-workflow-and-versioning/SKILL.md",
+      "skillFolderHash": "116794299a8929231257cdade82bd87bd0986321",
+      "installedAt": "2026-09-03T09:20:12.132Z",
+      "updatedAt": "2026-09-03T09:20:12.132Z"
+    },
+    "idea-refine": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/idea-refine/SKILL.md",
+      "skillFolderHash": "14f474d8f51370ddd9127ff3d171810a1acf891a",
+      "installedAt": "2026-09-03T09:20:12.133Z",
+      "updatedAt": "2026-09-03T09:20:12.133Z"
+    },
+    "incremental-implementation": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/incremental-implementation/SKILL.md",
+      "skillFolderHash": "cc6920585c0808b8fbf368f6705a1a806193ebf2",
+      "installedAt": "2026-09-03T09:20:12.134Z",
+      "updatedAt": "2026-09-03T09:20:12.134Z"
+    },
+    "interview-me": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/interview-me/SKILL.md",
+      "skillFolderHash": "0797d64561cca6ad975d9e5d1f1497cba83a517b",
+      "installedAt": "2026-09-03T09:20:12.135Z",
+      "updatedAt": "2026-09-03T09:20:12.135Z"
+    },
+    "observability-and-instrumentation": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/observability-and-instrumentation/SKILL.md",
+      "skillFolderHash": "04c46139d6ee4c845e9d8d4e064fb615ac9af18e",
+      "installedAt": "2026-09-03T09:20:12.136Z",
+      "updatedAt": "2026-09-03T09:20:12.136Z"
+    },
+    "performance-optimization": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/performance-optimization/SKILL.md",
+      "skillFolderHash": "d7cc0bec423819ebe153ec70177caaec4bad3fea",
+      "installedAt": "2026-09-03T09:20:12.138Z",
+      "updatedAt": "2026-09-03T09:20:12.138Z"
+    },
+    "planning-and-task-breakdown": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/planning-and-task-breakdown/SKILL.md",
+      "skillFolderHash": "3045f95a156dc71d7b5ac1e29ce795bb5cac2b71",
+      "installedAt": "2026-09-03T09:20:12.14Z",
+      "updatedAt": "2026-09-03T09:20:12.14Z"
+    },
+    "security-and-hardening": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/security-and-hardening/SKILL.md",
+      "skillFolderHash": "18f46d79895565f249af99fd99d288e69393e58d",
+      "installedAt": "2026-09-03T09:20:12.141Z",
+      "updatedAt": "2026-09-03T09:20:12.141Z"
+    },
+    "shipping-and-launch": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/shipping-and-launch/SKILL.md",
+      "skillFolderHash": "01cc4700a30c507b4406d98c428d02b3df7671ec",
+      "installedAt": "2026-09-03T09:20:12.142Z",
+      "updatedAt": "2026-09-03T09:20:12.142Z"
+    },
+    "source-driven-development": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/source-driven-development/SKILL.md",
+      "skillFolderHash": "d88d094056a158b53859e29181b15a56a6acd910",
+      "installedAt": "2026-09-03T09:20:12.143Z",
+      "updatedAt": "2026-09-03T09:20:12.143Z"
+    },
+    "spec-driven-development": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/spec-driven-development/SKILL.md",
+      "skillFolderHash": "3f7ea0883fced84b5338688c915ce6e0435e35f3",
+      "installedAt": "2026-09-03T09:20:12.145Z",
+      "updatedAt": "2026-09-03T09:20:12.145Z"
+    },
+    "test-driven-development": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/test-driven-development/SKILL.md",
+      "skillFolderHash": "b5f106f5bf4a9b07bbef660602b01764029d2fbf",
+      "installedAt": "2026-09-03T09:20:12.147Z",
+      "updatedAt": "2026-09-03T09:20:12.147Z"
+    },
+    "using-agent-skills": {
+      "source": "addyosmani/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/agent-skills.git",
+      "skillPath": "skills/using-agent-skills/SKILL.md",
+      "skillFolderHash": "72b68da3152a96bbe8cb6a24a666fc39929378db",
+      "installedAt": "2026-09-03T09:20:12.148Z",
+      "updatedAt": "2026-09-03T09:20:12.148Z"
+    },
+    "humanizer": {
+      "source": "blader/humanizer",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/blader/humanizer.git",
+      "skillPath": "SKILL.md",
+      "skillFolderHash": "e2e92e7b4b8229253ed5c8e81dc65463fdeddda5",
+      "pluginName": "humanizer",
+      "installedAt": "2026-09-04T05:50:05.719Z",
+      "updatedAt": "2026-09-04T05:50:05.719Z"
+    },
+    "agent-reach": {
+      "source": "Panniantong/Agent-Reach",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Panniantong/Agent-Reach.git",
+      "skillPath": "agent_reach/skill/SKILL.md",
+      "skillFolderHash": "5095f2b6ccc6a0cdda1ad4cbf067ad279a418d95",
+      "installedAt": "2026-09-04T05:57:24.741Z",
+      "updatedAt": "2026-09-04T05:57:24.741Z"
+    },
+    "youtube-full": {
+      "source": "ZeroPointRepo/youtube-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/ZeroPointRepo/youtube-skills.git",
+      "skillPath": "skills/youtube-full/SKILL.md",
+      "skillFolderHash": "286d0e3ab49bdb29a7208c69d8fcc119536120ae",
+      "installedAt": "2026-09-04T05:57:46.933Z",
+      "updatedAt": "2026-09-04T05:57:46.933Z"
+    },
+    "eli5": {
+      "source": "anthropics/claude-plugins-community",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/anthropics/claude-plugins-community.git",
+      "skillPath": "eli5/skills/eli5/SKILL.md",
+      "skillFolderHash": "d16165120b7658216c79601b0ee568f42e540961",
+      "installedAt": "2026-09-04T21:41:43.970Z",
+      "updatedAt": "2026-09-04T21:41:43.970Z"
+    },
+    "diagnosing-bugs": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mattpocock/skills.git",
+      "skillPath": "skills/engineering/diagnosing-bugs/SKILL.md",
+      "installedAt": "2026-09-22T00:00:00.000Z",
+      "updatedAt": "2026-09-22T00:00:00.000Z"
+    },
+    "click-path-audit": {
+      "source": "community",
+      "sourceType": "local",
+      "installedAt": "2026-09-22T00:00:00.000Z",
+      "updatedAt": "2026-09-22T00:00:00.000Z"
+    },
+    "verification-before-completion": {
+      "source": "community",
+      "sourceType": "local",
+      "installedAt": "2026-09-22T00:00:00.000Z",
+      "updatedAt": "2026-09-22T00:00:00.000Z"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "installedAt": "2026-09-22T00:00:00.000Z",
+      "updatedAt": "2026-09-22T00:00:00.000Z"
+    },
+    "vercel-composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/composition-patterns/SKILL.md",
+      "installedAt": "2026-09-22T00:00:00.000Z",
+      "updatedAt": "2026-09-22T00:00:00.000Z"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "installedAt": "2026-09-22T00:00:00.000Z",
+      "updatedAt": "2026-09-22T00:00:00.000Z"
+    },
+    "pipeline-triage": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/pipeline-triage/SKILL.md",
+      "installedAt": "2026-09-22T00:00:00.000Z",
+      "updatedAt": "2026-09-22T00:00:00.000Z"
+    },
+    "code-reviewer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/code-reviewer.md",
+      "installedAt": "2026-09-22T12:00:00.000Z",
+      "updatedAt": "2026-09-22T12:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "python-reviewer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/python-reviewer.md",
+      "installedAt": "2026-09-22T12:00:00.000Z",
+      "updatedAt": "2026-09-22T12:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "go-reviewer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/go-reviewer.md",
+      "installedAt": "2026-09-22T12:00:00.000Z",
+      "updatedAt": "2026-09-22T12:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "rust-reviewer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/rust-reviewer.md",
+      "installedAt": "2026-09-22T12:00:00.000Z",
+      "updatedAt": "2026-09-22T12:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "database-reviewer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/database-reviewer.md",
+      "installedAt": "2026-09-22T12:00:00.000Z",
+      "updatedAt": "2026-09-22T12:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "security-reviewer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/security-reviewer.md",
+      "installedAt": "2026-09-22T12:00:00.000Z",
+      "updatedAt": "2026-09-22T12:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "typescript-reviewer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/typescript-reviewer.md",
+      "installedAt": "2026-09-22T12:00:00.000Z",
+      "updatedAt": "2026-09-22T12:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "react-reviewer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/react-reviewer.md",
+      "installedAt": "2026-09-22T12:00:00.000Z",
+      "updatedAt": "2026-09-22T12:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "silent-failure-hunter": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/silent-failure-hunter.md",
+      "installedAt": "2026-09-22T12:00:00.000Z",
+      "updatedAt": "2026-09-22T12:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "build-error-resolver": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/build-error-resolver.md",
+      "installedAt": "2026-09-22T15:00:00.000Z",
+      "updatedAt": "2026-09-22T15:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "react-build-resolver": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/react-build-resolver.md",
+      "installedAt": "2026-09-22T15:00:00.000Z",
+      "updatedAt": "2026-09-22T15:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "go-build-resolver": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/go-build-resolver.md",
+      "installedAt": "2026-09-22T15:00:00.000Z",
+      "updatedAt": "2026-09-22T15:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "rust-build-resolver": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/rust-build-resolver.md",
+      "installedAt": "2026-09-22T15:00:00.000Z",
+      "updatedAt": "2026-09-22T15:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "tdd-guide": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/tdd-guide.md",
+      "installedAt": "2026-09-22T15:00:00.000Z",
+      "updatedAt": "2026-09-22T15:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "refactor-cleaner": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/refactor-cleaner.md",
+      "installedAt": "2026-09-22T15:00:00.000Z",
+      "updatedAt": "2026-09-22T15:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "type-design-analyzer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/type-design-analyzer.md",
+      "installedAt": "2026-09-22T15:00:00.000Z",
+      "updatedAt": "2026-09-22T15:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "code-explorer": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/code-explorer.md",
+      "installedAt": "2026-09-22T15:00:00.000Z",
+      "updatedAt": "2026-09-22T15:00:00.000Z",
+      "kind": "ecc-agent"
+    },
+    "doc-updater": {
+      "source": "affaan-m/ECC",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/affaan-m/ECC.git",
+      "skillPath": "agents/doc-updater.md",
+      "installedAt": "2026-09-22T15:00:00.000Z",
+      "updatedAt": "2026-09-22T15:00:00.000Z",
+      "kind": "ecc-agent"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "antigravity",
+    "antigravity-cli",
+    "cline",
+    "codex",
+    "cursor",
+    "deepagents",
+    "gemini-cli",
+    "github-copilot",
+    "kimi-code-cli",
+    "opencode",
+    "warp",
+    "zed",
+    "hermes-agent"
+  ]
+}

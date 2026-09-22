@@ -1,0 +1,89 @@
+# Instincts for prune-artifacts
+# Source: C:\Users\Tiger\.agents\skills\prune-artifacts\instincts.json
+# Converted for continuous-learning-v2
+
+---
+id: two-gate-artifact-sweep
+trigger: "A PR just merged or a milestone closed and the repo gained explainers, plans, or drafts along the way."
+confidence: 0.9
+domain: workflow
+source: git-history-analysis
+scope: global
+---
+
+# Two-Gate Artifact Sweep
+
+## Action
+List per-issue artifacts (showcases, ELI5s, plans, drafts) and check each against issue state plus repo-wide reference search before touching anything.
+
+## Evidence
+- Extracted from prune-artifacts skill pattern: check tracking issue state (closed/merged) AND verify zero repo-wide references before deletion.
+- Prevents premature deletion of active design documents or referenced artifacts.
+
+---
+id: ask-operator-for-artifact-home
+trigger: "Keeper files live in scratch dirs or repo root and no conventional reports folder exists."
+confidence: 0.85
+domain: documentation
+source: git-history-analysis
+scope: global
+---
+
+# Ask Operator For Artifact Home
+
+## Action
+Ask the operator which home and naming to use instead of inventing docs/ paths in a repo you have never seen.
+
+## Evidence
+- Extracted from prune-artifacts skill: discover repository layout dynamically; never assume or unilaterally invent documentation directory structures.
+
+---
+id: keep-on-ambiguous-obsolescence
+trigger: "An obsolescence check cannot run or returns ambiguous evidence."
+confidence: 0.9
+domain: repo-hygiene
+source: git-history-analysis
+scope: global
+---
+
+# Keep On Ambiguous Obsolescence
+
+## Action
+Keep the file and name the failed check (issue still open, live references, or unproven shipment) rather than deleting on suspicion.
+
+## Evidence
+- Extracted from prune-artifacts skill: if either obsolescence gate cannot run (no tracker auth, ambiguous link, live reference hit), preserve the file and document the failed check. Never guess.
+
+---
+id: copy-verify-delete-relocation
+trigger: "A live-knowledge file sits outside the repo's documentation structure or under a meaningless working name."
+confidence: 0.8
+domain: workflow
+source: git-history-analysis
+scope: global
+---
+
+# Copy-Verify-Delete Relocation
+
+## Action
+Relocate with copy-verify-delete and update discovered references, then report old path, new path, and reference updates as table rows.
+
+## Evidence
+- Extracted from prune-artifacts skill: rename to <topic>-<date>-<kind>.<ext>, copy, verify integrity, update all inbound links, then delete the original. Always present the move in a verdict table.
+
+---
+id: preserve-dated-finding-reports
+trigger: "Temptation to prune by file age or to sweep docs/ indiscriminately."
+confidence: 0.85
+domain: knowledge-management
+source: git-history-analysis
+scope: global
+---
+
+# Preserve Dated Finding Reports
+
+## Action
+Treat dated finding reports with live conclusions as knowledge regardless of age; never feed them to the obsolescence test.
+
+## Evidence
+- Extracted from prune-artifacts skill: dated run/finding reports, architecture decisions, and active conclusions are untouchable knowledge assets. Recency is not staleness.

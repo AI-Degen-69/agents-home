@@ -1,0 +1,222 @@
+{
+  "summary": {
+    "skill": "C:/Users/Tiger/.agents/skills/ii-plan-issue/evals/snapshots/v0-SKILL.md",
+    "graded_at": "2026-09-17T02:51:06.785Z",
+    "cases": 4,
+    "static_assertions": 13,
+    "static_passed": 8,
+    "static_failed": 5,
+    "static_pass_rate": 0.615,
+    "live_assertions": "excluded from rate (not-run)"
+  },
+  "graded": [
+    {
+      "case_id": "no-args-auto-pick",
+      "static": {
+        "total": 3,
+        "passed": 2,
+        "failed": 1,
+        "results": [
+          {
+            "id": "auto-pick-no-pause",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /(Do NOT pause to ask|proceed without pausing|without waiting for confirmation)/i",
+            "why": "no-args mode must not stall waiting for the user"
+          },
+          {
+            "id": "claim-exactly-recommended",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /gh issue edit .* --add-assignee @me/i",
+            "why": "claiming is a behavioral contract downstream stations rely on"
+          },
+          {
+            "id": "gh-failure-guard",
+            "type": "regex",
+            "pass": false,
+            "detail": "did NOT match /gh.{0,16}(fails?|failed|unavailable)/i",
+            "why": "v0 has no fallback when gh is unavailable; skill must halt and ask instead of fabricating"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "Exactly one issue is recommended, with an explicit rationale tied to priority/dependency order",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The recommended issue is claimed via gh and appears as assignee",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "Planning proceeds on that issue in the same turn",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 0.6666666666666666
+    },
+    {
+      "case_id": "numbered-trivial-docs-issue",
+      "static": {
+        "total": 6,
+        "passed": 4,
+        "failed": 2,
+        "results": [
+          {
+            "id": "tiny-tier-exists",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /(Tiny|Trivial)/i",
+            "why": "a one-file docs fix must be classifiable below Standard"
+          },
+          {
+            "id": "docs-type-exists",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /\\*\\*Docs\\*\\*/i",
+            "why": "docs issues need a Docs classification path"
+          },
+          {
+            "id": "small-task-embedded-spec",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /(Small\\s*/\\s*(Tiny|Trivial)|\\bTiny\\b)/i",
+            "why": "small tasks must skip SPEC.md and embed the spec (Tiny/Trivial vocabulary)"
+          },
+          {
+            "id": "report-opens-with-issue",
+            "type": "regex",
+            "pass": false,
+            "detail": "did NOT match /(כותרת ה-Issue|מה ה-Issue דורש)/i",
+            "why": "user: the issue is the star of the show — template must open with the issue before skill/classification talk"
+          },
+          {
+            "id": "report-type-branches",
+            "type": "regex",
+            "pass": false,
+            "detail": "did NOT match /(לפי סוג המשימה|מסתגל לפי סוג)/i",
+            "why": "same fixed report shape for every issue type is the flagged failure mode"
+          },
+          {
+            "id": "report-template-lean",
+            "type": "max_template_lines",
+            "pass": true,
+            "detail": "template has 24 non-empty lines (limit 40)",
+            "why": "v0 template is ~60 lines of boilerplate; delivery must be tight"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "Size tier stated is Tiny/Trivial with rationale",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "No SPEC.md created for a Trivial task; spec embedded in plan",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "Report opens with the issue title and what it demands, in everyday Hebrew",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "Report does not enumerate planning machinery (skill lists) ahead of the issue content",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 0.6666666666666666
+    },
+    {
+      "case_id": "negative-unrelated-request",
+      "static": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "results": [
+          {
+            "id": "description-scoped-to-pipeline",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /(Station II|GitHub issue|issue)/i",
+            "why": "L1 description must scope the skill to issue-planning so it does not hijack ordinary coding requests"
+          },
+          {
+            "id": "no-catchall-trigger",
+            "type": "not_regex",
+            "pass": true,
+            "detail": "forbidden pattern absent",
+            "why": "a catch-all trigger wording would make the skill fire on unrelated work"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "No station report (Hebrew template) is produced",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "No CONSTRAINTS.md / tasks/plan.md artifacts are created",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "No gh issue claim is attempted",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    },
+    {
+      "case_id": "edge-gh-fails",
+      "static": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2,
+        "results": [
+          {
+            "id": "gh-failure-guard",
+            "type": "regex",
+            "pass": false,
+            "detail": "did NOT match /gh.{0,16}(fails?|failed|unavailable)/i",
+            "why": "edge case must be covered in the spec, not left to improvisation"
+          },
+          {
+            "id": "no-fabrication-rule",
+            "type": "regex",
+            "pass": false,
+            "detail": "did NOT match /(never fabricate|do not fabricate|אין להמציא|Never fabricate)/i",
+            "why": "fabricating issue content from a failed fetch is the worst-case outcome and must be forbidden explicitly"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "Output names the gh failure instead of pretending the issue was read",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "Output asks for the issue number/title or an auth fix",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "No tasks/plan.md or CONSTRAINTS.md is written from imagined content",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 0
+    }
+  ]
+}
