@@ -1,6 +1,6 @@
 # Global Issue-to-PR Pipeline (Station X & Stations I–VII)
 
-A universal, project-agnostic development pipeline deployed globally across all harnesses (Claude Code, Gemini CLI, Antigravity IDE, Hermes) under `~/.agents/skills/`.
+A universal, project-agnostic development pipeline deployed globally across all harnesses (Gemini CLI, Antigravity IDE, Hermes, OpenCode, Freebuff) under `~/.agents/skills/`.
 
 ## Entry Point
 
@@ -90,6 +90,5 @@ Three homes, three purposes — never mixed:
 All skills live canonically in `C:\Users\Tiger\.agents\skills\`.
 They are consumed across harnesses via:
 
-- **Claude Code:** `~/.claude/skills/` (Junction)
 - **Hermes:** `AppData/Local/hermes/skills/` (Junction)
 - **Gemini CLI / Antigravity IDE:** `~/.gemini/config/skills/` (**SymbolicLink** — mandatory for Gemini to resolve)

@@ -1,0 +1,43 @@
+{
+  "skill_name": "iv-review-build-and-pr",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Case 1 covers the full review-and-ship flow, case 2 covers the proof-gate failure loop, case 3 is the negative case.",
+  "evals": [
+    {
+      "id": "review-verify-ship-flow",
+      "prompt": "/iv-review-build-and-pr (build for issue 17 is committed locally on the feature branch)",
+      "expected_output": "OCR delegation review runs first (file scope + rules, host-agent thinking), dynamic ECC reviewers plus the Spec axis run over the diff, findings are merged into one deduplicated list and fixed with local commits, the full verification gate (browser or test suite) passes, then the branch is pushed and a PR is opened with @coderabbitai summary.",
+      "files": [],
+      "assertions": [
+        "OCR delegation preview and rules run before any reviewer is dispatched",
+        "Every changed file from the OCR list is covered by at least one reviewer axis",
+        "Spec-axis findings (missing / added-not-asked / implemented-wrong) are checked explicitly",
+        "Findings are merged into one list with no duplicates before fixing",
+        "The verification gate runs and passes before push; a failure routes back to the fix loop instead of shipping",
+        "The PR body includes @coderabbitai summary"
+      ]
+    },
+    {
+      "id": "verification-gate-failure-no-ship",
+      "prompt": "/iv-review-build-and-pr where the test suite fails after the review fixes are applied.",
+      "expected_output": "The skill does not push or open a PR. The failure is reported with the failing tests, fixes loop until green (or the operator is asked), and only a passing gate leads to push and PR.",
+      "files": [],
+      "assertions": [
+        "No git push and no gh pr create happen while the gate fails",
+        "The failing tests are reported to the operator with concrete names and output",
+        "The loop returns to fixing findings rather than shipping broken code",
+        "Ship happens only after a documented passing verification run"
+      ]
+    },
+    {
+      "id": "negative-not-a-build-session",
+      "prompt": "Can you review my README wording quickly while the pipeline is idle? (ad-hoc request, not Station IV work)",
+      "expected_output": "The skill must not trigger the full ship machinery: no OCR delegation, no reviewer dispatch, no push, no PR. At most a direct lightweight answer or routing to the ad-hoc router.",
+      "files": [],
+      "assertions": [
+        "No ocr delegate command is run",
+        "No branch push or PR creation occurs",
+        "The request is answered or routed without invoking Station IV machinery"
+      ]
+    }
+  ]
+}

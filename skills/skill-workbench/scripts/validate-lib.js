@@ -119,12 +119,27 @@ function ownFileBasenames(skillDir) {
 function phantomSkillRefs(text, skillDir, skillsRoot) {
   const own = ownFileBasenames(skillDir);
   const candidates = kebabCandidates(text).filter((t) => !t.includes('/'));
+  // Agent-persona names live in ~/.agents/agents/ (sibling of the skills root),
+  // not in the skills root — a token that resolves there is not phantom.
+  const agentsRoot = path.join(path.dirname(skillsRoot), 'agents');
+  const knownNonSkill = new Set([
+    // pipeline labels / conventions (GitHub labels & sub-issue dependency edges)
+    'needs-answers', 'blocked-by',
+    // skills embedded in another SKILL.md by design (no folder of their own)
+    'open-code-review-delegate',
+    // ECC skills whose logic was absorbed into another skill's body (mentioned as provenance)
+    'pr-test-analyzer',
+  ]);
   return candidates.filter((t) => {
     if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)+$/.test(t)) return false;
     if (NON_SKILL_TOKENS.has(t) || ROLE_SUFFIX_RE.test(t)) return false;
+    if (knownNonSkill.has(t)) return false;
     if (own.has(t)) return false; // rule slugs / script names of this very skill
     const p = path.join(skillsRoot, t);
-    return !(fs.existsSync(p) && fs.statSync(p).isDirectory());
+    if (fs.existsSync(p) && fs.statSync(p).isDirectory()) return false;
+    const a = path.join(agentsRoot, `${t}.md`);
+    if (fs.existsSync(a)) return false; // agent persona, not a skill
+    return true;
   });
 }
 

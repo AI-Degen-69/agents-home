@@ -1,0 +1,40 @@
+{
+  "skill_name": "vi-prune-artifacts",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Case 1 covers the standard post-merge sweep, case 2 covers the knowledge-preservation boundary, case 3 is the negative case.",
+  "evals": [
+    {
+      "id": "post-merge-sweep",
+      "prompt": "/vi-prune-artifacts (issue 23 was just squash-merged and closed)",
+      "expected_output": "The sweep finds per-issue plans and scratch files tied to closed issue 23 that are unreferenced elsewhere, deletes them, and strictly preserves durable knowledge and reports.",
+      "files": [],
+      "assertions": [
+        "Only artifacts tied to CLOSED issues are candidates for deletion",
+        "Files still referenced by surviving docs or code are not deleted",
+        "Knowledge and report files are preserved even when their issue is closed",
+        "The deletions are listed to the operator before or as they happen"
+      ]
+    },
+    {
+      "id": "knowledge-preservation-boundary",
+      "prompt": "/vi-prune-artifacts where tasks/plan-23.md for a closed issue contains a hard-won debugging insight referenced from the issue's PR description.",
+      "expected_output": "The referenced plan file is NOT deleted; the skill either keeps it in place or moves its knowledge into a durable location and reports the move, rather than sweeping it silently.",
+      "files": [],
+      "assertions": [
+        "A plan file referenced from outside the repo working tree is not silently deleted",
+        "Preservation or relocation of the knowledge is reported explicitly",
+        "The sweep does not break references from surviving documents"
+      ]
+    },
+    {
+      "id": "negative-open-issue-artifacts-untouched",
+      "prompt": "/vi-prune-artifacts while issue 31 is still open and its tasks/plan-31.md exists.",
+      "expected_output": "The skill must not delete artifacts of the open issue; no gh state change, no deletion of plan-31.md. The sweep either skips it or reports why it was skipped.",
+      "files": [],
+      "assertions": [
+        "No artifact of the open issue is deleted",
+        "The issue state is not modified",
+        "The skip is reported rather than hidden"
+      ]
+    }
+  ]
+}

@@ -8,7 +8,6 @@ the canonical folder — **and the link type matters per harness.**
 
 | Harness | Global skills root | Link type | Project skills | Notes |
 |---|---|---|---|---|
-| Claude Code (desktop/CLI) | `~/.claude/skills/` | Junction | `<repo>/.claude/skills/`, plus `CLAUDE.md` / `AGENTS.md` auto-loaded | Reads junctions fine. |
 | Hermes agent | `AppData/Local/hermes/skills/` | Junction | Project rules via repo `AGENTS.md` | Reads junctions fine. |
 | OpenCode (desktop + TUI) | `~/.config/opencode/skills/` | Real dirs (verified live) | `<repo>/.agents/skills/` (observed), `opencode.json` | No linking used — skills live as real folders. |
 | Gemini CLI | `~/.gemini/config/skills/` | **SymbolicLink** | — | Junctions are invisible to it — a junctioned skill silently never loads. Every other entry there is a symlink; match the neighbors. |
@@ -36,7 +35,6 @@ Detailed documentation of the entire pipeline, station contracts, and Hebrew rep
 ## Deploying a new skill
 
 ```powershell
-New-Item -ItemType Junction -Path "$env:USERPROFILE\.claude\skills\<name>" -Target "$env:USERPROFILE\.agents\skills\<name>"
 New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\hermes\skills\<name>" -Target "$env:USERPROFILE\.agents\skills\<name>"
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.gemini\config\skills\<name>" -Target "$env:USERPROFILE\.agents\skills\<name>"
 ```

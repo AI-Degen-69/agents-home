@@ -1,0 +1,41 @@
+{
+  "skill_name": "i-create-issue",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Case 1 covers the standard draft-and-publish flow, case 2 covers the needs-answers path, case 3 is the negative case.",
+  "evals": [
+    {
+      "id": "raw-idea-to-published-issue",
+      "prompt": "/i-create-issue I want the deploy script to retry failed uploads three times before giving up.",
+      "expected_output": "Agent scans the repo for the relevant deploy script and related files, drafts the issue from the template with a concrete problem statement, publishes it with gh labeled ready-for-agent, and reports the issue number.",
+      "files": [],
+      "assertions": [
+        "The repo is scanned and real file paths are cited before the draft is written",
+        "The issue is published with the ready-for-agent label via gh",
+        "The issue body contains a concrete problem statement and acceptance criteria",
+        "The issue number and URL are reported back to the operator"
+      ]
+    },
+    {
+      "id": "unclear-idea-needs-answers",
+      "prompt": "/i-create-issue Make the search better somehow.",
+      "expected_output": "The idea cannot be drafted concretely, so the agent asks the operator only the questions that block drafting, or drafts with an explicit Open questions body section and the needs-answers label — never blocking publication on open questions.",
+      "files": [],
+      "assertions": [
+        "Ambiguity is surfaced instead of silently guessed",
+        "If published, the issue carries the needs-answers label and an Open questions body section",
+        "Publication is not blocked on unresolved questions",
+        "No fictional file paths or invented requirements appear in the draft"
+      ]
+    },
+    {
+      "id": "negative-existing-work-not-an-issue",
+      "prompt": "We already discussed this in the standup notes, just remember to look at the retry logic sometime. (casual remark, not a request for a new issue)",
+      "expected_output": "The skill must not trigger: no gh issue creation, no repo scan for drafting, no premature label creation. At most a brief clarification whether an issue is wanted.",
+      "files": [],
+      "assertions": [
+        "No gh issue create command is run",
+        "No ready-for-agent issue is published from a casual remark",
+        "The agent does not silently convert conversation into a tracked issue"
+      ]
+    }
+  ]
+}

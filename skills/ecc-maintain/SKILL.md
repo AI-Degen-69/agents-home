@@ -37,6 +37,31 @@ node "$env:USERPROFILE\Agents\Tools\ECC\scripts\ecc.js" list-installed
 - `drifted-managed-files: N managed file(s) differ from the source repo` — N files were
   edited after install. **This is not automatically a problem.** Some drift is deliberate.
 
+## Drift protection around installs/updates (ecc-drift.ps1)
+
+Before running any ECC install or update, snapshot `~/.agents`; after it finishes, check
+for silently overwritten files. This catches collisions **before** they cascade to every
+harness that reads `~/.agents`.
+
+```powershell
+# 1. Before the install/update:
+powershell -NoProfile -File "$env:USERPROFILE\.agents\scripts\ecc-drift.ps1" snapshot
+
+# 2. ... run the ECC install/update ...
+
+# 3. After:
+powershell -NoProfile -File "$env:USERPROFILE\.agents\scripts\ecc-drift.ps1" check
+```
+
+- `Check` exits `0` when nothing changed and `1` when any tracked file (`.md .ps1 .js
+  .json .yaml .yml .toml`, excluding `node_modules`/`.git`/`scratchpad`) was modified,
+  added, or deleted relative to the snapshot. Exit `2` means no baseline exists yet.
+- On drift, list the affected paths to Tiger and let him decide — do not auto-restore.
+  Per the drift policy above, ECC's version usually wins, but the report exists so that
+  a deliberate customization is *seen*, not silently lost.
+- If no snapshot was taken before the install, the check can't run; note that in your
+  report rather than guessing at what changed.
+
 ## Updating the repo
 
 The ECC source lives at `~/Agents/Tools/ECC` and is npm-linked as `ecc-universal`, so
@@ -89,12 +114,15 @@ created to survive an earlier collision. Let the current repo contents stand and
 `doctor` report `OK`.
 
 `opencode-home` (installed 2026-09-04) is the reference case. Its
-`skills/git-workflow/SKILL.md` had been kept as Tiger's own ~116-line version; the
-2026-09-04 install replaced it with ECC's 716-line version, and on 2026-09-06 that
-outcome was confirmed as correct. The `git-workflow-ecc/` duplicate directory that
+`skills/git-workflow/SKILL.md` (ECC's harness-home skill, 716 lines) had been kept as
+Tiger's own ~116-line version until the 2026-09-04 install replaced it, and on 2026-09-06
+that outcome was confirmed as correct. The `git-workflow-ecc/` duplicate directory that
 existed only to hold ECC's copy was deleted at the same time. Tiger's own git convention
-still lives at `~/.claude/skills/git-workflow/SKILL.md` and is referenced from the global
-`CLAUDE.md`; that copy is not ECC-managed and is unaffected.
+lived at `~/.claude/skills/git-workflow/SKILL.md` (referenced from the global `CLAUDE.md`);
+on 2026-09-22, with Claude Code retired and the convention obsolete, it was deleted
+outright together with the `CLAUDE.md` reference — ECC's harness-home `skills/git-workflow/` is
+the single source of truth there, and `~/.agents/skills/` carries the canonical
+`git-workflow-and-versioning` skill.
 
 `hermes-home` (installed 2026-08-23) was brought in line on 2026-09-06 and now reports
 `OK`. Its `AGENTS.md` had been Tiger's own documentation of the Hermes runtime home,
@@ -153,4 +181,3 @@ and an ECC skill that share a name:
 ## Related
 
 - [`ecc-antigravity`](../ecc-antigravity/SKILL.md) — per-project install for Antigravity (`./.agents`)
-- ecc-claude-project — per-project install for Claude Code (`./.claude`, external / not installed in this skills root)
