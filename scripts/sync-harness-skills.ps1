@@ -27,9 +27,15 @@
 .PARAMETER Check
   Report only; change nothing.
 
+.PARAMETER Harness
+  Which harness roots to touch: hermes, gemini, or both (default). Use -Harness hermes
+  when the Gemini root is being handled elsewhere (e.g. an elevated shell converting
+  copies to SymbolicLinks) - a parallel run against the same entries would race.
+
 .EXAMPLE
   .\sync-harness-skills.ps1 -All -Check
   .\sync-harness-skills.ps1 -Name i-pick-issue,create-issue
+  .\sync-harness-skills.ps1 -All -Harness hermes
 
 Exit codes: 0 = every entry is a link, 1 = at least one entry is a copy, 2 = usage error.
 #>
@@ -37,7 +43,9 @@ Exit codes: 0 = every entry is a link, 1 = at least one entry is a copy, 2 = usa
 param(
     [string[]]$Name,
     [switch]$All,
-    [switch]$Check
+    [switch]$Check,
+    [ValidateSet('hermes', 'gemini', 'both')]
+    [string]$Harness = 'both'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -46,9 +54,12 @@ $canonicalRoot = Join-Path $env:USERPROFILE '.agents\skills'
 $hermesRoot    = Join-Path $env:LOCALAPPDATA 'hermes\skills'
 $geminiRoot    = Join-Path $env:USERPROFILE '.gemini\config\skills'
 
+$doHermes = $Harness -in @('hermes', 'both')
+$doGemini = $Harness -in @('gemini', 'both')
+
 if (-not (Test-Path $canonicalRoot)) { Write-Error "No canonical skills root at $canonicalRoot"; exit 2 }
 if (-not $Name -and -not $All) {
-    Write-Host 'Usage: sync-harness-skills.ps1 -Name <skill>[,<skill>] | -All [-Check]'
+    Write-Host 'Usage: sync-harness-skills.ps1 -Name <skill>[,<skill>] | -All [-Check] [-Harness hermes|gemini|both]'
     exit 2
 }
 
@@ -85,17 +96,21 @@ foreach ($skill in $skills) {
     $target = Join-Path $canonicalRoot $skill
 
     # ---- Hermes: Junction -------------------------------------------------
-    $hPath = Join-Path $hermesRoot $skill
-    if (Test-Linked $hPath 'Junction' $target) {
-        $report += [PSCustomObject]@{ Skill = $skill; Harness = 'hermes'; LinkType = 'Junction'; State = 'ok' }
-    } elseif ($Check) {
-        $hItem = Get-Item $hPath -Force -ErrorAction SilentlyContinue
-        $report += [PSCustomObject]@{ Skill = $skill; Harness = 'hermes'; LinkType = $(if ($hItem) { $hItem.LinkType } else { 'missing' }); State = 'needs link' }
-    } else {
-        Remove-Entry $hPath
-        New-Item -ItemType Junction -Path $hPath -Target $target | Out-Null
-        $report += [PSCustomObject]@{ Skill = $skill; Harness = 'hermes'; LinkType = 'Junction'; State = 'linked' }
+    if ($doHermes) {
+        $hPath = Join-Path $hermesRoot $skill
+        if (Test-Linked $hPath 'Junction' $target) {
+            $report += [PSCustomObject]@{ Skill = $skill; Harness = 'hermes'; LinkType = 'Junction'; State = 'ok' }
+        } elseif ($Check) {
+            $hItem = Get-Item $hPath -Force -ErrorAction SilentlyContinue
+            $report += [PSCustomObject]@{ Skill = $skill; Harness = 'hermes'; LinkType = $(if ($hItem) { $hItem.LinkType } else { 'missing' }); State = 'needs link' }
+        } else {
+            Remove-Entry $hPath
+            New-Item -ItemType Junction -Path $hPath -Target $target | Out-Null
+            $report += [PSCustomObject]@{ Skill = $skill; Harness = 'hermes'; LinkType = 'Junction'; State = 'linked' }
+        }
     }
+
+    if (-not $doGemini) { continue }
 
     # ---- Gemini CLI / Antigravity: SymbolicLink, else copy ----------------
     $gPath = Join-Path $geminiRoot $skill

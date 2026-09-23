@@ -1,8 +1,11 @@
 # Agent Skills — canonical root
 
 Every skill lives here once, under its kebab-case folder with a `SKILL.md`
-(`name` + `description` frontmatter). Harnesses consume it via links back to
-the canonical folder — **and the link type matters per harness.**
+(`name` + `description` frontmatter). A skill whose real home is elsewhere is
+**linked in** rather than copied — today only `cua-driver`
+(`→ C:\Users\Tiger\.cua-driver\skills\cua-driver`); `validate.js --all` validates
+the real folders and explicitly names every link it skips. Harnesses consume it
+via links back to the canonical folder — **and the link type matters per harness.**
 
 ## Deployment link-type matrix
 

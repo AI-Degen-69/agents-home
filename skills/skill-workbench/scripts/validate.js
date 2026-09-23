@@ -25,12 +25,24 @@ const fs = require('fs');
 const path = require('path');
 const { validateSkill, DEFAULT_SKILLS_ROOT } = require('./validate-lib.js');
 
+/**
+ * Every canonical skill folder under root, plus the link-type entries (junctions /
+ * symlinks) it skips. A skill whose real home is elsewhere is linked in rather than
+ * copied, so it is deliberately out of validation scope — but the skip must never be
+ * silent: Node's Dirent.isDirectory() is false for a reparse point, which used to
+ * drop such an entry with no trace in the output.
+ */
 function findAllSkills(root) {
-  if (!fs.existsSync(root)) return [];
-  return fs.readdirSync(root, { withFileTypes: true })
+  if (!fs.existsSync(root)) return { targets: [], skippedLinks: [] };
+  const entries = fs.readdirSync(root, { withFileTypes: true });
+  const skippedLinks = entries
+    .filter((d) => !d.isDirectory() && fs.existsSync(path.join(root, d.name, 'SKILL.md')))
+    .map((d) => d.name);
+  const targets = entries
     .filter((d) => d.isDirectory())
     .map((d) => path.join(root, d.name))
     .filter((p) => fs.existsSync(path.join(p, 'SKILL.md')));
+  return { targets, skippedLinks };
 }
 
 function main() {
@@ -39,12 +51,13 @@ function main() {
   const args = argv.filter((a) => a !== '--json');
 
   let targets = [];
+  let skippedLinks = [];
   let opts = { skillsRoot: DEFAULT_SKILLS_ROOT };
 
   if (args[0] === '--all') {
     const root = path.resolve(args[1] || DEFAULT_SKILLS_ROOT);
     opts.skillsRoot = root;
-    targets = findAllSkills(root);
+    ({ targets, skippedLinks } = findAllSkills(root));
     if (!targets.length) {
       console.error(`No skills with SKILL.md found under ${root}`);
       process.exitCode = 2;
@@ -71,7 +84,7 @@ function main() {
   const warnCount = results.reduce((s, r) => s + r.findings.filter((f) => f.severity === 'warn').length, 0);
 
   if (json) {
-    console.log(JSON.stringify({ skills_root: opts.skillsRoot, validated: results.length, fail_count: failCount, warn_count: warnCount, results }, null, 2));
+    console.log(JSON.stringify({ skills_root: opts.skillsRoot, validated: results.length, fail_count: failCount, warn_count: warnCount, skipped_links: skippedLinks, results }, null, 2));
   } else {
     for (const r of results) {
       const fails = r.findings.filter((f) => f.severity === 'fail');
@@ -79,6 +92,9 @@ function main() {
       console.log(`\n== ${r.skill} ==`);
       for (const f of r.findings) console.log(`  [${f.severity.toUpperCase()}] ${f.check}: ${f.detail}`);
       console.log(fails.length ? `  → ${fails.length} fail, ${warns.length} warn` : `  → clean (${warns.length} warn)`);
+    }
+    if (skippedLinks.length) {
+      console.log(`\nSkipped ${skippedLinks.length} link entry(ies) — real folder lives elsewhere, out of validation scope: ${skippedLinks.join(', ')}`);
     }
     console.log(`\nValidated ${results.length} skill(s): ${failCount} fail, ${warnCount} warn`);
   }
