@@ -110,8 +110,9 @@ Run the validator, report findings, stop. No audit, no routing, no deploy.
 ## Conventions
 
 - **The worked-on skill is the star.** Title opens with a Hebrew word:
-  `סקיל: <name>`, plus group tag when it belongs to one (Pipeline stations
-  `i`–`vii` + `x-workflow-issue`, or `ecc-*` → ECC). Line below opens with
+  `סקיל: <name>`, plus group tag when it belongs to one (numbered Pipeline
+  stations `i`–`vii`, the system skills `pipeline-triage` / `create-issue`, or
+  `ecc-*` → ECC). Line below opens with
   `נתיב:` + full path; if Junction show `→` target and always work on the
   original. Workbench machinery gets one compact line each.
   Never enumerate steps or check-ids in the headline of the reply.

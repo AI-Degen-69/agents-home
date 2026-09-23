@@ -87,7 +87,7 @@ const NON_SKILL_TOKENS = new Set([
   'text-prefilter', 'structural-code-rule', 'log-event-pattern', 'metric-anomaly',
   // skill-workbench scorer metric ids (score.js vocabulary, not skills)
   'spec-compliance', 'file-integrity', 'eval-readiness', 'size-discipline', 'self-containment',
-  // vii-present-pr figure-interaction / skeleton picker vocabulary (Step 2 controls, not skills)
+  // vi-present-pr figure-interaction / skeleton picker vocabulary (Step 2 controls, not skills)
   'step-play', 'hero-demo', 'split', 'article', 'rail', 'scrub',
 ]);
 

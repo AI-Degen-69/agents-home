@@ -1,11 +1,11 @@
 ---
 name: iv-review-build-and-pr
-description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then ECC language/framework reviewers, applies fixes, executes the post-review Browser Gate (UI, fast-first) or targeted test gate (backend), pushes branch, and opens GitHub PR with @coderabbitai summary.
+description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then ECC language/framework reviewers, applies fixes, executes full post-review verification (browser or test suite), pushes branch, and opens GitHub PR with @coderabbitai summary.
 ---
 
 # Station IV: Review, Verify & PR (`iv-review-build-and-pr`)
 
-This skill implements **Station IV (Review, Verify & Ship)** of the 7-station pipeline (I–VII). It works across **any project, language, or repository**, taking code completed in Station III (`iii-build-plan`), dynamically discovering and deploying language/framework specialist reviewers, applying fixes, enforcing the **Final Pre-Push Verification Gate** (live browser verification for UI or full regression test suite for backend), pushing to origin, opening a Pull Request linked to the issue, and recommending `v-babysit-pr-and-merge`.
+This skill implements **Station V (Review, Final Verification & Ship)** of the 8-station pipeline. It works across **any project, language, or repository**, taking code completed in Station III (`iii-build-plan`), dynamically discovering and deploying language/framework specialist reviewers, applying fixes, enforcing the **Final Pre-Push Verification Gate** (live browser verification for UI or full regression test suite for backend), pushing to origin, opening a Pull Request linked to the issue, and recommending `v-babysit-pr-and-merge`.
 
 ## Pipeline Position
 - **Station:** Station IV of VII
@@ -26,20 +26,44 @@ This skill implements **Station IV (Review, Verify & Ship)** of the 7-station pi
 
 ### Step 0: Proof-Before-Review Gate (MANDATORY, FIRST)
 
-**No review runs on unproven code.** Before Step 1, prove the build actually works. This station is the **single owner of browser-based verification** in the whole pipeline — no other station runs browser checks. This ownership applies whenever any UI change ships, regardless of which station built it.
+**No review runs on unproven code.** Before Step 1, prove the build actually works:
 
-1. **For Frontend / Web / UI changes — Browser Gate (fast-first):** start the project's preview server, then verify in this order:
-   - **API/HTTP smoke (no browser):** every key page and endpoint the change touches answers 200 with sane content (`curl` or equivalent).
-   - **Programmatic DOM checks (no screenshot):** evaluate JS in the page — required elements exist, table rows/columns render, layout has no overflow.
-   - **Console + network:** zero uncaught console errors, zero failed network requests (pull console/network logs — do not eyeball a screenshot for this).
-   - **Screenshot — once, last:** a single screenshot as final visual proof, only after everything above is green. Never per-iteration.
+1. **For Frontend / Web / UI changes:** run the live browser check via `browser-testing-with-devtools` — key screens load, the flows built in Station III work, zero uncaught console errors and zero failed network requests.
 2. **For Backend / Logic changes:** run the targeted test suites for modified files — all green.
 3. **On failure:** stop. Route the failure list to `iiib-iterate-after-build` as correction items, and re-enter this station only after IIIB is clean. Do not review broken code.
 4. **On success:** record one gate line for the report (what was run, what passed), then continue to Step 1.
 
 ### Step 1: OCR Delegation Review (MANDATORY, FIRST — embedded `open-code-review-delegate` skill)
 
-Use OCR only for fixed work (file pick + rules). The thinking stays with you. No LLM key needed on OCR side. Source: `https://github.com/alibaba/open-code-review` (Apache-2.0). The full delegation procedure (preview, rules, diffs, per-file review, finding shape, coverage counts) lives in `references/ocr-delegation.md` — follow it exactly; no external skill file is required.
+Use OCR only for fixed work (file pick + rules). The thinking stays with you. No LLM key needed on OCR side. Source: `https://github.com/alibaba/open-code-review` (Apache-2.0). The delegation procedure below is embedded in this skill — no external skill file is required.
+
+1. **Preview — what to review:**
+   ```bash
+   ocr delegate preview --format json --from origin/<base> --to HEAD
+   ```
+   - Plain `ocr delegate preview` (no flags) = work copy (staged + unstaged + untracked). Prefer the `--from/--to` form here so the scope matches the PR diff.
+   - Output gives: `mode` (workspace / range / commit), `merge_base` / refs, `reviewable_files` (path, status, adds/dels), `excluded_files` + reason.
+   - If it fails with `unknown flag: --format` (CLI < v1.9.0): rerun without `--format` and use text output. For any other error: stop and report.
+   - If `ocr: command not found`: run `npm install -g @alibaba-group/open-code-review`, then retry once.
+2. **Rules — checklist per file:**
+   ```bash
+   ocr delegate rule --format json <path1> <path2> ...
+   ```
+   - Pass every `reviewable_files` path. Output is grouped by rule text — files with the same rule share one group.
+   - For big diffs: fetch rules per batch as you review.
+   - Optional project rules: `--rule <path>`, or `<repo>/.opencodereview/rule.json`, or `--background "short issue context"` / `--background-file <path>` (file ≤1 MiB raw and ≤8000 chars clean, else send a short summary as `-b`).
+3. **Diffs — pull with git (from preview refs):**
+   - Range: `git diff <merge_base>..<to> -- <path>`
+   - Commit: `git show <commit> -- <path>`
+   - Work copy tracked: `git diff HEAD -- <path>`; untracked new files: read the file directly.
+4. **Review each file — full cover, no skips:**
+   - Make a list with every `(path, status)` entry. Same path can show twice (e.g. staged delete + untracked add) — treat each as its own item.
+   - Per file: read its diff, read its Rule Group, review with file read + code search for context. Stay on changed (+) lines only.
+   - Review in small batches grouped by shared rule + diff size. Do not stop after the first big find.
+   - Mark each item `reviewed` or `skipped + reason`. Every preview item must end in one of these two states.
+5. **Write down each find in this shape:** `path, content, start_line, end_line, category (bug/security/performance/maintainability/test/style/documentation/other), severity (critical/high/medium/low)`.
+   - Report Critical/High always. Report Medium with context. Drop Low unless clearly useful. Drop likely false notes quietly.
+   - Close with counts: `total_files, reviewed_files, skipped_files (+reasons), coverage_rate`. Cover must be 100% (reviewed + explained skips = total).
 
 ### Step 1B: Dynamic Reviewer Discovery & Multi-Axis Review (uses OCR output as input)
 Feed the OCR file list + Rule Groups + OCR finds into each reviewer below (no file left out, line numbers from OCR win on conflicts). Inspect the diff (`git diff --name-only origin/<base>...HEAD`) and discover matching specialized reviewers from the project's agent repository (`.agents/agents/`, `~/.agents/agents/`, or builtins):
@@ -89,7 +113,9 @@ Before applying fixes, run the Spec axis in full:
 
 **Citing gate:** every finding carries its motivating evidence — the verbatim quoted line(s) that triggered it. A finding without a quotable line goes to the appendix as unverified; it never enters the main report.
 
-1. **For Frontend / Web / UI Changes — re-run the Step 0 Browser Gate (fast-first) on the fixed code:** same order, same bar — zero uncaught console errors, zero failed network requests.
+1. **For Frontend / Web / UI Changes:**
+   - **Browser Verification:** Spin up preview server if needed and inspect via Chrome DevTools MCP or browser testing tools.
+   - Verify visual layout, responsive behavior, and confirm the browser console has **zero uncaught errors, warnings, or failed network requests**.
 2. **For Backend / API / Logic Changes:**
    - Run targeted test suites matching modified files (e.g. `pytest tests/test_<module>.py`) to confirm zero regressions in touched modules. Avoid running the full repository test suite locally (>10s); GitHub CI runs the full regression suite on push as the merge gate.
    - Run `verification-before-completion` to guarantee all acceptance criteria from the issue remain 100% satisfied.
@@ -111,26 +137,18 @@ Before applying fixes, run the Spec axis in full:
   ```bash
   gh pr create --title "<type>(<scope>): <summary>" --body "## Summary`n...`n`nCloses #<issue>`n`n@coderabbitai summary"
   ```
-- Immediately post the review trigger comment (**post exactly once** — pick ONE of the two forms below, never both):
+- Immediately post the review trigger comment:
   ```bash
   gh pr comment <pr_number> --body "@coderabbitai review"
   ```
-  Fresh-run one-liner alternative (post + 60s wait + poll in one — use INSTEAD of the snippet above):
-  ```powershell
-  gh pr comment <pr_number> --body "@coderabbitai review" 2>&1 | Select-Object -Last 1; Start-Sleep -Seconds 60; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
-  ```
-- **Wait for the trigger acknowledgement (MANDATORY before handoff):** Do not conclude the station on a blind post. Post the trigger, wait **60s**, then read CodeRabbit's reply to the trigger comment once, then classify it:
+- **Wait for the trigger acknowledgement (MANDATORY before handoff):** Do not conclude the station on a blind post. Wait for CodeRabbit's reply to the trigger comment (typically within ~1 minute; check up to ~3 minutes, non-blocking wait), then classify it:
   - `Review triggered.` ("Action performed" reply) — review started. Proceed to handoff.
-  - Rate-limit reply (`## Review limit reached` / `rate limited by coderabbit.ai` / `Next included review available in N minutes`) — review NOT started. Record the reported minutes and carry them into the handoff report so the operator (and Station V) know the quota window.
+  - Rate-limit reply with a wait time (e.g. "come back in N minutes" / quota exceeded) — review NOT started. Record the reported minutes and carry them into the handoff report so the operator (and Station V) know the quota window.
   - Any other refusal/skip notice (e.g. "does not re-review already reviewed commits") — record verbatim; it may mean incremental review found nothing new, which is itself a signal Station V must read (not a silent pass).
-  - No reply within ~60s — report `trigger acknowledgement not received` honestly; do not claim the review started.
-  - **Ack polling (PowerShell, 60s wait, matches the real rate-limit header):** only when the trigger was already posted via the snippet above — do NOT re-post:
-  ```powershell
-  Start-Sleep -Seconds 60; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
-  ```
-  - **Ack polling (bash fallback, same 60s wait, same markers):**
+  - No reply within ~3 minutes — report `trigger acknowledgement not received` honestly; do not claim the review started.
+  - **Ack polling command:**
   ```bash
-  sleep 60; gh pr view <pr_number> --comments 2>&1 | grep -iE "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | tail -6
+  gh pr view <pr_number> --json comments --jq '.comments[-3:] | .[] | {author: .author.login, body: .body[0:300]}'
   ```
 - **Comment links (mandatory whenever the ack is anything other than `Review triggered.`):** post direct jump links in the handoff report so the operator can reach the exchange in one click — both the trigger comment and CodeRabbit's reply. Pull the `html_url` of each comment via the API:
     ```bash

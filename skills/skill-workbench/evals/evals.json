@@ -22,14 +22,14 @@
     },
     {
       "id": "single-skill-routing-with-gate",
-      "prompt": "skill-workbench on vii-present-pr: validate it, audit it, and tell me where it goes next in its lifecycle.",
-      "expected_output": "Title opens with a Hebrew word plus the skill name with Pipeline group tag and full path line, validator run on vii-present-pr, an audit loop record with grounded findings and any proactive proposals, a routing decision, and a helper-integrity validation of the routed helper before hand-off. Latin terms use isolated backticks.",
+      "prompt": "skill-workbench on vi-present-pr: validate it, audit it, and tell me where it goes next in its lifecycle.",
+      "expected_output": "Title opens with a Hebrew word plus the skill name with Pipeline group tag and full path line, validator run on vi-present-pr, an audit loop record with grounded findings and any proactive proposals, a routing decision, and a helper-integrity validation of the routed helper before hand-off. Latin terms use isolated backticks.",
       "files": [],
       "assertions": [
         "The report title opens with a Hebrew word followed by the skill name, with a Pipeline group tag and a full path line below it",
         "Every line opens with a Hebrew word",
         "Every Latin term, path, or command in Hebrew text uses isolated backticks (bidi isolates)",
-        "The validator is run against the vii-present-pr skill folder and its findings are reported by check-id",
+        "The validator is run against the vi-present-pr skill folder and its findings are reported by check-id",
         "The findings are presented as a CodeRabbit-style grouped category table (category | count | severity) followed by a detail card per finding",
         "Each finding card opens with a three-tag line: category first, then severity (🔴 critical / 🟠 major / 🟡 minor), then effort (⚡ quick win / 🔧 medium / 🏗️ structural), separated by pipes",
         "Each finding card has a short bold action-title followed by a 2-3 line description citing concrete file and line references",

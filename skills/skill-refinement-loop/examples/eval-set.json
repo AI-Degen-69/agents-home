@@ -1,5 +1,5 @@
 {
-  "skill_name": "vii-present-pr-example-eval-set",
+  "skill_name": "vi-present-pr-example-eval-set",
   "note": "Worked example of the agentskills.io evals/evals.json format. Replace skill_name and cases with the target skill's eval set during Phase 1c. Each assertion must be checkable, not vibes.",
   "evals": [
     {
@@ -37,7 +37,7 @@
       "files": [],
       "assertions": [
         "No PR presentation HTML is produced",
-        "If any HTML is produced, it is not a vii-present-pr style showcase"
+        "If any HTML is produced, it is not a vi-present-pr style showcase"
       ]
     },
     {

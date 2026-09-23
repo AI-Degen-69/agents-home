@@ -1,17 +1,18 @@
 ---
-name: i-create-issue
-description: Station I (Intake) — Turn a raw operator idea, thought, or request into a researched, structured, publishable GitHub issue labeled `ready-for-agent`.
+name: create-issue
+description: Intake — Turn a raw operator idea, thought, or request into a researched, structured, publishable GitHub issue labeled `ready-for-agent`. Called from Station I (`i-pick-issue`) when there is no open issue worth picking; not a numbered pipeline station.
 ---
 
-# Station I: Create Issue (`i-create-issue`)
+# Intake: Create Issue (`create-issue`)
 
 Turn one raw operator idea into one professional GitHub issue, publishable and
 workable by any agent later — including a fresh session with no memory of this
 conversation.
 
 ## Pipeline Position
-- **Station:** Station I of VII
-- **Next Station:** `ii-plan-issue <issue-id>` (or `x-workflow-issue`)
+- **Position:** Intake branch — **not a numbered station.** Invoked from Station I (`i-pick-issue`) when the backlog has nothing worth picking, or directly by the operator (`/create-issue <idea>`).
+- **Previous Station:** none — this is the entry for a brand-new idea. When work is already in flight, `pipeline-triage` comes first.
+- **Next Station:** `i-pick-issue` — the new issue re-enters Discovery and gets picked like any other.
 
 ## Workflow
 
@@ -98,7 +99,7 @@ last item is a runnable verification command.
 
 ## Hebrew Chat Output Contract (חובת דיווח בעברית)
 
-At the conclusion of Station I, you MUST report to the user in clean, everyday Hebrew using this exact structured format:
+At the conclusion of this intake, you MUST report to the user in clean, everyday Hebrew using this exact structured format:
 
 ```markdown
 # 📝 סיכום יצירת Issue:
@@ -121,6 +122,6 @@ At the conclusion of Station I, you MUST report to the user in clean, everyday H
 [2-3 משפטים בשפה שכל אדם מבין, בלי מונחי קוד: מה היה הרעיון או הבעיה, מה ה-Issue מבקש לעשות בעבודה, ואיך יידעו שהעבודה הושלמה. אין מילוי, אין באזוורדים.]
 
 ## 👉 מה עכשיו:
-1. הרץ `/x-workflow-issue` כדי למפות את כל ה-Backlog ולבחור על איזה Issue עובדים.
+1. הרץ `/i-pick-issue` כדי למפות את כל ה-Backlog ולבחור על איזה Issue עובדים.
 2. אם יש הצעה לשיפור ה-Issue שנכתב (הבהרה, תיחום, תנאי קבלה חסר) — הצע אותה כאן בשורה-שתיים; אם אין, כתוב "אין הצעות" — אין להמציא.
 ```

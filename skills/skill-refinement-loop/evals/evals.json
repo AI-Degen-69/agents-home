@@ -4,7 +4,7 @@
   "evals": [
     {
       "id": "intake-before-editing",
-      "prompt": "Take my vii-present-pr skill and refine it — it produces the same HTML structure for every PR regardless of the change shape.",
+      "prompt": "Take my vi-present-pr skill and refine it — it produces the same HTML structure for every PR regardless of the change shape.",
       "expected_output": "Phase 0 intake questions asked BEFORE any modification: skill pointer confirmed, what the skill should do, what 'good' looks like, plus helpful classification questions.",
       "files": [],
       "assertions": [

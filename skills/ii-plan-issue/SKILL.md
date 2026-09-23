@@ -1,17 +1,17 @@
 ---
 name: ii-plan-issue
-description: Station II (Define & Plan) of the 8-station pipeline. Use when a GitHub issue needs to become an executable plan — fetches the issue via gh, right-sizes it, locks CONSTRAINTS.md, maps interfaces, writes tasks/plan.md, and hands off to /iii-build-plan auto. Reports in Hebrew, issue-first.
+description: Station II (Define & Plan) of the 7-station pipeline (I–VII). Use when a GitHub issue needs to become an executable plan — fetches the issue via gh, right-sizes it, locks CONSTRAINTS.md, maps interfaces, writes tasks/plan.md, and hands off to /iii-build-plan auto. Reports in Hebrew, issue-first.
 ---
 
 # Station II: Plan Issue (`ii-plan-issue`)
 
-This skill implements **Station II (Define & Plan)** of the 8-station pipeline. It works across **any project, language, or repository**, bridging a GitHub issue to an airtight, executable specification and task plan (discipline from Addy Osmani's agent-skills collection, right-sizing from ECC's orchestrator approach).
+This skill implements **Station II (Define & Plan)** of the 7-station pipeline (I–VII). It works across **any project, language, or repository**, bridging a GitHub issue to an airtight, executable specification and task plan (discipline from Addy Osmani's agent-skills collection, right-sizing from ECC's orchestrator approach).
 
 **Prime directive:** the issue being planned is the star of the show. Planning machinery (skills, steps, contracts) is scaffolding — it lives in `tasks/plan.md`, never as the headline of the reply.
 
 ## Pipeline Position
-- **Station:** II of the 8-station pipeline
-- **Previous Station:** `x-workflow-issue` (or `i-create-issue`)
+- **Station:** II of VII
+- **Previous Station:** `i-pick-issue` (Station I — or the `create-issue` intake branch)
 - **Next Station:** `iii-build-plan auto` (Build)
 
 ---
@@ -20,14 +20,16 @@ This skill implements **Station II (Define & Plan)** of the 8-station pipeline. 
 
 ### Option A: Invoked with an Issue Number (e.g. `/ii-plan-issue 42`)
 1. **Fetch Issue Details:** Run `gh issue view <number> --comments` — title, body, labels, and all discussion comments.
-2. **Claim the Issue:** Run `gh issue edit <number> --add-assignee @me` to signal work has begun.
-3. Set this issue as the primary planning target.
+2. **Check tree clean first:** Run `git status --short --branch` — if the tree is dirty stop and route to `pipeline-triage` before claiming or branching.
+3. **Claim the Issue:** Run `gh issue edit <number> --add-assignee @me` to signal work has begun.
+4. **Create the feature branch:** see canonical rule in Step 0B (`i<number>/<slug>` from the issue title, e.g. issue #69 `Increase button size` → `i69/increase-button-size`).
+5. Set this issue as the primary planning target.
 
 ### Option B: Invoked Without Arguments (`/ii-plan-issue`)
 1. **Fetch All Open Issues:** Run `gh issue list --state open --limit 50`.
 2. **Group Logically:** Identify project areas (labels or codebase architecture).
 3. **Recommend exactly one issue:** highest-priority first (unblockers and core dependencies, then quick wins), with a one-line rationale.
-4. **Proceed immediately — do not pause to ask.** Claim the recommended issue (`gh issue edit <number> --add-assignee @me`) and go straight to Section 2 on it.
+4. **Proceed immediately — do not pause to ask.** Check tree clean (`git status --short --branch`, dirty → `pipeline-triage`), then claim the recommended issue (`gh issue edit <number> --add-assignee @me`), create the feature branch per Step 0B (`i<number>/<slug>` from the issue title), and go straight to Section 2 on it.
 
 ### If `gh` fails (not authenticated, offline, or issue not found)
 Stop the issue-dependent steps. Say in plain language exactly what failed, and ask the user for the issue number/title (or to run `gh auth login`). **Never fabricate issue content and never plan from imagined data (אין להמציא תוכן).**
@@ -51,6 +53,14 @@ If the issue carries the `needs-answers` label or an **Open questions** section:
 2. Fold each resolved answer into the plan as planning input; record the resolved answers in `tasks/plan.md` so the reasoning survives the session.
 3. Ask the operator **only what is genuinely unresolvable from code** — one focused batch, before Step 1. Never re-ask what the issue already answers.
 4. **Large or unfamiliar/legacy code:** before answering, deploy the `code-explorer` agent persona (from `~/.agents/agents/`) to trace the relevant execution paths and map the affected architecture layers; fold its findings into the plan. Persona file not found on disk → skip and record the skip — never simulate a missing reviewer persona (אין להמציא).
+
+### Step 0B: Confirm Feature Branch (canonical rule for Section 1)
+Branch format is `i<number>/<slug>` from the current HEAD. Derive `<slug>` from the issue title: lowercase, spaces → dashes, keep only `a-z 0-9 -`, max 50 chars, never Hebrew — Hebrew chars are stripped, and an empty result falls back to `issue-<number>`. Example: issue #69 `Increase button size` → `i69/increase-button-size`; a Hebrew-only title for issue #70 → `i70/issue-70`.
+1. Tree was already checked clean in Section 1 — if dirty now, stop and route to `pipeline-triage` before branching.
+2. Run `git branch --show-current` — if already on `i<number>/<slug>` reuse it.
+3. Else if the branch exists locally or on remote (`git branch --list` / `git ls-remote --heads origin`), checkout it (`git switch <branch>`, fallback `git checkout <branch>`).
+4. Else create it from HEAD (`git switch -c i<number>/<slug>`, fallback `git checkout -b i<number>/<slug>`).
+5. Record the header line at the top of `tasks/plan.md`: `Branch: i<number>/<slug> | Issue: #<number>` so Stations III–V build, review, and push on the same branch.
 
 ### Step 1: Domain Skill Routing
 Load specialized skills that match the classified task type (and only skills that actually exist in the environment — verify before naming any skill):
@@ -117,6 +127,8 @@ Rules:
 
 ```markdown
 # 📐 Issue #<מספר>: <כותרת ה-Issue>
+
+Branch: `i<מספר>/<slug-מהכותרת>` — e.g. `i69/increase-button-size`
 
 ## מה ה-Issue דורש
 - [נקודה 1 במילים פשוטות — מה ה-issue מתאר]

@@ -38,18 +38,6 @@
         "No branch push or PR creation occurs",
         "The request is answered or routed without invoking Station IV machinery"
       ]
-    },
-    {
-      "id": "trigger-ack-classification-rate-limit",
-      "prompt": "/iv-review-build-and-pr (PR is opened and @coderabbitai review is posted; CodeRabbit replies 'come back in 12 minutes' — a rate-limit reply).",
-      "expected_output": "The station does not claim the review started. The handoff report states the trigger status as rate limited (12 minutes) in one line, posts jump links to the trigger comment and CodeRabbit's reply, and recommends v-babysit-pr-and-merge with the quota window carried over.",
-      "files": [],
-      "assertions": [
-        "The trigger status is classified as rate limited with the reported minutes, not as review started",
-        "The handoff report includes jump links to both the trigger comment and CodeRabbit's reply",
-        "The handoff recommends v-babysit-pr-and-merge with the quota window carried over",
-        "No review-started claim is made on a rate-limit reply"
-      ]
     }
   ]
 }

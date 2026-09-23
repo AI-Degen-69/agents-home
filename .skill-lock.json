@@ -1,15 +1,6 @@
 {
   "version": 3,
   "skills": {
-    "ast-grep": {
-      "source": "ast-grep/agent-skill",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/ast-grep/agent-skill.git",
-      "skillPath": "ast-grep/skills/ast-grep/SKILL.md",
-      "skillFolderHash": "ef60f77564e2d47d0cba25a809daa3af8f0c469b",
-      "installedAt": "2026-06-22T09:16:56.503Z",
-      "updatedAt": "2026-06-22T09:16:56.503Z"
-    },
     "find-skills": {
       "source": "vercel-labs/skills",
       "sourceType": "github",
@@ -19,15 +10,6 @@
       "installedAt": "2026-07-02T00:46:28.601Z",
       "updatedAt": "2026-07-20T01:07:36.2Z"
     },
-    "log-analysis": {
-      "source": "akillness/oh-my-skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/akillness/oh-my-skills.git",
-      "skillPath": ".agent-skills/log-analysis/SKILL.md",
-      "skillFolderHash": "ea2d3cd5417bb7f071a8b03ab2c821f0f52c1f12",
-      "installedAt": "2026-07-20T00:43:18.716Z",
-      "updatedAt": "2026-07-20T00:43:18.716Z"
-    },
     "pattern-detection": {
       "source": "akillness/oh-my-skills",
       "sourceType": "github",
@@ -36,24 +18,6 @@
       "skillFolderHash": "3fb87f8508b12d2a1266e830af30593cbf10c332",
       "installedAt": "2026-07-20T00:43:26.645Z",
       "updatedAt": "2026-07-20T00:43:26.645Z"
-    },
-    "grimoire-polymarket": {
-      "source": "franalgaba/grimoire",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/franalgaba/grimoire.git",
-      "skillPath": "skills/grimoire-polymarket/SKILL.md",
-      "skillFolderHash": "9b15203e255ce635218ab00386da227a519762c9",
-      "installedAt": "2026-07-20T02:35:16.875Z",
-      "updatedAt": "2026-07-20T02:35:16.875Z"
-    },
-    "polymarket-api": {
-      "source": "agentmc15/polymarket-trader",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/agentmc15/polymarket-trader.git",
-      "skillPath": ".claude/skills/polymarket-api/SKILL.md",
-      "skillFolderHash": "d078994dde78d7ba66766f670890792f2793c362",
-      "installedAt": "2026-07-20T02:35:29.458Z",
-      "updatedAt": "2026-07-20T02:35:29.458Z"
     },
     "deploy-to-vercel": {
       "source": "vercel-labs/agent-skills",
@@ -547,6 +511,335 @@
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
       "kind": "ecc-agent"
+    },
+    "agent-browser": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/agent-browser/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "better-auth-best-practices": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/better-auth-best-practices/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "brainstorming": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/brainstorming/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "cleanup-user-home": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/cleanup-user-home/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "code-research": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/code-research/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "cua-driver": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/cua-driver/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "ecc-antigravity": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/ecc-antigravity/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "ecc-maintain": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/ecc-maintain/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "executing-plans": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/executing-plans/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "explore": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/explore/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "extract-design-system": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/extract-design-system/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "feature-research": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/feature-research/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "frontend-design": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "create-issue": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/create-issue/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "ii-plan-issue": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/ii-plan-issue/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "iii-build-plan": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/iii-build-plan/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "iiib-iterate-after-build": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/iiib-iterate-after-build/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "iv-review-build-and-pr": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/iv-review-build-and-pr/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "morph-migrate": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/morph-migrate/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "nodejs-backend-patterns": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/nodejs-backend-patterns/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "opencli-adapter-author": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/opencli-adapter-author/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "opencli-autofix": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/opencli-autofix/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "opencli-browser": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/opencli-browser/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "opencli-browser-sitemap": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/opencli-browser-sitemap/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "opencli-sitemap-author": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/opencli-sitemap-author/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "opencli-usage": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/opencli-usage/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "pdf": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/pdf/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "performance": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/performance/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "planning-with-files": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/planning-with-files/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "ps1-theme-audit": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/ps1-theme-audit/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "remotion-best-practices": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/remotion-best-practices/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "self-improve-loop": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/self-improve-loop/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "shadcn-ui": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/shadcn-ui/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "skill-creator": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/skill-creator/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "skill-refinement-loop": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/skill-refinement-loop/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "skill-workbench": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/skill-workbench/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "system-connector": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/system-connector/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "tailwind-design-system": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/tailwind-design-system/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "typescript-advanced-types": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/typescript-advanced-types/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "v-babysit-pr-and-merge": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/v-babysit-pr-and-merge/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "vercel-react-native-skills": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/vercel-react-native-skills/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "vercel-react-view-transitions": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/vercel-react-view-transitions/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "vi-present-pr": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/vi-present-pr/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "vii-prune-artifacts": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/vii-prune-artifacts/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "workspace-memory": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/workspace-memory/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "writing-plans": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/writing-plans/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "i-pick-issue": {
+      "source": "local",
+      "sourceType": "local",
+      "skillPath": "skills/i-pick-issue/SKILL.md",
+      "installedAt": "2026-09-22T07:03:18.000Z",
+      "updatedAt": "2026-09-22T07:03:18.000Z"
     }
   },
   "dismissed": {

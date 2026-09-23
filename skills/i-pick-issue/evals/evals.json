@@ -1,10 +1,10 @@
 {
-  "skill_name": "x-workflow-issue",
+  "skill_name": "i-pick-issue",
   "note": "Eval set in the agentskills.io evals/evals.json format. Case 1 covers Discovery mode, case 2 covers Orchestration mode, case 3 is the negative case.",
   "evals": [
     {
       "id": "discovery-backlog-map",
-      "prompt": "Run /x-workflow-issue with no arguments on a repo that has several open issues.",
+      "prompt": "Run /i-pick-issue with no arguments on a repo that has several open issues.",
       "expected_output": "Hebrew backlog map: every open issue listed with number, title, labels and one-line summary, grouped by domain/risk/dependency, a concrete recommended execution order with one single highlighted issue to start, and a halt asking the operator which issue to proceed with. Never picks silently.",
       "files": [],
       "assertions": [
@@ -18,8 +18,8 @@
     },
     {
       "id": "orchestration-station-handoff",
-      "prompt": "Run /x-workflow-issue 42 after the operator confirmed issue 42.",
-      "expected_output": "Issue 42 details read and claimed, session scope locked, then sequential hand-off through stations II (plan), III (build), IV (review and PR), V (babysit and merge), VI (prune), VII (present), with a concise Hebrew status report per completed station and the next station named.",
+      "prompt": "Run /i-pick-issue 42 after the operator confirmed issue 42.",
+      "expected_output": "Issue 42 details read and claimed, session scope locked, then sequential hand-off through stations II (plan), III (build), IV (review and PR), V (babysit and merge), VI (present), VII (prune), with a concise Hebrew status report per completed station and the next station named.",
       "files": [],
       "assertions": [
         "The issue details are read and the issue is claimed before any station runs",
@@ -31,7 +31,7 @@
     },
     {
       "id": "negative-unrelated-request",
-      "prompt": "Hey, while you are at it, can you quickly fix the typo in my meeting notes? (unrelated request during an x-workflow-issue session)",
+      "prompt": "Hey, while you are at it, can you quickly fix the typo in my meeting notes? (unrelated request during an i-pick-issue session)",
       "expected_output": "The skill must not trigger pipeline behavior: no issue listing, no station hand-off, no silent issue pick, no gh commands. At most a brief clarification of which mode was meant.",
       "files": [],
       "assertions": [

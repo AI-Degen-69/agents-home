@@ -15,21 +15,21 @@ Source of the 6 rules: Addy Osmani, `using-agent-skills` (github.com/addyosmani/
 
 ## Router boundary
 
-- **Issue work → `x-workflow-issue`.** Anything that starts from (or will end as) a GitHub issue with a PR.
+- **Issue work → `i-pick-issue` (Station I).** Anything that starts from (or will end as) a GitHub issue with a PR.
 - **Ad-hoc → `using-agent-skills`.** Quick questions, small fixes, exploration, "where is X".
 - **Ambiguous?** If it will end in a PR on code, it is Issue work. Still ambiguous? Ask one question.
 - Never run two routers on the same request.
 
 ## Router Charter (session start)
 
-Classify the request once, hand it to the one router that owns it:
+One entry point per request, one handoff at most:
 
-1. Continuation / unclear intent / dirty repo / open PR → `pipeline-triage` (read-only; routes onward).
-2. New Issue work, clean repo → `x-workflow-issue`.
-3. Ad-hoc (question, small fix, exploration) → `using-agent-skills`.
+1. Issue work → `i-pick-issue` (Station I). It runs the state gate itself: dirty tree, unpushed commits, or an open PR → `pipeline-triage` first.
+2. Ad-hoc (question, small fix, exploration) → `using-agent-skills`.
+3. Brand-new idea with nothing to pick → `create-issue` (intake branch), then back to `i-pick-issue`.
 
-One router owns a request. A router hands off at most once. `pipeline-triage` alone inspects git/PR state. Ties → the safer router.
+`pipeline-triage` alone inspects git/PR state. Ties → the safer path.
 
 ## Pipeline
 
-The full station map (X, I, II, III, IIIB, IV, V, VI, VII) lives in `docs/issue-to-PR-pipeline.md` in this directory. Read it before any pipeline work.
+The full station map (I, II, III, IIIB, IV, V, VI, VII — plus the `pipeline-triage` state gate and the `create-issue` intake branch) lives in `docs/issue-to-pr-skill-workflow.md` in this directory. A numbered prefix means the skill is a step in the chain, invoked in order. Read it before any pipeline work.

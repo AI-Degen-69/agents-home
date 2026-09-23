@@ -1,6 +1,6 @@
 # Component Kit (Step 4 companion)
 
-Canonical source for the vii-present-pr copy-paste kit. Vanilla only — fill
+Canonical source for the vi-present-pr copy-paste kit. Vanilla only — fill
 with THIS job's words, never ship the placeholders as-is. Compose only the
 blocks picked in Step 2 (see `visual-pickers.md`).
 

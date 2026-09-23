@@ -1,12 +1,12 @@
 ---
-name: vii-present-pr
-description: "Station VII (Present PR & Visual Showcase) — Builds a dynamic, customer-simple HTML page that explains what was done. Picks the best visual for the job (flow, timeline, before/after, map, numbers, demo) based on session context. No fixed template. Plain words, no dev jargon. Also handles explain-mode for any question or design."
+name: vi-present-pr
+description: "Station VI (Present PR & Visual Showcase) — Builds a dynamic, customer-simple HTML page that explains what was done. Picks the best visual for the job (flow, timeline, before/after, map, numbers, demo) based on session context. No fixed template. Plain words, no dev jargon. Also handles explain-mode for any question or design."
 ---
 
-# Station VII: Present PR (`vii-present-pr`)
+# Station VI: Present PR (`vi-present-pr`)
 
 This skill turns finished work into one clear HTML page a normal person can understand.
-It works in any project, and also serves as the pipeline's Station VII closer when run inside the pipeline.
+It works in any project, and also serves as the pipeline's Station VI closer when run inside the pipeline.
 
 Two jobs, one page:
 
@@ -30,8 +30,8 @@ Word swaps to use:
 - "endpoint / API / CLI" -> "connection / screen / button you press"
 
 ## Pipeline Position
-- **Station:** Station VII of VII
-- **Previous Station:** `vi-prune-artifacts` (or `v-babysit-pr-and-merge`)
+- **Station:** Station VI of VII (runs immediately after merge, BEFORE pruning — the presentation consumes the issue's plan/notes that the prune step removes)
+- **Previous Station:** `v-babysit-pr-and-merge`
 - **Pipeline Closeout:** Final Station
 
 ---
@@ -39,9 +39,9 @@ Word swaps to use:
 ## 1. Invocation
 
 ```bash
-/vii-present-pr <issue-number>   # Visual page for a specific ticket
-/vii-present-pr                  # Auto-find the latest ticket from the project's plan notes or tracker
-/vii-present-pr explain          # Explain-mode: current change/question with no ticket
+/vi-present-pr <issue-number>   # Visual page for a specific ticket
+/vi-present-pr                  # Auto-find the latest ticket from the project's plan notes or tracker
+/vi-present-pr explain          # Explain-mode: current change/question with no ticket
 ```
 
 Also fires when user says "explain this visually", "show me what was done", "walk me through it".
@@ -136,12 +136,12 @@ Example tone:
 
 ---
 
-## 7. Step 5 — Preview, verify, reveal
+## 7. Step 5 — Verify the file, then reveal
 
-- Open the page with your environment's preview mechanism so it appears before the operator.
-- Check the real render (snapshot / screenshot / logs or equivalent): fix blank output, clipping, errors, hard words before finishing. Iterate until clean.
-- Additionally show it to the operator directly: open it in a browser and reveal it in the file manager, using whatever commands the OS offers.
-- Headless env: skip opening, still verify the render.
+- **Verify before reveal — statically, no browser:** the file parses as complete HTML (doctype, closing tags), all inline JS is syntactically valid, no external resources referenced. Static checks only — this station owns no browser-based verification (that is Station IV's exclusive domain).
+- **Reveal — fire-and-forget:** launch the file with the OS's one-shot open command (e.g. `start <file.html>` on Windows / `open <file.html>` on macOS) so it loads in the operator's default browser. The agent must NOT drive, navigate, or control the browser afterwards — the launch process ends the agent's involvement. Optionally also reveal the file in the OS file manager (`explorer /select,<path>` or equivalent).
+- **Headless env:** skip the reveal, keep the static checks and state the path in the report.
+- If the page has a live-behavior risk the operator must see working, note it in one line for the operator to check by eye — do not automate it here.
 
 ---
 
@@ -172,8 +172,8 @@ Example tone:
 
 ---
 
-* 👁️ Preview: ready and checked in the preview
-* 🌐 Browser: opened auto for the operator
+* 👁️ Verify: static checks passed (parse + inline JS + no external refs)
+* 🌐 Browser: opened fire-and-forget in the operator's default browser
 * 📁 File manager: opened auto with the file marked
 * 📄 Path: [full path of the saved page]
 

@@ -5,12 +5,10 @@ description: Station III (Build) — Universal execution orchestrator. Implement
 
 # Station III: Build Plan (`iii-build-plan`)
 
-This skill implements **Station III (Build)** of the 8-station pipeline (stations `i`–`vii` plus orchestrator `x-workflow-issue`). It works across **any project, language, or repository**, consuming the task plan from `tasks/plan.md` (created in Station II by `ii-plan-issue`) and executing implementation through disciplined type-aware builds, official documentation grounding, incremental commits, and code simplification.
-
-> **Note on Verification:** Final pre-push verification (browser DevTools check for UI or complete test suite run for code) is executed systematically in **Station IV (`iv-review-build-and-pr`)** after multi-axis review and fixes are complete.
+This skill implements **Station III (Build)** of the 7-station pipeline (numbered stations `i`–`vii`). It works across **any project, language, or repository**, consuming the task plan from `tasks/plan.md` (created in Station II by `ii-plan-issue`) and executing implementation through disciplined type-aware builds, official documentation grounding, incremental commits, and code simplification.
 
 ## Pipeline Position
-- **Station:** Station III of VII (`vii` = stations `i`–`vii`; plus `x-workflow-issue` = 8 total)
+- **Station:** Station III of VII (numbered stations `i`–`vii`)
 - **Previous Station:** `ii-plan-issue` (Plan)
 - **Next Station:** `iv-review-build-and-pr` (Review & Verify)
 

@@ -2,7 +2,6 @@
 name: v-babysit-pr-and-merge
 description: Station V (Babysit PR & Merge) — Sits on PR through one focused CodeRabbit review round (or fallback), resolves comments, squash-merges on green CI, and fast-forwards local base branch.
 ---
-
 # Station V: Babysit PR and Merge (`v-babysit-pr-and-merge`)
 
 A global, model-agnostic habit: ensure every branch is pushed and opened as a PR (or handed off directly from Station IV `iv-review-build-and-pr`), then sit on the PR through review until it is mergeable. Every comment is triaged, every dismissal carries a reason, review waiting follows a deterministic **5m → 4m → 3m → 2m → 1m** countdown check cycle, the review loop runs **exactly one focused round** (to conserve CodeRabbit quota and eliminate review churn), auto-triggers `@coderabbitai review` if auto-review is not invoked or was skipped, and concludes — merged or escalated.
@@ -10,7 +9,7 @@ A global, model-agnostic habit: ensure every branch is pushed and opened as a PR
 ## Pipeline Position
 - **Station:** Station V of VII
 - **Previous Station:** `iv-review-build-and-pr` (Review & Ship)
-- **Next Station:** `vi-prune-artifacts` (Prune)
+- **Next Station:** `vi-present-pr <id>` (Present PR — runs before pruning)
 
 **Zero human in the loop.** Extraction, triage, rejection replies, thread resolution, code application, test verification, self-healing, commit, push, and merge are all performed autonomously by the agent. The operator is contacted only if critical blockers cannot be resolved.
 
@@ -24,18 +23,8 @@ A global, model-agnostic habit: ensure every branch is pushed and opened as a PR
 
 ## Multi-PR Priority Order & Pipelining
 
-When multiple PRs are open and `v-babysit-pr-and-merge` is invoked without a specific PR number:
-
-1. **Query open PRs:**
-   ```bash
-   gh pr list --state open --json number,title,headRefName,createdAt,updatedAt,statusCheckRollup,reviews
-   ```
-2. **Process Queue Priority (Top to Bottom):**
-   - **Priority 1: Stack Dependencies** — Base/parent branches first before child branches to prevent merge conflicts.
-   - **Priority 2: Ready to Merge** — PRs with completed reviews and green CI (fastest to close).
-   - **Priority 3: Actionable Review Feedback** — PRs with open comments waiting for agent triage/fixes.
-   - **Priority 4: Interleaved Waiting (Pipelining)** — While PR A is in its countdown sleep window, advance immediately to PR B's triage/fixes rather than idling.
-    - **Priority 5: Unpushed / New PRs** — Delegate to `iv-review-build-and-pr` (push, open PR, post `@coderabbitai review`); resume here at Step 1 once the PR exists.
+Multiple open PRs and no specific number → follow `references/multi-pr-pipelining.md`
+(stack dependencies first; pipelining only inside wait windows).
 
 ---
 
@@ -51,13 +40,13 @@ digraph babysit_pr_and_merge {
     "Review finished?" [shape=diamond];
     "Countdown Wait (4m, 3m, 2m, 1m)" [shape=box];
     "Extract Comments (gh api)" [shape=box];
-    "Auto-Triage (ACCEPT/REJECT heuristics)" [shape=box];
+    "Auto-Triage (ACCEPT/REJECT)" [shape=box];
     "Reject: Reply & Resolve Thread" [shape=box];
-    "Apply Accepted Fixes Locally (Type A / Type B)" [shape=box];
+    "Apply Accepted Fixes (Type A / B)" [shape=box];
     "Run Targeted Tests" [shape=diamond];
-    "Self-Heal: revert file, reply, resolve as REJECT" [shape=box];
+    "Self-Heal: revert, reply, resolve REJECT" [shape=box];
     "Batch Commit & Push (1 commit)" [shape=box];
-    "Resolve Fixed Threads on GitHub" [shape=box];
+    "Resolve Fixed Threads" [shape=box];
     "Check CI Checks & Merge" [shape=box];
 
     "PR exists?" -> "Delegate to iv-review-build-and-pr (push, open PR, trigger review)" [label="no"];
@@ -122,6 +111,10 @@ If no PR exists: **do not create it yourself — delegate to `iv-review-build-an
 
 1. **Verify the Review Trigger (`iv-review-build-and-pr` posts it at PR creation, babysitter verifies):**
    - CodeRabbit does **not** auto-review anymore — reviews start only from an explicit `@coderabbitai review` comment, which `iv-review-build-and-pr` posts immediately after opening the PR. By the time this station starts, the review is therefore usually already running.
+   - **Consume Station IV's trigger-status handoff first (do not re-detect):** Station IV's handoff report already states the trigger status in one line — review started / rate limited (N minutes) / other bot reply (quoted, with jump links to the trigger comment and CodeRabbit's reply) / no acknowledgement. Carry that status forward as the initial review state:
+     - `review started` → go straight to the check-first below (review may already be posted).
+     - `rate limited (N minutes)` → do NOT start the countdown for the quota window; go directly to Step 2B's reuse path (Station IV's review evidence + delta check). The N-minute window is reported to the operator, never silently waited out.
+     - `other bot reply` / `no acknowledgement` → treat as not-started: re-verify the bot's last reply via the jump links / API (state may have advanced since IV's handoff), and if still not triggered, follow the fallback below.
    - If this skill was invoked on a PR that has no review trigger comment yet (e.g. the PR was opened outside `iv-review-build-and-pr`, or the comment is missing), post it now — do not wait:
      ```bash
      gh pr comment <pr-number> --body "@coderabbitai review"
@@ -140,18 +133,18 @@ If no PR exists: **do not create it yourself — delegate to `iv-review-build-an
 
 3. **Read Every New CodeRabbit Comment — Differentiate Its Kind:**
    On each countdown check, read every comment CodeRabbit posted since the last check. Classify each one before acting:
-   - **Usage-limit / status comments** — e.g. `Review rate limited`, quota-exceeded messages, `Review skipped: ...`, or "come back in N minutes" notices. These carry **no review content**. Action: do NOT wait for the quota — skip immediately to the manual review fallback (Step 2B, agent fallback review).
+    - **Usage-limit / status comments** — e.g. `## Review limit reached`, `rate limited by coderabbit.ai`, `Next included review available in N minutes`, `Review skipped: ...`. These carry **no review content**. Action: do NOT wait for the quota — skip immediately to the manual review fallback (Step 2B, agent fallback review).
    - **Actual review content** — a summary review, actionable inline comments, findings, or information relevant to the diff. These are the working output. Action: proceed to Step 2 extraction and triage on them.
    - Never treat a usage-limit comment as a completed review, and never treat a summary-only comment as the end of review comments still being posted. A green check can still mean `Review skipped` — read the text, not the color.
 
 4. **Priority & Fallback Strategy:**
    - **Priority 1**: Let CodeRabbit perform its single review pass.
-   - **Priority 2 (Rate Limit / Quota Exceeded)**: If a usage-limit comment says the review limit has been reached, do NOT wait. Immediately invoke the `code-reviewer` subagent (Step 2B).
+   - **Priority 2 (Rate Limit / Quota Exceeded)**: If a usage-limit comment says the review limit has been reached, do NOT wait. Go to Step 2B — reuse path first (Station IV's review evidence + delta check); the full subagent fallback only if reuse does not apply.
    - **Priority 3 (No Stall)**: Never stall development on third-party quotas.
 
 5. **Countdown Polling Schedule (5m → 4m → 3m → 2m → 1m):**
    - Use the non-blocking `schedule` tool (or non-blocking background timers in agent environments) instead of long blocking shell sleeps.
-   - **HARD RULE — never shorten the waits.** The first wait is a **minimum of 5 minutes**; never substitute 30s/60s/“quick check” timers. CodeRabbit reviews typically take 2–5 minutes to appear — polling every 30 seconds wastes quota checks, spams the transcript, and finishes the countdown before the review has even started. Do not decompose the 5-minute wait into several short timers.
+   - **HARD RULE — never shorten the waits.** The first wait is a **minimum of 5 minutes**; never substitute 30s/60s/"quick check" timers. Reviews typically take 2–5 minutes to appear; do not decompose the 5-minute wait into short timers.
      - **Check 1**: After **5 minutes** (300s).
      - **Check 2**: If not finished, wait **4 minutes** (240s).
      - **Check 3**: If not finished, wait **3 minutes** (180s).
@@ -166,8 +159,8 @@ If no PR exists: **do not create it yourself — delegate to `iv-review-build-an
      ```
    - Classify into exactly one status and carry it into all reports:
      - `COMPLETED` — summary review and/or inline findings posted. Proceed to Step 2.
-     - `IN_PROGRESS_STUCK` — only the "Currently processing new changes..." placeholder exists, zero inline comments, zero reviews, and the `CodeRabbit` check is still `PENDING` after the countdown (exactly what happened in PR #244). This is NOT a clean pass — it means the review never finished.
-     - `RATE_LIMITED / SKIPPED` — usage-limit text (`Review rate limited`, `Review skipped`, "come back in N minutes") or a false rejection like `Pull request is closed` on an open PR. Also NOT a clean pass.
+     - `IN_PROGRESS_STUCK` — only the "Currently processing new changes..." placeholder exists, zero inline comments, zero reviews, and the `CodeRabbit` check is still `PENDING` after the countdown (as in PR #244). NOT a clean pass — the review never finished.
+      - `RATE_LIMITED / SKIPPED` — usage-limit text (`## Review limit reached`, `rate limited by coderabbit.ai`, `Next included review available in N minutes`, `Review skipped`) or a false rejection like `Pull request is closed` on an open PR. Also NOT a clean pass.
      - If rate limit reached or review timed out (>16 mins): fallback immediately to **Step 2B (Agent Fallback Review)** and keep the stuck status for the chat report.
      - When finished (`COMPLETED`): proceed immediately to Step 2.
 
@@ -251,9 +244,14 @@ Rationale must be specific and falsifiable — name the constant, the exception,
 
 ### Step 2B — Agent Fallback Review (When CodeRabbit Limit Reached or Silent)
 
-If CodeRabbit reached its review limit, asks to wait 1 hour, or failed to review after the countdown:
+Trigger this step when CodeRabbit reached its review limit, asks to wait 1 hour, or failed to review after the countdown. **The reuse path (item 0) comes first — the full subagent review is the exception, not the default.** Items 1–4 apply to the full fallback only; on the reuse path, skip to its last bullet (delta check → Step 4) and post the honest PR comment with the reuse variant (Station IV review + delta check, not a fresh review).
 
-1. **Invoke `code-reviewer` Subagent:**
+0. **Reuse Station IV's review before re-reviewing (anti-duplication rule):** If this PR came through `iv-review-build-and-pr`, the diff has ALREADY been through OCR delegation review + stack-matched ECC reviewers + the Spec axis, with findings fixed and the final verification gate green. Do NOT invoke a fresh full review of already-reviewed code. Instead:
+   - Pull Station IV's recorded review findings (the review report / fix commit history: `fix(review): address review feedback` commits, `gh pr view <pr-number> --json commits`), and treat them as the review evidence for this round.
+   - Run only a **lightweight delta check**: confirm the pushed diff matches what Station IV reviewed (no commits added after the final gate), re-run the targeted test suite as the evidence of health, and spot-check any area Station IV flagged as low-confidence or skipped (cover exactly that gap with the matching reviewer).
+   - Proceed to Step 4 application/merge path with the status carried honestly (`RATE_LIMITED — covered by Station IV review + delta check`).
+   - Skip this reuse path only when the PR did NOT come through Station IV or new commits landed after Station IV's gate — run the full subagent fallback below in those cases.
+1. **Full Fallback Review (only when reuse path does not apply) — Invoke `code-reviewer` Subagent:**
    - Launch the dedicated subagent with clean context:
      `invoke_subagent(TypeName="code-reviewer", Role="Code Reviewer", Prompt="Perform multi-axis review of PR <pr-number> diff across correctness, readability, architecture, security, and performance. List concrete actionable findings.")`
    - Review across five axes: correctness/logic bugs, edge cases, performance/limits, security/safety, and test coverage.
@@ -262,12 +260,14 @@ If CodeRabbit reached its review limit, asks to wait 1 hour, or failed to review
    **ללכוד ב־`scripts/filter_loop.py` את הזנב ואת האופסט מאותו מצב של הקובץ.**
    > - שורה שנוספת בזמן הקריאה נאבדת בשקט; לקחת אופסט לפני הקריאה כדי שהטווחים יחפפו.
    - Vocab (match `docs.coderabbit.ai/change-stack/findings`) — Category: 🎯 נכונות פונקציונלית, 🔒 אבטחה ופרטיות, 🗄️ שלמות מידע ואינטגרציה, ⚡ ביצועים וסקייל, 🩺 יציבות וזמינות, 📐 תחזוקה ואיכות קוד. Severity: 🔴 קריטי, 🟠 מייגור, 🟡 מינורי, ⚪ טריוויאלי. Effort: ⚡ תיקון זריז, 🏗️ מאמץ כבד, 🪙 תיקון זול ערך, 🚫 לא משתלם.
-3. **Decide per finding:** critical/major block merge; minor when cheap; trivial/low-value only when touching that code, else declined with reason; poor tradeoffs declined; drop lows unless clearly useful. End chat with a single הבא line naming `vi-prune-artifacts` — no test counts, no process narration; the agent pushes and merges itself.
+3. **Decide per finding:** critical/major block merge; minor when cheap; trivial/low-value only when touching that code, else declined with reason; poor tradeoffs declined; drop lows unless clearly useful. End chat with a single הבא line naming `vi-present-pr <id>` — no test counts, no process narration; the agent pushes and merges itself.
 4. **Document & Triage:**
    - Note any real issues found as **ACCEPT** items and apply fixes immediately via Step 4.
-   - Post a concise review comment to the PR — pick the honest reason, never a generic one. Timeout variant first (PR #244 case), rate-limit second:
+   - Post a concise review comment to the PR — pick the honest reason, never a generic one. Variants: timeout (PR #244 case), rate-limit, and reuse (Station IV coverage + delta check, no fresh review):
     ```bash
     gh pr comment <pr-number> --body "### Objective Agent Review (CodeRabbit review timed out after ~Xm in progress)`n`n- **Diff verified:** <what was checked>`n- **Findings:** <summary or clean pass>"
+    # Reuse variant:
+    gh pr comment <pr-number> --body "### Review Coverage Note (CodeRabbit rate limited)`n`n- **Coverage:** pre-push review already performed by iv-review-build-and-pr (OCR + stack-matched reviewers + Spec axis); delta check confirms no commits since that gate; targeted tests re-run green.`n- **New findings:** <none / summary>"
     ```
 
 ---
@@ -310,7 +310,7 @@ The body contains a `♻️ Proposed fix`, a `🤖 Prompt for AI Agents` block, 
 
 #### 4.2 — Verification & Surgical Self-Healing
 
-Run targeted checks covering the touched code (auto-detect runner — `pytest tests/test_<module>.py`, `npm test -- <file>`, or browser inspection if UI/styling) before staging anything:
+Run targeted checks covering the touched code (auto-detect runner — `pytest tests/test_<module>.py`, `npm test -- <file>`; for UI/styling fixes re-run Station IV's Browser Gate, fast-first) before staging anything:
 
 ```bash
 <project targeted test command>
@@ -426,7 +426,7 @@ A merge on GitHub does NOT move the local checkout: the terminal keeps showing t
 
 ### Step 5c — Post-Merge Workspace Sweep (Leave a Clean Folder)
 
-Instead of routing to `vi-prune-artifacts`, do a quick focused sweep right here:
+Instead of routing to `vii-prune-artifacts`, do a quick focused sweep right here:
 
 1. Look for junk tied to this issue's work only: temp files, one-off debug scripts, leftover single-use outputs under `tasks/` / `scratch/` that served this issue and nothing else.
 2. Delete only what is clearly unrelated to the repo and single-use. Never touch tracked source, configs, or anything shared.
@@ -496,7 +496,7 @@ One concise, matter-of-fact line per review comment, in simple language: what wa
 ## 🔍 סטטוס סקירת CodeRabbit (חובה — שורה אחת כנה):
 [אחת מ: סיים סקירה מלאה + N הערות טופלו / לא סיים — נתקע על processing אחרי X דקות, מוזג על סמך סקירת גיבוי + CI ירוק / לא סקר — rate-limit, מוזג על סמך סקירת גיבוי + CI ירוק]
 
-👉 **השלב הבא:** `/vii-present-pr <id>` — מצגת HTML ויזואלית מלאה של השינוי.
+👉 **השלב הבא:** `/vi-present-pr <id>` — מצגת HTML ויזואלית מלאה של השינוי (רץ לפני הניקוי — תעודת `vii-prune-artifacts` באה אחריה).
 ```
 
 **Timeout-merge rule:** when `IN_PROGRESS_STUCK` or `RATE_LIMITED`, the `CodeRabbit` check may stay `PENDING` forever. Do NOT wait for it. Merge gate = agent fallback review clean (or its nits triaged) + `gh pr checks` green (excluding the stuck `CodeRabbit` context). State this explicitly in the `סטטוס סקירת CodeRabbit` line so the operator knows the merge was NOT on a completed bot review.

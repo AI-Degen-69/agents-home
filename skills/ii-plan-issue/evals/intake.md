@@ -3,7 +3,7 @@
 ## Intake block
 
 - **Skill pointer:** `C:\Users\Tiger\.agents\skills\ii-plan-issue` (global copy is the **single source of truth**; the project copy `skills/ii-plan-issue/` is removed after the pass)
-- **What the skill does:** Station II of the user's 8-station pipeline — turns a GitHub issue into a right-sized spec (CONSTRAINTS.md, SPEC.md, tasks/plan.md) and hands off to `iii-build-plan auto`.
+- **What the skill does:** Station II of the user's 7-station pipeline (I–VII) — turns a GitHub issue into a right-sized spec (CONSTRAINTS.md, SPEC.md, tasks/plan.md) and hands off to `iii-build-plan auto`.
 - **What "good" looks like (user words):**
   1. Correct plan artifacts — size tier + task-type classification right per issue; plan.md and CONSTRAINTS.md real, not boilerplate.
   2. Executable plan — atomic vertical slices with domain tags, helper skills, verification method iii-build-plan can run.

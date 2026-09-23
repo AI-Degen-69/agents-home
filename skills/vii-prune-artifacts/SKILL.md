@@ -1,16 +1,16 @@
 ---
-name: vi-prune-artifacts
-description: Station VI (Prune Artifacts) — Post-merge sweep that safely removes stale per-issue scratch, temporary task lists, and closed plans while strictly preserving permanent showcases, research papers, and live knowledge.
+name: vii-prune-artifacts
+description: Station VII (Prune Artifacts) — Post-merge sweep that safely removes stale per-issue scratch, temporary task lists, and closed plans while strictly preserving permanent showcases, research papers, and live knowledge.
 ---
 
-# Station VI: Prune Artifacts (`vi-prune-artifacts`)
+# Station VII: Prune Artifacts (`vii-prune-artifacts`)
 
 Post-merge (or periodic) sweep that removes stale per-issue scratch files and temporary plans, relocates misplaced files, and ensures the repository carries only live knowledge. Works across **any project, language, or repository** without assuming repo-specific folder naming.
 
 ## Pipeline Position
-- **Station:** Station VI of VII
-- **Previous Station:** `v-babysit-pr-and-merge` (Babysit & Merge)
-- **Next Station:** `vii-present-pr <id>` (Present PR)
+- **Station:** Station VII of VII (runs AFTER presenting — the presentation consumes the issue's plan/notes, so it must complete first; the committed showcase is permanent knowledge and is preserved by rule)
+- **Previous Station:** `vi-present-pr <id>` (Present PR)
+- **Next Station:** none — pipeline closeout
 
 ---
 
@@ -106,5 +106,5 @@ At the conclusion of Station VI, you MUST report to the user in clean, everyday 
 ## 🧠 סיכום:
 בשורות בודדות בעברית פשוטה: מה נוקה כדי למנוע הטעיה של סוכנים עתידיים, ואילו נכסים נשמרו כהיסטוריית תיעוד של הפרויקט.
 
-👉 **שלב הבא:** `/vii-present-pr <id>` — הפקת דוח HTML ויזואלי ואינטראקטיבי, הסבר פשוט, והנחיות בדיקה ידנית בעיניים.
+👉 **שלב הבא:** אין — תחנה זו סוגרת את הצינור (המצגת הופקה לפני הניקוי).
 ```

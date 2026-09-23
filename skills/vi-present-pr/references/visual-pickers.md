@@ -1,6 +1,6 @@
 # Visual Pickers (Step 2 companion)
 
-Canonical source for the vii-present-pr Step 2 pickers. `SKILL.md` keeps the
+Canonical source for the vi-present-pr Step 2 pickers. `SKILL.md` keeps the
 story-shape table; this file holds the controls, skeletons, palettes, support
 blocks, and the decision rule. Never the same page twice: rotate centerpiece +
 palette + skeleton (Core Rule 3 in `SKILL.md`).

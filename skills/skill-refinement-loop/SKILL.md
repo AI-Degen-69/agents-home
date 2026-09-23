@@ -244,7 +244,7 @@ the guiding questions before touching anything.
 
 Example invocation:
 
-> "Take my `vii-present-pr` skill and refine it. It produces the same HTML structure
+> "Take my `vi-present-pr` skill and refine it. It produces the same HTML structure
 > for every PR regardless of the change shape."
 
 The skill responds by asking Phase 0 questions before running Phase 1.
