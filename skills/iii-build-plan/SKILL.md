@@ -1,14 +1,14 @@
----
+﻿---
 name: iii-build-plan
 description: Station III (Build) — Universal execution orchestrator. Implements tasks from tasks/plan.md using type-aware execution (frontend-ui-engineering, TDD, debug), official docs grounding, atomic commits, and code simplification.
 ---
 
 # Station III: Build Plan (`iii-build-plan`)
 
-This skill implements **Station III (Build)** of the 7-station pipeline (numbered stations `i`–`vii`). It works across **any project, language, or repository**, consuming the task plan from `tasks/plan.md` (created in Station II by `ii-plan-issue`) and executing implementation through disciplined type-aware builds, official documentation grounding, incremental commits, and code simplification.
+This skill implements **Station III (Build)** of the 6-station pipeline (numbered stations `i`–`vi`). It works across **any project, language, or repository**, consuming the task plan from `tasks/plan.md` (created in Station II by `ii-plan-issue`) and executing implementation through disciplined type-aware builds, official documentation grounding, incremental commits, and code simplification.
 
 ## Pipeline Position
-- **Station:** Station III of VII (numbered stations `i`–`vii`)
+- **Station:** Station III of VI (numbered stations `i`–`vi`)
 - **Previous Station:** `ii-plan-issue` (Plan)
 - **Next Station:** `iv-review-build-and-pr` (Review & Verify)
 

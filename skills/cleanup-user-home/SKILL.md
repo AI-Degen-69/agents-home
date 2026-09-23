@@ -60,5 +60,5 @@ Deep-dive suspicious dirs first: top-level content + counts + dates (as done for
 - Stop and ask when tracker/live state is ambiguous.
 
 ## What This Is Not
-- Not a repo prune for closed issues (that is `vii-prune-artifacts`).
+- Not a repo prune for closed issues (that is `vi-close-pipeline`).
 - Not a rewrite of configs; only removes, never edits live configs.

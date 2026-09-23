@@ -42,13 +42,13 @@ Pick exactly one row. First matching row wins.
 4. Open PR with change requests or failing checks -> needs babysitting. Route to `v-babysit-pr-and-merge`.
 5. Open PR with green checks, no change requests, still waiting on reviews -> babysit until approval. Route to `v-babysit-pr-and-merge`.
 6. Open PR approved and green -> merge it, then clean up. Route to `v-babysit-pr-and-merge` for the merge step.
-7. Branch merged already, leftover branch or worktree exists -> prune and sync. Route to `vii-prune-artifacts`, then sync master.
+7. Branch merged already, leftover branch or worktree exists -> prune and sync. Route to `vi-close-pipeline` (its Clean Exit Gate syncs master).
 8. `tasks/plan.md` (or `tasks/todo.md`) with an incomplete checklist and the linked issue still open -> work started but unfinished. Resume it. Route to `iii-build-plan`.
-9. `tasks/plan.md` (or `tasks/todo.md`) with an incomplete checklist and the linked issue closed -> stale work. When a PR was merged the work landed, otherwise it was abandoned. Either way sweep the leftovers. Route to `vii-prune-artifacts`.
+9. `tasks/plan.md` (or `tasks/todo.md`) with an incomplete checklist and the linked issue closed -> stale work. When a PR was merged the work landed, otherwise it was abandoned. Either way sweep the leftovers. Route to `vi-close-pipeline`.
 10. Dirty tree with a clear small task and no PR -> finish the work first. Route to `iii-build-plan`.
 11. Dirty tree with an unclear or large task -> needs scoping first. Route to `ii-plan-issue`.
 12. Brand new idea with no code yet -> capture it. Route to `create-issue` (intake branch), then back to `i-pick-issue`.
-13. Work presented and merged, needs a summary -> route to `vi-present-pr`.
+13. Work merged and the operator wants a visual summary -> route to `present-pr` (ad-hoc visual presentation, not a pipeline station).
 14. The request is ad-hoc (not Issue work at all) -> say so in one line and route to `using-agent-skills`.
 
 ## Output format

@@ -1,14 +1,14 @@
----
+﻿---
 name: iv-review-build-and-pr
 description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then ECC language/framework reviewers, applies fixes, executes the post-review Browser Gate (UI, fast-first) or targeted test gate (backend), pushes branch, and opens GitHub PR with @coderabbitai summary.
 ---
 
 # Station IV: Review, Verify & PR (`iv-review-build-and-pr`)
 
-This skill implements **Station IV (Review, Verify & Ship)** of the 7-station pipeline (I–VII). It works across **any project, language, or repository**, taking code completed in Station III (`iii-build-plan`), dynamically discovering and deploying language/framework specialist reviewers, applying fixes, enforcing the **Final Pre-Push Verification Gate** (live browser verification for UI or full regression test suite for backend), pushing to origin, opening a Pull Request linked to the issue, and recommending `v-babysit-pr-and-merge`.
+This skill implements **Station IV (Review, Verify & Ship)** of the 6-station pipeline (I–VI). It works across **any project, language, or repository**, taking code completed in Station III (`iii-build-plan`), dynamically discovering and deploying language/framework specialist reviewers, applying fixes, enforcing the **Final Pre-Push Verification Gate** (live browser verification for UI or full regression test suite for backend), pushing to origin, opening a Pull Request linked to the issue, and recommending `v-babysit-pr-and-merge`.
 
 ## Pipeline Position
-- **Station:** Station IV of VII
+- **Station:** Station IV of VI
 - **Previous Station:** `iii-build-plan` (Build)
 - **Next Station:** `v-babysit-pr-and-merge` (Babysit & Merge)
 

@@ -1,4 +1,4 @@
----
+﻿---
 name: skill-refinement-loop
 description: "Use when the user wants to iteratively refine, polish, and customize a skill against professional best practices — invokes an eval-driven improvement loop that starts by gathering the skill pointer and context, mechanically aligns it to published best practices, then hands back for user customization and refinement requests."
 ---
@@ -244,7 +244,7 @@ the guiding questions before touching anything.
 
 Example invocation:
 
-> "Take my `vi-present-pr` skill and refine it. It produces the same HTML structure
+> "Take my `present-pr` skill and refine it. It produces the same HTML structure
 > for every PR regardless of the change shape."
 
 The skill responds by asking Phase 0 questions before running Phase 1.

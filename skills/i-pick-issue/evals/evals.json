@@ -19,12 +19,12 @@
     {
       "id": "orchestration-station-handoff",
       "prompt": "Run /i-pick-issue 42 after the operator confirmed issue 42.",
-      "expected_output": "Issue 42 details read and claimed, session scope locked, then sequential hand-off through stations II (plan), III (build), IV (review and PR), V (babysit and merge), VI (present), VII (prune), with a concise Hebrew status report per completed station and the next station named.",
+      "expected_output": "Issue 42 details read and claimed, session scope locked, then sequential hand-off through stations II (plan), III (build), IV (review and PR), V (babysit and merge), VI (close pipeline), with a concise Hebrew status report per completed station and the next station named.",
       "files": [],
       "assertions": [
         "The issue details are read and the issue is claimed before any station runs",
         "Station II planning hand-off produces tasks/plan.md before building starts",
-        "Stations run in order III then IV then V then VI then VII with no station skipped",
+        "Stations run in order III then IV then V then VI with no station skipped",
         "Each completed station is reported concisely in Hebrew with the next station named",
         "No station output contract is broken or silently skipped"
       ]

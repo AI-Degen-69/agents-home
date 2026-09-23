@@ -1,4 +1,4 @@
-{
+﻿{
   "skill_name": "v-babysit-pr-and-merge",
   "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes. Case 4 is the negative case.",
   "evals": [
@@ -29,14 +29,14 @@
     {
       "id": "final-summary-after-merge",
       "prompt": "Work on PR #130 is done and merged. Give me the final summary.",
-      "expected_output": "Hebrew Report 2: PR title and number as a link with MERGED status, back-to-base note, fixes ordered critical to minor, workspace sweep note, and vi-present-pr as the next step. No local-branch dump, no prune-artifacts suggestion.",
+      "expected_output": "Hebrew Report 2: PR title and number as a link with MERGED status, back-to-base note, fixes ordered critical to minor, no cleanup section (cleanup moved to Station VI), and vi-close-pipeline as the next step.",
       "files": [],
       "assertions": [
         "The title is the PR name and number as a link with merged status",
         "The summary states the return to origin base and the merge after fixes",
         "Fixes are ordered from most impactful/critical to minor",
-        "The summary reports the workspace sweep and a clean folder",
-        "The next step points to vi-present-pr, not vii-prune-artifacts",
+        "The summary contains no workspace-sweep section (cleanup belongs to vi-close-pipeline)",
+        "The next step points to vi-close-pipeline",
         "No raw CodeRabbit comment text appears in the summary"
       ]
     },

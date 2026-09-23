@@ -1,4 +1,4 @@
----
+﻿---
 name: v-babysit-pr-and-merge
 description: Station V (Babysit PR & Merge) — Sits on PR through one focused CodeRabbit review round (or fallback), resolves comments, squash-merges on green CI, and fast-forwards local base branch.
 ---
@@ -7,9 +7,9 @@ description: Station V (Babysit PR & Merge) — Sits on PR through one focused C
 A global, model-agnostic habit: ensure every branch is pushed and opened as a PR (or handed off directly from Station IV `iv-review-build-and-pr`), then sit on the PR through review until it is mergeable. Every comment is triaged, every dismissal carries a reason, review waiting follows a deterministic **5m → 4m → 3m → 2m → 1m** countdown check cycle, the review loop runs **exactly one focused round** (to conserve CodeRabbit quota and eliminate review churn), auto-triggers `@coderabbitai review` if auto-review is not invoked or was skipped, and concludes — merged or escalated.
 
 ## Pipeline Position
-- **Station:** Station V of VII
+- **Station:** Station V of VI
 - **Previous Station:** `iv-review-build-and-pr` (Review & Ship)
-- **Next Station:** `vi-present-pr <id>` (Present PR — runs before pruning)
+- **Next Station:** `vi-close-pipeline` (Close Pipeline — prune, issue close, clean-exit gate)
 
 **Zero human in the loop.** Extraction, triage, rejection replies, thread resolution, code application, test verification, self-healing, commit, push, and merge are all performed autonomously by the agent. The operator is contacted only if critical blockers cannot be resolved.
 
@@ -260,7 +260,7 @@ Trigger this step when CodeRabbit reached its review limit, asks to wait 1 hour,
    **ללכוד ב־`scripts/filter_loop.py` את הזנב ואת האופסט מאותו מצב של הקובץ.**
    > - שורה שנוספת בזמן הקריאה נאבדת בשקט; לקחת אופסט לפני הקריאה כדי שהטווחים יחפפו.
    - Vocab (match `docs.coderabbit.ai/change-stack/findings`) — Category: 🎯 נכונות פונקציונלית, 🔒 אבטחה ופרטיות, 🗄️ שלמות מידע ואינטגרציה, ⚡ ביצועים וסקייל, 🩺 יציבות וזמינות, 📐 תחזוקה ואיכות קוד. Severity: 🔴 קריטי, 🟠 מייגור, 🟡 מינורי, ⚪ טריוויאלי. Effort: ⚡ תיקון זריז, 🏗️ מאמץ כבד, 🪙 תיקון זול ערך, 🚫 לא משתלם.
-3. **Decide per finding:** critical/major block merge; minor when cheap; trivial/low-value only when touching that code, else declined with reason; poor tradeoffs declined; drop lows unless clearly useful. End chat with a single הבא line naming `vi-present-pr <id>` — no test counts, no process narration; the agent pushes and merges itself.
+3. **Decide per finding:** critical/major block merge; minor when cheap; trivial/low-value only when touching that code, else declined with reason; poor tradeoffs declined; drop lows unless clearly useful. End chat with a single הבא line naming `vi-close-pipeline <id>` — no test counts, no process narration; the agent pushes and merges itself.
 4. **Document & Triage:**
    - Note any real issues found as **ACCEPT** items and apply fixes immediately via Step 4.
    - Post a concise review comment to the PR — pick the honest reason, never a generic one. Variants: timeout (PR #244 case), rate-limit, and reuse (Station IV coverage + delta check, no fresh review):
@@ -424,14 +424,7 @@ A merge on GitHub does NOT move the local checkout: the terminal keeps showing t
 
 **Failure handling:** if `git pull --ff-only` fails (diverged local base), or the tree cannot be safely cleaned, stop and escalate — never force-reset the operator's checkout.
 
-### Step 5c — Post-Merge Workspace Sweep (Leave a Clean Folder)
-
-Instead of routing to `vii-prune-artifacts`, do a quick focused sweep right here:
-
-1. Look for junk tied to this issue's work only: temp files, one-off debug scripts, leftover single-use outputs under `tasks/` / `scratch/` that served this issue and nothing else.
-2. Delete only what is clearly unrelated to the repo and single-use. Never touch tracked source, configs, or anything shared.
-3. On any doubt about a file's ownership or purpose — leave it and escalate instead of deleting.
-4. Output note: `Workspace sweep: removed <files> (issue-scoped temp/junk). Folder left clean.` (or `nothing to remove`).
+> **Boundary — no cleanup here:** this station ends at a fast-forwarded base branch. All workspace sweeping, per-issue artifact pruning, and dead-code handling belong exclusively to Station VI (`vi-close-pipeline`) — never delete leftover files as part of the merge.
 
 ---
 
@@ -490,13 +483,10 @@ One concise, matter-of-fact line per review comment, in simple language: what wa
 ## 🗺️ המסע המלא (אופציונלי — רק אם מוסיף הבנה):
 [תרשים זרימה קטן או 3–4 שורות: איזו בעיה הייתה בהתחלה (`issue`) ← מה נבנה (`iii-build-plan`) ← מה נמצא בסקירה (`iv-review-build-and-pr` + סבב זה) ← סטטוס עכשיו: המשימה הושלמה במלואה / נשארו חורים: ...]
 
-## 🧹 ניקוי סביבת העבודה:
-[אילו קבצי זבל/זמניים/חד־פעמיים מהעבודה על ה־issue נמצאו והוסרו (צעד `5c`) — רק קבצים שברור שאינם שייכים לריפו; במקרה של ספק לא מוחקים. התיקייה נשארה נקייה.]
-
 ## 🔍 סטטוס סקירת CodeRabbit (חובה — שורה אחת כנה):
 [אחת מ: סיים סקירה מלאה + N הערות טופלו / לא סיים — נתקע על processing אחרי X דקות, מוזג על סמך סקירת גיבוי + CI ירוק / לא סקר — rate-limit, מוזג על סמך סקירת גיבוי + CI ירוק]
 
-👉 **השלב הבא:** `/vi-present-pr <id>` — מצגת HTML ויזואלית מלאה של השינוי (רץ לפני הניקוי — תעודת `vii-prune-artifacts` באה אחריה).
+👉 **השלב הבא:** `/vi-close-pipeline <id>` — סגירת הצינור: ניקוי שאריות, סגירת ה-Issue, ושער יציאה נקי (master מסונכרן, אפס שינויים מחכים).
 ```
 
 **Timeout-merge rule:** when `IN_PROGRESS_STUCK` or `RATE_LIMITED`, the `CodeRabbit` check may stay `PENDING` forever. Do NOT wait for it. Merge gate = agent fallback review clean (or its nits triaged) + `gh pr checks` green (excluding the stuck `CodeRabbit` context). State this explicitly in the `סטטוס סקירת CodeRabbit` line so the operator knows the merge was NOT on a completed bot review.

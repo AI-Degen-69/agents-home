@@ -1,16 +1,16 @@
----
+﻿---
 name: ii-plan-issue
-description: Station II (Define & Plan) of the 7-station pipeline (I–VII). Use when a GitHub issue needs to become an executable plan — fetches the issue via gh, right-sizes it, locks CONSTRAINTS.md, maps interfaces, writes tasks/plan.md, and hands off to /iii-build-plan auto. Reports in Hebrew, issue-first.
+description: Station II (Define & Plan) of the 6-station pipeline (I–VI). Use when a GitHub issue needs to become an executable plan — fetches the issue via gh, right-sizes it, locks CONSTRAINTS.md, maps interfaces, writes tasks/plan.md, and hands off to /iii-build-plan auto. Reports in Hebrew, issue-first.
 ---
 
 # Station II: Plan Issue (`ii-plan-issue`)
 
-This skill implements **Station II (Define & Plan)** of the 7-station pipeline (I–VII). It works across **any project, language, or repository**, bridging a GitHub issue to an airtight, executable specification and task plan (discipline from Addy Osmani's agent-skills collection, right-sizing from ECC's orchestrator approach).
+This skill implements **Station II (Define & Plan)** of the 6-station pipeline (I–VI). It works across **any project, language, or repository**, bridging a GitHub issue to an airtight, executable specification and task plan (discipline from Addy Osmani's agent-skills collection, right-sizing from ECC's orchestrator approach).
 
 **Prime directive:** the issue being planned is the star of the show. Planning machinery (skills, steps, contracts) is scaffolding — it lives in `tasks/plan.md`, never as the headline of the reply.
 
 ## Pipeline Position
-- **Station:** II of VII
+- **Station:** II of VI
 - **Previous Station:** `i-pick-issue` (Station I — or the `create-issue` intake branch)
 - **Next Station:** `iii-build-plan auto` (Build)
 

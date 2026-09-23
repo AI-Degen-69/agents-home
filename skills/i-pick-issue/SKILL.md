@@ -1,11 +1,11 @@
 ---
 name: i-pick-issue
-description: Station I (Pick & Orchestrate) — The single entry point for Issue work. Always starts with Discovery: lists open issues, groups them by domain, recommends the next logical one by dependency order, takes the operator's pick and execution mode, then orchestrates Stations II through VII through to merge, presentation and prune.
+description: Station I (Pick & Orchestrate) — The single entry point for Issue work. Always starts with Discovery: lists open issues, groups them by domain, recommends the next logical one by dependency order, takes the operator's pick and execution mode, then orchestrates Stations II through VI through to merge and closeout.
 ---
 
 # Station I: Pick Issue (`i-pick-issue`)
 
-Station I of the 7-station delivery pipeline (I–VII): the single entry point for
+Station I of the 6-station delivery pipeline (I–VI): the single entry point for
 Issue work. It picks the next logical issue to build, then drives the rest of the
 chain.
 
@@ -16,7 +16,7 @@ chain.
 **Boundary:** this skill owns Issue work — anything that starts from (or will end as) a GitHub issue with a PR. Ad-hoc requests (quick questions, small fixes, exploration, "where is X") are not Issue work: say so in one line, route to `using-agent-skills`, and stop. Ambiguous? If it will end in a PR on code, it is Issue work. Still ambiguous? Ask one question.
 
 ## Pipeline Position
-- **Station:** Station I of VII (single entry point for Issue work)
+- **Station:** Station I of VI (single entry point for Issue work)
 - **Previous Station:** `pipeline-triage` (state gate — only when the tree is dirty, commits are unpushed, or a PR is open)
 - **Next Station:** `ii-plan-issue <issue-id>` (Plan)
 
@@ -45,7 +45,7 @@ Every invocation of this skill begins with the **Discovery Station**, regardless
 Once the operator picks an issue, STOP and present exactly two options:
 
 1. **Step-by-step mode (default recommendation):** run one station at a time. After each station completes, report its summary and **halt — wait for explicit operator approval before starting the next station.** The operator reviews the plan (II), the build (III), the PR (IV/V), etc., one gate at a time.
-2. **Full orchestration mode:** run Stations II → VII end-to-end without halting, reporting a summary after each station, finishing only after Station V merge + Station VI prune + Station VII presentation.
+2. **Full orchestration mode:** run Stations II → VI end-to-end without halting, reporting a summary after each station, finishing only after Station V merge + Station VI closeout (prune, issue close, clean-exit gate).
 
 Do NOT infer the mode from how the request was phrased, and do NOT start Station II until the operator has explicitly chosen a mode.
 
@@ -77,11 +77,9 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
 ### Step 5: Station V — Babysit PR & Merge (`v-babysit-pr-and-merge`)
 - Hand off to `v-babysit-pr-and-merge` to track CodeRabbit review (5m-4m-3m-2m-1m countdown or agent fallback on quota limit), resolve comments, squash merge on green CI, and fast-forward the local base branch (`git pull --ff-only`).
 
-### Step 6: Station VI — Present PR (`vi-present-pr <number>`)
-- Run `vi-present-pr` to generate the interactive standalone HTML showcase and provide direct browser and folder links. Runs BEFORE pruning: the presentation reads the issue's plan/notes, which the prune step would otherwise delete.
-
-### Step 7: Station VII — Prune Artifacts (`vii-prune-artifacts`)
-- Run `vii-prune-artifacts` to safely clean up closed per-issue plans and scratch files. Runs AFTER presenting: the showcase is already committed as permanent knowledge (prune preserves it by rule), and nothing downstream needs the removed artifacts.
+### Step 6: Station VI — Close Pipeline (`vi-close-pipeline`)
+- Run `vi-close-pipeline` to close out: verify/close the issue, sweep stale per-issue artifacts (signal-based, any layout), handle dead code on the spot with zero-reference proof + targeted tests, and pass the Clean Exit Gate — pushed, on base branch, spotless, ready for the next issue.
+- Optionally suggest `/present-pr <number>` (ad-hoc visual presentation, outside the pipeline) — never mandatory.
 
 ---
 

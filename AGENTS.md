@@ -32,4 +32,4 @@ One entry point per request, one handoff at most:
 
 ## Pipeline
 
-The full station map (I, II, III, IIIB, IV, V, VI, VII — plus the `pipeline-triage` state gate and the `create-issue` intake branch) lives in `docs/issue-to-pr-skill-workflow.md` in this directory. A numbered prefix means the skill is a step in the chain, invoked in order. Read it before any pipeline work.
+The full station map (I, II, III, IIIB, IV, V, VI — plus the `pipeline-triage` state gate, the `create-issue` intake branch, and the ad-hoc `present-pr` skill) lives in `docs/issue-to-pr-skill-workflow.md` in this directory. A numbered prefix means the skill is a step in the chain, invoked in order. Read it before any pipeline work.

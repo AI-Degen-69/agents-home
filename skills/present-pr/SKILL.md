@@ -1,12 +1,12 @@
 ---
-name: vi-present-pr
-description: "Station VI (Present PR & Visual Showcase) — Builds a dynamic, customer-simple HTML page that explains what was done. Picks the best visual for the job (flow, timeline, before/after, map, numbers, demo) based on session context. No fixed template. Plain words, no dev jargon. Also handles explain-mode for any question or design."
+name: present-pr
+description: "Present PR & Visual Showcase (ad-hoc skill, not a pipeline station) — Builds a dynamic, customer-simple HTML page that explains what was done. Picks the best visual for the job (flow, timeline, before/after, map, numbers, demo) based on session context. No fixed template. Plain words, no dev jargon. Also handles explain-mode for any question or design."
 ---
 
-# Station VI: Present PR (`vi-present-pr`)
+# Present PR (`present-pr`)
 
 This skill turns finished work into one clear HTML page a normal person can understand.
-It works in any project, and also serves as the pipeline's Station VI closer when run inside the pipeline.
+It is an ad-hoc skill — not a numbered pipeline station — and works in any project, at any time (right after a merge, on an old PR, or in explain-mode with no ticket at all).
 
 Two jobs, one page:
 
@@ -29,19 +29,18 @@ Word swaps to use:
 - "refactor / architecture" -> "tidy up inside / how parts connect"
 - "endpoint / API / CLI" -> "connection / screen / button you press"
 
-## Pipeline Position
-- **Station:** Station VI of VII (runs immediately after merge, BEFORE pruning — the presentation consumes the issue's plan/notes that the prune step removes)
-- **Previous Station:** `v-babysit-pr-and-merge`
-- **Pipeline Closeout:** Final Station
+## Usage Context
+- **Ad-hoc skill — no station number, never mandatory.** Station VI (`vi-close-pipeline`) suggests it after closeout; the operator may also invoke it directly at any time.
+- **Sources:** the story is built from the merged PR, the diff, and the conversation — the issue's plan/notes are a nice-to-have, not a requirement, so this skill works even long after cleanup.
 
 ---
 
 ## 1. Invocation
 
 ```bash
-/vi-present-pr <issue-number>   # Visual page for a specific ticket
-/vi-present-pr                  # Auto-find the latest ticket from the project's plan notes or tracker
-/vi-present-pr explain          # Explain-mode: current change/question with no ticket
+/present-pr <issue-number>   # Visual page for a specific ticket
+/present-pr                  # Auto-find the latest ticket from the project's plan notes or tracker
+/present-pr explain          # Explain-mode: current change/question with no ticket
 ```
 
 Also fires when user says "explain this visually", "show me what was done", "walk me through it".

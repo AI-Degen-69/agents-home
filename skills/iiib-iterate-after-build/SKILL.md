@@ -1,4 +1,4 @@
----
+﻿---
 name: iiib-iterate-after-build
 description: Station III-B (Iterate After Build) — human feedback fix loop between build and review. Use after iii-build-plan when the operator reports bugs, dead buttons, UI changes, slowness, or security concerns in freshly built code. Classifies each free-text comment, routes to the right specialist skill, fixes locally with atomic commits and no push, then hands off to iv-review-build-and-pr. Invoke whenever the operator lists corrections after a build.
 ---
@@ -9,7 +9,7 @@ The router for Path B. The operator describes corrections in free text after a b
 
 ## Pipeline Position
 
-- **Station:** Station III-B of VII (human feedback loop)
+- **Station:** Station III-B of VI (human feedback loop)
 - **Previous Station:** `iii-build-plan` (Build)
 - **Next Station:** `iv-review-build-and-pr` (Review & Verify)
 
