@@ -81,6 +81,8 @@ Browser verification feels slow when each check becomes its own MCP round-trip (
    Console and network errors are server-side state, so read them once (one call each) after the page settles — never poll them per check.
 4. **One screenshot, last.** Screenshots are the most expensive output (image tokens). Take a single screenshot as final visual proof after all programmatic checks pass — never per iteration.
 
+**Alternative tool:** the `playwright-cli` skill (official Microsoft agent CLI, installed at `~/.agents/skills/playwright-cli`) drives the browser through plain CLI commands instead of MCP round-trips — compact accessibility-tree snapshots, deterministic element refs, `eval` for batched checks. Prefer it for verification gates; keep chrome-devtools-mcp for performance traces and deep DevTools inspection.
+
 ## Security Boundaries
 
 ### Profile Isolation
