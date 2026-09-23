@@ -6,8 +6,9 @@
 .DESCRIPTION
   Every harness reads ~/.agents/skills from its own root:
 
-    Hermes                   -> $env:LOCALAPPDATA\hermes\skills        (Junction)
-    Gemini CLI / Antigravity -> $env:USERPROFILE\.gemini\config\skills (SymbolicLink)
+    Hermes                   -> $env:LOCALAPPDATA\hermes\skills          (Junction)
+    Gemini CLI / Antigravity -> $env:USERPROFILE\.gemini\config\skills   (SymbolicLink)
+    OpenCode / Desktop       -> $env:USERPROFILE\.config\opencode\skills (Junction)
 
   Junction vs SymbolicLink matters: Gemini/Antigravity cannot see a Junction, so its
   entries must be SymbolicLinks. Creating one requires SeCreateSymbolicLinkPrivilege,
@@ -15,7 +16,10 @@
   the script falls back to a real-directory copy - which does NOT track later edits
   to the canonical skill. Re-run this script after editing a skill to refresh those.
 
-  OpenCode keeps real folders of its own (~/.config/opencode/skills) and is not touched.
+  OpenCode Desktop reads ~/.config/opencode/skills. Junctions work there and need no
+  privilege. An existing entry that is ANY link kind pointing at canonical counts as ok
+  (that root already holds a few SymbolicLinks); a stale real-directory copy is
+  replaced with a Junction.
 
 .PARAMETER Name
   Skill folder name(s) under ~/.agents/skills, e.g. -Name i-pick-issue,create-issue.
@@ -28,14 +32,16 @@
   Report only; change nothing.
 
 .PARAMETER Harness
-  Which harness roots to touch: hermes, gemini, or both (default). Use -Harness hermes
-  when the Gemini root is being handled elsewhere (e.g. an elevated shell converting
-  copies to SymbolicLinks) - a parallel run against the same entries would race.
+  Which harness roots to touch: hermes, gemini, opencode, both (= hermes+gemini, the
+  default), or all (= every root). Use a narrow value when a root is being handled
+  elsewhere (e.g. an elevated shell converting Gemini copies to SymbolicLinks) - a
+  parallel run against the same entries would race.
 
 .EXAMPLE
   .\sync-harness-skills.ps1 -All -Check
   .\sync-harness-skills.ps1 -Name i-pick-issue,create-issue
   .\sync-harness-skills.ps1 -All -Harness hermes
+  .\sync-harness-skills.ps1 -Name i-pick-issue -Harness opencode
 
 Exit codes: 0 = every entry is a link, 1 = at least one entry is a copy, 2 = usage error.
 #>
@@ -44,7 +50,7 @@ param(
     [string[]]$Name,
     [switch]$All,
     [switch]$Check,
-    [ValidateSet('hermes', 'gemini', 'both')]
+    [ValidateSet('hermes', 'gemini', 'opencode', 'both', 'all')]
     [string]$Harness = 'both'
 )
 
@@ -53,13 +59,15 @@ $ErrorActionPreference = 'Stop'
 $canonicalRoot = Join-Path $env:USERPROFILE '.agents\skills'
 $hermesRoot    = Join-Path $env:LOCALAPPDATA 'hermes\skills'
 $geminiRoot    = Join-Path $env:USERPROFILE '.gemini\config\skills'
+$opencodeRoot  = Join-Path $env:USERPROFILE '.config\opencode\skills'
 
-$doHermes = $Harness -in @('hermes', 'both')
-$doGemini = $Harness -in @('gemini', 'both')
+$doHermes   = $Harness -in @('hermes', 'both', 'all')
+$doGemini   = $Harness -in @('gemini', 'both', 'all')
+$doOpencode = $Harness -in @('opencode', 'all')
 
 if (-not (Test-Path $canonicalRoot)) { Write-Error "No canonical skills root at $canonicalRoot"; exit 2 }
 if (-not $Name -and -not $All) {
-    Write-Host 'Usage: sync-harness-skills.ps1 -Name <skill>[,<skill>] | -All [-Check] [-Harness hermes|gemini|both]'
+    Write-Host 'Usage: sync-harness-skills.ps1 -Name <skill>[,<skill>] | -All [-Check] [-Harness hermes|gemini|opencode|both|all]'
     exit 2
 }
 
@@ -110,28 +118,44 @@ foreach ($skill in $skills) {
         }
     }
 
-    if (-not $doGemini) { continue }
-
     # ---- Gemini CLI / Antigravity: SymbolicLink, else copy ----------------
-    $gPath = Join-Path $geminiRoot $skill
-    if (Test-Linked $gPath 'SymbolicLink' $target) {
-        $report += [PSCustomObject]@{ Skill = $skill; Harness = 'gemini'; LinkType = 'SymbolicLink'; State = 'ok' }
-        continue
+    if ($doGemini) {
+        $gPath = Join-Path $geminiRoot $skill
+        if (Test-Linked $gPath 'SymbolicLink' $target) {
+            $report += [PSCustomObject]@{ Skill = $skill; Harness = 'gemini'; LinkType = 'SymbolicLink'; State = 'ok' }
+        } else {
+            $gItem = Get-Item $gPath -Force -ErrorAction SilentlyContinue
+            if ($Check) {
+                if ($gItem -and -not $gItem.LinkType) { $copies++ }
+                $report += [PSCustomObject]@{ Skill = $skill; Harness = 'gemini'; LinkType = $(if ($gItem) { $gItem.LinkType } else { 'missing' }); State = 'needs symlink' }
+            } else {
+                Remove-Entry $gPath
+                try {
+                    New-Item -ItemType SymbolicLink -Path $gPath -Target $target -ErrorAction Stop | Out-Null
+                    $report += [PSCustomObject]@{ Skill = $skill; Harness = 'gemini'; LinkType = 'SymbolicLink'; State = 'linked' }
+                } catch {
+                    Copy-Item -Path $target -Destination $gPath -Recurse -Force
+                    $copies++
+                    $report += [PSCustomObject]@{ Skill = $skill; Harness = 'gemini'; LinkType = 'Directory'; State = 'copied (no symlink privilege)' }
+                }
+            }
+        }
     }
-    $gItem = Get-Item $gPath -Force -ErrorAction SilentlyContinue
-    if ($Check) {
-        if ($gItem) { $copies++ }
-        $report += [PSCustomObject]@{ Skill = $skill; Harness = 'gemini'; LinkType = $(if ($gItem) { $gItem.LinkType } else { 'missing' }); State = 'needs symlink' }
-        continue
-    }
-    Remove-Entry $gPath
-    try {
-        New-Item -ItemType SymbolicLink -Path $gPath -Target $target -ErrorAction Stop | Out-Null
-        $report += [PSCustomObject]@{ Skill = $skill; Harness = 'gemini'; LinkType = 'SymbolicLink'; State = 'linked' }
-    } catch {
-        Copy-Item -Path $target -Destination $gPath -Recurse -Force
-        $copies++
-        $report += [PSCustomObject]@{ Skill = $skill; Harness = 'gemini'; LinkType = 'Directory'; State = 'copied (no symlink privilege)' }
+
+    # ---- OpenCode / Desktop: Junction (any correct link kind counts as ok) --
+    if ($doOpencode) {
+        $oPath = Join-Path $opencodeRoot $skill
+        $oItem = Get-Item $oPath -Force -ErrorAction SilentlyContinue
+        if ($oItem -and $oItem.LinkType -in @('Junction', 'SymbolicLink') -and ($oItem.Target -contains $target)) {
+            $report += [PSCustomObject]@{ Skill = $skill; Harness = 'opencode'; LinkType = $oItem.LinkType; State = 'ok' }
+        } elseif ($Check) {
+            if ($oItem -and -not $oItem.LinkType) { $copies++ }
+            $report += [PSCustomObject]@{ Skill = $skill; Harness = 'opencode'; LinkType = $(if ($oItem) { $oItem.LinkType } else { 'missing' }); State = 'needs link' }
+        } else {
+            Remove-Entry $oPath
+            New-Item -ItemType Junction -Path $oPath -Target $target | Out-Null
+            $report += [PSCustomObject]@{ Skill = $skill; Harness = 'opencode'; LinkType = 'Junction'; State = 'linked' }
+        }
     }
 }
 

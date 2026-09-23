@@ -12,7 +12,7 @@ via links back to the canonical folder — **and the link type matters per harne
 | Harness | Global skills root | Link type | Project skills | Notes |
 |---|---|---|---|---|
 | Hermes agent | `AppData/Local/hermes/skills/` | Junction | Project rules via repo `AGENTS.md` | Reads junctions fine. |
-| OpenCode (desktop + TUI) | `~/.config/opencode/skills/` | Real dirs (verified live) | `<repo>/.agents/skills/` (observed), `opencode.json` | No linking used — skills live as real folders. |
+| OpenCode (desktop + TUI) | `~/.config/opencode/skills/` | Junction for canonical skills; ECC-pack folders stay real | `<repo>/.agents/skills/` (observed), `opencode.json` | Reads Junctions fine (verified live). Any correct link kind counts as ok; stale copies are replaced by `sync-harness-skills.ps1 -Harness opencode`. |
 | Gemini CLI | `~/.gemini/config/skills/` | **SymbolicLink** | — | Junctions are invisible to it — a junctioned skill silently never loads. Every other entry there is a symlink; match the neighbors. Creating one needs `SeCreateSymbolicLinkPrivilege`; without it, fall back to a real-directory copy and refresh it with `~/.agents/scripts/sync-harness-skills.ps1`. |
 | Antigravity (IDE) | Same as Gemini CLI (`~/.gemini/config/skills/`) | **SymbolicLink** | No dedicated skills dir found on disk (searched 2026-09-12); consumes the Gemini root | Same symlink rule; fix applies with no restart. Same copy fallback applies. |
 | Freebuff desktop | Builtins + repo-local skills dir (e.g. `<repo>/skills/`; `.agents/skills/` also recognized) | n/a (real dirs) | Project-scoped by design — no global skills dir; skills resolve from the repo's local skills folder(s) plus the harness builtins. |
@@ -38,8 +38,9 @@ Detailed documentation of the entire pipeline, station contracts, and Hebrew rep
 
 ## Deploying a new skill
 
-One command covers both harness roots — Junction for Hermes, SymbolicLink for
-Gemini CLI / Antigravity:
+One command covers every harness root — Junction for Hermes and OpenCode,
+SymbolicLink for Gemini CLI / Antigravity (`-Harness hermes|gemini|opencode|both|all`;
+`both` = Hermes+Gemini, the default):
 
 ```powershell
 .\scripts\sync-harness-skills.ps1 -Name <name>    # one skill

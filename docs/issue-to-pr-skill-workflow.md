@@ -94,7 +94,7 @@ All skills live canonically in `C:\Users\Tiger\.agents\skills\`.
 The per-harness link-type matrix is the single source of truth in
 `skills/README.md` — read it before linking a skill or copying one. In short:
 Hermes consumes **Junctions**; Gemini CLI / Antigravity need **SymbolicLinks**
-(junctions are invisible to them); OpenCode keeps real folders of its own;
+(junctions are invisible to them); OpenCode Desktop consumes **Junctions** like Hermes;
 Freebuff resolves repo-local skill dirs. `scripts/sync-harness-skills.ps1` is the
 one command that applies those rules.
 
@@ -107,4 +107,4 @@ one command that applies those rules.
 - **Hermes** (`AppData/Local/hermes/skills/`) consumes **Junctions**.
 - **Gemini CLI / Antigravity** (`~/.gemini/config/skills/`) need **SymbolicLinks** - junctions are invisible to it.
 - Creating a SymbolicLink needs `SeCreateSymbolicLinkPrivilege`. In a non-admin shell the script falls back to a real-directory copy, which does **not** track later edits to the canonical skill - re-run the script after editing a skill to refresh it.
-- **OpenCode** (`~/.config/opencode/skills/`) keeps real folders of its own and is left alone.
+- **OpenCode Desktop** (`~/.config/opencode/skills/`) consumes **Junctions** too, with no privilege needed. An entry that is any link kind pointing at canonical counts as ok (the root already holds a few SymbolicLinks); a stale real-directory copy is replaced with a Junction. ECC-pack folders that live only there have no canonical counterpart and are left alone.
