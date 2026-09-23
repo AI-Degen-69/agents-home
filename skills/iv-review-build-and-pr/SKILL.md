@@ -28,10 +28,10 @@ This skill implements **Station IV (Review, Verify & Ship)** of the 6-station pi
 
 **No review runs on unproven code.** Before Step 1, prove the build actually works. This station is the **single owner of browser-based verification** in the whole pipeline — no other station runs browser checks. This ownership applies whenever any UI change ships, regardless of which station built it.
 
-1. **For Frontend / Web / UI changes — Browser Gate (fast-first):** start the project's preview server, then verify in this order:
+1. **For Frontend / Web / UI changes — Browser Gate (fast-first):** start the project's preview server, then verify in this order (run the browser **headless**; follow `browser-testing-with-devtools` → "Performance: Keep Every Browser Run Fast"):
    - **API/HTTP smoke (no browser):** every key page and endpoint the change touches answers 200 with sane content (`curl` or equivalent).
-   - **Programmatic DOM checks (no screenshot):** evaluate JS in the page — required elements exist, table rows/columns render, layout has no overflow.
-   - **Console + network:** zero uncaught console errors, zero failed network requests (pull console/network logs — do not eyeball a screenshot for this).
+   - **Programmatic DOM checks — one batched call (no screenshot):** a single `evaluate_script` performs all DOM/layout checks and returns one small JSON verdict (required elements exist, table rows/columns render, layout has no overflow). Never one MCP call per check.
+   - **Console + network — one call each:** zero uncaught console errors, zero failed network requests (pull console/network logs once after the page settles — do not eyeball a screenshot for this).
    - **Screenshot — once, last:** a single screenshot as final visual proof, only after everything above is green. Never per-iteration.
 2. **For Backend / Logic changes:** run the targeted test suites for modified files — all green.
 3. **On failure:** stop. Route the failure list to `iiib-iterate-after-build` as correction items, and re-enter this station only after IIIB is clean. Do not review broken code.

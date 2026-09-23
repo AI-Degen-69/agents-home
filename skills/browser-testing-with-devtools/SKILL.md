@@ -32,13 +32,17 @@ Add the following to your project's `.mcp.json` or Claude Code settings:
   "mcpServers": {
     "chrome-devtools": {
       "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp@latest", "--isolated"]
+      "args": ["-y", "chrome-devtools-mcp@1.10.1", "--isolated", "--headless"]
     }
   }
 }
 ```
 
-`-y` skips the npx install confirmation. By default the server launches Chrome with its own dedicated profile (under `~/.cache/chrome-devtools-mcp/`), separate from your personal browser; `--isolated` goes one step further and uses a temporary profile that is wiped when the browser closes. This is the right setup for most testing.
+`-y` skips the npx install confirmation. **Pin the version** (`@1.10.1`, not `@latest`) — `@latest` forces an npm registry version check on every server start. Bump the pin deliberately when you upgrade.
+
+By default the server launches Chrome with its own dedicated profile (under `~/.cache/chrome-devtools-mcp/`), separate from your personal browser; `--isolated` goes one step further and uses a temporary profile that is wiped when the browser closes. This is the right setup for most testing.
+
+**Run `--headless` by default.** Programmatic checks (DOM, console, network) need no visible window. Drop `--headless` only when the task genuinely needs a rendered window — a final visual screenshot the operator will look at, or reproducing a rendering bug that only shows in headed mode.
 
 There is also `--autoConnect` (Chrome 144+, requires enabling remote debugging via `chrome://inspect/#remote-debugging`), which attaches the agent to your **running** Chrome instead. Only use it when the test genuinely needs your logged-in state — see Profile Isolation under Security Boundaries first.
 
@@ -56,6 +60,26 @@ Chrome DevTools MCP provides these capabilities:
 | **Element Styles** | Reads computed styles for elements | Debug CSS issues, verify styling |
 | **Accessibility Tree** | Reads the accessibility tree | Verify screen reader experience |
 | **JavaScript Execution** | Runs JavaScript in the page context | Read-only state inspection and debugging (see Security Boundaries) |
+
+## Performance: Keep Every Browser Run Fast
+
+Browser verification feels slow when each check becomes its own MCP round-trip (each tool call = a full model turn) and when Chrome cold-starts per run. Four rules, cheapest first:
+
+1. **Pin the server version** — see Installation. Never `@latest`.
+2. **Headless for programmatic checks** — see Installation. A visible window is for the final screenshot only.
+3. **Batch programmatic checks into ONE `evaluate_script` call.** Instead of separate DOM-snapshot + console + style calls, run a single read-only script that performs every check and returns one small JSON verdict. Example shape:
+
+   ```js
+   () => ({
+     requiredElementsPresent: ['#app', 'table'].every(s => !!document.querySelector(s)),
+     tableRows: document.querySelectorAll('table tbody tr').length,
+     overflow: document.documentElement.scrollWidth <= window.innerWidth,
+     title: document.title
+   })
+   ```
+
+   Console and network errors are server-side state, so read them once (one call each) after the page settles — never poll them per check.
+4. **One screenshot, last.** Screenshots are the most expensive output (image tokens). Take a single screenshot as final visual proof after all programmatic checks pass — never per iteration.
 
 ## Security Boundaries
 
