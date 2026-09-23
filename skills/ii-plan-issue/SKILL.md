@@ -126,7 +126,7 @@ Rules:
 - Drop any section that carries nothing for this issue.
 
 ```markdown
-# 📐 Issue #<מספר>: <כותרת ה-Issue>
+# 📐 II - תכנון: Issue #<מספר> — <כותרת ה-Issue>
 
 Branch: `i<מספר>/<slug-מהכותרת>` — e.g. `i69/increase-button-size`
 

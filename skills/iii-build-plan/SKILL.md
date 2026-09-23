@@ -74,7 +74,7 @@ Part A (what to check yourself) adapts to what was actually built — pick 2-3 c
 Part B (the two paths + router) is always shown in full, with every skill in backticks except the dead-button row, which is routed automatically inside the router skill.
 
 ```markdown
-# 🔨 סיכום ביצוע (Build):
+# 🔨 III - בנייה (סיכום ביצוע):
 
 ## 🎨 מה נבנה — מבט ויזואלי:
 [הצג כאן ויזואלית מה נבנה בצ'אט — טבלה / דיאגרמה / תרשים זרימה / צורות, כל דבר שמתאים ויעזור להסבר. דוגמאות: טבלת לפני ← אחרי, תרשים זרימה של המהלך, מבנה המסך או הרכיבים. חובה להתאים את הויזואל לתוכן — לא למלא בכוח]

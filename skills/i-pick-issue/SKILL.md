@@ -87,7 +87,7 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
 
 ### במצב Discovery (ללא ארגומנט):
 ```markdown
-# 🗺️ מיפוי ותעדוף משימות (Backlog):
+# 🗺️ I - מיפוי ובחירת משימה (Backlog):
 
 ## 📋 חלוקת ה-Issues הפתוחים לפי תחומים:
 * **[תחום / קבוצה 1]:**

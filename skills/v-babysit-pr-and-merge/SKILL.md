@@ -458,7 +458,7 @@ Two reports, both in clean everyday Hebrew. Never dump raw CodeRabbit text — a
 One concise, matter-of-fact line per review comment, in simple language: what was found and what was decided about it. Inline replies on GitHub (`ACCEPT:` / `REJECT:`) still happen for every thread as usual — the chat list only summarizes the decisions. Order the lines most critical first. No full quotes of bot comments:
 
 ```markdown
-## 🔍 טריאז׳ הערות CodeRabbit:
+## 🔍 V - ליווי PR: טריאז׳ הערות CodeRabbit:
 * **ACCEPT** — [מה נמצא ומה תוקן, במילים פשוטות] (`file:line`, סוג A או B)
 * **REJECT** — [מה נטען ולמה נדחה, משפט קצר אחד]
 ```
@@ -472,7 +472,7 @@ One concise, matter-of-fact line per review comment, in simple language: what wa
 ### Report 2 — Final Summary (after the Step 5 merge)
 
 ```markdown
-# [#<pr_number> - <title>](<url>) 🟢 MERGED
+# 🟢 V - ליווי PR עד מיזוג: [#<pr_number> - <title>](<url>) MERGED
 
 חזרנו לענף הבסיס (`origin/<base>`) וה־PR הזה מוזג אחרי התיקונים.
 

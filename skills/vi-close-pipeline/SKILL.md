@@ -113,7 +113,7 @@ If any check fails → fix it or escalate with the exact state. **Never declare 
 ## Hebrew Chat Output Contract (חובת דיווח בעברית)
 
 ```markdown
-# 🏁 סגירת צינור — Issue #<id>:
+# 🏁 VI - סגירת צינור — Issue #<id>:
 
 ## ✅ סטטוס Issue ו-PR:
 * **PR:** [#<n>](<url>) 🟢 MERGED

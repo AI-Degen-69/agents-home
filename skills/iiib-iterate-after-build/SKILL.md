@@ -57,7 +57,7 @@ Report in clean, everyday Hebrew. Write for the customer who ordered the product
 - One line per comment: what was wrong in plain words, then what works now. One sentence each.
 
 ```markdown
-# 🔁 סיכום תיקונים (III-B):
+# 🔁 IIIB - תיקונים אחרי בנייה (סיכום איטרציה):
 
 ## 🧭 ניתוב:
 * **[ההערה במילים שלך]** -> `diagnosing-bugs` + `debugging-and-error-recovery`: [לפני: מה לא עבד לאדם. עכשיו: מה עובד]
