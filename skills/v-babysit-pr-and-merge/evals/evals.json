@@ -1,18 +1,23 @@
 {
   "skill_name": "v-babysit-pr-and-merge",
-  "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes. Case 4 is the negative case.",
+  "note": "Eval set graded deterministically by scripts/grade.js. Static assertions are regex contracts checked over SKILL.md plus its references/ corpus (the station is split across three on-demand files, so an assertion about a step passes wherever that step's prose lives). Live assertions need a real PR + gh run and are recorded as not-run, excluded from pass-rate denominators.",
   "evals": [
     {
       "id": "condensed-triage-list",
       "prompt": "Babysit PR #128: CodeRabbit posted 3 inline comments (one real nil-pointer bug, one wrong constant suggestion, one cosmetic nit). Triage them and report.",
       "expected_output": "Hebrew Report 1: one concise line per comment with ACCEPT/REJECT and a one-phrase reason, most critical first, no full quotes of bot text. Inline ACCEPT/REJECT replies still posted per thread on GitHub.",
       "files": [],
-      "assertions": [
-        "The triage report has one line per review comment, not a full quote of any comment",
-        "Every line carries an ACCEPT or REJECT decision with a short reason",
-        "Lines are ordered most critical first",
+      "static_assertions": [
+        { "id": "one-line-per-comment", "type": "regex", "pattern": "One concise, matter-of-fact line per review comment", "must_match": true, "why": "the chat summary is a list of decisions, not a transcript of bot comments" },
+        { "id": "no-full-quotes", "type": "regex", "pattern": "No full quotes of bot comments", "must_match": true, "why": "raw CodeRabbit text must never be dumped into the operator chat" },
+        { "id": "critical-first", "type": "regex", "pattern": "Order the lines most critical first", "must_match": true, "why": "triage value is in seeing the blocking item first" },
+        { "id": "accept-reject-shape", "type": "regex", "pattern": "(ACCEPT|REJECT) —", "must_match": true, "why": "every report line carries an explicit ACCEPT or REJECT decision" },
+        { "id": "inline-reply-before-resolve", "type": "regex", "pattern": "explicit inline reply.+posted before resolution", "must_match": true, "why": "no thread may be resolved silently, and no blind bulk resolution is allowed" }
+      ],
+      "live_assertions": [
         "Every thread received its inline reply on GitHub before resolution",
-        "No thread was resolved silently or via blind bulk resolution"
+        "No thread was resolved silently or via blind bulk resolution",
+        "The GitHub chat summary matches the decisions actually posted inline"
       ]
     },
     {
@@ -20,24 +25,30 @@
       "prompt": "Babysit PR #129: the @coderabbitai review summary and inline findings are already posted when the station starts. What happens next?",
       "expected_output": "Check-first fires: the 5m countdown is skipped and the run proceeds directly to extraction and triage.",
       "files": [],
-      "assertions": [
-        "The countdown wait is skipped when review content already exists",
-        "Extraction runs via the GitHub API, not by reading rendered PR text",
-        "The run proceeds to triage instead of idling"
+      "static_assertions": [
+        { "id": "countdown-skippable", "type": "regex", "pattern": "skip the entire 5m . 4m . 3m . 2m . 1m countdown", "must_match": true, "why": "waiting out 5 minutes on a review that already landed is wasted wall-clock time" },
+        { "id": "api-only-extraction", "type": "regex", "pattern": "gh api repos/:owner/:repo/pulls/<pr_number>/comments", "must_match": true, "why": "extraction is programmatic only, never by eyeballing rendered PR HTML" },
+        { "id": "proceeds-to-extraction", "type": "regex", "pattern": "proceed directly to Step 2 extraction & triage", "must_match": true, "why": "skipping the countdown must not stall the station" }
+      ],
+      "live_assertions": [
+        "The run reaches triage instead of idling when review content already exists"
       ]
     },
     {
       "id": "final-summary-after-merge",
       "prompt": "Work on PR #130 is done and merged. Give me the final summary.",
-      "expected_output": "Hebrew Report 2: PR title and number as a link with MERGED status, back-to-base note, fixes ordered critical to minor, no cleanup section (cleanup moved to Station VI), and vi-close-pipeline as the next step.",
+      "expected_output": "Hebrew Report 2: PR title and number as a link with MERGED status, back-to-base note, fixes ordered critical to minor, and vi-close-pipeline as the next step.",
       "files": [],
-      "assertions": [
-        "The title is the PR name and number as a link with merged status",
-        "The summary states the return to origin base and the merge after fixes",
-        "Fixes are ordered from most impactful/critical to minor",
-        "The summary contains no workspace-sweep section (cleanup belongs to vi-close-pipeline)",
-        "The next step points to vi-close-pipeline",
-        "No raw CodeRabbit comment text appears in the summary"
+      "static_assertions": [
+        { "id": "pr-link-with-merged", "type": "regex", "pattern": "MERGED", "must_match": true, "why": "the summary leads with the PR identity and its merged state" },
+        { "id": "back-to-base", "type": "regex", "pattern": "חזרנו לענף הבסיס", "must_match": true, "why": "the return to a clean base is part of what the operator is told" },
+        { "id": "impact-order", "type": "regex", "pattern": "מהמשפיע ביותר למינורי", "must_match": true, "why": "fixes are listed critical-to-minor, not in comment arrival order" },
+        { "id": "next-step-vi", "type": "regex", "pattern": "/vi-close-pipeline <id>", "must_match": true, "why": "the summary always names the next station" },
+        { "id": "no-raw-comment-text", "type": "regex", "pattern": "Never dump raw CodeRabbit text", "must_match": true, "why": "raw bot text stays on GitHub, never in the operator chat" }
+      ],
+      "live_assertions": [
+        "The PR is confirmed MERGED before the summary is written",
+        "The Hebrew summary names the PR and the next station"
       ]
     },
     {
@@ -45,9 +56,13 @@
       "prompt": "There are unpushed commits on feature branch issue-61 with no PR yet. Open a PR and babysit it.",
       "expected_output": "Station V must not create the PR itself: it delegates opening (push, PR, @coderabbitai review trigger) to iv-review-build-and-pr, then resumes babysitting once the PR exists.",
       "files": [],
-      "assertions": [
+      "static_assertions": [
+        { "id": "no-direct-pr-creation", "type": "regex", "pattern": "do not create it yourself.{0,60}delegate to `iv-review-build-and-pr`", "must_match": true, "why": "Station V babysits an existing PR; opening one is Station IV's job" },
+        { "id": "delegates-to-iv", "type": "regex", "pattern": "delegate to `iv-review-build-and-pr`", "must_match": true, "why": "the delegation target is named explicitly, not implied" },
+        { "id": "resumes-after-pr", "type": "regex", "pattern": "resume this skill at Step 1 with the newly created PR", "must_match": true, "why": "babysitting cannot start before the PR exists" }
+      ],
+      "live_assertions": [
         "No PR is created directly by this station",
-        "PR creation is delegated to iv-review-build-and-pr",
         "Babysitting resumes only after the PR exists"
       ]
     }

@@ -28,10 +28,6 @@ Multiple open PRs and no specific number → follow `references/multi-pr-pipelin
 
 ---
 
-## The Review Loop
-
----
-
 ## Step Map (load the detail on demand)
 
 | Step | What it does | Detail |
