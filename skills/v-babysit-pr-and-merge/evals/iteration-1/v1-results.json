@@ -1,0 +1,218 @@
+{
+  "summary": {
+    "skill": "skills\\v-babysit-pr-and-merge\\SKILL.md",
+    "graded_at": "2026-09-28T02:11:17.453Z",
+    "cases": 4,
+    "static_assertions": 16,
+    "static_passed": 16,
+    "static_failed": 0,
+    "static_pass_rate": 1,
+    "live_assertions": "excluded from rate (not-run)"
+  },
+  "graded": [
+    {
+      "case_id": "condensed-triage-list",
+      "static": {
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "results": [
+          {
+            "id": "one-line-per-comment",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /One concise, matter-of-fact line per review comment/i",
+            "why": "the chat summary is a list of decisions, not a transcript of bot comments"
+          },
+          {
+            "id": "no-full-quotes",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /No full quotes of bot comments/i",
+            "why": "raw CodeRabbit text must never be dumped into the operator chat"
+          },
+          {
+            "id": "critical-first",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /Order the lines most critical first/i",
+            "why": "triage value is in seeing the blocking item first"
+          },
+          {
+            "id": "accept-reject-shape",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /(ACCEPT|REJECT) —/i",
+            "why": "every report line carries an explicit ACCEPT or REJECT decision"
+          },
+          {
+            "id": "inline-reply-before-resolve",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /explicit inline reply.+posted before resolution/i",
+            "why": "no thread may be resolved silently, and no blind bulk resolution is allowed"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "Every thread received its inline reply on GitHub before resolution",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "No thread was resolved silently or via blind bulk resolution",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The GitHub chat summary matches the decisions actually posted inline",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    },
+    {
+      "case_id": "review-already-posted-skips-countdown",
+      "static": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "results": [
+          {
+            "id": "countdown-skippable",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /skip the entire 5m . 4m . 3m . 2m . 1m countdown/i",
+            "why": "waiting out 5 minutes on a review that already landed is wasted wall-clock time"
+          },
+          {
+            "id": "api-only-extraction",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /gh api repos/:owner/:repo/pulls/<pr_number>/comments/i",
+            "why": "extraction is programmatic only, never by eyeballing rendered PR HTML"
+          },
+          {
+            "id": "proceeds-to-extraction",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /proceed directly to Step 2 extraction & triage/i",
+            "why": "skipping the countdown must not stall the station"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "The run reaches triage instead of idling when review content already exists",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    },
+    {
+      "case_id": "final-summary-after-merge",
+      "static": {
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "results": [
+          {
+            "id": "pr-link-with-merged",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /MERGED/i",
+            "why": "the summary leads with the PR identity and its merged state"
+          },
+          {
+            "id": "back-to-base",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /חזרנו לענף הבסיס/i",
+            "why": "the return to a clean base is part of what the operator is told"
+          },
+          {
+            "id": "impact-order",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /מהמשפיע ביותר למינורי/i",
+            "why": "fixes are listed critical-to-minor, not in comment arrival order"
+          },
+          {
+            "id": "next-step-vi",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched //vi-close-pipeline <id>/i",
+            "why": "the summary always names the next station"
+          },
+          {
+            "id": "no-raw-comment-text",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /Never dump raw CodeRabbit text/i",
+            "why": "raw bot text stays on GitHub, never in the operator chat"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "The PR is confirmed MERGED before the summary is written",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The Hebrew summary names the PR and the next station",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    },
+    {
+      "case_id": "negative-no-pr-delegates-to-iv",
+      "static": {
+        "total": 3,
+        "passed": 3,
+        "failed": 0,
+        "results": [
+          {
+            "id": "no-direct-pr-creation",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /do not create it yourself.{0,60}delegate to `iv-review-build-and-pr`/i",
+            "why": "Station V babysits an existing PR; opening one is Station IV's job"
+          },
+          {
+            "id": "delegates-to-iv",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /delegate to `iv-review-build-and-pr`/i",
+            "why": "the delegation target is named explicitly, not implied"
+          },
+          {
+            "id": "resumes-after-pr",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /resume this skill at Step 1 with the newly created PR/i",
+            "why": "babysitting cannot start before the PR exists"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "No PR is created directly by this station",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "Babysitting resumes only after the PR exists",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    }
+  ]
+}
