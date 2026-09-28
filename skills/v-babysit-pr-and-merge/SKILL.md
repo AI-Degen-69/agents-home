@@ -135,21 +135,25 @@ One concise, matter-of-fact line per review comment, in simple language: product
 ### Report 2 — Final Summary (after the Step 5 merge)
 
 ```markdown
-# 🟢 V - ליווי PR עד מיזוג: [#<pr_number> - <title>](<url>) MERGED
+# 🟢 V - ליווי PR עד מיזוג: [#<pr_number> - <title>](<url>)
 
-חזרנו לענף הבסיס (`origin/<base>`) וה־PR הזה מוזג אחרי התיקונים.
+## 🔍 סטטוס סקירת CodeRabbit:
+[אחת מ: סיים סקירה מלאה + N הערות טופלו / לא סיים — נתקע על processing אחרי X דקות, מוזג על סמך סקירת גיבוי + CI ירוק / לא סקר — rate-limit, מוזג על סמך סקירת גיבוי + CI ירוק]
+**מצב הענף אחרי המיזוג:**
+* חזרנו לענף הבסיס (`origin/<base>`) וה־PR הזה מוזג אחרי התיקונים.
 
-## 🩹 מה תוקן בעקבות ההערות (מהמשפיע ביותר למינורי):
+## 🩹 מה תוקן בעקבות ההערות:
 * [מיקום מוצרי — מה הייתה הבעיה ואיך נפתרה, בשפה פשוטה]
 * [תיקון 2 — ...]
 
-## 🗺️ המסע המלא (אופציונלי — רק אם מוסיף הבנה):
-[3–4 שורות: איזו בעיה הייתה בהתחלה ← מה נבנה ← מה נמצא בסקירה ← סטטוס עכשיו. בלי מושגי קוד.]
+## 🗺️ המסע המלא:
+[3–4 שורות: מה הייתה הבעיה ← מה נבנה ← מה נמצא בסקירה ← סטטוס עכשיו. בלי מושגי קוד.]
 
-## 🔍 סטטוס סקירת CodeRabbit (חובה — שורה אחת כנה):
-[אחת מ: סיים סקירה מלאה + N הערות טופלו / לא סיים — נתקע על processing אחרי X דקות, מוזג על סמך סקירת גיבוי + CI ירוק / לא סקר — rate-limit, מוזג על סמך סקירת גיבוי + CI ירוק]
+---
 
-👉 **השלב הבא:** `/vi-close-pipeline <id>` — סגירת הצינור: ניקוי שאריות, סגירת ה-Issue, ושער יציאה נקי (master מסונכרן, אפס שינויים מחכים).
+👉 **השלב הבא:**
+* `/present-pr` — אם רלוונטי, הרץ כדי להכין פרזנטציה ויזואלית.
+* `/vi-close-pipeline` - סגירת המהלך, ניקוי השולחן והחזרת המאגר למצב נקי ומסודר, וסגירת ה-Issue.
 ```
 
 **Timeout-merge rule:** when `IN_PROGRESS_STUCK` or `RATE_LIMITED`, the `CodeRabbit` check may stay `PENDING` forever. Do NOT wait for it. Merge gate = agent fallback review clean (or its nits triaged) + `gh pr checks` green (excluding the stuck `CodeRabbit` context). State this explicitly in the `סטטוס סקירת CodeRabbit` line so the operator knows the merge was NOT on a completed bot review.

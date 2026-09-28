@@ -157,24 +157,19 @@ Example tone:
 * **Issue:** [#<id> - <title>](<url>)
 * **PR:** [#<n> - <title>](<url>) 🟢 MERGED
 
----
-
-## 🧠 מה השתנה (במילים פשוטות):
+## 💡 מה השתנה:
 * [לפני העדכון: מה לא עבד או מה היה חסר]
 * [עכשיו: מה השתפר ומה אפשר לעשות]
 
+## 👁️ ווידוא ידני:
+1. **מה לוודא:** פתח את [מסך האפליקציה / טאב / כפתור במערכת החיה עצמה]
+2. **מה לצפות לראות:** [מה השינוי אמור לעשות, או מה התוצאה שהמשתמש אמור לראות]
+
+## 🎨 קובץ פרזנטציה:
+- **נתיב:** [נתיב מלא לקובץ שנוצר]
+- **פתח:** [start <file.html>]
+
 ---
 
-## 🕹️ נסה בעצמך (באפליקציה / בפרויקט עצמו):
-1. **איפה ללחוץ / מה לפתוח:** [מסך האפליקציה / טאב / כפתור במערכת החיה עצמה; פקודת הרצה רק אם אין ממשק גרפי, לעולם לא פקודות בדיקה (tests) ולעולם לא הפניה למצגת שנוצרה]
-2. **מה תראה בפועל:** [הוכחה חזותית אמיתית באפליקציה/במערכת]
-
----
-
-* 👁️ Verify: static checks passed (parse + inline JS + no external refs)
-* 🌐 Browser: opened fire-and-forget in the operator's default browser
-* 📁 File manager: opened auto with the file marked
-* 📄 Path: [full path of the saved page]
-
-🎉 Done: work explained, page saved and checked.
-```
+# ➡️ השלב הבא: 
+- סגירת ה-issue והכנה ל-Issue הבא: **`/vi-close-pipline`**

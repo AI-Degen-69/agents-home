@@ -45,7 +45,7 @@ Stop the issue-dependent steps. Say in plain language exactly what failed, and a
    - **Small** — one file or one function; straightforward once the code is read.
    - **Standard** — 2–5 files, internal module changes, a single architectural decision.
    - **Large** — cross-cutting changes, a new external dependency, public API or database schema change.
-3. **Task type** — classify into one or more primary categories (combinations allowed): **Code** (default), **Design**, **Debug**, **Performance**, **Security**, **Docs**, **Research**. Classify *before* planning: downstream stations (`iii-build-plan`, `iv-review-build-and-pr`) pick reviewers and test suites from this tag.
+3. **Task type** — classify into one or more primary categories (combinations allowed): **Code** (default), **Design**, **Debug**, **Performance**, **Security**, **Docs**, **UX / Copy**, **Research**. Classify *before* planning: downstream stations (`iii-build-plan`, `iv-review-build-and-pr`) pick reviewers and test suites from this tag.
 
 ### Step 0A: Resolve Open Questions from Code & Consult CodeRabbit Plan
 1. **Check for CodeRabbit Plan in comments:** Look at the discussion comments fetched via `gh issue view <number> --comments`. If a plan comment from `coderabbitai` exists:
@@ -77,15 +77,17 @@ Load specialized skills that match the classified task type (and only skills tha
 
 | Task type | Planning skills |
 |---|---|
-| Design/UI | `frontend-ui-engineering`, `tailwind-design-system`, `extract-design-system` |
+| Design/UI | `frontend-ui-engineering`, `frontend-design`, `tailwind-design-system`, `extract-design-system` |
 | API/Backend | `api-and-interface-design` |
 | Debug | `debugging-and-error-recovery`, `doubt-driven-development` |
 | Performance | `performance-optimization` |
 | Security | `security-and-hardening` |
 | Docs | `documentation-and-adrs` |
+| UX / Copy | `humanizer` |
 | Research | `idea-refine` (spike → recommendation doc) |
 | Core (default) | `test-driven-development`, `incremental-implementation` |
 
+*Design distinction:* `frontend-design` governs aesthetic direction, typography, and non-templated choices; `frontend-ui-engineering` governs accessible, responsive, production-quality UI and WCAG compliance.
 *Execution tagging:* in `tasks/plan.md`, every task declares its domain tag (`[Design/UI]`, `[Backend/Logic]`, `[Debug]`, ...) and the verification mode `iii-build-plan` will run (browser preview for UI, unit/integration runner for logic).
 
 ### Step 2: Specification (`spec-driven-development`)

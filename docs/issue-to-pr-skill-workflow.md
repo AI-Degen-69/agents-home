@@ -91,14 +91,14 @@ The chat reports **what changed in the product — never how it was saved.** No 
 
 Every external skill and reviewer persona each pipeline station invokes, read off the stations' own `SKILL.md` and `references/` files rather than a hand-maintained list. Station-to-station routing lives in the architecture diagram above; this table covers only the helper skills and personas a station delegates to. A name absent from a station's row is not invoked by that station.
 
-**Coverage: 44 skills (10 pipeline + 31 first-order + 3 second-order) and all 17 personas.**
+**Coverage: 46 skills (10 pipeline + 33 first-order + 3 second-order) and all 17 personas.**
 
 | Station | Invokes | When |
 |---|---|---|
 | **Gate** (`pipeline-triage`) | `using-agent-skills` | Ad-hoc (non-Issue) requests — route there and stop; this skill hands off at most once |
 | **I** (`i-pick-issue`) | `context-engineering`, `using-agent-skills` | `context-engineering` after issue selection — locks session scope before opening files. `using-agent-skills` when the request is ad-hoc rather than Issue work |
 | **Intake** (`create-issue`) | `using-agent-skills` | Hands a quick question or exploration back to the ad-hoc router instead of opening an issue |
-| **II** (`ii-plan-issue`) | **Domain routing (Step 1):** Design/UI → `frontend-ui-engineering`, `tailwind-design-system`, `extract-design-system` · API/Backend → `api-and-interface-design` · Debug → `debugging-and-error-recovery`, `doubt-driven-development` · Performance → `performance-optimization` · Security → `security-and-hardening` · Docs → `documentation-and-adrs` · Research → `idea-refine` · Core (default) → `test-driven-development`, `incremental-implementation`<br>**Later steps:** `spec-driven-development` (Step 2 specification), `constraint-driven-development` (Step 3 quality guardrails), `planning-and-task-breakdown` (Step 6 task decomposition)<br>**Personas:** `code-explorer`, `type-design-analyzer` | Task-type classification before any plan is written; every task then carries a domain tag Station III routes on |
+| **II** (`ii-plan-issue`) | **Domain routing (Step 1):** Design/UI → `frontend-ui-engineering`, `frontend-design`, `tailwind-design-system`, `extract-design-system` · API/Backend → `api-and-interface-design` · Debug → `debugging-and-error-recovery`, `doubt-driven-development` · Performance → `performance-optimization` · Security → `security-and-hardening` · Docs → `documentation-and-adrs` · UX / Copy → `humanizer` · Research → `idea-refine` · Core (default) → `test-driven-development`, `incremental-implementation`<br>**Later steps:** `spec-driven-development` (Step 2 specification), `constraint-driven-development` (Step 3 quality guardrails), `planning-and-task-breakdown` (Step 6 task decomposition)<br>**Personas:** `code-explorer`, `type-design-analyzer` | Task-type classification before any plan is written; every task then carries a domain tag Station III routes on |
 | **III** (`iii-build-plan`) | **Domain routing:** UI/Frontend/Design → `frontend-ui-engineering` (+ `tailwind-design-system` when tokens apply) · Code/Backend/API → `test-driven-development`, `source-driven-development`, `api-and-interface-design` · Debug/Defect → `debugging-and-error-recovery` · Performance → `performance-optimization` · Security → `security-and-hardening` · Docs → `documentation-and-adrs`<br>**Recurring:** `code-simplification` at the end of every task, `git-workflow-and-versioning` (commit discipline, feature flags, rollback), `observability-and-instrumentation` (production-facing changes)<br>**Personas:** `tdd-guide`, `build-error-resolver`, `react-build-resolver`, `go-build-resolver`, `rust-build-resolver` | Per task, by the domain tag Station II wrote. A persona absent from disk is skipped and the skip recorded — never invented |
 | **IIIB** (`iiib-iterate-after-build`) | **Lane routing:** Bug/error/regression → `diagnosing-bugs`, then `debugging-and-error-recovery` · Dead button → `click-path-audit` · UI/styling/mobile → `frontend-ui-engineering` (+ `tailwind-design-system` when design tokens apply) · Performance → `performance-optimization` · Security → `security-and-hardening`<br>**Verification:** `browser-testing-with-devtools`, `test-driven-development`, `verification-before-completion`<br>**Recurring:** `code-simplification` | One lane per operator-reported item; an item matching no lane is treated as a bug and one focused question is asked |
 | **IV** (`iv-review-build-and-pr`) | **Proof gate:** `playwright-cli` preferred, `browser-testing-with-devtools` for profiling only<br>**Quality axes:** `code-review-and-quality`, `security-and-hardening`, `test-driven-development`, `web-design-guidelines`<br>**Diff-matched specialists:** `python-reviewer`, `typescript-reviewer`, `react-reviewer`, `go-reviewer`, `rust-reviewer`, `database-reviewer`, `security-reviewer`, `silent-failure-hunter`, `doc-updater` — plus `api-and-interface-design`, `frontend-ui-engineering`, `vercel-react-best-practices`, `vercel-composition-patterns` as advisory input<br>**Gates:** `git-workflow-and-versioning` (sync & push), `verification-before-completion` | Proof-before-review first — no review runs on unproven code. Reviewer discovery is driven by `git diff --name-only`. OCR is an external delegation, not a local skill. A persona missing on disk is skipped and recorded |
@@ -110,11 +110,12 @@ Every external skill and reviewer persona each pipeline station invokes, read of
 create-issue ──────────► using-agent-skills (ad-hoc handoff)
 pipeline-triage ───────► using-agent-skills (ad-hoc handoff)
 i-pick-issue ──────────► context-engineering, using-agent-skills
-ii-plan-issue ─────────► frontend-ui-engineering, tailwind-design-system,
-                         extract-design-system, api-and-interface-design,
+ii-plan-issue ─────────► frontend-ui-engineering, frontend-design,
+                         tailwind-design-system, extract-design-system,
+                         api-and-interface-design,
                          debugging-and-error-recovery, doubt-driven-development,
                          performance-optimization, security-and-hardening,
-                         documentation-and-adrs, idea-refine,
+                         documentation-and-adrs, humanizer, idea-refine,
                          test-driven-development, incremental-implementation,
                          spec-driven-development, constraint-driven-development,
                          planning-and-task-breakdown
@@ -161,7 +162,7 @@ Three skills are not invoked by a station directly but by a skill a station alre
 | `interview-me` | `constraint-driven-development` |
 | `shipping-and-launch` | `git-workflow-and-versioning`, `observability-and-instrumentation`, `using-agent-skills` |
 
-**Shipped set: 44 skills = 10 pipeline + 31 first-order + 3 second-order.**
+**Shipped set: 46 skills = 10 pipeline + 33 first-order + 3 second-order.**
 
 ---
 
