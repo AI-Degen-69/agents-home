@@ -1,4 +1,5 @@
 # Harness transient state and OS junk — never canonical (per docs/issue-to-pr-skill-workflow.md artifact homes)
 .freebuff/
+.playwright-cli/
 desktop.ini
 icon_*.ico

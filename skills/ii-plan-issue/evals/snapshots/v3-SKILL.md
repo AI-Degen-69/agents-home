@@ -56,7 +56,6 @@ Stop the issue-dependent steps. Say in plain language exactly what failed, and a
    - **Borrow test cases:** note the exact test assertions and regression test files it specified for use in Step 3 (`CONSTRAINTS.md`) and Step 6 (`tasks/plan.md`).
    - **Enforce simplicity (Rule 4):** its suggestions are non-binding. It usually over-splits — merge its task list into 3–4 atomic tasks and drop invented abstractions or new files nothing requires.
    - **Verify, don't assume (Rule 6):** spot-check every file path, symbol, and line number it cites against the live codebase before adopting any of it.
-   - **Cost the intake once:** record a three-line note in `tasks/plan.md` — what was adopted from its plan, what was rejected and why, and what stayed `[UNVERIFIED]` — so Stations III–V never re-read that comment.
 
 2. **Resolve Open Questions (needs-answers flag):** If the issue carries the `needs-answers` label or an **Open questions** section:
    - For each open question, first try to resolve it **from the code** (and CodeRabbit's codebase analysis) — read the relevant paths, check how similar cases are handled in the repo.
@@ -129,12 +128,11 @@ Propose **at most one** concrete improvement to the issue's approach — an arch
 
 Rules:
 - **The issue leads.** Open with the issue and its plan; classification and guardrails get one compact line each. Never enumerate skills or planning steps in the chat report — skill names live in `tasks/plan.md` rows.
-- **What's-changed only.** Report the planned changes grouped by tag (new / changed / removed — fixed rarely applies at plan time). No commits, no test commands or counts, no skill names, no file paths. The plan is expectations, not results: each item says what *will* change and where in the product.
 - Everyday Hebrew, short sentences, only claims grounded in the issue and code — never fabricate.
 - The report adapts by task type: Design leads with UI decisions, Debug with the reproduction hypothesis, Docs with the outline, Code with the approach.
-- "מה ה-Issue דורש" is short bullets quoting what the issue describes; the plan groups say what will change for each point.
+- "מה ה-Issue דורש" is short bullets quoting what the issue describes; the plan bullets say how each task answers it; "איך מוודאים?" replaces quality-guardrail talk with plain verification of the issue's problem.
 - The improvement proposal is one plain sentence, evidence-based, adopted by default — dropped only on explicit operator rejection.
-- Drop any section that carries nothing for this issue. Omit empty change groups entirely.
+- Drop any section that carries nothing for this issue.
 
 ```markdown
 # 📐 II - תכנון: Issue #<מספר> — <כותרת ה-Issue>
@@ -144,19 +142,20 @@ Branch: `i<מספר>/<slug-מהכותרת>` — e.g. `i69/increase-button-size`
 ## מה ה-Issue דורש
 - [נקודה 1 במילים פשוטות — מה ה-issue מתאר]
 - [נקודה 2]
+- [נקודה 3 אם יש — קצר, בנקודות]
 
-## מה ייבנה
+## התוכנית
+- [משימה 1 בשפה פשוטה — מה נבנה ואיך זה עונה לנקודה הרלוונטית מה-issue] · אימות: [טסט/בדיקת דפדפן]
+- [משימה 2 — ...]
+- [משימה 3 — ...]
+*(התוכנית מסתגלת לפי סוג המשימה — Design/Debug/Docs מקבלים דגשים שונים)*
 
-### ➕ מה חדש?
-- [מיקום מוצרי + מה ייווצר — רק קבוצות עם תוכן]
+## איך מוודאים?
+- [איך התוכנית מוכיחה שמה שנבנה עונה לבעיה שה-issue מתאר — טסטים ממוקדים, בדיקת דפדפן, סף ביצועים]
+- אפס רגרסיות לטסטים קיימים · אין עקיפת טסטים
 
-### ✏️ מה שונה?
-- [מיקום מוצרי + מה ישתנה]
-
-### ❌ מה הוסר?
-- [מיקום מוצרי + מה יוסר]
-
-התוכנית המלאה: `tasks/plan.md` · אימות מוגדר לכל משימה בתוכנית.
+## קבצים
+tasks/plan.md · CONSTRAINTS.md · [SPEC.md רק ל-Standard/Large]
 
 💡 [הצעת שיפור אחת, משפט אחד בשפה פשוטה — מבוססת ראיות מה-issue ומהקוד; מאומצת כברירת מחדל, יורדת רק אם נדחית]
 

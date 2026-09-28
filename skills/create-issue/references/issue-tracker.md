@@ -53,6 +53,7 @@ The final acceptance criterion must be a runnable verification command — that 
 
 - New capture that still needs shaping: `idea` + `needs-triage`.
 - Shaped and fully specified so an agent can pick it up AFK: swap to `ready-for-agent`.
+- Published but still genuinely unshaped even after research: pair `ready-for-agent` with `needs-triage` (the publish-time exception to the `idea` + `needs-triage` pair above — it says "an agent may start, but expect churn").
 - Has documented Open questions (body section) awaiting resolution from code at planning time: pair `ready-for-agent` with `needs-answers` (create with `gh label create "needs-answers" --color FBCA04` on first use).
 - Requires operator hands or operator decisions, not agent work: `ready-for-human`.
 - Bot accounts submitting external PRs are triaged like any other `NONE`-association author, but weight `author` and prior behavior when accepting.

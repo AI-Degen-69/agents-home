@@ -1,0 +1,253 @@
+{
+  "summary": {
+    "skill": "skills\\create-issue\\SKILL.md",
+    "graded_at": "2026-09-27T22:45:59.829Z",
+    "cases": 4,
+    "static_assertions": 16,
+    "static_passed": 16,
+    "static_failed": 0,
+    "static_pass_rate": 1,
+    "live_assertions": "excluded from rate (not-run)"
+  },
+  "graded": [
+    {
+      "case_id": "raw-idea-to-published-issue",
+      "static": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0,
+        "results": [
+          {
+            "id": "research-before-draft",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /real paths with line\\s+numbers/i",
+            "why": "an issue written without repo research is not ready-for-agent"
+          },
+          {
+            "id": "publish-immediately",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /(Publish immediately|No waiting for approval)/i",
+            "why": "publication must not stall on a draft-approval pause"
+          },
+          {
+            "id": "publish-with-label",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /gh issue create[\\s\\S]{0,90}--label ready-for-agent/i",
+            "why": "the ready-for-agent label is the intake quality bar downstream stations read"
+          },
+          {
+            "id": "coderabbit-request-posted",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /post the canonical `@coderabbitai plan` prompt/i",
+            "why": "the plan request is what primes Station II while the operator is still in Station I"
+          },
+          {
+            "id": "coderabbit-body-not-file",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /Post the prompt body, never the file/i",
+            "why": "passing the reference doc as-is would publish a wrapper and bury the mention in a code block"
+          },
+          {
+            "id": "coderabbit-skip-trivial",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /Skip the request for a genuinely trivial issue/i",
+            "why": "a docs/typo-only issue gets nothing back from phases and test cases"
+          },
+          {
+            "id": "coderabbit-retry-once",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /retry once[\\s\\S]{0,220}lowercase/i",
+            "why": "a capitalized mention returns no plan; the retry is the recovery path"
+          },
+          {
+            "id": "hebrew-report-contract",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /חובת דיווח בעברית/i",
+            "why": "the closeout report is a hard contract of this skill"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "The repo is scanned and real file paths with line numbers are cited before the draft is written",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The issue is published with the ready-for-agent label via gh",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The CodeRabbit plan request is posted as its own issue comment, starting with the lowercase mention",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The issue number and URL are reported back to the operator in everyday Hebrew",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    },
+    {
+      "case_id": "unclear-idea-needs-answers",
+      "static": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "results": [
+          {
+            "id": "ambiguity-captured-not-guessed",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /do NOT stop to interrogate/i",
+            "why": "unclear points become body questions instead of a blocking interview"
+          },
+          {
+            "id": "open-questions-section",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /\\*\\*Open questions\\*\\*/i",
+            "why": "the body section is the durable record Station II resolves from code"
+          },
+          {
+            "id": "needs-answers-label",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /needs-answers/i",
+            "why": "the label is how the open questions survive until planning time"
+          },
+          {
+            "id": "never-block-publication",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /(Never guess intent silently|never block publication|no draft approval pause)/i",
+            "why": "open questions must not halt the publish step"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "Ambiguity is surfaced instead of silently guessed",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The published issue carries the needs-answers label and an Open questions body section",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "Publication is not blocked on unresolved questions",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "No fictional file paths or invented requirements appear in the draft",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    },
+    {
+      "case_id": "docs-only-idea-skips-plan-request",
+      "static": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "results": [
+          {
+            "id": "trivial-skip-rule",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /docs/typo/comment-only/i",
+            "why": "the skip rule must name the class of issue it applies to, not leave it to taste"
+          },
+          {
+            "id": "skip-keeps-publishing",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /publish, report, and move on/i",
+            "why": "the skip applies to the plan request only — the issue is still published and reported"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "The README typo issue is published with the ready-for-agent label",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "No @coderabbitai comment is posted on the trivial issue",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The closeout report still names the created issue",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    },
+    {
+      "case_id": "negative-existing-work-not-an-issue",
+      "static": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "results": [
+          {
+            "id": "description-scoped-to-intake",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /(Intake|Station I)/i",
+            "why": "L1 description must scope the skill to issue intake so it does not fire on ordinary conversation"
+          },
+          {
+            "id": "no-catchall-trigger",
+            "type": "not_regex",
+            "pass": true,
+            "detail": "forbidden pattern absent",
+            "why": "a catch-all trigger wording would convert casual remarks into tracked issues"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "No gh issue create command is run",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "No ready-for-agent issue is published from a casual remark",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "No @coderabbitai comment is posted",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The agent does not silently convert conversation into a tracked issue",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    }
+  ]
+}

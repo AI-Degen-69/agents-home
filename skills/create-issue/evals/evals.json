@@ -1,39 +1,79 @@
 {
   "skill_name": "create-issue",
-  "note": "Eval set in the agentskills.io evals/evals.json format. Case 1 covers the standard draft-and-publish flow, case 2 covers the needs-answers path, case 3 is the negative case.",
+  "note": "Eval set in the agentskills.io evals/evals.json format, graded deterministically by scripts/grade.js. Static assertions are regex contracts over SKILL.md; live assertions need a real repo + gh run and are recorded as not-run (excluded from pass-rate denominators).",
   "evals": [
     {
       "id": "raw-idea-to-published-issue",
       "prompt": "/create-issue I want the deploy script to retry failed uploads three times before giving up.",
-      "expected_output": "Agent scans the repo for the relevant deploy script and related files, drafts the issue from the template with a concrete problem statement, publishes it with gh labeled ready-for-agent, and reports the issue number.",
+      "expected_output": "Agent scans the repo for the relevant deploy script and related files, drafts the issue from the template with a concrete problem statement, publishes it with gh labeled ready-for-agent, posts the CodeRabbit plan request as its own comment, and reports the issue number in everyday Hebrew.",
+      "mode_coverage": ["numbered"],
       "files": [],
-      "assertions": [
-        "The repo is scanned and real file paths are cited before the draft is written",
+      "static_assertions": [
+        { "id": "research-before-draft", "type": "regex", "pattern": "real paths with line\\s+numbers", "must_match": true, "why": "an issue written without repo research is not ready-for-agent" },
+        { "id": "publish-immediately", "type": "regex", "pattern": "(Publish immediately|No waiting for approval)", "must_match": true, "why": "publication must not stall on a draft-approval pause" },
+        { "id": "publish-with-label", "type": "regex", "pattern": "gh issue create[\\s\\S]{0,90}--label ready-for-agent", "must_match": true, "why": "the ready-for-agent label is the intake quality bar downstream stations read" },
+        { "id": "coderabbit-request-posted", "type": "regex", "pattern": "post the canonical `@coderabbitai plan` prompt", "must_match": true, "why": "the plan request is what primes Station II while the operator is still in Station I" },
+        { "id": "coderabbit-body-not-file", "type": "regex", "pattern": "Post the prompt body, never the file", "must_match": true, "why": "passing the reference doc as-is would publish a wrapper and bury the mention in a code block" },
+        { "id": "coderabbit-skip-trivial", "type": "regex", "pattern": "Skip the request for a genuinely trivial issue", "must_match": true, "why": "a docs/typo-only issue gets nothing back from phases and test cases" },
+        { "id": "coderabbit-retry-once", "type": "regex", "pattern": "retry once[\\s\\S]{0,220}lowercase", "must_match": true, "why": "a capitalized mention returns no plan; the retry is the recovery path" },
+        { "id": "hebrew-report-contract", "type": "regex", "pattern": "חובת דיווח בעברית", "must_match": true, "why": "the closeout report is a hard contract of this skill" }
+      ],
+      "live_assertions": [
+        "The repo is scanned and real file paths with line numbers are cited before the draft is written",
         "The issue is published with the ready-for-agent label via gh",
-        "The issue body contains a concrete problem statement and acceptance criteria",
-        "The issue number and URL are reported back to the operator"
+        "The CodeRabbit plan request is posted as its own issue comment, starting with the lowercase mention",
+        "The issue number and URL are reported back to the operator in everyday Hebrew"
       ]
     },
     {
       "id": "unclear-idea-needs-answers",
       "prompt": "/create-issue Make the search better somehow.",
-      "expected_output": "The idea cannot be drafted concretely, so the agent asks the operator only the questions that block drafting, or drafts with an explicit Open questions body section and the needs-answers label — never blocking publication on open questions.",
+      "expected_output": "The idea cannot be drafted concretely, so the agent drafts with an explicit Open questions body section and the needs-answers label — never blocking publication on open questions.",
+      "mode_coverage": ["numbered"],
       "files": [],
-      "assertions": [
+      "static_assertions": [
+        { "id": "ambiguity-captured-not-guessed", "type": "regex", "pattern": "do NOT stop to interrogate", "must_match": true, "why": "unclear points become body questions instead of a blocking interview" },
+        { "id": "open-questions-section", "type": "regex", "pattern": "\\*\\*Open questions\\*\\*", "must_match": true, "why": "the body section is the durable record Station II resolves from code" },
+        { "id": "needs-answers-label", "type": "regex", "pattern": "needs-answers", "must_match": true, "why": "the label is how the open questions survive until planning time" },
+        { "id": "never-block-publication", "type": "regex", "pattern": "(Never guess intent silently|never block publication|no draft approval pause)", "must_match": true, "why": "open questions must not halt the publish step" }
+      ],
+      "live_assertions": [
         "Ambiguity is surfaced instead of silently guessed",
-        "If published, the issue carries the needs-answers label and an Open questions body section",
+        "The published issue carries the needs-answers label and an Open questions body section",
         "Publication is not blocked on unresolved questions",
         "No fictional file paths or invented requirements appear in the draft"
       ]
     },
     {
+      "id": "docs-only-idea-skips-plan-request",
+      "prompt": "/create-issue Fix the typo in the README install section.",
+      "expected_output": "The issue is published normally, but the CodeRabbit plan request is skipped: a docs/typo-only change with no behavior change gets nothing back from phases and test cases. The closeout still reports the created issue.",
+      "mode_coverage": ["numbered", "edge"],
+      "files": [],
+      "static_assertions": [
+        { "id": "trivial-skip-rule", "type": "regex", "pattern": "docs/typo/comment-only", "must_match": true, "why": "the skip rule must name the class of issue it applies to, not leave it to taste" },
+        { "id": "skip-keeps-publishing", "type": "regex", "pattern": "publish, report, and move on", "must_match": true, "why": "the skip applies to the plan request only — the issue is still published and reported" }
+      ],
+      "live_assertions": [
+        "The README typo issue is published with the ready-for-agent label",
+        "No @coderabbitai comment is posted on the trivial issue",
+        "The closeout report still names the created issue"
+      ]
+    },
+    {
       "id": "negative-existing-work-not-an-issue",
       "prompt": "We already discussed this in the standup notes, just remember to look at the retry logic sometime. (casual remark, not a request for a new issue)",
-      "expected_output": "The skill must not trigger: no gh issue creation, no repo scan for drafting, no premature label creation. At most a brief clarification whether an issue is wanted.",
+      "expected_output": "The skill must not trigger: no gh issue creation, no repo scan for drafting, no premature label creation, no CodeRabbit comment. At most a brief clarification whether an issue is wanted.",
+      "mode_coverage": ["negative"],
       "files": [],
-      "assertions": [
+      "static_assertions": [
+        { "id": "description-scoped-to-intake", "type": "regex", "pattern": "(Intake|Station I)", "must_match": true, "why": "L1 description must scope the skill to issue intake so it does not fire on ordinary conversation" },
+        { "id": "no-catchall-trigger", "type": "not_regex", "pattern": "(whenever the user (mentions|talks)|any (idea|thought) the user)", "must_match": true, "why": "a catch-all trigger wording would convert casual remarks into tracked issues" }
+      ],
+      "live_assertions": [
         "No gh issue create command is run",
         "No ready-for-agent issue is published from a casual remark",
+        "No @coderabbitai comment is posted",
         "The agent does not silently convert conversation into a tracked issue"
       ]
     }

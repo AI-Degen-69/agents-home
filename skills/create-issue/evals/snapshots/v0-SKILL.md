@@ -51,9 +51,10 @@ conversation.
      after research).
    - Split: publish every issue first, capture each `#number`, then wire them
      together so they are visibly one family, not orphans:
-     - Put `Part of #<first-issue>` at the top of every later sibling's body —
-       the header wording and the first-sibling exception are canonical in
-       `references/issue-tracker.md` → Conventions.
+     - Put `Part of #<first-issue>` at the top of every later sibling's body,
+       pointing at the first published issue (the first sibling carries only the
+       `Related:` line — matches the convention in this skill's
+       `references/issue-tracker.md`).
      - Post a cross-reference comment on each issue pointing at the others, e.g.
        `gh issue comment <n> --body "Related: #<a>, #<b>"`.
      - If one part blocks another, add a native dependency edge:
@@ -63,22 +64,9 @@ conversation.
 7. **Post CodeRabbit plan prompt:** Immediately after publishing each issue (or
    sibling), post the canonical `@coderabbitai plan` prompt stored in
    `references/coderabbit-plan-prompt.md` to request an implementation plan.
-   This primes CodeRabbit while the operator/agent is in Station I.
-   - **Post the prompt body, never the file.** The reference file is a doc: a
-     heading, a note, and the prompt wrapped in a ```` ```text ```` fence. Passing
-     it as-is would publish the wrapper and leave the `@coderabbitai` mention
-     inside a code block. Write the fenced body to a temp file and pass that —
-     `gh issue comment <n> --body-file <temp-prompt-file>` — or pass the body
-     inline with `--body`. The posted comment starts with the mention and
-     contains nothing else.
-   - **Skip the request for a genuinely trivial issue.** A docs/typo/comment-only
-     change with no behavior change gets nothing back from phases and test
-     cases: publish, report, and move on.
-   - **If no reply lands, retry once.** A plan normally arrives within about five
-     minutes. If the issue still shows no `coderabbitai` comment, post the prompt
-     again with the mention spelled exactly `@coderabbitai` in lowercase (a
-     capitalized mention was observed to return no plan at all), and say in the
-     closeout that a retry was sent.
+   This primes CodeRabbit while the operator/agent is in Station I:
+   `gh issue comment <n> --body-file references/coderabbit-plan-prompt.md`
+   (extract the prompt body from the reference file).
 8. **Closeout in chat:** You MUST report to the user in clean, everyday Hebrew following the Output Contract below. Never make the user wait before creation.
 
 ## Intake template
@@ -90,10 +78,10 @@ must be a runnable verification command).
 
 ## Split variant
 
-The rule is canonical in `references/issue-tracker.md` → Conventions (later
-siblings lead with `Part of #`, the first carries only `Related:`, every sibling
-gets a cross-reference comment, blockers get a native dependency edge — see
-Workflow step 6). Example top of each *later* sibling body:
+When the agent splits one idea into several issues, every later sibling body
+leads with a `Part of #<first-issue>` line pointing at the first published
+issue, and every sibling (first included) carries a **Related** note so none
+reads as orphaned. Example top of each *later* sibling body:
 
 ```markdown
 Part of #<first-issue>  ·  Related: #<a>, #<b>
@@ -101,6 +89,10 @@ Part of #<first-issue>  ·  Related: #<a>, #<b>
 ## Summary
 ...
 ```
+
+The first-published sibling gets only the `Related:` line — no self-reference.
+The agent posts a cross-reference comment on each issue and, where one part
+blocks another, adds a native dependency edge (see Workflow step 6).
 
 ## Quality bar
 
