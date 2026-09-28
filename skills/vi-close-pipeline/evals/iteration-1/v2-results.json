@@ -1,0 +1,110 @@
+{
+  "summary": {
+    "skill": "skills\\vi-close-pipeline\\SKILL.md",
+    "graded_at": "2026-09-28T00:21:01.891Z",
+    "cases": 1,
+    "static_assertions": 9,
+    "static_passed": 9,
+    "static_failed": 0,
+    "static_pass_rate": 1,
+    "live_assertions": "excluded from rate (not-run)"
+  },
+  "graded": [
+    {
+      "case_id": "merged-pr-full-closeout",
+      "static": {
+        "total": 9,
+        "passed": 9,
+        "failed": 0,
+        "results": [
+          {
+            "id": "merge-gate-first",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /must be [`]?MERGED/i",
+            "why": "no closeout step may run on an unmerged PR"
+          },
+          {
+            "id": "missing-closes-path",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /lacked .Closes/i",
+            "why": "the only sanctioned ad-hoc issue close is the missing-Closes recovery"
+          },
+          {
+            "id": "signal-discovery",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /Signal-Based Artifact Discovery/i",
+            "why": "candidates are detected by signals, never by assumed folder layout"
+          },
+          {
+            "id": "two-gate-test",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /Two-Gate Obsolescence Test/i",
+            "why": "deletion requires closed work AND zero inbound references"
+          },
+          {
+            "id": "knowledge-untouchable",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /Knowledge Is Untouchable/i",
+            "why": "presentations and research are permanent record, even when closed"
+          },
+          {
+            "id": "dead-code-guards",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /zero references first/i",
+            "why": "the single code-change exception needs mechanical proof plus tests"
+          },
+          {
+            "id": "foreign-dirt-rule",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /commit ONLY your files/i",
+            "why": "foreign dirt must be listed, never bundled into the prune commit"
+          },
+          {
+            "id": "clean-exit-gate",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /Clean Exit Gate/i",
+            "why": "the pipeline is not closed until every exit check passes"
+          },
+          {
+            "id": "hebrew-report-contract",
+            "type": "regex",
+            "pass": true,
+            "detail": "matched /VI - .{2,8}/i",
+            "why": "the Hebrew closeout report is a hard contract of this skill"
+          }
+        ]
+      },
+      "live": [
+        {
+          "assertion": "The PR is confirmed MERGED before any action",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "Stale artifacts are pruned only when both obsolescence gates pass",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The repo ends on the base branch, pushed, synced, and spotless",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        },
+        {
+          "assertion": "The Hebrew closeout report names the PR, the issue, every deletion, and the exit-gate state",
+          "status": "not-run",
+          "reason": "requires live repo + gh run"
+        }
+      ],
+      "pass_rate": 1
+    }
+  ]
+}

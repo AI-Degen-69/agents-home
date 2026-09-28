@@ -1,4 +1,4 @@
-﻿---
+---
 name: iv-review-build-and-pr
 description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then ECC language/framework reviewers, applies fixes, executes the post-review Browser Gate (UI, fast-first, playwright-cli preferred; DevTools MCP for profiling only) or targeted test gate (backend), pushes branch, and opens GitHub PR with @coderabbitai summary.
 ---
@@ -144,40 +144,28 @@ Before applying fixes, run the Spec axis in full:
 
 ## Hebrew Chat Output Contract (חובת דיווח בעברית)
 
-At the conclusion of Station IV, you MUST report to the user in clean, everyday Hebrew using this exact structured format. Output rules: tests run as an internal gate but are **never mentioned in the report** (no test counts, no suite names); a reviewer that came back clean gets exactly one line (`✅ נקי.`); fixes are explained in plain client language, ordered easy → hard.
+At the conclusion of Station IV, you MUST report to the user in clean, everyday Hebrew using this exact structured format. Output rules: what's-changed only — what the review changed in the product, grouped by tag. Never mention commits, hashes, test commands, test counts, skill names, or file paths. The branch stays as the work ID. A reviewer that came back clean is not listed at all — only reviewers whose findings changed something appear, with plain-language fixes ordered easy → hard.
 
 ```markdown
 # 🚢 IV - סקירת קוד ויצירת PR
 
-## 🔍 סיכום סוקרים מומחים:
-* **OCR delegation (preview + rules):** ✅ בלי ממצאים חוסמים. *(אם היו ממצאים — מפורטים כמו כל סוקר אחר)*
-* **[שם סוקר שיצא נקי]:** ✅ נקי.
-* **[שם סוקר שמצא הערות]:** ⚠️ מצא הערות (קל: N | בינוני: N | קריטי: N)
-  * **תיקונים שבוצעו** *(רשימה מסודרת מהקל לקשה):*
-    1. [הסבר קצר בשפה פשוטה — כמו שמסבירים ללקוח, בלי אוצר מילים של מתכנת ובלי תיאור של מה היה בקוד]
-    2. ...
-(לרשום רק סוקרים שבאמת הופעלו — בלי סעיפים ריקים ובלי סעיף אבטחה. סוקר נקי מקבל שורה אחת בלבד; רק מי שמצא הערות מקבל פירוט ותיקונים.)
-
----
-
-## 📊 פרטי ה-PR ואימות סופי:
-* **ענף:** `[שם הענף שנשלח]`
-* **קישור ישיר ל-Pull Request:** [לינק ישיר ל-PR ב-GitHub]
-* **סטטוס CodeRabbit** *(שורה אחת כנה שמבדילה בבירור בין "ראינו שהסקירה התחילה" לבין "רק שלחנו בקשה"):*
+Branch: `[שם הענף שנשלח]`
+**קישור ישיר ל-Pull Request:** [לינק ישיר ל-PR ב-GitHub]
+**סטטוס CodeRabbit** *(שורה אחת כנה):*
   - ✅ `CodeRabbit אישר שהסקירה התחילה` — ראינו את תגובת הבוט ("Review triggered")
   - ⏳ `המכסה מלאה — הסקירה תתחיל בעוד N דקות` — לפי תגובת הבוט, עם קישור
   - ❓ `נשלחה בקשת הפעלה אבל לא התקבל אישור תוך 60 שניות` — לא יודעים אם הסקירה התחילה
   - ❗ `תגובה אחרת של הבוט` — מצוטטת כמות שהיא, עם קישור
-* **קישורים לתגובות:** [חובה אם הסטטוס אינו ✅: קישור ישיר לתגובת הטריגר ולתגובת הבוט, לקפיצה מהירה]
-* **אימות סופי:** [שורה אחת בשפה פשוטה של אדם רגיל — מה ראינו שעובד בשטח. למשל: "הדף חי על :8803 — הפיד מתמלא בנתונים אמיתיים ובלי שגיאות". אל תזכיר טסטים בכלל ובלי מונחי מתכנתים.]
+* **קישורים לתגובות:** [חובה אם הסטטוס אינו ✅: קישור ישיר לתגובת הטריגר ולתגובת הבוט]
 
----
+## 🩹 מה תוקן בעקבות הסקירה?
+* **[מיקום מוצרי]** — [מה נמצא ומה עובד עכשיו, בשפה פשוטה — רק קבוצות עם תוכן]
 
-## 🗺️ איך זה נראה:
-[הדמיה אחת של מה שנבנה — לבחור את המתאימה: תרשים זרימה קטן, טבלת לפני/אחרי, או רשימת מסכים וקבצים שנוצרו. חובה להציג משהו חזותי ולא רק טקסט.]
+## ➕ מה חדש? / ✏️ מה שונה?
+* [רק אם הסקירה הוסיפה או שינתה משהו מעבר לתיקונים — אחרת הקבוצה לא מופיעה]
 
 ## 🧠 סיכום מההתחלה עד כאן:
-[מהתכנון (שלב א') ועד עכשיו: מה המשתמש ביקש, מה תוכנן, מה נבנה ומה נשלח ל-PR — במילים פשוטות של אדם רגיל, בלי מושגי קוד. הקורא צריך להבין מה קרה ולהיכנס ללופ.]
+[מהמשתמש ביקש, מה תוכנן, מה נבנה ומה נשלח ל-PR — במילים פשוטות, בלי מושגי קוד.]
 
-👉 **שלב הבא:** `/v-babysit-pr-and-merge` יושב על ה-PR ומחכה לתגובות של CodeRabbit, בוחר מה לתקן, וממזג.
+👉 **שלב הבא:** `/v-babysit-pr-and-merge` יושב על ה-PR ומחכה לתגובות, מתקן, וממזג.
 ```

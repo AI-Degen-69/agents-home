@@ -1,4 +1,4 @@
-﻿{
+{
   "skill_name": "v-babysit-pr-and-merge",
   "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes. Case 4 is the negative case.",
   "evals": [

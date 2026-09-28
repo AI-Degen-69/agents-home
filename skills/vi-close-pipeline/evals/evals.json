@@ -1,0 +1,86 @@
+{
+  "skill_name": "vi-close-pipeline",
+  "note": "Eval set in the agentskills.io evals/evals.json format, graded deterministically by scripts/grade.js. Static assertions are regex contracts over SKILL.md; live assertions need a real merged PR + gh run and are recorded as not-run (excluded from pass-rate denominators).",
+  "evals": [
+    {
+      "id": "merged-pr-full-closeout",
+      "prompt": "/vi-close-pipeline 294 (PR merged, issue closed by the merge)",
+      "expected_output": "Agent confirms the PR is MERGED, closes the issue only via the documented missing-Closes path, then sweeps stale artifacts through signal-based discovery and the two-gate obsolescence test, never deleting live knowledge, handling dead code only with zero-reference proof plus targeted tests, and finishes with the mandatory Clean Exit Gate - reporting everything in the Hebrew contract template.",
+      "mode_coverage": [
+        "numbered"
+      ],
+      "files": [],
+      "static_assertions": [
+        {
+          "id": "merge-gate-first",
+          "type": "regex",
+          "pattern": "must be.+MERGED",
+          "must_match": true,
+          "why": "no closeout step may run on an unmerged PR"
+        },
+        {
+          "id": "missing-closes-path",
+          "type": "regex",
+          "pattern": "lacked .Closes",
+          "must_match": true,
+          "why": "the only sanctioned ad-hoc issue close is the missing-Closes recovery"
+        },
+        {
+          "id": "signal-discovery",
+          "type": "regex",
+          "pattern": "Signal-Based Artifact Discovery",
+          "must_match": true,
+          "why": "candidates are detected by signals, never by assumed folder layout"
+        },
+        {
+          "id": "two-gate-test",
+          "type": "regex",
+          "pattern": "Two-Gate Obsolescence Test",
+          "must_match": true,
+          "why": "deletion requires closed work AND zero inbound references"
+        },
+        {
+          "id": "knowledge-untouchable",
+          "type": "regex",
+          "pattern": "Knowledge Is Untouchable",
+          "must_match": true,
+          "why": "presentations and research are permanent record, even when closed"
+        },
+        {
+          "id": "dead-code-guards",
+          "type": "regex",
+          "pattern": "zero references first",
+          "must_match": true,
+          "why": "the single code-change exception needs mechanical proof plus tests"
+        },
+        {
+          "id": "foreign-dirt-rule",
+          "type": "regex",
+          "pattern": "commit ONLY your files",
+          "must_match": true,
+          "why": "foreign dirt must be listed, never bundled into the prune commit"
+        },
+        {
+          "id": "clean-exit-gate",
+          "type": "regex",
+          "pattern": "Clean Exit Gate",
+          "must_match": true,
+          "why": "the pipeline is not closed until every exit check passes"
+        },
+        {
+          "id": "hebrew-report-contract",
+          "type": "regex",
+          "pattern": "VI - .{2,8}",
+          "must_match": true,
+          "why": "the Hebrew closeout report is a hard contract of this skill"
+        }
+      ],
+      "live_assertions": [
+        "The PR is confirmed MERGED before any action",
+        "Stale artifacts are pruned only when both obsolescence gates pass",
+        "The repo ends on the base branch, pushed, synced, and spotless",
+        "The Hebrew closeout report names the PR, the issue, every deletion, and the exit-gate state"
+      ]
+    }
+  ]
+}

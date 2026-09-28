@@ -1,4 +1,4 @@
-﻿---
+---
 name: iii-build-plan
 description: Station III (Build) — Universal execution orchestrator. Implements tasks from tasks/plan.md using type-aware execution (frontend-ui-engineering, TDD, debug), official docs grounding, atomic commits, and code simplification.
 ---
@@ -70,37 +70,24 @@ For every task executed, follow these phases:
 ## Hebrew Chat Output Contract (חובת דיווח בעברית)
 
 At the conclusion of Station III, you MUST report to the user in clean, everyday Hebrew using this exact structured format.
-Part A (what to check yourself) adapts to what was actually built — pick 2-3 checks, never a fixed list.
-Part B (the two paths + router) is always shown in full, with every skill in backticks except the dead-button row, which is routed automatically inside the router skill.
+What's-changed only: report the product changes grouped by tag. Never mention commits, hashes, tree state, test commands, test counts, skill names, or file paths. The branch stays as the work ID. Omit empty groups. Max ~7 items — group beyond that.
 
 ```markdown
-# 🔨 III - בנייה (סיכום ביצוע):
+# 🔨 III - בנייה: Issue #<מספר> — <כותרת ה-Issue>
 
-## 🎨 מה נבנה — מבט ויזואלי:
-[הצג כאן ויזואלית מה נבנה בצ'אט — טבלה / דיאגרמה / תרשים זרימה / צורות, כל דבר שמתאים ויעזור להסבר. דוגמאות: טבלת לפני ← אחרי, תרשים זרימה של המהלך, מבנה המסך או הרכיבים. חובה להתאים את הויזואל לתוכן — לא למלא בכוח]
+Branch: `i<מספר>/<slug>`
 
-## 🛠️ סקילים שהופעלו ומה בוצע בפועל:
-* **`[שם הסקיל הראשון, למשל: frontend-ui-engineering]`:** [הסבר קונקרטי: מה היה חסר או שבור, ומה הסקיל תיקן או בנה על פני הפרויקט]
-* **`[שם הסקיל השני, למשל: test-driven-development / api-and-interface-design]`:** [מה בוצע באמצעותו: מימוש לוגיקת ה-Backend וכתיבת בדיקות]
-* **`code-simplification`:** [מה נוקה ואיך הקוד נשמר רזה ופשוט]
+## ➕ מה חדש?
+- [מיקום מוצרי (דף/לשונית/חלק) + מה נוצר — רק קבוצות עם תוכן]
 
----
+## ✏️ מה שונה?
+- [מיקום מוצרי + מה השתנה]
 
-## 🧠 סיכום תמציתי:
-* **הבעיה:** [משפט אחד פשוט: מה היה שבור או חסר]
-* **איך הבנייה פתרה אותה:** [משפט אחד פשוט: מה נבנה ואיך זה פותר]
+## ❌ מה הוסר?
+- [מיקום מוצרי + מה הוסר]
 
----
+## 🩹 מה תוקן?
+- [מיקום מוצרי + מה היה שבור ומה עובד עכשיו]
 
-## 👀 מה לבדוק בעצמך:
-[2-3 בדיקות לפי מה שנבנה בפועל — נבנה כפתור/טופס: ללחוץ ולוודא תוצאה. נבנה מסך: מובייל ומסך גדול. נבנתה לוגיקה: תוצאה נכונה ובלי שגיאה. שונה קוד קיים: מה שעבד קודם עדיין עובד]
-
-## 👉 לאן ממשיכים — שני נתיבים:
-* **הכל טוב, אין הערות** -> `/iv-review-build-and-pr` — סקירה, אימות סופי, דחיפת ענף ופתיחת PR.
-* **יש הערה / באג / שינוי** -> `/iiib-iterate-after-build` + תיאור חופשי במילים שלך. הוא מנתב לבד ומתקן מקומית בלי push:
-  - באג / שגיאה -> `diagnosing-bugs` + `debugging-and-error-recovery`
-  - כפתור מת בלי שגיאה -> `click-path-audit`
-  - עיצוב / מובייל -> `frontend-ui-engineering`
-  - איטי -> `performance-optimization`
-  - אבטחה -> `security-and-hardening`
+👉 **הבא:** `/iv-review-build-and-pr` — סקירה ושליחה.
 ```

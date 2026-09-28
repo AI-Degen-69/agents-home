@@ -1,4 +1,4 @@
-﻿---
+---
 name: v-babysit-pr-and-merge
 description: Station V (Babysit PR & Merge) — Sits on PR through one focused CodeRabbit review round (or fallback), resolves comments, squash-merges on green CI, and fast-forwards local base branch.
 ---
@@ -451,15 +451,15 @@ A merge on GitHub does NOT move the local checkout: the terminal keeps showing t
 
 ## Hebrew Chat Output Contract (חובת דיווח בעברית)
 
-Two reports, both in clean everyday Hebrew. Never dump raw CodeRabbit text — always condensed and to the point.
+Two reports, both in clean everyday Hebrew. Never dump raw CodeRabbit text — always condensed and to the point. What's-changed only: no commit hashes or counts, no test commands or counts, no `file:line`, no fix-type letters. Each item names the product location + what was found and what works now.
 
 ### Report 1 — Triage Decisions (right after Step 4.4, before merge)
 
-One concise, matter-of-fact line per review comment, in simple language: what was found and what was decided about it. Inline replies on GitHub (`ACCEPT:` / `REJECT:`) still happen for every thread as usual — the chat list only summarizes the decisions. Order the lines most critical first. No full quotes of bot comments:
+One concise, matter-of-fact line per review comment, in simple language: product location + what was found and what was decided about it. Inline replies on GitHub (`ACCEPT:` / `REJECT:`) still happen for every thread as usual — the chat list only summarizes the decisions. Order the lines most critical first. No full quotes of bot comments:
 
 ```markdown
 ## 🔍 V - ליווי PR: טריאז׳ הערות CodeRabbit:
-* **ACCEPT** — [מה נמצא ומה תוקן, במילים פשוטות] (`file:line`, סוג A או B)
+* **ACCEPT** — [מיקום מוצרי + מה נמצא ומה תוקן, במילים פשוטות]
 * **REJECT** — [מה נטען ולמה נדחה, משפט קצר אחד]
 ```
 
@@ -476,12 +476,12 @@ One concise, matter-of-fact line per review comment, in simple language: what wa
 
 חזרנו לענף הבסיס (`origin/<base>`) וה־PR הזה מוזג אחרי התיקונים.
 
-## 🧠 סיכום התיקונים (מהמשפיע והקריטי ביותר למינורי):
-* [תיקון 1 — מה הייתה הבעיה ואיך נפתרה, בשפה פשוטה]
+## 🩹 מה תוקן בעקבות ההערות (מהמשפיע ביותר למינורי):
+* [מיקום מוצרי — מה הייתה הבעיה ואיך נפתרה, בשפה פשוטה]
 * [תיקון 2 — ...]
 
 ## 🗺️ המסע המלא (אופציונלי — רק אם מוסיף הבנה):
-[תרשים זרימה קטן או 3–4 שורות: איזו בעיה הייתה בהתחלה (`issue`) ← מה נבנה (`iii-build-plan`) ← מה נמצא בסקירה (`iv-review-build-and-pr` + סבב זה) ← סטטוס עכשיו: המשימה הושלמה במלואה / נשארו חורים: ...]
+[3–4 שורות: איזו בעיה הייתה בהתחלה ← מה נבנה ← מה נמצא בסקירה ← סטטוס עכשיו. בלי מושגי קוד.]
 
 ## 🔍 סטטוס סקירת CodeRabbit (חובה — שורה אחת כנה):
 [אחת מ: סיים סקירה מלאה + N הערות טופלו / לא סיים — נתקע על processing אחרי X דקות, מוזג על סמך סקירת גיבוי + CI ירוק / לא סקר — rate-limit, מוזג על סמך סקירת גיבוי + CI ירוק]
