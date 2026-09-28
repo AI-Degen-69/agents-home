@@ -57,7 +57,8 @@ Answer in Hebrew in the chat only. Always use this exact markdown shape with hea
 
 After the status line, always list every changed file by category with a one-line classification of what it is (which issue/PR it belongs to, or "unknown origin"). Omit a category only when its count is 0. Also list each stash with its number, age, branch, and a one-line classification of its contents.
 
-## 📊 מצב
+```markdown
+# 📊 Pipline Triage
 **ענף:** `name` | **קדימה/אחורה:** X/Y | **מבוימים:** X | **לא מבוימים:** X | **לא נעקבים:** X | **PR:** state | **סטאשים:** X
 
 **מבוימים (X):**
@@ -72,8 +73,21 @@ After the status line, always list every changed file by category with a one-lin
 **סטאשים (X):**
 - `stash@{0}` — date, branch, what it holds in one line
 
-## 🎯 החלטה
-מנותב ל־**`<station>`** — next action in one short line.
+## פירוש המצב:
+- [פירוש מצב הקבצים. מה השינויים של הקבצים, מאיפה מהם, האם הם חשובים / חלק מעבודה לא גמורה / סתם שטויות שצריך לזרוק]
+- [פירוש מצב הסטאשים. האם הם חשובים / חלק מעבודה לא גמורה / סתם שטויות שצריך לזרוק]
+- [פירוש מצב הענפים. האם הם חשובים / חלק מעבודה לא גמורה / סתם שטויות שצריך לזרוק]
+- [פירוש מצב ה-PR. מה השינויים של ה-PR, מאיפה מהם, האם הם חשובים / חלק מעבודה לא גמורה / סתם שטויות שצריך לזרוק]
+
+## 🎯 מסקנות:
+- [סיכום קצר של המצב והגישה לטיפול עם הסבר הגיוני]
+
+---
+
+## ➡️ השלב הבא:
+- [ההחלטה לאן לנתב את העבודה מכאן, איזה סקיל להפעיל מתוך הגיון ועבודה נכונה לפי המצב]
+- הנתיב שהוחלט עליו: **`<station>`**
+```
 
 ## Safety rules
 
