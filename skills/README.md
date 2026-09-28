@@ -27,8 +27,8 @@ Detailed documentation of the entire pipeline, station contracts, and Hebrew rep
 |---|---|---|---|
 | **Gate** (not numbered, runs before I) | `pipeline-triage` | State gate — inspect git/PR state, start a missing `coderabbit` review early, route to the one station that resumes or closes the work |
 | **I** | `i-pick-issue` | Pick & Orchestrate — Discovery (backlog mapping, prioritizing) → operator picks the issue → execution-mode gate → drives II–VI |
-| **Intake** (branch off I, not numbered) | `create-issue` | Intake branch — raw idea → researched GitHub issue (`ready-for-agent`); its output re-enters Discovery |
-| **II** | `ii-plan-issue` | Define & Plan (ECC right-sizing, spec, constraints, tasks/plan.md) |
+| **Intake** (branch off I, not numbered) | `create-issue` | Intake branch — raw idea → researched GitHub issue (`ready-for-agent`), then posts its own `@coderabbitai plan` request (prompt body only; skipped for trivial docs-only issues; retried once if no reply lands); its output re-enters Discovery |
+| **II** | `ii-plan-issue` | Define & Plan (ECC right-sizing, spec, constraints, reads any `coderabbitai` plan comment as a non-binding suggestion, tasks/plan.md) |
 | **III** | `iii-build-plan` | Build (TDD, atomic commits, skill routing, code simplification) |
 | **IIIB** | `iiib-iterate-after-build` | Iterate After Build (free-text corrections on a fresh build → specialist fix loop, no push) |
 | **IV** | `iv-review-build-and-pr` | Review, Verify & Ship (multi-axis review, test gate, push branch, open PR) |
@@ -39,8 +39,8 @@ Detailed documentation of the entire pipeline, station contracts, and Hebrew rep
 ## Deploying a new skill
 
 One command covers every harness root — Junction for Hermes and OpenCode,
-SymbolicLink for Gemini CLI / Antigravity (`-Harness hermes|gemini|opencode|both|all`;
-`both` = Hermes+Gemini, the default):
+SymbolicLink for Gemini CLI / Antigravity (`-Harness hermes|gemini|opencode|all`;
+default is `all`, the historical name `both` = Hermes+Gemini only):
 
 ```powershell
 .\scripts\sync-harness-skills.ps1 -Name <name>    # one skill

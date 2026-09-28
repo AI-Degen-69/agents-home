@@ -4,6 +4,18 @@ Canonical source of truth for all agents (Freebuff, OpenCode, Gemini CLI / Antig
 
 Source of the 6 rules: Addy Osmani, `using-agent-skills` (github.com/addyosmani/agent-skills), adopted 2026-09-22.
 
+## What this directory is
+
+`~/.agents` is the operator's **shared agent home** — one canonical copy of everything agents need, synced read-only into every harness (`scripts/sync-harness-skills.ps1`):
+
+- **`skills/`** (~88 skills) — the capability library. General-purpose skills (research, debugging, TDD, review, docs) plus the numbered issue→PR delivery pipeline below.
+- **`agents/`** — helper sub-agent personas (`code-explorer`, `code-reviewer`, stack-specific resolvers) that pipeline stations delegate to.
+- **`docs/`** — durable knowledge: the pipeline map (`docs/issue-to-pr-skill-workflow.md`) and nothing else.
+- **`scripts/`** — maintenance automation (harness sync, ECC drift check, CodeRabbit config sync).
+- **`config/`** — per-harness configuration.
+
+Skills are self-contained folders (`SKILL.md` + optional `references/`, `scripts/`, `evals/`). The global copy here is the single source of truth; harnesses hold links, never forks.
+
 ## The 6 rules (always on, for every task)
 
 1. **Surface assumptions.** Before non-trivial work, state your assumptions and let the operator correct them. Never guess silently.
@@ -30,6 +42,6 @@ One entry point per request, one handoff at most:
 
 `pipeline-triage` alone inspects git/PR state. Ties → the safer path.
 
-## Pipeline
+## The delivery pipeline (one part of this directory)
 
-The full station map (I, II, III, IIIB, IV, V, VI — plus the `pipeline-triage` state gate, the `create-issue` intake branch, and the ad-hoc `present-pr` skill) lives in `docs/issue-to-pr-skill-workflow.md` in this directory. A numbered prefix means the skill is a step in the chain, invoked in order. Read it before any pipeline work.
+The numbered skills in `skills/` form the issue→PR chain (stations I, II, III, IIIB, IV, V, VI — plus the `pipeline-triage` state gate, the `create-issue` intake branch, and the ad-hoc `present-pr` skill). The full station map lives in `docs/issue-to-pr-skill-workflow.md` in this directory. A numbered prefix means the skill is a step in the chain, invoked in order. Read it before any pipeline work.
