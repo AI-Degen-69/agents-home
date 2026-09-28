@@ -107,7 +107,7 @@ External skills each pipeline station invokes. Stations not listed here (Intake,
 | | `security-and-hardening` | Security domain tag |
 | | `documentation-and-adrs` | Docs domain tag |
 | | `code-simplification` | End of every task, always |
-| | Personas `tdd-guide`, `react-build-resolver`, `python-build-resolver`, `go-build-resolver` (from `agents/`) | Test-heavy tasks and build-error recovery |
+| | Personas `tdd-guide`, `build-error-resolver`, `react-build-resolver`, `go-build-resolver`, `rust-build-resolver` (from `agents/`) | Test-heavy tasks and build-error recovery |
 | **IIIB** (`iiib-iterate-after-build`) | `diagnosing-bugs` then `debugging-and-error-recovery` | Bug / error / regression |
 | | `click-path-audit` (procedure in `references/click-path-audit.md`) | Dead button (click does nothing, no error) |
 | | `frontend-ui-engineering` (+ `tailwind-design-system`) | UI / styling / mobile change |
@@ -132,7 +132,8 @@ iii-build-plan ────────► frontend-ui-engineering, tailwind-des
                          api-and-interface-design, debugging-and-error-recovery,
                          performance-optimization, security-and-hardening,
                          documentation-and-adrs + code-simplification (always)
-                         + resolver personas (tdd-guide, react/python/go-build-resolver)
+                         + resolver personas (tdd-guide, build-error-resolver,
+                         react/go/rust-build-resolver)
 iiib-iterate-after-build ► diagnosing-bugs, debugging-and-error-recovery,
                          click-path-audit, frontend-ui-engineering,
                          performance-optimization, security-and-hardening
