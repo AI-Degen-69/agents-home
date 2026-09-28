@@ -89,6 +89,11 @@ const NON_SKILL_TOKENS = new Set([
   'spec-compliance', 'file-integrity', 'eval-readiness', 'size-discipline', 'self-containment',
   // vi-present-pr figure-interaction / skeleton picker vocabulary (Step 2 controls, not skills)
   'step-play', 'hero-demo', 'split', 'article', 'rail', 'scrub',
+  // third-party projects named in docs/ and pipeline prose (repos, not local skills)
+  'open-code-review', 'agentskills', 'agent-skills',
+  // harness homes & doc-file slugs that look kebab-case
+  'freebuff', 'antigravity', 'hermes', 'gemini', 'opencode', 'open-code',
+  'issue-to-pr-skill-workflow', 'coderabbit-plan-prompt', 'agent-home',
 ]);
 
 // Tokens that look like role names rather than skills.
@@ -248,6 +253,60 @@ function validateSkill(skillDir, opts) {
   return { skill: path.basename(skillDir), dir: skillDir, findings };
 }
 
+/**
+ * Every markdown file under a docs root, one flat level of subfolders.
+ * A doc that names a skill folder which does not exist is the same defect as
+ * a skill naming one — it sends an agent after a path that is not there.
+ */
+function findDocFiles(docsRoot) {
+  if (!fs.existsSync(docsRoot)) return [];
+  const out = [];
+  const walk = (dir, depth) => {
+    let entries;
+    try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) { if (depth < 1) walk(p, depth + 1); }
+      else if (/\.md$/i.test(e.name)) out.push(p);
+    }
+  };
+  walk(docsRoot, 0);
+  return out;
+}
+
+/**
+ * Validate documentation files the way skills are validated: every backticked
+ * kebab-case skill name must resolve to a real folder in the skills root or a
+ * real persona in the agents root.
+ */
+function validateDocs(docsRoot, opts) {
+  opts = opts || {};
+  const skillsRoot = opts.skillsRoot || DEFAULT_SKILLS_ROOT;
+  const findings = [];
+  const add = (severity, check, detail) => findings.push({ severity, check, detail });
+  const files = findDocFiles(docsRoot);
+  if (!files.length) {
+    add('warn', 'docs-scanned', `No markdown files under ${docsRoot}`);
+    return { docs_root: docsRoot, files: 0, findings };
+  }
+  for (const f of files) {
+    let text;
+    try { text = read(f); } catch (e) {
+      add('fail', 'doc-phantom-skill-refs', `${path.basename(f)} unreadable: ${e.message}`);
+      continue;
+    }
+    // A doc has no own-file basenames to exempt: its slugs live elsewhere.
+    const missing = phantomSkillRefs(text, docsRoot, skillsRoot);
+    if (missing.length) {
+      add('fail', 'doc-phantom-skill-refs', `${path.basename(f)} names non-existent skills: ${[...new Set(missing)].join(', ')}`);
+    }
+  }
+  if (!findings.some((x) => x.severity === 'fail')) {
+    add('pass', 'doc-phantom-skill-refs', `All skill names in ${files.length} doc file(s) resolve`);
+  }
+  return { docs_root: docsRoot, files: files.length, findings };
+}
+
 function runOn(dir, skillsRoot) { return validateSkill(dir, { skillsRoot }); }
 
-module.exports = { validateSkill, runOn, parseFrontmatter, kebabCandidates, phantomSkillRefs, DEFAULT_SKILLS_ROOT };
+module.exports = { validateSkill, validateDocs, findDocFiles, runOn, parseFrontmatter, kebabCandidates, phantomSkillRefs, DEFAULT_SKILLS_ROOT };

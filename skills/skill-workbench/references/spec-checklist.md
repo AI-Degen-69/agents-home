@@ -32,9 +32,11 @@ scripts/inventory.js emit them verbatim.
 | Rule | Check | Check-id | Severity |
 |---|---|---|---|
 | Every backticked kebab-case skill name must resolve to a real skill folder in the skills root — no phantom references | Token scan against skills root | `phantom-skill-refs` | fail |
+| The same rule applies to `docs/*.md` — a doc naming a missing skill sends an agent after a path that is not there | `node validate.js --docs` | `doc-phantom-skill-refs` | fail |
 
 Heuristic: only tokens shaped `word-word[-word...]` (2+ hyphen-separated parts,
 lowercase) are treated as skill refs; slash commands, paths, and prose are exempt.
+A name that resolves in `agents/` counts as a persona reference, not a phantom.
 
 ## Reference validation
 
