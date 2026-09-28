@@ -1,6 +1,6 @@
 {
   "skill_name": "iv-review-build-and-pr",
-  "note": "Eval set in the agentskills.io evals/evals.json format. Case 1 covers the full review-and-ship flow, case 2 covers the proof-gate failure loop, case 3 is the negative case.",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Case 1 covers the full review-and-ship flow, case 2 covers the proof-gate failure loop, case 3 is the negative case, case 4 covers CodeRabbit trigger-ack classification, and cases 5-6 pin the OCR scope-honesty gotchas (docs-only diffs are excluded as unsupported_ext; range mode ignores uncommitted work).",
   "evals": [
     {
       "id": "review-verify-ship-flow",
@@ -49,6 +49,29 @@
         "The handoff report includes jump links to both the trigger comment and CodeRabbit's reply",
         "The handoff recommends v-babysit-pr-and-merge with the quota window carried over",
         "No review-started claim is made on a rate-limit reply"
+      ]
+    },
+    {
+      "id": "ocr-scope-honesty-docs-only-diff",
+      "prompt": "/iv-review-build-and-pr on a branch where the diff only touches README.md and docs/*.md (no source files).",
+      "expected_output": "OCR delegation still runs first, but the report is honest: `reviewable_count: 0` with every file in `excluded_files` as `unsupported_ext` is an expected result, not a failure or a broken install. Documentation is handed to the doc-updater axis. No attempt is made to force Markdown through --exclude or rule hacks to manufacture coverage.",
+      "files": [],
+      "assertions": [
+        "`ocr delegate preview` is run even though the diff is docs-only",
+        "The `unsupported_ext` exclusions are reported as expected rather than treated as an error",
+        "No --exclude, --rule, or other hack is used to pull Markdown files into OCR scope",
+        "Documentation review is delegated to the doc-updater axis instead of being silently dropped"
+      ]
+    },
+    {
+      "id": "ocr-zero-files-range-vs-workspace",
+      "prompt": "/iv-review-build-and-pr where `ocr delegate preview --format json --from origin/main --to HEAD` returns reviewable_count 0, but there are uncommitted local edits.",
+      "expected_output": "The station does not conclude there is nothing to review. Range mode only diffs merge_base..to and ignores uncommitted work, so it confirms with plain `ocr delegate preview` (workspace mode) before reporting coverage.",
+      "files": [],
+      "assertions": [
+        "An empty range-mode preview is not reported as a clean review with zero findings",
+        "Workspace mode (`ocr delegate preview` with no --from/--to) is run to check uncommitted work",
+        "Coverage counts reflect the mode actually used, and any discrepancy is stated in the report"
       ]
     }
   ]

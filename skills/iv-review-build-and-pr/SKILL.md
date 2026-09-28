@@ -37,9 +37,11 @@ This skill implements **Station IV (Review, Verify & Ship)** of the 6-station pi
 3. **On failure:** stop. Route the failure list to `iiib-iterate-after-build` as correction items, and re-enter this station only after IIIB is clean. Do not review broken code.
 4. **On success:** record one gate line for the report (what was run, what passed), then continue to Step 1.
 
-### Step 1: OCR Delegation Review (MANDATORY, FIRST — embedded `open-code-review-delegate` skill)
+### Step 1: OCR Delegation Review (MANDATORY, FIRST — embedded procedure)
 
-Use OCR only for fixed work (file pick + rules). The thinking stays with you. No LLM key needed on OCR side. Source: `https://github.com/alibaba/open-code-review` (Apache-2.0). The full delegation procedure (preview, rules, diffs, per-file review, finding shape, coverage counts) lives in `references/ocr-delegation.md` — follow it exactly; no external skill file is required.
+Use OCR only for fixed work (file pick + rules). The thinking stays with you. No LLM key needed on OCR side. Source: `https://github.com/alibaba/open-code-review` (Apache-2.0), which publishes an equivalent upstream skill (`skills/open-code-review-delegate`) that this step embeds rather than depends on — no external skill file is required, and nothing breaks if the upstream skill is not installed. The full delegation procedure (preview, rules, diffs, per-file review, finding shape, coverage counts) lives in `references/ocr-delegation.md` — follow it exactly.
+
+**Prerequisite:** the `ocr` CLI must be on PATH — `ocr --version`. If missing: `npm install -g @alibaba-group/open-code-review`, then retry once. `--format json` requires v1.9.0+ (verified locally: v1.12.10).
 
 ### Step 1B: Dynamic Reviewer Discovery & Multi-Axis Review (uses OCR output as input)
 Feed the OCR file list + Rule Groups + OCR finds into each reviewer below (no file left out, line numbers from OCR win on conflicts). Inspect the diff (`git diff --name-only origin/<base>...HEAD`) and discover matching specialized reviewers from the project's agent repository (`.agents/agents/`, `~/.agents/agents/`, or builtins):
