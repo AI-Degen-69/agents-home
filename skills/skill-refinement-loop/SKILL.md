@@ -1,4 +1,4 @@
-﻿---
+---
 name: skill-refinement-loop
 description: "Use when the user wants to iteratively refine, polish, and customize a skill against professional best practices — invokes an eval-driven improvement loop that starts by gathering the skill pointer and context, mechanically aligns it to published best practices, then hands back for user customization and refinement requests."
 ---

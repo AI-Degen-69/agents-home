@@ -32,10 +32,10 @@
   Report only; change nothing.
 
 .PARAMETER Harness
-  Which harness roots to touch: hermes, gemini, opencode, both (= hermes+gemini, the
-  default), or all (= every root). Use a narrow value when a root is being handled
-  elsewhere (e.g. an elevated shell converting Gemini copies to SymbolicLinks) - a
-  parallel run against the same entries would race.
+  Which harness roots to touch: hermes, gemini, opencode, or all (= every root,
+  the default). Use a narrow value when a root is being handled elsewhere (e.g.
+  an elevated shell converting Gemini copies to SymbolicLinks) - a parallel run
+  against the same entries would race.
 
 .EXAMPLE
   .\sync-harness-skills.ps1 -All -Check
@@ -51,7 +51,7 @@ param(
     [switch]$All,
     [switch]$Check,
     [ValidateSet('hermes', 'gemini', 'opencode', 'both', 'all')]
-    [string]$Harness = 'both'
+    [string]$Harness = 'all'
 )
 
 $ErrorActionPreference = 'Stop'
