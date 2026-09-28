@@ -41,6 +41,9 @@ green CI. Zero human in the loop.
 | Path | What it is |
 |---|---|
 | `SKILL.md` | Agent contract (countdown, triage, merge rules, Hebrew output contracts). |
+| `references/review-loop.md` | Step 0 ship handshake + Step 1 review trigger and countdown. |
+| `references/triage-and-apply.md` | Step 2 extraction/triage, Step 2B fallback review, Step 3 late rejections, Step 4 code application and thread replies. |
+| `references/merge-and-reset.md` | Step 5 CI gate and merge, Step 5b post-merge local reset. |
 | `references/multi-pr-pipelining.md` | Priority order + pipelining rules for multiple open PRs. |
 | `evals/evals.json` | Eval set for the station. |
 
