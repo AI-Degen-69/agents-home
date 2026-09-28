@@ -89,60 +89,79 @@ The chat reports **what changed in the product — never how it was saved.** No 
 
 ## Skill-Call Map (who calls whom)
 
-External skills each pipeline station invokes. Stations not listed here (Intake, triage gate, V, present-pr) call no external skills — they work against the GitHub API / local files only.
+Every external skill and reviewer persona each pipeline station invokes, read off the stations' own `SKILL.md` and `references/` files rather than a hand-maintained list. Station-to-station routing lives in the architecture diagram above; this table covers only the helper skills and personas a station delegates to. A name absent from a station's row is not invoked by that station.
+
+**Coverage: 44 skills (10 pipeline + 31 first-order + 3 second-order) and all 17 personas.**
 
 | Station | Invokes | When |
 |---|---|---|
-| **I** (`i-pick-issue`) | `context-engineering` | After issue selection — locks session scope before opening files |
-| **II** (`ii-plan-issue`) | `frontend-ui-engineering`, `frontend-design` | UI / Design task types |
-| | `humanizer` | UX / Copy task types |
-| | `api-and-interface-design` | API / Backend task types |
-| | `debugging-and-error-recovery`, `doubt-driven-development` | Debug task types |
-| | `observability-and-instrumentation` | Observability task types |
-| | Personas `code-explorer`, `type-design-analyzer` (from `agents/`) | Advisory input; skipped when absent |
-| **III** (`iii-build-plan`) | `frontend-ui-engineering` (+ `tailwind-design-system`) | UI / Frontend / Design domain tag |
-| | `test-driven-development`, `source-driven-development`, `api-and-interface-design` | Code / Backend / API domain tag |
-| | `debugging-and-error-recovery` | Debug / Defect domain tag |
-| | `performance-optimization` | Performance domain tag |
-| | `security-and-hardening` | Security domain tag |
-| | `documentation-and-adrs` | Docs domain tag |
-| | `code-simplification` | End of every task, always |
-| | Personas `tdd-guide`, `build-error-resolver`, `react-build-resolver`, `go-build-resolver`, `rust-build-resolver` (from `agents/`) | Test-heavy tasks and build-error recovery |
-| **IIIB** (`iiib-iterate-after-build`) | `diagnosing-bugs` then `debugging-and-error-recovery` | Bug / error / regression |
-| | `click-path-audit` (procedure in `references/click-path-audit.md`) | Dead button (click does nothing, no error) |
-| | `frontend-ui-engineering` (+ `tailwind-design-system`) | UI / styling / mobile change |
-| | `performance-optimization` | Slowness |
-| | `security-and-hardening` | Auth / secrets / untrusted input |
-| | `browser-testing-with-devtools` / `test-driven-development` / `verification-before-completion` | Verification (UI / logic / closeout) |
-| **IV** (`iv-review-build-and-pr`) | `playwright-cli` (preferred), `browser-testing-with-devtools` (profiling only) | Proof-before-review browser gate for UI changes |
-| | External `open-code-review` delegation (not a local skill) | OCR file-scope review |
-| | `typescript-reviewer`, `react-reviewer`, `python-reviewer`, `go-reviewer`, `rust-reviewer` (+ `vercel-react-best-practices`, `vercel-composition-patterns` checklists) | Language reviewers, chosen dynamically by diff |
+| **Gate** (`pipeline-triage`) | `using-agent-skills` | Ad-hoc (non-Issue) requests — route there and stop; this skill hands off at most once |
+| **I** (`i-pick-issue`) | `context-engineering`, `using-agent-skills` | `context-engineering` after issue selection — locks session scope before opening files. `using-agent-skills` when the request is ad-hoc rather than Issue work |
+| **Intake** (`create-issue`) | `using-agent-skills` | Hands a quick question or exploration back to the ad-hoc router instead of opening an issue |
+| **II** (`ii-plan-issue`) | **Domain routing (Step 1):** Design/UI → `frontend-ui-engineering`, `tailwind-design-system`, `extract-design-system` · API/Backend → `api-and-interface-design` · Debug → `debugging-and-error-recovery`, `doubt-driven-development` · Performance → `performance-optimization` · Security → `security-and-hardening` · Docs → `documentation-and-adrs` · Research → `idea-refine` · Core (default) → `test-driven-development`, `incremental-implementation`<br>**Later steps:** `spec-driven-development` (Step 2 specification), `constraint-driven-development` (Step 3 quality guardrails), `planning-and-task-breakdown` (Step 6 task decomposition)<br>**Personas:** `code-explorer`, `type-design-analyzer` | Task-type classification before any plan is written; every task then carries a domain tag Station III routes on |
+| **III** (`iii-build-plan`) | **Domain routing:** UI/Frontend/Design → `frontend-ui-engineering` (+ `tailwind-design-system` when tokens apply) · Code/Backend/API → `test-driven-development`, `source-driven-development`, `api-and-interface-design` · Debug/Defect → `debugging-and-error-recovery` · Performance → `performance-optimization` · Security → `security-and-hardening` · Docs → `documentation-and-adrs`<br>**Recurring:** `code-simplification` at the end of every task, `git-workflow-and-versioning` (commit discipline, feature flags, rollback), `observability-and-instrumentation` (production-facing changes)<br>**Personas:** `tdd-guide`, `build-error-resolver`, `react-build-resolver`, `go-build-resolver`, `rust-build-resolver` | Per task, by the domain tag Station II wrote. A persona absent from disk is skipped and the skip recorded — never invented |
+| **IIIB** (`iiib-iterate-after-build`) | **Lane routing:** Bug/error/regression → `diagnosing-bugs`, then `debugging-and-error-recovery` · Dead button → `click-path-audit` · UI/styling/mobile → `frontend-ui-engineering` (+ `tailwind-design-system` when design tokens apply) · Performance → `performance-optimization` · Security → `security-and-hardening`<br>**Verification:** `browser-testing-with-devtools`, `test-driven-development`, `verification-before-completion`<br>**Recurring:** `code-simplification` | One lane per operator-reported item; an item matching no lane is treated as a bug and one focused question is asked |
+| **IV** (`iv-review-build-and-pr`) | **Proof gate:** `playwright-cli` preferred, `browser-testing-with-devtools` for profiling only<br>**Quality axes:** `code-review-and-quality`, `security-and-hardening`, `test-driven-development`, `web-design-guidelines`<br>**Diff-matched specialists:** `python-reviewer`, `typescript-reviewer`, `react-reviewer`, `go-reviewer`, `rust-reviewer`, `database-reviewer`, `security-reviewer`, `silent-failure-hunter`, `doc-updater` — plus `api-and-interface-design`, `frontend-ui-engineering`, `vercel-react-best-practices`, `vercel-composition-patterns` as advisory input<br>**Gates:** `git-workflow-and-versioning` (sync & push), `verification-before-completion` | Proof-before-review first — no review runs on unproven code. Reviewer discovery is driven by `git diff --name-only`. OCR is an external delegation, not a local skill. A persona missing on disk is skipped and recorded |
+| **V** (`v-babysit-pr-and-merge`) | **Skills:** none — GitHub API and CodeRabbit only<br>**Personas:** `code-reviewer`, `build-error-resolver`, `react-build-resolver`, `go-build-resolver`, `rust-build-resolver` | `code-reviewer` only on the full-fallback review path; build resolvers when CI fails on a stack |
 | **VI** (`vi-close-pipeline`) | `deprecation-and-migration` | Only when dead-code removal is a large deprecation (live-API rename, consumer migration) — otherwise handled on the spot |
+| **Ad-hoc** (`present-pr`) | none | Internal component kit only |
 
 ```
-create-issue ──────────► (none — gh API only)
-pipeline-triage ───────► (none — read-only, routes to one station)
-i-pick-issue ──────────► context-engineering
-ii-plan-issue ─────────► frontend-ui-engineering, frontend-design, humanizer,
-                         api-and-interface-design, debugging-and-error-recovery,
-                         doubt-driven-development, observability-and-instrumentation
+create-issue ──────────► using-agent-skills (ad-hoc handoff)
+pipeline-triage ───────► using-agent-skills (ad-hoc handoff)
+i-pick-issue ──────────► context-engineering, using-agent-skills
+ii-plan-issue ─────────► frontend-ui-engineering, tailwind-design-system,
+                         extract-design-system, api-and-interface-design,
+                         debugging-and-error-recovery, doubt-driven-development,
+                         performance-optimization, security-and-hardening,
+                         documentation-and-adrs, idea-refine,
+                         test-driven-development, incremental-implementation,
+                         spec-driven-development, constraint-driven-development,
+                         planning-and-task-breakdown
                          + personas code-explorer, type-design-analyzer
 iii-build-plan ────────► frontend-ui-engineering, tailwind-design-system,
                          test-driven-development, source-driven-development,
                          api-and-interface-design, debugging-and-error-recovery,
                          performance-optimization, security-and-hardening,
-                         documentation-and-adrs + code-simplification (always)
-                         + resolver personas (tdd-guide, build-error-resolver,
-                         react/go/rust-build-resolver)
-iiib-iterate-after-build ► diagnosing-bugs, debugging-and-error-recovery,
+                         documentation-and-adrs, code-simplification,
+                         git-workflow-and-versioning,
+                         observability-and-instrumentation
+                         + personas tdd-guide, build-error-resolver,
+                           react/go/rust-build-resolver
+iiib-iterate-after-build► diagnosing-bugs, debugging-and-error-recovery,
                          click-path-audit, frontend-ui-engineering,
-                         performance-optimization, security-and-hardening
+                         tailwind-design-system, performance-optimization,
+                         security-and-hardening, browser-testing-with-devtools,
+                         test-driven-development, verification-before-completion,
+                         code-simplification
 iv-review-build-and-pr ─► playwright-cli, browser-testing-with-devtools,
-                         typescript/react/python/go/rust-reviewer (+ vercel-*)
-v-babysit-pr-and-merge ─► (none — gh API + CodeRabbit only)
+                         code-review-and-quality, security-and-hardening,
+                         test-driven-development, web-design-guidelines,
+                         git-workflow-and-versioning,
+                         verification-before-completion, api-and-interface-design,
+                         frontend-ui-engineering, vercel-react-best-practices,
+                         vercel-composition-patterns
+                         + personas typescript/react/python/go/rust-reviewer,
+                           database-reviewer, security-reviewer,
+                           silent-failure-hunter, doc-updater
+v-babysit-pr-and-merge ─► (skills: none — gh API + CodeRabbit only)
+                         + personas code-reviewer, build-error-resolver,
+                           react/go/rust-build-resolver
 vi-close-pipeline ─────► deprecation-and-migration (exception only)
 present-pr ────────────► (none — internal component kit only)
 ```
+
+### Second-order calls
+
+Three skills are not invoked by a station directly but by a skill a station already invokes. They belong to the shipped set too — drop one and the chain breaks mid-run.
+
+| Skill | Invoked by |
+|---|---|
+| `ci-cd-and-automation` | `constraint-driven-development` |
+| `interview-me` | `constraint-driven-development` |
+| `shipping-and-launch` | `git-workflow-and-versioning`, `observability-and-instrumentation`, `using-agent-skills` |
+
+**Shipped set: 44 skills = 10 pipeline + 31 first-order + 3 second-order.**
 
 ---
 
