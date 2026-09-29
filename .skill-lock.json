@@ -840,6 +840,24 @@
       "skillPath": "skills/i-pick-issue/SKILL.md",
       "installedAt": "2026-09-22T07:03:18.000Z",
       "updatedAt": "2026-09-22T07:03:18.000Z"
+    },
+    "orca-cli": {
+      "source": "stablyai/orca",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/stablyai/orca.git",
+      "skillPath": "skills/orca-cli/SKILL.md",
+      "skillFolderHash": "572f7952ac451a30a9c2451b472a639b125ee584",
+      "installedAt": "2026-09-28T23:40:39.693Z",
+      "updatedAt": "2026-09-28T23:40:39.693Z"
+    },
+    "orchestration": {
+      "source": "stablyai/orca",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/stablyai/orca.git",
+      "skillPath": "skills/orchestration/SKILL.md",
+      "skillFolderHash": "b0cd1d58b0c317cf7c3726fef7e6b1197c405246",
+      "installedAt": "2026-09-28T23:40:39.698Z",
+      "updatedAt": "2026-09-28T23:40:39.698Z"
     }
   },
   "dismissed": {
@@ -847,14 +865,13 @@
   },
   "lastSelectedAgents": [
     "amp",
-    "antigravity",
-    "antigravity-cli",
     "cline",
     "codex",
     "cursor",
-    "deepagents",
+    "droid",
     "gemini-cli",
     "github-copilot",
+    "kilo",
     "kimi-code-cli",
     "opencode",
     "warp",

@@ -91,6 +91,8 @@ const NON_SKILL_TOKENS = new Set([
   'step-play', 'hero-demo', 'split', 'article', 'rail', 'scrub',
   // third-party projects named in docs/ and pipeline prose (repos, not local skills)
   'open-code-review', 'agentskills', 'agent-skills',
+  // orca-cli / orchestration name the Orca executables they resolve to, not skills
+  'orca-dev', 'orca-ide',
   // harness homes & doc-file slugs that look kebab-case
   'freebuff', 'antigravity', 'hermes', 'gemini', 'opencode', 'open-code',
   'issue-to-pr-skill-workflow', 'coderabbit-plan-prompt', 'agent-home',
