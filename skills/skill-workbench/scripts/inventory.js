@@ -121,17 +121,18 @@ function main() {
     console.log('');
 
     if (recommended) {
-      console.log(`## המלצה 🎯\n`);
+      // One section, not two: the recommendation is the default action. Showing a
+      // separate "בחירה" menu after "המלצה" contradicts itself — the operator
+      // will almost always take the recommendation, so alternatives stay one line.
+      console.log(`## הפעולה הבאה 🎯\n`);
       const why = recommended.fails
         ? `יש לו ${recommended.fails} הפרות — תיקון מכני קטן לפני הכל`
         : !recommended.has_evals
           ? `נקי אבל מעולם לא נבדק — להריץ בדיקה ראשונה`
           : `יש לו ${recommended.warns} אזהרות — לסגור ולעבור הלאה`;
-      console.log(`ממליץ על **${recommended.skill}** — ${why}.`);
+      console.log(`מומלץ על **${recommended.skill}** — ${why}.`);
       console.log(`איך לגשת: ולידציה → ביקורת קצרה → ניתוב לעוזר המתאים.`);
-      console.log('');
-      console.log(`## בחירה 👉\n`);
-      console.log(`כתוב מספר מהרשימה, לדוגמה: \`לטפל קודם 1\` / \`אזהרה 2\` / \`בדיקות 1\`.`);
+      console.log(`להתחיל מהמומלץ: כתוב \`${recommended.skill}\`. אחרת בחר מהרשימות למעלה, לדוגמה \`לטפל קודם 1\` / \`אזהרה 2\` / \`בדיקות 1\`.`);
     }
   }
 }

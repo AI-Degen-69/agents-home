@@ -11,7 +11,7 @@ Source of the 6 rules: Addy Osmani, `using-agent-skills` (github.com/addyosmani/
 - **`skills/`** (~88 skills) — the capability library. General-purpose skills (research, debugging, TDD, review, docs) plus the numbered issue→PR delivery pipeline below.
 - **`agents/`** — helper sub-agent personas (`code-explorer`, `code-reviewer`, stack-specific resolvers) that pipeline stations delegate to.
 - **`docs/`** — durable knowledge: the pipeline map (`docs/issue-to-pr-skill-workflow.md`) and nothing else.
-- **`scripts/`** — maintenance automation (harness sync, ECC drift check, CodeRabbit config sync).
+- **`scripts/`** — maintenance automation (harness sync, ECC drift check, CodeRabbit config sync, and project sync for the published pipeline repo — see `skills/README.md`).
 - **`config/`** — per-harness configuration.
 
 Skills are self-contained folders (`SKILL.md` + optional `references/`, `scripts/`, `evals/`). The global copy here is the single source of truth; harnesses hold links, never forks.

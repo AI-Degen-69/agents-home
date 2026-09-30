@@ -29,7 +29,8 @@ Split the operator message into separate items (one bug or change each). For eve
 - **Bug / error / regression** (crash, console error, worked before and broke): `diagnosing-bugs` for the full diagnosis loop (feedback loop, minimise, hypothesise, instrument, fix, regression test), then `debugging-and-error-recovery` for reproduce, localize, fix, and guard.
 - **Dead button** (click does nothing, no error): follow the dead-button checklist in [references/click-path-audit.md](references/click-path-audit.md) — trace the handler call by call and find the state write that undoes an earlier one.
 - **UI / styling / mobile change** (works but looks wrong): `frontend-ui-engineering` (plus `tailwind-design-system` when design tokens apply).
-- **Slow**: `performance-optimization` — profile before optimizing.- **Auth / secrets / untrusted input**: `security-and-hardening`.
+- **Slow**: `performance-optimization` — profile before optimizing.
+- **Auth / secrets / untrusted input**: `security-and-hardening`.
 - **Unclear**: treat as a bug, ask exactly one focused question, never guess.
 
 ## 3. Per-Item Fix Loop
@@ -41,7 +42,7 @@ For every item, in order:
 3. **Apply the minimal fix** with the routed skill. One item, one fix.
 4. **Simplify** with `code-simplification`: no dead code, no extra abstractions.
 5. **Commit locally**: `<type>(<scope>): <summary> (#<issue>)`. Never push, never open a PR.
-6. **Verify**: browser check for UI via `browser-testing-with-devtools` (live DOM, console, network — zero uncaught errors), targeted tests for logic via `test-driven-development`, and `verification-before-completion` against the operator's words. Regression tests go at the seam that actually reproduces the bug (unit, integration, or e2e — whatever reaches the real pattern at the call site); when no correct seam exists, that itself is an architectural finding — record it in the commit and surface it in the report.
+6. **Verify**: browser check for UI via `browser-testing-with-devtools` (live DOM, console, network — zero uncaught errors), and targeted test runner for logic via `test-driven-development` covering modified files, following `verification-before-completion` for what counts as proven. Do NOT run full test suites or redundant VBC sweeps per fix; the final pre-push gate in Station IV validates the overall state. Regression tests go at the seam that actually reproduces the bug (unit, integration, or e2e — whatever reaches the real pattern at the call site); when no correct seam exists, that itself is an architectural finding — record it in the commit and surface it in the report.
 7. **Next item.** A red verification stops the loop until green.
 
 ## 4. Guardrails

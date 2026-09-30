@@ -5,7 +5,7 @@
     {
       "id": "validate-all-report",
       "prompt": "Run the skill workbench validator across all skills in the global agents folder and give me the grouped health report.",
-      "expected_output": "Hebrew-first summary line plus three headers in fixed order (missing evals, warnings, violations), top 3 per group with overflow note, clean never listed, exactly one recommendation with approach line, choice by number, halt for operator choice. No routing or deploy actions taken.",
+      "expected_output": "Hebrew-first summary line plus three headers in fixed order (missing evals, warnings, violations), top 3 per group with overflow note, clean never listed, then a single 'הפעולה הבאה 🎯' section holding one recommendation with its approach line and one line for starting on it or picking a different number. No separate recommendation section and no separate choice menu. The word 'selected' never appears before the operator answers. No routing or deploy actions taken.",
       "files": [],
       "assertions": [
         "The output opens with a Hebrew-first one-line summary of totals",
@@ -14,8 +14,10 @@
         "List items open with a Hebrew word after the number",
         "Each group lists at most 3 items and notes the remaining count when there are more",
         "Clean skills are not listed in full",
-        "The output recommends exactly one skill with one line on how to approach it",
-        "The output offers choice by number and halts for operator choice instead of picking silently",
+        "The three grouped lists are followed by a single 'הפעולה הבאה 🎯' section — there is no separate recommendation section and no separate choice menu",
+        "That section recommends exactly one skill with one line on how to approach it",
+        "The same section states how to start on the recommendation and how to pick a different item by number, then halts for the operator's choice instead of picking silently",
+        "Nothing in the report is described as chosen or selected before the operator answers — the wording is מומלץ (recommended)",
         "The inventory command exits 0 and its JSON has counts matching the grouped report",
         "No deploy commands are run or printed as executed"
       ]

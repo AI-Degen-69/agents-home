@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skill Workbench — Visual Explanation</title>
+<style>
+*{box-sizing:border-box}body{font-family:system-ui,Segoe UI,Arial,sans-serif;margin:0;background:#0f172a;color:#e2e8f0;line-height:1.6}
+header{padding:40px 24px;background:linear-gradient(135deg,#1e3a8a,#6d28d9);text-align:center}
+header h1{margin:0;font-size:2rem}header p{opacity:.9;max-width:700px;margin:12px auto 0}
+main{max-width:980px;margin:0 auto;padding:24px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:20px;margin:18px 0}
+.card h2{margin-top:0;color:#93c5fd}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.box{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px}
+.box b{color:#fcd34d}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:16px 0}
+.pill{background:#334155;border-radius:999px;padding:8px 16px;font-weight:700}
+.arrow{font-size:1.4rem;color:#93c5fd}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{border:1px solid #334155;padding:8px;text-align:left}
+th{background:#0f172a;color:#93c5fd}
+.bar{height:14px;background:#0f172a;border-radius:999px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#22c55e,#84cc16)}
+code{background:#0f172a;padding:2px 6px;border-radius:6px;color:#fcd34d}
+.he{background:#fef3c7;color:#451a03;border-radius:10px;padding:14px;margin-top:12px}
+details{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:10px 14px;margin:8px 0}
+summary{cursor:pointer;font-weight:700}
+footer{padding:24px;text-align:center;opacity:.7}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+<h1>🔧 Skill Workbench</h1>
+<p>The front desk for all skills: <b>find → check → review → send → publish</b>. It does not fix things itself — it sends the work to the right helper.</p>
+<p style="font-size:.9rem">Home: <code>~/.agents/skills/skill-workbench</code> · Shared by all tools</p>
+</header>
+<main>
+
+<div class="card">
+<h2>1. Big picture</h2>
+<p>Think of a car garage reception. The workbench does not repair the car. It lists all cars, checks what is broken, writes a review, then sends it to the right mechanic.</p>
+<div class="flow">
+<span class="pill">📋 Inventory</span><span class="arrow">→</span>
+<span class="pill">✅ Validate</span><span class="arrow">→</span>
+<span class="pill">🔍 Audit</span><span class="arrow">→</span>
+<span class="pill">🧭 Route</span><span class="arrow">→</span>
+<span class="pill">🚀 Deploy</span>
+</div>
+<svg viewBox="0 0 900 120" width="100%" height="110" role="img" aria-label="lifecycle flow">
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#93c5fd"/></marker></defs>
+<g font-size="13" font-weight="bold" text-anchor="middle">
+<rect x="10" y="30" width="150" height="60" rx="12" fill="#1d4ed8"/><text x="85" y="65" fill="#fff">inventory.js</text>
+<rect x="190" y="30" width="150" height="60" rx="12" fill="#0e7490"/><text x="265" y="58" fill="#fff">validate.js</text><text x="265" y="76" fill="#e0f2fe">+ score.js</text>
+<rect x="370" y="30" width="150" height="60" rx="12" fill="#7c3aed"/><text x="445" y="65" fill="#fff">audit</text>
+<rect x="550" y="30" width="150" height="60" rx="12" fill="#b45309"/><text x="625" y="65" fill="#fff">route</text>
+<rect x="730" y="30" width="150" height="60" rx="12" fill="#15803d"/><text x="805" y="65" fill="#fff">deploy check</text>
+<line x1="160" y1="60" x2="188" y2="60" stroke="#93c5fd" stroke-width="2" marker-end="url(#a)"/>
+<line x1="340" y1="60" x2="368" y2="60" stroke="#93c5fd" stroke-width="2" marker-end="url(#a)"/>
+<line x1="520" y1="60" x2="548" y2="60" stroke="#93c5fd" stroke-width="2" marker-end="url(#a)"/>
+<line x1="700" y1="60" x2="728" y2="60" stroke="#93c5fd" stroke-width="2" marker-end="url(#a)"/>
+</g>
+</svg>
+</div>
+
+<div class="card">
+<h2>2. Files — what each one does</h2>
+<div class="grid">
+<div class="box"><b>spec-checklist.md</b><br>Rule book. Turns the official spec into checkable IDs. Read before you trust any validator error.</div>
+<div class="box"><b>audit-policy.md</b><br>How to criticize fairly. Only sure findings, no guessing. Ideas are offered, never hidden-inside.</div>
+<div class="box"><b>reporting-contract.md</b><br>How to report. Shared with skill-refinement-loop. Progress first, final summary only at end.</div>
+<div class="box"><b>validate.js</b><br>Zero-dependency checker. Exit 0 = clean, 1 = problems, 2 = wrong use. Single skill or --all, --json for machines.</div>
+<div class="box"><b>score.js</b><br>Gives 0–100 score. Deterministic. Uses same lib as validator.</div>
+<div class="box"><b>inventory.js</b><br>One-glance list of every skill in the root. Ranks what to fix first.</div>
+<div class="box"><b>evals/evals.json</b><br>This skill's own tests. Proves the workbench itself works.</div>
+</div>
+</div>
+
+<div class="card">
+<h2>3. Three ways to use it</h2>
+<table>
+<tr><th>Mode</th><th>When</th><th>What happens</th></tr>
+<tr><td><b>No args</b> — Discovery</td><td>You don't know where to start</td><td>Run inventory → show top 3 missing-tests, top 3 warnings, top 3 broken → one <b>הפעולה הבאה 🎯</b> section: recommend exactly 1 (the default action) + one line for choosing another number → <b>stop and wait for your pick</b>. Never picks alone.</td></tr>
+<tr><td><b>With name</b> — Single-skill</td><td>You name one skill, e.g. <code>iii-build-plan</code></td><td>Step A Validate+Score → Step B Audit → Step C Route → Step D Deploy check. Report after each step.</td></tr>
+<tr><td><b>Validate-only</b></td><td>Quick check</td><td>Run validator, list problems, stop. No audit, no route, no deploy.</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>4. Score — 5 numbers that drive the choice</h2>
+<table>
+<tr><th>Metric</th><th>Weight</th><th>What it checks</th></tr>
+<tr><td>spec-compliance</td><td>40</td><td>Frontmatter + structure rules</td></tr>
+<tr><td>file-integrity</td><td>25</td><td>File links + skill links really exist</td></tr>
+<tr><td>eval-readiness</td><td>20</td><td>evals/evals.json exists and has prompts</td></tr>
+<tr><td>size-discipline</td><td>10</td><td>Body ≤250 lines full marks → 0 at 600</td></tr>
+<tr><td>self-containment</td><td>5</td><td>Has helpers like scripts/, references/</td></tr>
+</table>
+<p>Overall: ≥90 excellent · ≥75 good · ≥50 needs-work · else poor.<br>
+Example: <code>spec 100 · files 100 · evals 0 · size 80 · self 100 = 40+25+0+8+5 = 78/100 (good, but eval gap)</code></p>
+<div class="bar"><i style="width:78%"></i></div>
+<p>Rule: eval-readiness &lt;100 → needs tests. spec/file &lt;100 → fix first. ≥90 with tests → check deploy.</p>
+</div>
+
+<div class="card">
+<h2>5. Where it sends you (Routing)</h2>
+<table>
+<tr><th>If the skill is…</th><th>Go to</th></tr>
+<tr><td>Missing / broken / new idea</td><td><code>skill-creator</code></td></tr>
+<tr><td>Exists but never tested</td><td><code>skill-creator</code> (evals) or <code>skill-refinement-loop</code> Phase 1</td></tr>
+<tr><td>Has a known failure, needs polish</td><td><code>skill-refinement-loop</code></td></tr>
+<tr><td>Clean + tested</td><td>Deploy check (Step D)</td></tr>
+</table>
+<p><b>Safety gate:</b> before handing off, the workbench also checks the <i>helper itself</i> with <code>validate.js &lt;helper&gt;</code>. If the helper is broken, fix the helper first.</p>
+<p><b>Deploy check (Step D):</b> only checks links exist with right type (Junction for Claude Code/Hermes, SymbolicLink for Gemini/Antigravity). Prints commands, runs only if you say yes. No final summary before this is done or you skip it on purpose.</p>
+</div>
+
+<div class="card">
+<h2>6. Hebrew report rule — why it looks strange</h2>
+<p>Every report line must start with a Hebrew word — that forces right-to-left display. Latin names, paths, commands stay in isolated backticks <code>⁦`...`⁩</code>. Emoji always after words, never at line start.</p>
+<div class="he" dir="rtl">
+<b>דוגמה:</b><br>
+סקיל: ⁦<code>iii-build-plan</code>⁩<br>
+נתיב: ⁦<code>C:\Users\Tiger\.agents\skills\iii-build-plan</code>⁩<br>
+מצב הסקיל: 2 הפרות, ציון כללי 78/100 (good) 📊
+</div>
+<details><summary>Report sections (fixed order)</summary>
+<p>תקציר הסקיל 📋 → מצב הסקיל 📊 (+ numeric score) → ממצאי ביקורת 🔍 → שאלות פתוחות ❓ → הצעות שיפור 💡 → ניתוב 🧭 → אפשרויות להמשך 🔀 (3 fixed steps). In Discovery mode the last one is instead <b>הפעולה הבאה 🎯</b>: one recommended skill as the default, alternatives on one line, then halt. Never both, never a recommendation followed by a "pick a number" menu.</p>
+</details>
+</div>
+
+<div class="card">
+<h2>7. Review style + fix loop</h2>
+<p><b>Findings look like CodeRabbit:</b> table grouped by category (📐 quality, 🗄️ data, ⚡ speed, 🧪 tests, 📝 docs, 🔒 safety), then numbered cards with severity 🔴/🟠/🟡 and effort ⚡/🔧/🏗️. No guessing — each finding needs proof in code or spec.</p>
+<p><b>Fix one-by-one:</b> fix 1 finding → run <code>validate.js</code> must be clean → short progress line in Hebrew (e.g. נותרו 2 ממצאים) → next. No partial final summary. Only when all done + deploy checked → re-run <code>score.js</code> + clean validation → show סיכום סופי (what changed, why it helps, what works now, next step, one-line when-to-use).</p>
+</div>
+
+<div class="card">
+<h2>8. When to call it</h2>
+<p>Say <b>“skill workbench”</b> when you want to check / audit / validate / improve a skill, see health of all skills, or know where a skill sits in its life. Dashboard HTML (if made) lives in <code>skills/&lt;name&gt;/docs/workbench-report-&lt;date&gt;.html</code> — never in temp. And the workbench itself must pass its own validator after any edit.</p>
+</div>
+
+</main>
+<footer>Visual explanation · source: SKILL.md + references · file: docs/explanations/skill-workbench-explained.html</footer>
+</body>
+</html>

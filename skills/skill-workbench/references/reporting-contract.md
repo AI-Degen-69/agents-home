@@ -1,10 +1,30 @@
 # Reporting Contract — progress notes, then one final summary
 
-**Canonical definition.** Both `skill-workbench` (option 1 of «הבא 👉», in its
+**Canonical definition.** Both `skill-workbench` (option 1 of «אפשרויות להמשך 🔀», in its
 SKILL.md) and `skill-refinement-loop` (Phase 2 batches, in its SKILL.md) follow
 this contract; each SKILL.md keeps only a pointer here plus the flow-specific
 vocabulary (findings/change requests/eval cases). If this file and a SKILL.md
 ever diverge, this file wins — fix the SKILL.md, not this file.
+
+## The recommendation screen (Discovery entry)
+
+When a flow opens with a ranked list and a suggested next item, the screen
+carries the recommendation. Four rules, all learned the hard way:
+
+- **One screen, not two.** Never print a recommendation and then a separate
+  choice menu. A recommendation plus "pick a number from the list above" is
+  two decisions in a row, and the first one silently voids the second. The
+  recommendation is the default action; alternatives go on one line beneath it.
+- **Name the action, not the position.** `הפעולה הבאה 🎯` when there is one
+  clear next action worth following. `אפשרויות להמשך 🔀` when the paths
+  genuinely differ and none is recommended. Never reuse one name for both —
+  the same skill can have both screens, and a vague shared name makes them
+  read as the same thing.
+- **Never claim a decision the operator has not made.** Write `מומלץ` /
+  recommended, never `נבחר` / selected, until the operator actually answers.
+  A header that says "the selected skill" is a silent pick wearing a heading.
+- **A default is not consent.** Even with a clear recommendation, the flow
+  halts and waits. Recommending makes the reply easier; it does not authorize.
 
 ## The rule
 
@@ -46,12 +66,16 @@ levels:
 
 | Skill | Items | Progress note counts | Final gate | Closer |
 |---|---|---|---|---|
-| `skill-workbench` | Findings + open questions (option 1 of «הבא 👉») | `נותרו X ממצאים ו-Y שאלות פתוחות` | validator clean + scorer re-run | «סיכום סופי» — closes the workbench for the skill |
+| `skill-workbench` | Findings + open questions (option 1 of «אפשרויות להמשך 🔀») | `נותרו X ממצאים ו-Y שאלות פתוחות` | validator clean + scorer re-run | «סיכום סופי» — closes the workbench for the skill |
 | `skill-refinement-loop` | Change requests (Phase 2) / eval cases (Phase 1 iterations) | how many requests remain | relevant eval cases pass clean | loop record + final summary — closes the loop |
 
 ## Where each skill points here
 
 - `skill-workbench/SKILL.md` — «טיפול בממצאים אחד־אחד» section links here and
-  defers the general pattern to this file.
+  defers the general pattern to this file. Its Discovery entry screen follows
+  "The recommendation screen" above.
+- `i-pick-issue/SKILL.md` — its Discovery screen (the recommended leading
+  issue) follows the same four rules, including never writing «נבחר להתחלה»
+  before the operator picks.
 - `skill-refinement-loop/SKILL.md` — "Progress-then-final-summary reporting
   pattern" section links here and defers the general pattern to this file.

@@ -38,9 +38,9 @@ Every invocation of this skill begins with the **Discovery Station**, regardless
 2. **Categorize and group:**
    Group them logically by domain area, risk, architectural component, or dependency chain.
 3. **Recommend an execution sequence:**
-   Propose a concrete order of work (unblockers and core infrastructure before dependent features, quick wins vs. deep changes), and explicitly highlight the single recommended issue to start.
+   Propose a concrete order of work (unblockers and core infrastructure before dependent features, quick wins vs. deep changes), and explicitly highlight the single recommended issue to start. Header names the action: `המשימה המומלצת להתחלה 🎯` with the recommendation as the default. Never write that an issue was *selected* (`נבחר`) — nothing is selected until the operator answers. No separate recommendation screen, and no separate "pick a number" menu: the alternatives are one line under the recommendation.
 4. **Halt for user selection:**
-   Stop and ask the operator which issue to proceed with. Do NOT pick silently.
+   Stop and ask the operator which issue to proceed with. Do NOT pick silently. A recommended default is not permission to proceed — the operator still confirms or overrides.
 5. **Route non-issue states:** no open issues and the operator has a brand-new idea → `create-issue`. No open issues and nothing new → say so and route to `pipeline-triage`.
 
 ### 1b. Execution Mode Gate (mandatory, after issue selection)
@@ -113,9 +113,9 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
 
 ---
 
-## 📊 המשימה הבאה שנבחרה להתחלה:
-* **Issue מוביל:** [#<id> - <כותרת>](<link>)
-* **סיבת הבחירה:** מסירה חסימות ומאפשרת התקדמות חלקה לשאר ה-Backlog.
+## 📊 המשימה המומלצת להתחלה:
+* **Issue מוביל (מומלץ, טרם נבחר):** [#<id> - <כותרת>](<link>)
+* **סיבת ההמלצה:** מסירה חסימות ומאפשרת התקדמות חלקה לשאר ה-Backlog.
 
 ## 🧠 סיכום:
 בשורות בודדות בעברית פשוטה: מה תמונת המצב הכוללת של המשימות הפתוחות, ולמה סדר הביצוע הזה יחסוך שבירת קוד ובנייה כפולה.

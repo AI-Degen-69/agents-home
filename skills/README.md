@@ -54,3 +54,54 @@ must read `SymbolicLink`. Creating a SymbolicLink needs
 to a real-directory copy in the Gemini root, which does **not** track canonical
 edits — re-run the script after editing any skill that ended up as a copy.
 Learned 2026-09-12 debugging `vii-prune-artifacts`.
+
+## Syncing the pipeline into a project
+
+`issue-to-pr-skills` is a **published** repo: it ships to GitHub and gets cloned by
+people who do not have `C:\Users\Tiger\.agents` on disk. Symlinks into a personal
+home folder would break for every one of them, and `verify-mirror.js` explicitly
+fails on any reparse point in the target — so that repo holds real copies by design.
+
+**Its own scripts own that job. Do not re-implement them here.**
+
+```powershell
+cd C:\Users\Tiger\issue-to-pr-skills
+npm run validate:mirror   # verify-mirror.js + sync-from-canonical.js --check
+npm run sync              # copy from canonical, applying the REWRITE table
+npm run check             # validate + validate:mirror — the release gate
+```
+
+Two rules those scripts encode, both learned by breaking them:
+
+- **The `REWRITE` table is not optional.** They rename `docs/issue-to-pr-skill-workflow.md`
+  to `docs/pipeline.md` on the way in. A plain file copy reverts that and breaks the
+  pack's links — and `verify-mirror.js` will not catch it, because it applies REWRITE to
+  *both* sides and therefore compares equal. Only `sync-from-canonical.js --check` sees
+  it. Measured 2026-09-30: a naive copy reverted 10 station READMEs.
+- **`results.json` must not exist in the pack.** `sync-from-canonical.js` merely skips
+  it; `verify-mirror.js` fails on it as an extra file. The two scripts disagree, and the
+  stricter one is the contract.
+
+The one thing neither script can check is its own skill list. `verify-mirror.js` and
+`sync-from-canonical.js` hard-code the same 46 names and guard against each other
+drifting, but nothing compares that list to the real skill graph — so a station can
+start referencing a new helper and both lists stay agreed on the old set.
+
+`scripts/pipeline-closure.js` closes that gap. It derives the set transitively from
+the stations (a reference = a backticked token naming a real skill folder, the same
+convention `validate-lib.js` uses), skipping `evals/snapshots/` and `evals/iteration-*`
+because those are historical baselines:
+
+```powershell
+node .\scripts\pipeline-closure.js                                   # 10 stations + 36 helpers
+node .\scripts\pipeline-closure.js --json                            # machine-readable
+node .\scripts\pipeline-closure.js --check-list --project <path>     # list vs real graph
+```
+
+**Why it matters:** `verification-before-completion` was declared in
+`verify-mirror.js`, in `sync-from-canonical.js`, and in
+`docs/issue-to-pr-skill-workflow.md` as a Station IIIB dependency — while no live file
+in `iiib-iterate-after-build` named it. Both hand-lists agreed with each other and with
+the doc, and all three were wrong about the skill. `--check-list` now fails on that
+shape; the fix was one reference added to IIIB step 6, which also made the doc true.
+
