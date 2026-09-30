@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Caching bug — explanation only (eval-2)</title>
+<style>
+*{box-sizing:border-box}body{font-family:system-ui,Arial,sans-serif;margin:0;background:#0f172a;color:#e2e8f0;line-height:1.6}
+main{max-width:760px;margin:0 auto;padding:24px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:18px;margin:14px 0}
+h1{color:#93c5fd}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>Why stale data appears</h1>
+<div class="card"><b>Before:</b> cache key ignores the user id, so user A sees user B's data.</div>
+<div class="card"><b>After (proposed, not applied):</b> include user id in the cache key.</div>
+<p><b>Note:</b> this page explains only — no product code was changed. The fix is left to you or another skill.</p>
+</main>
+</body>
+</html>

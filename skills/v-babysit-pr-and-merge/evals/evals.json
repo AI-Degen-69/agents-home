@@ -42,8 +42,8 @@
       "static_assertions": [
         { "id": "pr-link-with-merged", "type": "regex", "pattern": "MERGED", "must_match": true, "why": "the summary leads with the PR identity and its merged state" },
         { "id": "back-to-base", "type": "regex", "pattern": "חזרנו לענף הבסיס", "must_match": true, "why": "the return to a clean base is part of what the operator is told" },
-        { "id": "impact-order", "type": "regex", "pattern": "מהמשפיע ביותר למינורי", "must_match": true, "why": "fixes are listed critical-to-minor, not in comment arrival order" },
-        { "id": "next-step-vi", "type": "regex", "pattern": "/vi-close-pipeline <id>", "must_match": true, "why": "the summary always names the next station" },
+        { "id": "impact-order", "type": "regex", "pattern": "most critical first", "must_match": true, "why": "fixes are listed critical-to-minor, not in comment arrival order" },
+        { "id": "next-step-vi", "type": "regex", "pattern": "vi-close-pipeline", "must_match": true, "why": "the summary always names the next station" },
         { "id": "no-raw-comment-text", "type": "regex", "pattern": "Never dump raw CodeRabbit text", "must_match": true, "why": "raw bot text stays on GitHub, never in the operator chat" }
       ],
       "live_assertions": [

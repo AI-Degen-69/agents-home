@@ -2,7 +2,7 @@
 
 Canonical prompt posted as a comment on newly created GitHub issues to request an implementation plan from CodeRabbit.
 
-Single source of truth — `SKILL.md` points here. Posted via `gh issue comment <number> --body-file <path>` (or reading this text).
+Single source of truth — `SKILL.md` points here. **Post the prompt body below, never this file as-is** (the wrapper would bury the `@coderabbitai` mention inside a code block). Write the body to a temp file and pass `--body-file <temp>`, or pass `--body` inline.
 
 ```text
 @coderabbitai plan

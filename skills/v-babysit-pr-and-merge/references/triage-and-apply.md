@@ -5,7 +5,7 @@ Stage two of the review loop: pull every comment, decide each one yourself, and
 apply the accepted fixes. The single round ends when no thread is left untriaged.
 
 
-> Part of -babysit-pr-and-merge (Station V). Loaded on demand - the station
+> Part of v-babysit-pr-and-merge (Station V). Loaded on demand - the station
 contract in SKILL.md is the source of truth; this file holds the detail.
 
 ### Step 2 — Autonomous Review Extraction & Triage (Zero Automation Bias)

@@ -4,7 +4,7 @@ Stage three: GitHub CI is the merge authority, then the local checkout returns t
 a clean base so the next session starts fresh.
 
 
-> Part of -babysit-pr-and-merge (Station V). Loaded on demand - the station
+> Part of v-babysit-pr-and-merge (Station V). Loaded on demand - the station
 contract in SKILL.md is the source of truth; this file holds the detail.
 
 ### Step 5 — Verify CI Checks & Merge (Single Round Conclusion)
@@ -23,7 +23,14 @@ Since this habit runs **exactly one focused review round**, once all accepted fi
      ```
    - **CI-failure triage (ECC resolvers):** if CI checks fail, deploy the matching `<stack>-build-resolver` persona from `~/.agents/agents/` (`build-error-resolver` generic; `react-build-resolver` / `go-build-resolver` / `rust-build-resolver` when the failing files touch React / Go / Rust) — minimal-diff fix, targeted tests, one fix commit, re-push, re-check CI. Persona not found on disk → apply the generic surgical-fix loop and record the skip (אין להמציא).
    - If high/critical blockers persist that cannot be auto-resolved, or CI checks still fail after resolver triage: escalate the specific unresolved issue to the operator.
-3. **Return the Local Checkout to Base (Step 5b below) — always, merge or escalate.**
+3. **Close the Issue (Step 5a — immediately after merge):**
+   After a successful merge, verify the linked issue is closed. If `Closes #<id>` was in the PR body, GitHub already closed it — just confirm. If it's still open (missing `Closes`), close it now:
+   ```bash
+   gh issue view <id> --json state --jq .state   # expect CLOSED
+   # If OPEN:
+   gh issue close <id> --comment "Closed via PR #<pr_number> (merged)."
+   ```
+4. **Return the Local Checkout to Base (Step 5b below) — always, merge or escalate.**
 
 ### Step 5b — Post-Merge Local Reset (Fresh Start on Base)
 

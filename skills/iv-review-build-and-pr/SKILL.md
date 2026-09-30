@@ -93,8 +93,8 @@ Before applying fixes, run the Spec axis in full:
 
 1. **For Frontend / Web / UI Changes — re-run the Step 0 Browser Gate (fast-first) on the fixed code:** same order, same bar — zero uncaught console errors, zero failed network requests.
 2. **For Backend / API / Logic Changes:**
-   - Run targeted test suites matching modified files (e.g. `pytest tests/test_<module>.py`) to confirm zero regressions in touched modules. Avoid running the full repository test suite locally (>10s); GitHub CI runs the full regression suite on push as the merge gate.
-   - Run `verification-before-completion` to guarantee all acceptance criteria from the issue remain 100% satisfied.
+   - Run targeted test suites matching modified files (e.g. `pytest tests/test_<module>.py`) to confirm zero regressions in touched modules. Avoid running full repository test sweeps locally; GitHub CI runs the full regression suite on push as the merge gate.
+   - If review fixes in Step 2 modified logic, run targeted tests for those modified files. If Step 2 applied no logic changes, Step 0's proof already stands.
 3. **Only when verification is completely green** may the agent proceed to Git push.
 
 ### Step 4: Git Synchronization & Push (`git-workflow-and-versioning`)

@@ -21,9 +21,9 @@
         {
           "id": "missing-closes-path",
           "type": "regex",
-          "pattern": "lacked .Closes",
+          "pattern": "Closes #",
           "must_match": true,
-          "why": "the only sanctioned ad-hoc issue close is the missing-Closes recovery"
+          "why": "the fallback issue-close path references the missing Closes keyword"
         },
         {
           "id": "signal-discovery",

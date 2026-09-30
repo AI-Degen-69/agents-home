@@ -1,13 +1,20 @@
 {
   "skill_name": "iii-build-plan",
-  "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes. Case 3 is the negative case.",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Static assertions are regex contracts over SKILL.md; live assertions need a real repo + tasks/plan.md and are recorded as not-run.",
   "evals": [
     {
       "id": "single-task-halt",
       "prompt": "Run /iii-build-plan on a tasks/plan.md with 3 open tasks. Execute only the next open task.",
       "expected_output": "Exactly one task implemented with minimal clean code, code-simplification applied, one local commit in <type>(<scope>): <summary> (#<issue>) format, the task marked [x] in tasks/plan.md, then halt for inspection. No second task started.",
+      "mode_coverage": ["single-task"],
       "files": [],
-      "assertions": [
+      "static_assertions": [
+        { "id": "mode-b-single-task", "type": "regex", "pattern": "single next open task", "must_match": true, "why": "Mode B must pick exactly one task and halt" },
+        { "id": "halt-for-inspection", "type": "regex", "pattern": "halts? immediately.* for inspection", "must_match": true, "why": "Mode B must stop after the single task for operator review" },
+        { "id": "mark-task-done", "type": "regex", "pattern": "\\[x\\]", "must_match": true, "why": "completed tasks must be marked [x] in tasks/plan.md" },
+        { "id": "commit-format", "type": "regex", "pattern": "<type>\\(<scope>\\):", "must_match": true, "why": "commit message format is a contract downstream stations rely on" }
+      ],
+      "live_assertions": [
         "Only the single next open task is implemented",
         "The task is marked [x] in tasks/plan.md",
         "Exactly one local commit is created for the task",
@@ -15,17 +22,25 @@
       ]
     },
     {
-      "id": "auto-visual-hebrew-report",
-      "prompt": "Run /iii-build-plan auto on a tasks/plan.md with one UI task and one backend task. Report at the end.",
-      "expected_output": "All tasks executed sequentially with domain routing, final report in Hebrew with a visual section (table/diagram/flow), per-skill breakdown, and a two-line concise summary of problem and fix plus next step /iv-review-build-and-pr. No files-changed section.",
+      "id": "auto-mode-full-execution",
+      "prompt": "Run /iii-build-plan auto on a tasks/plan.md with one UI task and one backend task.",
+      "expected_output": "All tasks executed sequentially with domain routing (UI to frontend-ui-engineering, backend to TDD), final report in Hebrew grouped by change type, ending with next step /iv-review-build-and-pr.",
+      "mode_coverage": ["auto"],
       "files": [],
-      "assertions": [
+      "static_assertions": [
+        { "id": "mode-a-all-tasks", "type": "regex", "pattern": "all tasks in `tasks/plan\\.md`", "must_match": true, "why": "auto mode must execute every task, not just one" },
+        { "id": "ui-routing", "type": "regex", "pattern": "frontend-ui-engineering", "must_match": true, "why": "UI/Frontend tasks must route to the frontend skill" },
+        { "id": "tdd-routing", "type": "regex", "pattern": "test-driven-development", "must_match": true, "why": "code/backend tasks must route to TDD" },
+        { "id": "code-simplification", "type": "regex", "pattern": "code-simplification", "must_match": true, "why": "every task gets simplification pass before commit" },
+        { "id": "next-station-iv", "type": "regex", "pattern": "iv-review-build-and-pr", "must_match": true, "why": "build must hand off to Station IV" },
+        { "id": "hebrew-report", "type": "regex", "pattern": "חובת דיווח בעברית", "must_match": true, "why": "the output contract must be present" },
+        { "id": "noticed-not-touching", "type": "regex", "pattern": "NOTICED-BUT-NOT-TOUCHING", "must_match": true, "why": "out-of-scope findings must be captured, never silently fixed" }
+      ],
+      "live_assertions": [
         "All open tasks in tasks/plan.md are executed sequentially",
         "UI task routes to frontend-ui-engineering",
         "Backend task routes to test-driven-development",
-        "Final report contains a visual explanation section",
-        "Final report ends with a concise problem and fix summary",
-        "Final report has no files-changed section",
+        "Final report is in Hebrew with change groups",
         "Final report points to /iv-review-build-and-pr as the next step"
       ]
     },
@@ -33,48 +48,15 @@
       "id": "negative-no-plan-halt",
       "prompt": "Run /iii-build-plan in a repo with no tasks/plan.md.",
       "expected_output": "The skill must not invent work: halt with 'No plan found! Run /ii-plan-issue first.' No code written, no commit created.",
+      "mode_coverage": ["negative"],
       "files": [],
-      "assertions": [
-        "No code is written when tasks/plan.md is missing",
-        "No commit is created when tasks/plan.md is missing",
-        "The halt message directs the operator to /ii-plan-issue"
-      ]
-    }
-  ],
-  "cases": [
-    {
-      "id": "single-task-halt",
-      "prompt": "Run /iii-build-plan on a tasks/plan.md with 3 open tasks. Execute only the next open task.",
-      "expected_output": "Exactly one task implemented with minimal clean code, code-simplification applied, one local commit in <type>(<scope>): <summary> (#<issue>) format, the task marked [x] in tasks/plan.md, then halt for inspection. No second task started.",
-      "files": [],
-      "assertions": [
-        "Only the single next open task is implemented",
-        "The task is marked [x] in tasks/plan.md",
-        "Exactly one local commit is created for the task",
-        "Execution halts after the single task for inspection"
-      ]
-    },
-    {
-      "id": "auto-visual-hebrew-report",
-      "prompt": "Run /iii-build-plan auto on a tasks/plan.md with one UI task and one backend task. Report at the end.",
-      "expected_output": "All tasks executed sequentially with domain routing, final report in Hebrew with a visual section (table/diagram/flow), per-skill breakdown, and a two-line concise summary of problem and fix plus next step /iv-review-build-and-pr. No files-changed section.",
-      "files": [],
-      "assertions": [
-        "All open tasks in tasks/plan.md are executed sequentially",
-        "UI task routes to frontend-ui-engineering",
-        "Backend task routes to test-driven-development",
-        "Final report contains a visual explanation section",
-        "Final report ends with a concise problem and fix summary",
-        "Final report has no files-changed section",
-        "Final report points to /iv-review-build-and-pr as the next step"
-      ]
-    },
-    {
-      "id": "negative-no-plan-halt",
-      "prompt": "Run /iii-build-plan in a repo with no tasks/plan.md.",
-      "expected_output": "The skill must not invent work: halt with 'No plan found! Run /ii-plan-issue first.' No code written, no commit created.",
-      "files": [],
-      "assertions": [
+      "static_assertions": [
+        { "id": "plan-required", "type": "regex", "pattern": "tasks/plan\\.md", "must_match": true, "why": "the plan file is a hard prerequisite" },
+        { "id": "halt-on-missing-plan", "type": "regex", "pattern": "No plan found", "must_match": true, "why": "missing plan must halt with an explicit message" },
+        { "id": "directs-to-station-ii", "type": "regex", "pattern": "ii-plan-issue", "must_match": true, "why": "the halt must direct operator back to planning" },
+        { "id": "no-fabrication", "type": "not_regex", "pattern": "whenever the user asks to (build|implement|code)", "must_match": true, "why": "a catch-all trigger would fire without a plan" }
+      ],
+      "live_assertions": [
         "No code is written when tasks/plan.md is missing",
         "No commit is created when tasks/plan.md is missing",
         "The halt message directs the operator to /ii-plan-issue"

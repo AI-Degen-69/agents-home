@@ -15,13 +15,13 @@ Post-merge closeout that leaves the repository carrying only live knowledge — 
 
 ---
 
-## 1. Step 0 — Verify Merge & Close the Issue
+## 1. Step 0 — Verify Merge & Issue State
 
 1. Confirm the PR is merged: `gh pr view <n> --json state --jq .state` → must be `MERGED`. If not merged, stop and route back to `v-babysit-pr-and-merge`.
 2. Check the issue: `gh issue view <id> --json state`.
-   - If **CLOSED** — continue.
-   - If **OPEN but the PR is MERGED** (the PR body lacked `Closes #<id>`) — close it now:
-     `gh issue close <id> --comment "Closed via PR #<n> (merged)."` and report it.
+   - If **CLOSED** — continue. (Normal path — Station V Step 5a or GitHub `Closes #<id>` already handled this.)
+   - If **OPEN but the PR is MERGED** — safety net: close it now:
+     `gh issue close <id> --comment "Closed via PR #<n> (merged)."` and report it. (This means Station V's Step 5a was skipped or failed.)
    - If tracker state is ambiguous — ask the operator. Never guess.
 
 ---

@@ -6,6 +6,9 @@
       "headers": {
         "Accept": "application/json, text/event-stream"
       }
+    },
+    "Figma": {
+      "url": "https://mcp.figma.com/mcp"
     }
   }
 }

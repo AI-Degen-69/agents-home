@@ -47,7 +47,7 @@ For every task executed, follow these phases:
    - **Docs:** Activate `documentation-and-adrs`.
 
 ### Phase 2: Implementation (Type-Aware Build)
-- **Code Tasks:** Follow TDD — write minimal clean code to fulfill the requirement.
+- **Code Tasks:** Follow TDD — write minimal clean code to fulfill the requirement. Run only the targeted test file for the touched module during the TDD cycle. Do NOT run the full repository test suite here; full regression testing is deferred to CI on push.
 - **Design & UI Tasks:** Ground styles in existing project tokens and components; implement accessible, responsive UI structure.
 - **Official Docs Grounding:** When using modern or external libraries, consult official documentation (`source-driven-development`) to ensure correct API usage.
 - **Build Error Resolution (ECC resolvers):** If compiler, syntax, or import failures occur, deploy the matching `<stack>-build-resolver` agent persona from `~/.agents/agents/` (`build-error-resolver` generic; `react-build-resolver` / `go-build-resolver` / `rust-build-resolver` when the diff touches React / Go / Rust): minimal diffs only — no architectural edits — get the build green, then resume the task. Persona not found on disk → apply the generic surgical-fix loop and record the skip.

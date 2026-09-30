@@ -39,6 +39,7 @@ Multiple open PRs and no specific number → follow `references/multi-pr-pipelin
 | **Step 3** | Late rejections — pointer only, Step 2.4 is the one canonical REJECT flow | `references/triage-and-apply.md` |
 | **Step 4** | Apply accepted fixes (Type A suggestions / Type B intent), run targeted tests, self-heal, one batch commit, reply to and resolve every thread | `references/triage-and-apply.md` |
 | **Step 5** | GitHub CI is the merge gate; squash-merge, or deploy a `<stack>-build-resolver` persona on failure | `references/merge-and-reset.md` |
+| **Step 5a** | Close the issue — verify GitHub auto-closed it via `Closes #<id>`, or close manually if it missed | `references/merge-and-reset.md` |
 | **Step 5b** | Return the local checkout to a clean, fast-forwarded base and delete the merged branch | `references/merge-and-reset.md` |
 
 **Round exit condition:** zero unresolved threads carrying a REJECT, and zero threads
@@ -112,6 +113,18 @@ digraph babysit_pr_and_merge {
 
 ---
 
+## VI Triage — Skip or Run? (after Step 5b reset, before the report)
+
+After the local reset lands on a clean base, run these three quick checks to decide the vi-close-pipeline recommendation in the report:
+
+1. **Issue state:** `gh issue view <id> --json state --jq .state` — OPEN = 🔴 (חובה).
+2. **Leftover artifacts:** `git ls-files --others --exclude-standard | Select-String -Pattern '<id>|tasks/plan|scratch'` — any hit = 🟡 (מומלץ); hits from 3+ distinct closed issues = 🟡 even without matching the current id.
+3. **Git cleanliness:** `git status --porcelain` — non-empty = 🔴 (חובה).
+
+Pick the highest signal: 🔴 > 🟡 > 🟢. All three clean = 🟢 (דלג, continue to `/i-pick-issue`).
+
+---
+
 ## Hebrew Chat Output Contract (חובת דיווח בעברית)
 
 Two reports, both in clean everyday Hebrew. Never dump raw CodeRabbit text — always condensed and to the point. What's-changed only: no commit hashes or counts, no test commands or counts, no `file:line`, no fix-type letters. Each item names the product location + what was found and what works now.
@@ -153,7 +166,10 @@ One concise, matter-of-fact line per review comment, in simple language: product
 
 👉 **השלב הבא:**
 * `/present-pr` — אם רלוונטי, הרץ כדי להכין פרזנטציה ויזואלית.
-* `/vi-close-pipeline` - סגירת המהלך, ניקוי השולחן והחזרת המאגר למצב נקי ומסודר, וסגירת ה-Issue.
+* [בחר אחד מהשלושה — לפי בדיקת הלכלוך:]
+  - 🟢 **דלג** — `הלכלוך קטן מדי, אין צורך בניקיון עכשיו. אפשר להמשיך ישירות ל-/i-pick-issue.` ← כשאין tasks/plan.md תועה, אין קבצי scratch, ה-issue נסגר אוטומטית, ואין dead code שזוהה.
+  - 🟡 **מומלץ** — `/vi-close-pipeline` — `[סיבה ספציפית]` ← כש-3+ issues הצטברו בלי ניקיון, או יש tasks/plan.md ישנים של issues קודמים, או יש קבצי scratch שנשארו.
+  - 🔴 **חובה** — `/vi-close-pipeline` — `[סיבה ספציפית]` ← כש-issue לא נסגר (חסר Closes), או יש dead code מוכח שנשאר, או git status לא נקי אחרי המיזוג.
 ```
 
 **Timeout-merge rule:** when `IN_PROGRESS_STUCK` or `RATE_LIMITED`, the `CodeRabbit` check may stay `PENDING` forever. Do NOT wait for it. Merge gate = agent fallback review clean (or its nits triaged) + `gh pr checks` green (excluding the stuck `CodeRabbit` context). State this explicitly in the `סטטוס סקירת CodeRabbit` line so the operator knows the merge was NOT on a completed bot review.

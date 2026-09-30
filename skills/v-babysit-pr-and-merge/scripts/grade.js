@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Deterministic grader for the ii-plan-issue refinement loop.
+ * Deterministic grader for the v-babysit-pr-and-merge refinement loop.
  * Zero dependencies. Node >= 18.
  *
  * Subcommands:

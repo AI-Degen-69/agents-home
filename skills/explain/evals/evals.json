@@ -1,0 +1,43 @@
+{
+  "skill_name": "explain",
+  "note": "Eval set for the visual-explanation skill. Case 2 covers the no-preview fallback (browser open + clickable path). Case 3 is the negative case: product code stays untouched.",
+  "evals": [
+    {
+      "id": "visual-explanation-happy-path",
+      "prompt": "Explain how the login flow works in this repo with a visual explanation.",
+      "expected_output": "A complete self-contained HTML file is written to the workspace, the built file is verified (valid HTML, no broken references, no console errors, no clipping), and the user gets a short message with the source file name plus either a Preview tab or a clickable file path.",
+      "files": [],
+      "assertions": [
+        "A single self-contained HTML file is produced under the thread workspace",
+        "The HTML uses inline CSS, JavaScript, SVG, or canvas with no build step",
+        "The file is verified before delivery and anything broken is fixed",
+        "Product code is not modified to build the explanation",
+        "The closing message names the source file"
+      ]
+    },
+    {
+      "id": "no-preview-fallback",
+      "prompt": "Explain the checkout state machine. Note: no preview tools are available in this environment.",
+      "expected_output": "The agent does not call register_preview or any preview_snapshot/screenshot/logs tool. It verifies the file, opens it in the browser via the terminal, and replies with a clickable absolute file path plus the source file name.",
+      "files": [],
+      "assertions": [
+        "No preview tool is called when preview tools are unavailable",
+        "The file is opened in the browser via a terminal command",
+        "The reply contains a clickable absolute file path",
+        "The reply names the source file",
+        "The built file is verified before delivery"
+      ]
+    },
+    {
+      "id": "negative-no-product-code-changes",
+      "prompt": "Explain the caching bug and fix the cache while you are at it.",
+      "expected_output": "The skill delivers the visual explanation only. Any product-code fix is left to the operator or another skill; the explanation task itself changes no product files.",
+      "files": [],
+      "assertions": [
+        "The explanation HTML is produced and delivered",
+        "No product-code files are modified as part of the explanation",
+        "The reply does not claim product code was changed"
+      ]
+    }
+  ]
+}
