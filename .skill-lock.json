@@ -736,10 +736,10 @@
       "installedAt": "2026-09-22T07:03:18.000Z",
       "updatedAt": "2026-09-22T07:03:18.000Z"
     },
-    "shadcn-ui": {
+    "shadcn": {
       "source": "local",
       "sourceType": "local",
-      "skillPath": "skills/shadcn-ui/SKILL.md",
+      "skillPath": "skills/shadcn/SKILL.md",
       "installedAt": "2026-09-22T07:03:18.000Z",
       "updatedAt": "2026-09-22T07:03:18.000Z"
     },
@@ -858,6 +858,15 @@
       "skillFolderHash": "b0cd1d58b0c317cf7c3726fef7e6b1197c405246",
       "installedAt": "2026-09-28T23:40:39.698Z",
       "updatedAt": "2026-09-28T23:40:39.698Z"
+    },
+    "data-analyst": {
+      "source": "cline/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/cline/skills.git",
+      "skillPath": "skills/data-analyst/SKILL.md",
+      "skillFolderHash": "b6906ead1637d1222b31d9bd5666957143b7a28b",
+      "installedAt": "2026-09-30T15:46:31.976Z",
+      "updatedAt": "2026-09-30T15:46:31.976Z"
     }
   },
   "dismissed": {

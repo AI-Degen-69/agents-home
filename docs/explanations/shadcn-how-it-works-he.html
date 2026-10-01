@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>איך shadcn עובד באמת? ומה זה components.json</title>
+<style>
+:root{--bg:#09090b;--card:#131316;--line:#27272a;--txt:#fafafa;--mut:#a1a1aa;--acc:#22c55e;--acc2:#38bdf8;--warn:#fbbf24;--bad:#f87171;--radius:16px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI",Arial,sans-serif;line-height:1.7}
+a{color:var(--acc2)}
+.wrap{max-width:980px;margin:0 auto;padding:24px 18px 80px}
+.hero{background:linear-gradient(180deg,#18181b,#09090b);border:1px solid var(--line);border-radius:24px;padding:32px 26px;text-align:center}
+.hero h1{margin:0 0 8px;font-size:clamp(26px,5vw,44px);line-height:1.2}
+.hero p{color:var(--mut);margin:8px auto;max-width:640px}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.badge{border:1px solid var(--line);background:#1c1c1f;border-radius:999px;padding:4px 14px;font-size:13px;color:var(--mut)}
+.badge b{color:var(--txt)}
+section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-top:18px}
+h2{margin:0 0 10px;font-size:22px}
+h3{margin:18px 0 8px;font-size:17px;color:var(--acc2)}
+p,li{font-size:15.5px}
+.muted{color:var(--mut)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px;background:#0f0f12}
+.card.good{border-color:#14532d;background:#0c1a10}
+.card.bad{border-color:#5b1a1a;background:#1c0e0e}
+.flow{display:flex;align-items:stretch;gap:0;margin:16px 0;flex-wrap:wrap}
+.step{flex:1;min-width:180px;border:1px solid var(--line);background:#0f0f12;padding:14px;text-align:center;position:relative}
+.step:first-child{border-radius:12px 0 0 12px}
+.step:last-child{border-radius:0 12px 12px 0}
+.step .n{display:inline-block;background:var(--acc);color:#052e12;font-weight:800;border-radius:999px;width:28px;height:28px;line-height:28px;margin-bottom:6px}
+.step .arrow{position:absolute;left:-14px;top:50%;transform:translateY(-50%);background:var(--acc2);color:#082f49;width:28px;height:28px;border-radius:50%;font-weight:800;z-index:2}
+pre{background:#000;border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto;direction:ltr;text-align:left;font-size:13px;line-height:1.6}
+code{font-family:Consolas,Menlo,monospace}
+.k{color:#7dd3fc}.s{color:#86efac}.c{color:#71717a;font-style:italic}.p{color:#fca5a5}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{border:1px solid var(--line);padding:10px;text-align:right}
+th{background:#1c1c1f}
+.callout{border-right:4px solid var(--acc);background:#0c1a10;padding:12px 14px;border-radius:8px;margin:12px 0}
+.callout.warn{border-color:var(--warn);background:#1f1a08}
+.callout.bad{border-color:var(--bad);background:#1f0f0f}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+button{cursor:pointer;border:1px solid var(--line);background:#1e1e22;color:#fff;border-radius:999px;padding:8px 16px;font-size:14px}
+button[aria-pressed="true"]{background:var(--acc);color:#052e12;border-color:var(--acc);font-weight:700}
+button:focus-visible,a:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
+.demo{border:1px dashed var(--acc2);border-radius:12px;padding:14px;margin-top:10px}
+ul.tight li{margin-bottom:6px}
+svg{max-width:100%;height:auto}
+.diagram{background:#0f0f12;border:1px solid var(--line);border-radius:12px;padding:10px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.progress{height:8px;background:#1f1f23;border-radius:99px;overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));width:0%}
+footer{color:var(--mut);text-align:center;margin-top:22px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+<div class="badges"><span class="badge">הסבר חזותי • <b>עברית</b></span><span class="badge">ללא ספרייה • <b>העתקת קוד</b></span><span class="badge">קובץ אחד • <b>components.json</b></span></div>
+<h1>איך shadcn עובד באמת?</h1>
+<p>זו לא ספרייה רגילה שמתקינים עם npm. זה <b>מאגר מתכונים + כלי שמעתיק קוד</b> לתוך הפרויקט שלך. הקובץ <code>components.json</code> הוא תעודת הזהות שאומרת לכלי איפה להדביק ואיך לכתוב.</p>
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+</div>
+
+<section aria-labelledby="t1">
+<h2 id="t1">1. הרעיון הגדול: אתה מקבל את הקוד, לא תלות</h2>
+<div class="grid2">
+<div class="card bad"><b>❌ ספרייה רגילה</b><p class="muted">אתה עושה <code>npm install lib</code> והקוד נשאר בחוץ. אם הספרייה נשברת — אתה תקוע. אם אתה רוצה לשנות עיצוב — קשה.</p></div>
+<div class="card good"><b>✅ shadcn</b><p>אתה עושה <code>npx shadcn add button</code> והקוד של הכפתור <b>נוחת אצלך</b> בתיקייה <code>components/ui</code>. שלך לגמרי. תשנה מה שאתה רוצה.</p></div>
+</div>
+<div class="callout"><b>משפט אחד לזכור:</b> shadcn = חנות מתכונים. ה־CLI הוא השליח. <code>components.json</code> הוא הכתובת שלך.</div>
+<div class="diagram" role="img" aria-label="תרשים זרימה של shadcn">
+<svg viewBox="0 0 900 190" dir="ltr" aria-hidden="true">
+<rect x="10" y="40" width="200" height="110" rx="12" fill="#0c1a10" stroke="#22c55e" stroke-width="2"/>
+<text x="110" y="75" text-anchor="middle" fill="#fafafa" font-size="16" font-weight="bold">Registry</text>
+<text x="110" y="98" text-anchor="middle" fill="#a1a1aa" font-size="12">חנות: @shadcn</text>
+<text x="110" y="116" text-anchor="middle" fill="#a1a1aa" font-size="12">@magicui, owner/repo</text>
+<rect x="350" y="40" width="200" height="110" rx="12" fill="#0f1c2e" stroke="#38bdf8" stroke-width="2"/>
+<text x="450" y="75" text-anchor="middle" fill="#fafafa" font-size="16" font-weight="bold">CLI + MCP</text>
+<text x="450" y="98" text-anchor="middle" fill="#a1a1aa" font-size="12">search / view / add</text>
+<text x="450" y="116" text-anchor="middle" fill="#a1a1aa" font-size="12">קורא components.json</text>
+<rect x="690" y="40" width="200" height="110" rx="12" fill="#1c1c1f" stroke="#a1a1aa" stroke-width="2"/>
+<text x="790" y="75" text-anchor="middle" fill="#fafafa" font-size="16" font-weight="bold">הפרויקט שלך</text>
+<text x="790" y="98" text-anchor="middle" fill="#a1a1aa" font-size="12">components/ui/button.tsx</text>
+<text x="790" y="116" text-anchor="middle" fill="#a1a1aa" font-size="12">+ tailwind + icons</text>
+<line x1="210" y1="95" x2="350" y2="95" stroke="#22c55e" stroke-width="3" marker-end="url(#a)"/>
+<line x1="550" y1="95" x2="690" y2="95" stroke="#38bdf8" stroke-width="3" marker-end="url(#a)"/>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#fff"/></marker></defs>
+</svg>
+</div>
+</section>
+
+<section aria-labelledby="t2">
+<h2 id="t2">2. מה זה components.json? תעודת הזהות של הפרויקט</h2>
+<p>בלי הקובץ הזה הכלי <b>לא יודע כלום</b>: איפה לשים קבצים, איזה React, איזה Tailwind, איזה אייקונים. איתו — כל פקודה עובדת אוטומטית.</p>
+<pre><code><span class="c">// דוגמה אמיתית + הסבר לכל שורה</span>
+{
+  <span class="k">"$schema"</span>: <span class="s">"https://ui.shadcn.com/schema.json"</span>,
+  <span class="k">"style"</span>: <span class="s">"nova"</span>,          <span class="c">// איך זה נראה</span>
+  <span class="k">"tailwind"</span>: {
+    <span class="k">"version"</span>: <span class="s">"v4"</span>,      <span class="c">// v4 = קובץ CSS, v3 = tailwind.config.js</span>
+    <span class="k">"css"</span>: <span class="s">"app/globals.css"</span> <span class="c">// איפה הצבעים שלך</span>
+  },
+  <span class="k">"aliases"</span>: {
+    <span class="k">"components"</span>: <span class="s">"@/components"</span>, <span class="c">// קיצור ליבוא</span>
+    <span class="k">"ui"</span>: <span class="s">"@/components/ui"</span>,     <span class="c">// כאן נוחתים הכפתורים</span>
+    <span class="k">"utils"</span>: <span class="s">"@/lib/utils"</span>
+  },
+  <span class="k">"iconLibrary"</span>: <span class="s">"lucide"</span>,  <span class="c">// lucide או tabler — לא לערבב!</span>
+  <span class="k">"base"</span>: <span class="s">"radix"</span>,         <span class="c">// radix או base-ui — קובע API</span>
+  <span class="k">"registries"</span>: {
+    <span class="k">"@shadcn"</span>: <span class="s">"built-in"</span>
+  }
+}</code></pre>
+<h3>השדות שהכי מבלבלים — בפשטות</h3>
+<table>
+<tr><th>שדה</th><th>מה זה אומר בפשטות</th><th>אם טועים</th></tr>
+<tr><td><code>aliases.ui</code></td><td>לאן להדביק את הקוד</td><td>יבוא נשבר, קבצים הולכים לאיבוד</td></tr>
+<tr><td><code>base: radix / base</code></td><td>איזה מנוע מאחורי הקלעים</td><td>קוד עם <code>asChild</code> לא עובד ב־base ולהפך</td></tr>
+<tr><td><code>tailwind v3 / v4</code></td><td>איפה הצבעים גרים</td><td>עיצוב לא נטען, מסך לבן</td></tr>
+<tr><td><code>iconLibrary</code></td><td>מאיפה האייקונים</td><td>שגיאת <code>lucide-react not found</code></td></tr>
+<tr><td><code>registries</code></td><td>אילו חנויות מותרות</td><td>החיפוש לא מוצא כלום</td></tr>
+</table>
+</section>
+
+<section aria-labelledby="t3">
+<h2 id="t3">3. נסה בעצמך: איך אותו כפתור משתנה</h2>
+<p class="muted">לחץ על הכפתורים וראה איך <code>components.json</code> משנה את הקוד שהכלי מייצר:</p>
+<div class="btns" role="group" aria-label="בחירת הגדרות">
+<button id="bRadix" aria-pressed="true">base = radix</button>
+<button id="bBase" aria-pressed="false">base = base-ui</button>
+<button id="bAlias1" aria-pressed="true">@/components/ui</button>
+<button id="bAlias2" aria-pressed="false">~/ui</button>
+</div>
+<div class="demo">
+<pre><code id="out"></code></pre>
+<p class="muted" id="note"></p>
+</div>
+</section>
+
+<section aria-labelledby="t4">
+<h2 id="t4">4. הזרימה הנכונה: חפש → בדוק → הוסף → בדוק שוב</h2>
+<div class="flow">
+<div class="step"><span class="n">1</span><br/><b>search</b><br/><span class="muted">יש כבר מוכן? לא לבנות לבד.</span><span class="arrow">◀</span></div>
+<div class="step"><span class="n">2</span><br/><b>docs / view</b><br/><span class="muted">קוראים דוגמה אמיתית, לא מנחשים.</span><span class="arrow">◀</span></div>
+<div class="step"><span class="n">3</span><br/><b>add</b><br/><span class="muted">הקוד נוחת אצלך בתיקייה.</span><span class="arrow">◀</span></div>
+<div class="step"><span class="n">4</span><br/><b>audit</b><br/><span class="muted">בודקים יבוא, אייקונים, חוקים.</span></div>
+</div>
+<div class="callout warn"><b>טעות נפוצה:</b> להעתיק קוד משיחה או מגיטהאב בלי CLI. אז ה־alias לא נכון, האייקון לא נכון, וה־base לא מתאים. תמיד דרך <code>add</code>.</div>
+</section>
+
+<section aria-labelledby="t5">
+<h2 id="t5">5. למה 3 הפרויקטים שלך עוד לא מוכנים?</h2>
+<table>
+<tr><th>פרויקט</th><th>מה יש היום</th><th>מה חסר ל־shadcn</th></tr>
+<tr><td>crypto-spread</td><td>שרת Python בלבד</td><td>אין React, אין Tailwind, אין components.json — צריך תיקיית front חדשה</td></tr>
+<tr><td>spread-hunter</td><td>Express + HTML פשוט ב־dashboard/static</td><td>צריך לעבור ל־Vite React + <code>npx shadcn init</code></td></tr>
+<tr><td>issue-to-pr-skills / site</td><td>HTML סטטי + Tailwind CDN ישן</td><td>לא תומך ב־shadcn. או משאירים ככה, או בונים מחדש ב־Next/Vite</td></tr>
+</table>
+<div class="callout bad"><b>שורה תחתונה:</b> MCP מחובר אצלך, Skill טעון, אבל בלי <code>components.json</code> באף פרויקט — אין לאן להדביק. זו הסיבה ששום <code>add</code> לא יעבוד כרגע.</div>
+</section>
+
+<section aria-labelledby="t6">
+<h2 id="t6">6. איך להרוויח מ־MCP + Skill בפרונט?</h2>
+<ul class="tight">
+<li><b>Skill = חוקים.</b> מונע טעויות: צבעים סמנטיים, <code>gap</code> במקום <code>space-y</code>, כותרת חובה בחלונית, אייקון עם <code>data-icon</code>.</li>
+<li><b>MCP = ידיים.</b> מחפש, מציג קוד מלא, נותן פקודת התקנה. לא מנחש API.</li>
+<li><b>יחד:</b> אתה אומר "מצא לי טבלת מחירים" → אני מחפש → מראה דוגמה → נותן <code>add</code> → בודק audit.</li>
+</ul>
+<div class="grid2">
+<div class="card"><b>בלי זה</b><p class="muted">כותבים div מעוצב לבד, צבע קשיח <code>bg-blue-500</code>, ריווח נשבר במובייל.</p></div>
+<div class="card good"><b>עם זה</b><p class="muted">מרכיבים <code>Card + Table + Badge</code>, צבע <code>bg-primary</code>, רספונסיבי בחינם.</p></div>
+</div>
+</section>
+
+<footer>קובץ: docs/explanations/shadcn-how-it-works-he.html • נבנה מקומית, בלי תלות חיצונית • בדוק: פתח בדפדפן, שנה גודל חלון, נסה מקלדת בלבד</footer>
+</div>
+<script>
+var base='radix', alias='@/components/ui';
+var out=document.getElementById('out'), note=document.getElementById('note');
+var bRadix=document.getElementById('bRadix'), bBase=document.getElementById('bBase');
+var bA1=document.getElementById('bAlias1'), bA2=document.getElementById('bAlias2');
+function render(){
+var trig = base==='radix' ? '<DialogTrigger asChild>\n  <Button>פתח</Button>\n</DialogTrigger>' : '<DialogTrigger render={\n  <Button>פתח</Button>\n} />';
+var code = '// components.json: base="'+base+'", ui="'+alias+'"\nimport { Button } from "'+alias+'/button";\nimport { Dialog, DialogTitle,\n  DialogTrigger, DialogContent } from "'+alias+'/dialog";\n\n<Dialog>\n  '+trig+'\n  <DialogContent>\n    <DialogTitle>כותרת חובה לנ Reader-מסך</DialogTitle>\n    <p>תוכן…</p>\n  </DialogContent>\n</Dialog>';
+out.textContent=code;
+note.textContent = base==='radix' ? 'הסבר: ב-radix משתמשים ב-asChild כדי להלביש כפתור על הטריגר.' : 'הסבר: ב-base-ui משתמשים ב-render במקום asChild. אותו רעיון, מילה אחרת.';
+bRadix.setAttribute('aria-pressed', base==='radix'); bBase.setAttribute('aria-pressed', base!=='radix');
+bA1.setAttribute('aria-pressed', alias==='@/components/ui'); bA2.setAttribute('aria-pressed', alias!=='@/components/ui');
+var sc=document.getElementById('bar'); if(sc) sc.style.width='100%';
+}
+bRadix.onclick=function(){base='radix';render()}; bBase.onclick=function(){base='base';render()};
+bA1.onclick=function(){alias='@/components/ui';render()}; bA2.onclick=function(){alias='~/ui';render()};
+render();
+window.addEventListener('scroll',function(){
+var h=document.documentElement; var p=h.scrollTop/(h.scrollHeight-h.clientHeight||1); var b=document.getElementById('bar'); if(b) b.style.width=(p*100)+'%';
+},{passive:true});
+</script>
+</body>
+</html>
