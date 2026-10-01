@@ -3,6 +3,3 @@
 .playwright-cli/
 desktop.ini
 icon_*.ico
-
-# Vendored skill sources linked from skills/*/skills/ (symlink targets, not canonical)
-.vendor/
