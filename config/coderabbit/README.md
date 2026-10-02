@@ -77,7 +77,19 @@ Per the [plans page](https://docs.coderabbit.ai/management/plans) and per-comman
 - Chat on Free is **N/A**, so the observed "upgrade to CodeRabbit Essentials" refusal is consistent with the table, not a contradiction.
 - OSS: PR reviews 1–10 depending on stars, IDE 1 · CLI 3, files 100–300, chat 25.
 
-**Operational consequence to probe (outside #5's scope).** If this account's PR reviews really are summarization-only, then a Station IV/V loop that waits for CodeRabbit *findings* on a PR is waiting for something Free does not deliver on the PR path — real reviews would have to come from the IDE/CLI path (3/hour). This is not resolvable from docs alone: run `@coderabbitai configuration` on a live PR and observe whether a review posts findings or only a summary, then treat the answer as the operating assumption.
+### Observed behaviour on this account (checked on live PRs, 2026-10-02)
+
+Docs alone were not enough here, so the account's actual behaviour was read off live PRs:
+
+- **This account is Free with OSS access.** CodeRabbit's own reply on a rate-limited PR says: "You've used all free OSS reviews for now… **Next included review available in 25 minutes**." The OSS track is what makes public repos reviewable at all — the Free plan card itself says PR reviews are summarization-only.
+- **Public repos get real reviews with findings.** `crypto-spread` PR #385 (public, 0 stars): 4 inline findings and a **CHANGES_REQUESTED** review, plus the acknowledgement "✅ Action performed — Review finished." PR #372: 14 inline findings. Both ran while this account was on Free — so on the public/OSS path the "summarization only" wording does not describe reality.
+- **The private repo is the untested path.** `agents-home` is private, so the Free plan applies to it and the documented expectation is a **summarization-only review with no inline findings**. No PR exists there yet to observe, so treat that as the operating assumption, not a measured fact — the next PR on this repo is the measurement.
+- **Chat-dependent commands are refused on this account.** On this repo's issues, `@coderabbitai plan` returned "The author of this PR is on the CodeRabbit Free Plan… upgrade to CodeRabbit Essentials", and the same refusal appeared after each plan request. Expect the same for the standalone `configuration` / `rate limit` probes: the allowance signal arrives instead inside the trigger acknowledgement ("Review limit reached" / "Next included review available in N minutes").
+
+**Consequence for Stations IV and V (decision recorded; the station edits belong to #7):**
+
+- **Station IV** should classify the post-trigger reply into four outcomes, not three: *review started* / *rate limited (N minutes)* / **summary-only review (private repo on Free — no findings expected)** / *other reply*. On summary-only it must hand off saying plainly that CodeRabbit will not produce findings here and that verification rests on the local gates (OCR delegation, type-matched reviewers, Spec axis, targeted tests) — never imply a bot review passed.
+- **Station V**'s existing branch "completed with zero inline comments → clean pass" is **unsafe on a private Free repo**: a summary-only review reports exactly that, and the station would call it `לא נמצאו הערות — הקוד אושר כפי שהוא`. That branch must route to the station's existing agent-fallback / reuse path (Station IV's evidence + delta check) instead, and say so in the report.
 
 ## Config cheat-sheet
 
@@ -145,6 +157,8 @@ How a repository receives its configuration, and what each route costs.
 ## Verification recipes
 
 Four probes that answer real questions. Run probes 1–2 on any open PR, probe 3 on an issue, probe 4 after a title/config change.
+
+**Caveat (observed 2026-10-02 on this account):** chat-dependent commands are refused on Free ("upgrade to CodeRabbit Essentials"), so probes 1–3 may return that notice instead of an answer. When they do, the allowance signal comes from the trigger acknowledgement — see "Observed behaviour on this account" above.
 
 **1. Resolved config, with sources.** Answers "why is CodeRabbit not doing what I configured?" — and must be the first step before touching configuration.
 
