@@ -10,7 +10,7 @@ Canonical knowledge for how CodeRabbit is configured, commanded, and verified he
 - [Configuration overview](https://docs.coderabbit.ai/guides/configuration-overview) · [Central configuration](https://docs.coderabbit.ai/configuration/central-configuration) · [YAML configuration](https://docs.coderabbit.ai/getting-started/yaml-configuration)
 - [Code guidelines](https://docs.coderabbit.ai/knowledge-base/code-guidelines) · [Issue Planner](https://docs.coderabbit.ai/issues/planner)
 
-**Operator tier: Free** — verified by CodeRabbit's own refusal of the `@coderabbitai plan` request on issue #5 ("The author of this PR is on the CodeRabbit Free Plan…"). Read every plan-gated row below through that lens. Note that new organizations start on a 14-day Advanced trial, so behavior can change when the trial ends.
+**Operator tier: Free** — verified by CodeRabbit's own refusal of the `@coderabbitai plan` request on issue #5 ("The author of this PR is on the CodeRabbit Free Plan…"). Read every plan-gated row below through that lens. This is the post-trial state: new organizations start on a 14-day Advanced trial and revert to Free if they do not subscribe, so a fresh organization or a re-subscribed account can behave differently.
 
 Facts below marked **(verified 2026-10-02, MCP exact-match)** were re-checked against the docs filesystem with `rg`, not by re-reading rendered pages.
 
@@ -89,7 +89,7 @@ Docs alone were not enough here, so the account's actual behaviour was read off 
 **Consequence for Stations IV and V (decision recorded; the station edits belong to #7):**
 
 - **Station IV** should classify the post-trigger reply into four outcomes, not three: *review started* / *rate limited (N minutes)* / **summary-only review (private repo on Free — no findings expected)** / *other reply*. On summary-only it must hand off saying plainly that CodeRabbit will not produce findings here and that verification rests on the local gates (OCR delegation, type-matched reviewers, Spec axis, targeted tests) — never imply a bot review passed.
-- **Station V**'s existing branch "completed with zero inline comments → clean pass" is **unsafe on a private Free repo**: a summary-only review reports exactly that, and the station would call it `לא נמצאו הערות — הקוד אושר כפי שהוא`. That branch must route to the station's existing agent-fallback / reuse path (Station IV's evidence + delta check) instead, and say so in the report.
+- **Station V**'s existing branch "completed with zero inline comments → clean pass" is **unsafe on a private Free repo**: a summary-only review reports exactly that, and the station would report a clean pass ("no comments found — the code is approved as is"). That branch must route to the station's existing agent-fallback / reuse path (Station IV's evidence + delta check) instead, and say so in the report.
 
 ## Config cheat-sheet
 
@@ -112,7 +112,7 @@ Keys from the [configuration reference](https://docs.coderabbit.ai/reference/con
 | `reviews.finishing_touches.*` | docstrings `true` · unit_tests `true` · simplify `false` · autofix `true` · fix_ci `true` · resolve_merge_conflict `true` | you want a finishing touch off (or know its plan gate): docstrings & autofix = Essentials+, fix_ci / unit_tests / merge-conflict = Team+. Custom recipes are plan-capped |
 | `reviews.tools.*` | most tools `true` | a tool needs a `config_file` (ruff, eslint, golangci-lint, semgrep, …) or a specific analyzer should be off. Linter/SAST support is documented at Essentials+ |
 | `knowledge_base.code_guidelines.enabled` | `true` | you want guidelines off entirely (set `false`) |
-| `knowledge_base.code_guidelines.filePatterns` | `[]` | guidelines live outside the auto-detected set. `**/AGENTS.md`, `**/CLAUDE.md`, `**/.cursorrules`, `**/.gemini.md`, `**/.windsurfrules`, `**/.clinerules/*`, `**/.rules/*`, `**/AGENT.md` (case-sensitive) are detected automatically and scoped to their directory tree. Custom entries supplement the defaults; `[]` keeps them active. Entries can be a glob, a `{files, applyTo}` object, or source from another repo (`repo:path`). Knowledge base is documented at Essentials+ and is not available on self-hosted |
+| `knowledge_base.code_guidelines.filePatterns` | `[]` | guidelines live outside the auto-detected set. The built-in list (case-sensitive, each scoped to its directory tree) is `**/AGENTS.md`, `**/AGENT.md`, `**/.cursorrules`, `**/.cursor/rules/*`, `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md`, `**/CLAUDE.md`, `**/GEMINI.md`, `**/.windsurfrules`, `**/.clinerules/*`, `**/.rules/*`. Custom entries supplement the defaults; `[]` keeps them active. Entries can be a glob, a `{files, applyTo}` object, or source from another repo (`repo:path`). Knowledge base is documented at Essentials+ and is not available on self-hosted |
 | `knowledge_base.opt_out` | `false` | you want to disable knowledge-base data retention |
 | `remote_config` | unset | this repo should delegate to a shared config file: `{repository, ref, path}` (same owner/org, CodeRabbit must be able to read it) or a publicly reachable `{url}` (retrieved unauthenticated, 5s timeout — not recommended) |
 
@@ -174,7 +174,7 @@ Read the reply as YAML annotated with the source of each value (repository YAML,
 gh pr comment <PR> --body "@coderabbitai rate limit"
 ```
 
-Use it before spending a `review` / `full review` trigger when allowance is thin, and to collect the evidence for the Free-tier contradiction above.
+Use it before spending a `review` / `full review` trigger when allowance is thin, and to check the allowance figures quoted in the plan-gating table above.
 
 **3. Plan-gated command response.** Reachability probe for the current tier.
 
