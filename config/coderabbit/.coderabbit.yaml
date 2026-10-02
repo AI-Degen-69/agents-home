@@ -5,6 +5,21 @@
 # (CodeRabbit reads YAML only from the git repo root or a central
 #  coderabbit repo — never from a local path — so each repo carries a copy.)
 #
+# Playbook — commands, plan gates, distribution options, verification recipes:
+#   config/coderabbit/README.md (same folder as this file)
+#
+# Distribution decision (recorded 2026-10-02): keep the sync-copy route. The
+# script writes this file into a repo only when the repo has no .coderabbit.yaml
+# or its copy is byte-identical (sync-coderabbit.ps1:63-66), so any repo with a
+# richer file merges canonical blocks by hand — every key this file gains widens
+# that hand-merge gap. The future direction is reviews.remote_config
+# {repository, ref, path} pointing at this file, which removes the copy step;
+# migrating the consumer repos is deliberately out of scope for now.
+#
+# Plan tier: Free (verified — chat-gated commands are refused on this account).
+# Settings that need a higher tier are written as commented blocks naming the
+# requirement, never committed as silent no-ops.
+#
 # This file is intentionally MINIMAL: anything omitted here continues to be
 # governed by the CodeRabbit UI settings, per repo.
 #
@@ -33,11 +48,45 @@ reviews:
     [CONFIGURE] settings, workflows, tooling
     [REVERT] undo a previous change
 
-  # Enforce the vocabulary: a PR whose title does not match the TAG format
-  # cannot merge (request_changes_workflow blocks on error-level checks).
+  # The trigger for the instructions above: put this keyword in the PR title and
+  # CodeRabbit writes the title itself. The schema default is the same string; it
+  # is set explicitly so the switch is visible. The pipeline still writes titles
+  # itself (skills/iv-review-build-and-pr/SKILL.md:137) — handing that over is
+  # the work of #7.
+  auto_title_placeholder: "@coderabbitai"
+
+  # Review scope. Exclusions must be !-prefixed: a bare glob is an INCLUDE
+  # pattern and would silently narrow every review to those paths. One entry:
+  # the eval trees — 44 tracked fixture/snapshot files with no review value.
+  # (The .playwright-cli capture dir is not listed: .gitignore excludes it and
+  # nothing under it is tracked, so it never reaches CodeRabbit's clone.)
+  path_filters:
+    - "!**/evals/**"
+
+  # Path-scoped guidance for the skill files, quoted from skills/README.md.
+  # On Free the PR review is summarization-only; these instructions bite only
+  # on tiers that produce findings.
+  path_instructions:
+    - path: "skills/**/*.md"
+      instructions: |
+        - One skill per kebab-case folder, each with a SKILL.md carrying name
+          and description frontmatter.
+        - A skill whose real home is elsewhere is linked in, never copied;
+          validate.js --all validates real folders and names every link it skips.
+        - A numbered prefix (i- through vi-) marks a pipeline station invoked in
+          order; skills without a numeral are system skills.
+        - A skill folder is self-contained (SKILL.md plus optional references/,
+          scripts/, evals/); this home's copy is the source of truth and
+          harnesses link to it, never fork it.
+
+  # Title check: warning only, on purpose. Two facts decide it: error-level
+  # checks can block a PR only when reviews.request_changes_workflow is enabled
+  # (unset here, i.e. false), and built-in Pre-Merge Checks are an Essentials+
+  # capability. On Free this check can warn, never block — the TAG requirements
+  # below are guidance, not enforcement.
   pre_merge_checks:
     title:
-      mode: error
+      mode: warning
       requirements: >-
         Title must start with exactly one of the TAGs: [ADD], [CREATE], [FIX],
         [IMPROVE], [REFACTOR], [OPTIMIZE], [TEST], [DOCUMENT], [FORMAT],
@@ -51,3 +100,34 @@ reviews:
       enabled: true
     trufflehog:
       enabled: true
+
+# --- knowledge_base.code_guidelines.filePatterns — deliberately left out ---
+# AGENTS.md is already auto-detected by default (alongside CLAUDE.md,
+# .cursorrules, .cursor/rules/*, GEMINI.md, .windsurfrules, .clinerules/*,
+# .rules/*, .github/copilot-instructions.md,
+# .github/instructions/*.instructions.md), scoped to its directory tree, so an
+# explicit entry would add nothing. The Knowledge Base is also an Essentials+
+# capability.
+
+# ## Deliberately not set
+#
+# Switches consciously left out, with the reason. Re-read this before "fixing"
+# any of them back in:
+#
+# - reviews.request_changes_workflow — turns on the approval loop; unused here,
+#   and it is the key that would let error-level checks block a merge.
+# - Built-in Pre-Merge Checks as enforcement — Essentials+; on Free they cannot
+#   block, which is why the title check above sits at warning.
+# - knowledge_base.* — Essentials+, and AGENTS.md is auto-detected anyway.
+# - reviews.finishing_touches.docstrings / autofix — Essentials+.
+# - reviews.finishing_touches.unit_tests / fix_ci / resolve_merge_conflict — Team+.
+# - reviews.tools.* for languages this repo does not contain (ruff, eslint,
+#   golangci-lint, semgrep) — noise and slower reviews.
+# - remote_config.url — public and unauthenticated; the repository form is the
+#   future direction recorded in the header.
+# - reviews.path_filters for the .playwright-cli capture dir — git-ignored, so
+#   nothing there is ever cloned; the filter would be dead.
+# - reviews.auto_review.* — the schema defaults (enabled, incremental, pause
+#   after 5 reviewed commits, drafts skipped) already do the right thing.
+# - UI-only settings — a switch that is not in the configuration schema does
+#   not belong in this file.
