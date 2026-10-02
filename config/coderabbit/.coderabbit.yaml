@@ -5,6 +5,21 @@
 # (CodeRabbit reads YAML only from the git repo root or a central
 #  coderabbit repo — never from a local path — so each repo carries a copy.)
 #
+# Playbook — commands, plan gates, distribution options, verification recipes:
+#   config/coderabbit/README.md (same folder as this file)
+#
+# Distribution decision (recorded 2026-10-02): keep the sync-copy route. The
+# script writes this file into a repo only when the repo has no .coderabbit.yaml
+# or its copy is byte-identical (sync-coderabbit.ps1:63-66), so any repo with a
+# richer file merges canonical blocks by hand — every key this file gains widens
+# that hand-merge gap. The future direction is reviews.remote_config
+# {repository, ref, path} pointing at this file, which removes the copy step;
+# migrating the consumer repos is deliberately out of scope for now.
+#
+# Plan tier: Free (verified — chat-gated commands are refused on this account).
+# Settings that need a higher tier are written as commented blocks naming the
+# requirement, never committed as silent no-ops.
+#
 # This file is intentionally MINIMAL: anything omitted here continues to be
 # governed by the CodeRabbit UI settings, per repo.
 #
@@ -33,11 +48,21 @@ reviews:
     [CONFIGURE] settings, workflows, tooling
     [REVERT] undo a previous change
 
-  # Enforce the vocabulary: a PR whose title does not match the TAG format
-  # cannot merge (request_changes_workflow blocks on error-level checks).
+  # The trigger for the instructions above: put this keyword in the PR title and
+  # CodeRabbit writes the title itself. The schema default is the same string; it
+  # is set explicitly so the switch is visible. The pipeline still writes titles
+  # itself (skills/iv-review-build-and-pr/SKILL.md:137) — handing that over is
+  # the work of #7.
+  auto_title_placeholder: "@coderabbitai"
+
+  # Title check: warning only, on purpose. Two facts decide it: error-level
+  # checks can block a PR only when reviews.request_changes_workflow is enabled
+  # (unset here, i.e. false), and built-in Pre-Merge Checks are an Essentials+
+  # capability. On Free this check can warn, never block — the TAG requirements
+  # below are guidance, not enforcement.
   pre_merge_checks:
     title:
-      mode: error
+      mode: warning
       requirements: >-
         Title must start with exactly one of the TAGs: [ADD], [CREATE], [FIX],
         [IMPROVE], [REFACTOR], [OPTIMIZE], [TEST], [DOCUMENT], [FORMAT],
