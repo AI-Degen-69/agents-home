@@ -20,7 +20,7 @@ Every command from the vendor's [review-commands reference](https://docs.coderab
 
 | Command | What it does | Where to post | Plan requirement / config gate |
 |---|---|---|---|
-| `@coderabbitai review` | Incremental review — new changes only, comments on what changed since the last pass | PR comment | Uses 1 PR review from the allowance. On Free the PR allowance is 1/hour and marked **Summary only** — see the rate row below |
+| `@coderabbitai review` | Incremental review — new changes only, comments on what changed since the last pass | PR comment | Uses 1 PR review from the allowance. On Free the PR allowance is 1/hour and marked **Summary only** — see the rate row below. On public repositories under 10 stars, a review starts from this trigger (or the **Trigger review** button in the status comment) |
 | `@coderabbitai full review` | Complete review of all files from scratch | PR comment | Uses 1 PR review from the allowance |
 | `@coderabbitai pause` | Temporarily stops automatic reviews | PR comment | — |
 | `@coderabbitai resume` | Restarts automatic reviews after a pause | PR comment | — |

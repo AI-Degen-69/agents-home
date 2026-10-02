@@ -42,7 +42,7 @@ If no PR exists: **do not create it yourself — delegate to `iv-review-build-an
 ### Step 1 — Review Trigger & Countdown Polling Cycle (5m → 4m → 3m → 2m → 1m)
 
 1. **Verify the Review Trigger (`iv-review-build-and-pr` posts it at PR creation, babysitter verifies):**
-   - CodeRabbit does **not** auto-review anymore — reviews start only from an explicit `@coderabbitai review` comment, which `iv-review-build-and-pr` posts immediately after opening the PR. By the time this station starts, the review is therefore usually already running.
+   - `iv-review-build-and-pr` posts `@coderabbitai review` immediately after opening the PR, so by the time this station starts the review is usually already running.
    - **Consume Station IV's trigger-status handoff first (do not re-detect):** Station IV's handoff report already states the trigger status in one line — review started / rate limited (N minutes) / other bot reply (quoted, with jump links to the trigger comment and CodeRabbit's reply) / no acknowledgement. Carry that status forward as the initial review state:
      - `review started` → go straight to the check-first below (review may already be posted).
      - `rate limited (N minutes)` → do NOT start the countdown for the quota window; go directly to Step 2B's reuse path (Station IV's review evidence + delta check). The N-minute window is reported to the operator, never silently waited out.

@@ -4,7 +4,7 @@ description: Station V (Babysit PR & Merge) — Sits on PR through one focused C
 ---
 # Station V: Babysit PR and Merge (`v-babysit-pr-and-merge`)
 
-A global, model-agnostic habit: ensure every branch is pushed and opened as a PR (or handed off directly from Station IV `iv-review-build-and-pr`), then sit on the PR through review until it is mergeable. Every comment is triaged, every dismissal carries a reason, review waiting follows a deterministic **5m → 4m → 3m → 2m → 1m** countdown check cycle, the review loop runs **exactly one focused round** (to conserve CodeRabbit quota and eliminate review churn), auto-triggers `@coderabbitai review` if auto-review is not invoked or was skipped, and concludes — merged or escalated.
+A global, model-agnostic habit: ensure every branch is pushed and opened as a PR (or handed off directly from Station IV `iv-review-build-and-pr`), then sit on the PR through review until it is mergeable. Every comment is triaged, every dismissal carries a reason, review waiting follows a deterministic **5m → 4m → 3m → 2m → 1m** countdown check cycle, the review loop runs **exactly one focused round** (to conserve CodeRabbit quota and eliminate review churn), posts the single `@coderabbitai review` trigger when the PR has none, and concludes — merged or escalated.
 
 ## Pipeline Position
 - **Station:** Station V of VI
@@ -98,7 +98,7 @@ digraph babysit_pr_and_merge {
 - **Full autonomy on GitHub operations:** Agent commits, pushes, creates PRs, and merges without requiring manual sign-offs.
 - **Mandatory inline reply on every resolution:** Every single resolved thread MUST have an explicit inline reply (`ACCEPT: <summary of fix>` or `REJECT: <concrete technical reason>`) posted before resolution via `repos/:owner/:repo/pulls/:pr/comments/:id/replies`. Never resolve silently, and never run blind bulk resolutions that close unaddressed or newly arrived comments.
 - **Programmatic extraction only:** Read review comments via `gh api repos/:owner/:repo/pulls/<pr_number>/comments` (`id`, `path`, `line`, `start_line`, `body`) — never by eyeballing rendered PR HTML.
-- **Manual review trigger:** CodeRabbit never auto-reviews. `iv-review-build-and-pr` posts `@coderabbitai review` right after opening the PR. Never treat a green check as a review — read the check text.
+- **Read the check, not the colour:** `iv-review-build-and-pr` owns the trigger; this station works from the review content and the check text, never from a green check alone.
 - **One trigger per PR — HARD RULE:** check for an existing `@coderabbitai review` comment (or PR body) FIRST; post a trigger only when none exists anywhere. An existing trigger is never re-posted, re-verified, or "confirmed", and an old/unacknowledged bot reply does NOT license a second trigger — after one review the round is spent, the quota is gone, and a new trigger is guaranteed to hit the rate limit. This lock is permanent: pushing the fix commit in Step 4.3 does not unlock a second review.
 - **Single review round:** Exactly 1 focused review round to conserve CodeRabbit quota and eliminate review churn. Proceed directly to CI verification and merge after resolving round 1.
 - **Countdown polling schedule:** 5 min initial wait (hard minimum — never shorten), then 4 min, 3 min, 2 min, and 1 min checks thereafter. Use non-blocking `schedule` tool instead of long shell sleeps.

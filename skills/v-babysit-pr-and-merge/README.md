@@ -26,7 +26,7 @@ green CI. Zero human in the loop.
 ## How it works (short)
 
 1. Ensures the PR exists (delegates opening to Station IV if needed),
-   auto-triggers `@coderabbitai review` when auto-review skipped.
+   posts the single `@coderabbitai review` trigger when the PR has none.
 2. Waits on the deterministic **5m → 4m → 3m → 2m → 1m** countdown;
    on quota-limit falls back to the agent review path.
 3. Extracts comments, triages **ACCEPT** (Type A/B fixes) vs **REJECT**
