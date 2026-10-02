@@ -107,3 +107,26 @@ reviews:
 # .rules/*, copilot-instructions.md), scoped to its directory tree, so an
 # explicit entry would add nothing. The Knowledge Base is also an Essentials+
 # capability.
+
+# ## Deliberately not set
+#
+# Switches consciously left out, with the reason. Re-read this before "fixing"
+# any of them back in:
+#
+# - reviews.request_changes_workflow — turns on the approval loop; unused here,
+#   and it is the key that would let error-level checks block a merge.
+# - Built-in Pre-Merge Checks as enforcement — Essentials+; on Free they cannot
+#   block, which is why the title check above sits at warning.
+# - knowledge_base.* — Essentials+, and AGENTS.md is auto-detected anyway.
+# - reviews.finishing_touches.docstrings / autofix — Essentials+.
+# - reviews.finishing_touches.unit_tests / fix_ci / resolve_merge_conflict — Team+.
+# - reviews.tools.* for languages this repo does not contain (ruff, eslint,
+#   golangci-lint, semgrep) — noise and slower reviews.
+# - remote_config.url — public and unauthenticated; the repository form is the
+#   future direction recorded in the header.
+# - reviews.path_filters for the .playwright-cli capture dir — git-ignored, so
+#   nothing there is ever cloned; the filter would be dead.
+# - reviews.auto_review.* — the schema defaults (enabled, incremental, pause
+#   after 5 reviewed commits, drafts skipped) already do the right thing.
+# - UI-only settings — a switch that is not in the configuration schema does
+#   not belong in this file.
