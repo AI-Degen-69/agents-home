@@ -135,4 +135,39 @@ How a repository receives its configuration, and what each route costs.
 
 ## Verification recipes
 
-Copy-pasteable `gh` one-liners for the four probes: resolved config, remaining allowance, plan-gated command response, and auto-title behavior.
+Four probes that answer real questions. Run probes 1–2 on any open PR, probe 3 on an issue, probe 4 after a title/config change.
+
+**1. Resolved config, with sources.** Answers "why is CodeRabbit not doing what I configured?" — and must be the first step before touching configuration.
+
+```bash
+gh pr comment <PR> --body "@coderabbitai configuration"
+```
+
+Read the reply as YAML annotated with the source of each value (repository YAML, central configuration, UI settings, defaults, global overrides). Compare against `.coderabbit.yaml` before assuming a setting is broken.
+
+**2. Remaining review allowance.** A free probe — it does not consume a review.
+
+```bash
+gh pr comment <PR> --body "@coderabbitai rate limit"
+```
+
+Use it before spending a `review` / `full review` trigger when allowance is thin, and to collect the evidence for the Free-tier contradiction above.
+
+**3. Plan-gated command response.** Reachability probe for the current tier.
+
+```bash
+gh issue comment <ISSUE> --body "@coderabbitai plan"
+```
+
+On Free it returns the upgrade refusal (observed); on Team+ it posts a Coding Plan comment within about 5–10 minutes.
+
+**4. Auto-title behavior.** Verify the title handover end to end.
+
+```bash
+# 1. The branch's .coderabbit.yaml must set reviews.auto_title_placeholder
+#    (default keyword "@coderabbitai") and reviews.auto_title_instructions.
+gh pr edit <PR> --title "@coderabbitai tag me"
+gh pr view <PR> --json title   # CodeRabbit replaces the title per its instructions
+```
+
+Related shortcut: `@coderabbitai generate configuration` opens a PR with the fully resolved config as a file — useful to diff resolved reality against the canonical repo file.
