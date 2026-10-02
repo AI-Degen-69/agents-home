@@ -12,13 +12,15 @@ Canonical knowledge for how CodeRabbit is configured, commanded, and verified he
 
 **Operator tier: Free** — verified by CodeRabbit's own refusal of the `@coderabbitai plan` request on issue #5 ("The author of this PR is on the CodeRabbit Free Plan…"). Read every plan-gated row below through that lens. Note that new organizations start on a 14-day Advanced trial, so behavior can change when the trial ends.
 
+Facts below marked **(verified 2026-10-02, MCP exact-match)** were re-checked against the docs filesystem with `rg`, not by re-reading rendered pages.
+
 ## Command table
 
 Every command from the vendor's [review-commands reference](https://docs.coderabbit.ai/reference/review-commands), plus `@coderabbitai plan` from the [Issue Planner](https://docs.coderabbit.ai/issues/planner). Commands post as `@coderabbitai` (service-account handle varies by platform). "Where to post" is strict: several commands silently do nothing from the wrong place.
 
 | Command | What it does | Where to post | Plan requirement / config gate |
 |---|---|---|---|
-| `@coderabbitai review` | Incremental review — new changes only, comments on what changed since the last pass | PR comment | Uses 1 PR review from the allowance. Free-tier caveat: see the note below the plan-gating table |
+| `@coderabbitai review` | Incremental review — new changes only, comments on what changed since the last pass | PR comment | Uses 1 PR review from the allowance. On Free the PR allowance is 1/hour and marked **Summary only** — see the rate row below |
 | `@coderabbitai full review` | Complete review of all files from scratch | PR comment | Uses 1 PR review from the allowance |
 | `@coderabbitai pause` | Temporarily stops automatic reviews | PR comment | — |
 | `@coderabbitai resume` | Restarts automatic reviews after a pause | PR comment | — |
@@ -48,8 +50,8 @@ Per the [plans page](https://docs.coderabbit.ai/management/plans) and per-comman
 
 | Capability | Free | Essentials | Team | Advanced / Enterprise |
 |---|---|---|---|---|
-| AI code review on PRs | Summarization only per the plan description — **contradicted by the rate table**, see below | Included | Included | Included |
-| Rate limits (per developer/hour) | 3 PR reviews · 3 files/review | 5 | 8 | Advanced 10 / Enterprise 12 |
+| AI code review on PRs | Summarization only — full code review is available through the VS Code extension and CLI | Included | Included | Included |
+| Reviews/hour · files/review · chat | PR **1** (tooltip "Summary only") · IDE 3 · CLI 3 · 150 files · chat N/A | PR 5 · IDE 5 · CLI 5 · 150 files · chat 50 | PR 8 · IDE 8 · CLI 8 · 300 files · chat 75 | Advanced PR 10 · IDE/CLI 10 · 300 · chat 100 — Enterprise 12 · 12 · 300 · 100 |
 | Autofix | — | Included | Included | Included |
 | Docstrings | — | Included | Included | Included |
 | Built-in Pre-Merge Checks | — | Included | Included | Included |
@@ -68,7 +70,14 @@ Per the [plans page](https://docs.coderabbit.ai/management/plans) and per-comman
 | Linked repositories (multi-repo analysis) | 0 | 1 | 5 | Advanced 10 / Enterprise 20 |
 | Continuous PR security review / AI Deep Scan | — | — | — | Advanced; Deep Scan usage-based |
 
-**The Free-tier contradiction — recorded as unresolved.** The Free plan description says "PR summarization only; code reviews are available through the VS Code extension and CLI", while the same page's rate table lists Free as 3 PR reviews/hour with 3 files/review — and this account demonstrably gets PR reviews and a `plan` refusal. Two probes settle it per repo: `@coderabbitai rate limit` (allowance truth) and `@coderabbitai configuration` (what is actually enabled). Also observed: the Chat feature refuses on Free ("upgrade to CodeRabbit Essentials"), despite Free appearing in the rate table. Do not resolve this by argument — probe it.
+**The Free-tier "contradiction" is retired — the docs agree with themselves (verified 2026-10-02, MCP exact-match).** An earlier reading of the rate table took the Free row's IDE and CLI columns (3 and 3) and the Files/review cell (150) as PR numbers, and concluded the table promised 3 PR reviews/hour with 3 files/review — contradicting the prose "PR summarization only". Reading the actual cells: Free's PR cell is `1` behind a **"Summary only"** tooltip, IDE is 3, CLI is 3, Files/review is **150**, Chat is **N/A**. So three earlier claims must be corrected:
+
+- Free gets **one PR review event per hour, summarization-only**; the 3/hour figure belongs to the IDE and CLI review paths, which is exactly what the prose says ("code reviews are available through the VS Code extension and CLI").
+- Files/review on Free is **150**, not 3.
+- Chat on Free is **N/A**, so the observed "upgrade to CodeRabbit Essentials" refusal is consistent with the table, not a contradiction.
+- OSS: PR reviews 1–10 depending on stars, IDE 1 · CLI 3, files 100–300, chat 25.
+
+**Operational consequence to probe (outside #5's scope).** If this account's PR reviews really are summarization-only, then a Station IV/V loop that waits for CodeRabbit *findings* on a PR is waiting for something Free does not deliver on the PR path — real reviews would have to come from the IDE/CLI path (3/hour). This is not resolvable from docs alone: run `@coderabbitai configuration` on a live PR and observe whether a review posts findings or only a summary, then treat the answer as the operating assumption.
 
 ## Config cheat-sheet
 
@@ -169,5 +178,21 @@ On Free it returns the upgrade refusal (observed); on Team+ it posts a Coding Pl
 gh pr edit <PR> --title "@coderabbitai tag me"
 gh pr view <PR> --json title   # CodeRabbit replaces the title per its instructions
 ```
+
+**5. What spends a review — and what does not** (from the vendor's [Review rate limits](https://docs.coderabbit.ai/management/rate-limits) page, verified 2026-10-02).
+
+| Action | Reviews used |
+|---|---|
+| Pull request opened | 1 |
+| Three commits pushed together (one push) | 1 |
+| Three commits pushed one at a time | 3 |
+| Editing a file in the GitHub web UI | 1 |
+| GitHub's **Update branch** or **Resolve conflicts** button | 1 |
+| `@coderabbitai review` / `@coderabbitai full review` | 1 each |
+| Force-push, rebase, reopen, draft marked ready | 1 |
+| A push that was rate-limited | 0 |
+| An over-limit review continued with usage credits | 0 (billed as usage) |
+
+The rule underneath: CodeRabbit reviews **pushes, not commits** — three commits in one push cost one review, the same three pushed separately cost three. Unpushed commits, pushes to branches without an open PR, PRs excluded by the auto-review controls, and chat messages do not draw down the PR allowance at all (chat has its own limit).
 
 Related shortcut: `@coderabbitai generate configuration` opens a PR with the fully resolved config as a file — useful to diff resolved reality against the canonical repo file.
