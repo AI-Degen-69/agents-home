@@ -512,13 +512,6 @@
       "updatedAt": "2026-09-22T15:00:00.000Z",
       "kind": "ecc-agent"
     },
-    "agent-browser": {
-      "source": "local",
-      "sourceType": "local",
-      "skillPath": "skills/agent-browser/SKILL.md",
-      "installedAt": "2026-09-22T07:03:18.000Z",
-      "updatedAt": "2026-09-22T07:03:18.000Z"
-    },
     "better-auth-best-practices": {
       "source": "local",
       "sourceType": "local",

@@ -1,6 +1,6 @@
 ---
 name: iv-review-build-and-pr
-description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then ECC language/framework reviewers, applies fixes, executes the post-review Browser Gate (UI, fast-first, playwright-cli preferred; DevTools MCP for profiling only) or targeted test gate (backend), pushes branch, and opens GitHub PR with @coderabbitai summary.
+description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then ECC language/framework reviewers, applies fixes, executes the post-review Browser Gate (UI, fast-first, playwright-cli only — see Step 0.1 tool allowlist; DevTools MCP for profiling only) or targeted test gate (backend), pushes branch, and opens GitHub PR with @coderabbitai summary.
 ---
 
 # Station IV: Review, Verify & PR (`iv-review-build-and-pr`)
@@ -28,7 +28,7 @@ This skill implements **Station IV (Review, Verify & Ship)** of the 6-station pi
 
 **No review runs on unproven code.** Before Step 1, prove the build actually works. This station is the **single owner of browser-based verification** in the whole pipeline — no other station runs browser checks. This ownership applies whenever any UI change ships, regardless of which station built it.
 
-1. **For Frontend / Web / UI changes — Browser Gate (fast-first, `playwright-cli` preferred):** start the project's preview server, then verify in this order with the **`playwright-cli`** skill (headless by default, compact snapshots, no MCP round-trips). Reach for `browser-testing-with-devtools` (chrome-devtools-mcp) **only** when the gate needs performance traces or profiling — never for routine render/DOM checks:
+1. **For Frontend / Web / UI changes — Browser Gate (fast-first, `playwright-cli` only):** start the project's preview server, then verify in this order with the **`playwright-cli`** skill (headless by default, compact snapshots, no MCP round-trips). Reach for `browser-testing-with-devtools` (chrome-devtools-mcp) **only** when the gate needs performance traces or profiling — never for routine render/DOM checks:
    - **API/HTTP smoke (no browser):** every key page and endpoint the change touches answers 200 with sane content (`curl` or equivalent).
    - **Programmatic DOM checks — one batched call (no screenshot):** `playwright-cli open <url>`, then a single `playwright-cli eval "<one function>"` that performs all DOM/layout checks and returns one small JSON verdict (required elements exist, table rows/columns render, layout has no overflow). Never one call per check.
    - **Console + network — one call each:** `playwright-cli console` → zero uncaught errors; `playwright-cli requests` → zero failed network requests (pull both once after the page settles — do not eyeball a screenshot for this).
@@ -36,6 +36,29 @@ This skill implements **Station IV (Review, Verify & Ship)** of the 6-station pi
 2. **For Backend / Logic changes:** run the targeted test suites for modified files — all green.
 3. **On failure:** stop. Route the failure list to `iiib-iterate-after-build` as correction items, and re-enter this station only after IIIB is clean. Do not review broken code.
 4. **On success:** record one gate line for the report (what was run, what passed), then continue to Step 1.
+
+#### Step 0.1: Tool allowlist, attempt budget, and abort rule (MANDATORY)
+
+**Allowed tools for this gate — nothing else:**
+
+| Need | Tool | Allowed |
+|---|---|---|
+| API/HTTP smoke | `curl` (or `Invoke-WebRequest`) | yes |
+| DOM / render / console / network | **`playwright-cli`** | yes |
+| Perf traces / profiling | `browser-testing-with-devtools` (chrome-devtools-mcp) | only for traces |
+| **Any other browser CLI or MCP tool** | — | **NO** |
+
+Only the tools listed above may run in this gate. No other browser automation tool is permitted, and none is a substitute for a failing one. Daemon-backed browser CLIs in particular retry internally several times per call before surfacing a failure, so a single dead session silently burns dozens of attempts — that is why the gate is pinned to a daemon-free tool and a hard call cap.
+
+**Attempt budget — the whole gate is 3 tool calls plus one optional screenshot.** If a check needs a 4th call, the check is badly designed; batch it.
+
+**Abort rule — mandatory, no exceptions:**
+
+- **A tool fails twice → stop using that tool.** Do not retry it a third time, and do not substitute a different browser tool. Record the failure and move to the next gate item.
+- **The whole gate is capped at 8 tool calls.** At the cap, stop and report.
+- **A dead browser session is not a product failure.** If the tooling cannot verify (daemon down, port taken, server not up), that is an *unverified* gate, **not** a red gate. Do **not** route it to `iiib-iterate-after-build` as a correction item — there is no defect to fix, and sending one wastes a full fix loop.
+- **Unverified is an allowed outcome, and the honest one.** A gate that reports "curl smoke green (3/3), DOM check unverified — playwright session failed to launch" passes this station. Fabricating a pass, or looping on broken tooling to manufacture one, does not.
+- **Never open a browser at all** when `curl` already proves the change. If the smoke check is green and the change has no visual/interactive surface, that *is* the gate — skip the browser.
 
 ### Step 1: OCR Delegation Review (MANDATORY, FIRST — embedded procedure)
 

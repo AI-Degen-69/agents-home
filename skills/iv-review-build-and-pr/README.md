@@ -25,9 +25,10 @@ with an honest one-line CodeRabbit ack status. The only station that pushes.
 ## How it works (short)
 
 1. **Proof-before-review gate first** — browser gate for UI
-   (`playwright-cli` preferred; DevTools MCP for profiling only) or
-   targeted tests for backend. Failure routes back to IIIB; broken code
-   is never reviewed.
+   (`playwright-cli` **only** — no other browser tool, see Step 0.1;
+   DevTools MCP for profiling only) or targeted tests for backend. Failure
+   routes back to IIIB; broken code is never reviewed. Tooling that can't
+   verify yields an *unverified* gate, not a red one — see Step 0.1.
 2. **OCR delegation review**, then language/framework specialist
    reviewers (plus the Spec axis: diff vs issue + `tasks/plan.md`).
    Fixes applied as local commits; clean reviewers get one line.
