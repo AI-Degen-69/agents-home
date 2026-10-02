@@ -104,7 +104,8 @@ reviews:
 # --- knowledge_base.code_guidelines.filePatterns — deliberately left out ---
 # AGENTS.md is already auto-detected by default (alongside CLAUDE.md,
 # .cursorrules, .cursor/rules/*, GEMINI.md, .windsurfrules, .clinerules/*,
-# .rules/*, copilot-instructions.md), scoped to its directory tree, so an
+# .rules/*, .github/copilot-instructions.md,
+# .github/instructions/*.instructions.md), scoped to its directory tree, so an
 # explicit entry would add nothing. The Knowledge Base is also an Essentials+
 # capability.
 
