@@ -7,6 +7,13 @@
         "Accept": "application/json, text/event-stream"
       }
     },
+    "coderabbit": {
+      "type": "http",
+      "url": "https://docs.coderabbit.ai/mcp",
+      "headers": {
+        "Accept": "application/json, text/event-stream"
+      }
+    },
     "Figma": {
       "url": "https://mcp.figma.com/mcp"
     }
