@@ -52,8 +52,8 @@ resolved without an inline reply. Then CI, then merge, then reset — always, me
 digraph babysit_pr_and_merge {
     "PR exists?" [shape=diamond];
     "Delegate to iv-review-build-and-pr (push, open PR, trigger review)" [shape=box];
-    "Review Trigger Comment Posted?" [shape=diamond];
-    "Trigger @coderabbitai review" [shape=box];
+    "Trigger Comment Exists On PR? (idempotency check)" [shape=diamond];
+    "Trigger @coderabbitai review (ONLY if none exists)" [shape=box];
     "Wait 5m (Check 1)" [shape=box];
     "Review finished?" [shape=diamond];
     "Countdown Wait (4m, 3m, 2m, 1m)" [shape=box];
@@ -63,16 +63,16 @@ digraph babysit_pr_and_merge {
     "Apply Accepted Fixes (Type A / B)" [shape=box];
     "Run Targeted Tests" [shape=diamond];
     "Self-Heal: revert, reply, resolve REJECT" [shape=box];
-    "Batch Commit & Push (1 commit)" [shape=box];
+    "Batch Commit & Push (1 commit) — PR stays trigger-locked" [shape=box];
     "Resolve Fixed Threads" [shape=box];
     "Check CI Checks & Merge" [shape=box];
 
     "PR exists?" -> "Delegate to iv-review-build-and-pr (push, open PR, trigger review)" [label="no"];
-    "PR exists?" -> "Review Trigger Comment Posted?" [label="yes"];
-    "Delegate to iv-review-build-and-pr (push, open PR, trigger review)" -> "Review Trigger Comment Posted?";
-    "Review Trigger Comment Posted?" -> "Trigger @coderabbitai review" [label="no"];
-    "Review Trigger Comment Posted?" -> "Wait 5m (Check 1)" [label="yes"];
-    "Trigger @coderabbitai review" -> "Wait 5m (Check 1)";
+    "PR exists?" -> "Trigger Comment Exists On PR? (idempotency check)" [label="yes"];
+    "Delegate to iv-review-build-and-pr (push, open PR, trigger review)" -> "Trigger Comment Exists On PR? (idempotency check)";
+    "Trigger Comment Exists On PR? (idempotency check)" -> "Trigger @coderabbitai review (ONLY if none exists)" [label="no"];
+    "Trigger Comment Exists On PR? (idempotency check)" -> "Wait 5m (Check 1)" [label="yes — NEVER re-trigger"];
+    "Trigger @coderabbitai review (ONLY if none exists)" -> "Wait 5m (Check 1)";
     "Wait 5m (Check 1)" -> "Review finished?";
     "Review finished?" -> "Countdown Wait (4m, 3m, 2m, 1m)" [label="no"];
     "Countdown Wait (4m, 3m, 2m, 1m)" -> "Review finished?";
@@ -98,7 +98,8 @@ digraph babysit_pr_and_merge {
 - **Full autonomy on GitHub operations:** Agent commits, pushes, creates PRs, and merges without requiring manual sign-offs.
 - **Mandatory inline reply on every resolution:** Every single resolved thread MUST have an explicit inline reply (`ACCEPT: <summary of fix>` or `REJECT: <concrete technical reason>`) posted before resolution via `repos/:owner/:repo/pulls/:pr/comments/:id/replies`. Never resolve silently, and never run blind bulk resolutions that close unaddressed or newly arrived comments.
 - **Programmatic extraction only:** Read review comments via `gh api repos/:owner/:repo/pulls/<pr_number>/comments` (`id`, `path`, `line`, `start_line`, `body`) — never by eyeballing rendered PR HTML.
-- **Manual review trigger:** CodeRabbit never auto-reviews. `iv-review-build-and-pr` posts `@coderabbitai review` right after opening the PR; if this skill finds a PR without that trigger comment (opened outside `iv-review-build-and-pr`), it posts it immediately. Never treat a green check as a review — read the check text.
+- **Manual review trigger:** CodeRabbit never auto-reviews. `iv-review-build-and-pr` posts `@coderabbitai review` right after opening the PR. Never treat a green check as a review — read the check text.
+- **One trigger per PR — HARD RULE:** check for an existing `@coderabbitai review` comment (or PR body) FIRST; post a trigger only when none exists anywhere. An existing trigger is never re-posted, re-verified, or "confirmed", and an old/unacknowledged bot reply does NOT license a second trigger — after one review the round is spent, the quota is gone, and a new trigger is guaranteed to hit the rate limit. This lock is permanent: pushing the fix commit in Step 4.3 does not unlock a second review.
 - **Single review round:** Exactly 1 focused review round to conserve CodeRabbit quota and eliminate review churn. Proceed directly to CI verification and merge after resolving round 1.
 - **Countdown polling schedule:** 5 min initial wait (hard minimum — never shorten), then 4 min, 3 min, 2 min, and 1 min checks thereafter. Use non-blocking `schedule` tool instead of long shell sleeps.
 - **Thoughtful deliberation:** Never blindly reject suggestions. Evaluate each CodeRabbit suggestion on its technical merits against the codebase, domain spec, and architecture. If it genuinely improves performance, safety, or readability, accept and verify with tests. Only reject if it violates domain specs, introduces bloat, or breaks behavior.

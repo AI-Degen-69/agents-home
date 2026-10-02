@@ -184,7 +184,7 @@ git commit -m "fix(review): apply CodeRabbit review fixes [accepted items]"
 git push origin <branch-name>
 ```
 
-Do NOT re-trigger `@coderabbitai review` or wait for a secondary review pass. Advance immediately to Step 4.4 and CI verification.
+**HARD RULE — no second trigger, ever:** do NOT re-post `@coderabbitai review` and do NOT wait for a secondary review pass. The PR is trigger-locked for the rest of the pipeline: the earlier trigger already consumed the review, and any new trigger would only hit the rate limit. Push the commit, then advance immediately to Step 4.4 and CI verification — if the `CodeRabbit` check is still `PENDING`, that is expected and is excluded from the merge gate (see the timeout-merge rule in `SKILL.md`).
 
 #### 4.4 — Actively Reply and Resolve Addressed Threads (MANDATORY: Reply First, Never Resolve Blindly)
 

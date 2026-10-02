@@ -46,12 +46,20 @@ If no PR exists: **do not create it yourself — delegate to `iv-review-build-an
    - **Consume Station IV's trigger-status handoff first (do not re-detect):** Station IV's handoff report already states the trigger status in one line — review started / rate limited (N minutes) / other bot reply (quoted, with jump links to the trigger comment and CodeRabbit's reply) / no acknowledgement. Carry that status forward as the initial review state:
      - `review started` → go straight to the check-first below (review may already be posted).
      - `rate limited (N minutes)` → do NOT start the countdown for the quota window; go directly to Step 2B's reuse path (Station IV's review evidence + delta check). The N-minute window is reported to the operator, never silently waited out.
-     - `other bot reply` / `no acknowledgement` → treat as not-started: re-verify the bot's last reply via the jump links / API (state may have advanced since IV's handoff), and if still not triggered, follow the fallback below.
-   - If this skill was invoked on a PR that has no review trigger comment yet (e.g. the PR was opened outside `iv-review-build-and-pr`, or the comment is missing), post it now — do not wait:
+     - `other bot reply` / `no acknowledgement` → treat the round as **already consumed** (not as "not started"): the trigger is idempotent (see the guard below), so an old bot reply or a missing acknowledgement NEVER justifies a second `@coderabbitai review`. Continue to the check-first + countdown below and classify from the actual comment history.
+   - **ONE TRIGGER PER PR — HARD RULE (idempotency guard):** Before ever posting a trigger, check whether the PR already has one — a comment whose body starts with `@coderabbitai review` (any author), or `@coderabbitai review` inside the PR body:
+     ```bash
+     gh api repos/:owner/:repo/issues/<pr-number>/comments --paginate \
+       --jq '.[] | select(.body | ascii_downcase | startswith("@coderabbitai review")) | {id, user: .user.login, created_at}'
+     gh pr view <pr-number> --json body --jq '.body'
+     ```
+     **If a trigger already exists → DO NOT post another one. Not to "verify", not to "confirm", not to retry.** The PR has consumed its single review round. Re-triggering only burns quota (the next call is rate-limited) and creates review churn.
+   - Post the trigger ONLY when the PR has genuinely **no** trigger comment anywhere (e.g. the PR was opened outside `iv-review-build-and-pr`) — then post it immediately, do not wait:
      ```bash
      gh pr comment <pr-number> --body "@coderabbitai review"
      ```
-   - Output note: `Triggered CodeRabbit review via PR comment.`
+     Output note: `Triggered CodeRabbit review via PR comment.`
+   - **NEVER re-trigger after a round has run.** If any CodeRabbit review content, a usage-limit / `Review skipped` notice, or a `Currently processing…` placeholder exists on the PR, the round is spent — the remaining status is decided by the check-first + countdown rules only. Once Station V pushes the fix commit (Step 4.3) the PR is permanently trigger-locked: pushing new commits does NOT unlock a second review.
 
 2. **Check-First — Never Wait Blind (MANDATORY before any countdown):**
    - Immediately after verifying the trigger, pull the PR's current comments AND inline review threads before starting any wait timer:
