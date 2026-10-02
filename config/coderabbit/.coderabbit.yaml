@@ -55,6 +55,30 @@ reviews:
   # the work of #7.
   auto_title_placeholder: "@coderabbitai"
 
+  # Review scope. Exclusions must be !-prefixed: a bare glob is an INCLUDE
+  # pattern and would silently narrow every review to those paths. One entry:
+  # the eval trees — 44 tracked fixture/snapshot files with no review value.
+  # (The .playwright-cli capture dir is not listed: .gitignore excludes it and
+  # nothing under it is tracked, so it never reaches CodeRabbit's clone.)
+  path_filters:
+    - "!**/evals/**"
+
+  # Path-scoped guidance for the skill files, quoted from skills/README.md.
+  # On Free the PR review is summarization-only; these instructions bite only
+  # on tiers that produce findings.
+  path_instructions:
+    - path: "skills/**/*.md"
+      instructions: |
+        - One skill per kebab-case folder, each with a SKILL.md carrying name
+          and description frontmatter.
+        - A skill whose real home is elsewhere is linked in, never copied;
+          validate.js --all validates real folders and names every link it skips.
+        - A numbered prefix (i- through vi-) marks a pipeline station invoked in
+          order; skills without a numeral are system skills.
+        - A skill folder is self-contained (SKILL.md plus optional references/,
+          scripts/, evals/); this home's copy is the source of truth and
+          harnesses link to it, never fork it.
+
   # Title check: warning only, on purpose. Two facts decide it: error-level
   # checks can block a PR only when reviews.request_changes_workflow is enabled
   # (unset here, i.e. false), and built-in Pre-Merge Checks are an Essentials+
@@ -76,3 +100,10 @@ reviews:
       enabled: true
     trufflehog:
       enabled: true
+
+# --- knowledge_base.code_guidelines.filePatterns — deliberately left out ---
+# AGENTS.md is already auto-detected by default (alongside CLAUDE.md,
+# .cursorrules, .cursor/rules/*, GEMINI.md, .windsurfrules, .clinerules/*,
+# .rules/*, copilot-instructions.md), scoped to its directory tree, so an
+# explicit entry would add nothing. The Knowledge Base is also an Essentials+
+# capability.
