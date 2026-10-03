@@ -68,7 +68,7 @@ gaps in the appendix using the repeatable command from the appendix.
 Helper: `research`. Depends on: T2. Checkpoint: T1–T3 done, one-line progress.
 Verify: every station with evals in both repos has a gap row (empty = no gap).
 
-### T4 [Docs] — XS — Handoff comment on issue #3
+### T4 [x] [Docs] — XS — Handoff comment on issue #3
 Post one `gh issue comment 3` with: scope note (agents-home only), the
 i-pick-issue diff, the nine-station gap table, the stale-why fix, and the exact
 pack-side follow-up (two new-semantics assertions blocked on the #12 sync).
