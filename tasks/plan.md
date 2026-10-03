@@ -1,3 +1,95 @@
+Branch: i17/sync-pipeline-docs-with-extracted-station-output | Issue: #17
+
+# Plan — Issue #17: Sync pipeline docs with extracted station output templates
+
+## Environment
+- Stack: Markdown skills repo (no language runtime, no framework, no test runner).
+  Verification is `Select-String` acceptance commands, not a test suite.
+- Size tier: **Small** — one docs file plus an optional one-line README cross-reference;
+  straightforward once the templates are read.
+- Task type: **Docs, UX / Copy**.
+- Domain routing: `documentation-and-adrs` (accurate reporting rules), `humanizer`
+  (plain-English station lines). Both verified present under `skills/`.
+
+## Step 0A notes
+- `coderabbitai` plan comment exists on #17 (3 phases: precondition gate → rewrite →
+  README + verify). Adopted: phase skeleton, affected-file list, acceptance commands,
+  plain-prose pointer convention. Rejected: over-split task list (merged into 4 tasks);
+  the CONSTRAINTS.md scope-confirmation ceremony (Station II re-locks CONSTRAINTS.md
+  by protocol — done above, no operator approval needed); "stop and ask operator to
+  supply the refactor" (the refactor exists locally, so no need to ask).
+- Assumption 1 (refactor present) resolved from code: the 9 templates + 9 pointer
+  blocks live on `wip/extract-output-templates` (commit `ed715fc`), NOT on `main`
+  (only `i-pick-issue` is extracted there). Nothing stays `[UNVERIFIED]`.
+- Issue #17 has no Open-questions section and no `needs-answers` label — nothing to ask.
+- `code-explorer` / `type-design-analyzer` personas: not needed (docs-only, familiar repo).
+
+## Spec (embedded — Small, no SPEC.md)
+- Goal: the workflow doc must describe the new world (contracts in local-only
+  `references/output-template.md`, rules + pointer in `SKILL.md`), not the old
+  inline-`SKILL.md` world.
+- Must keep: station order, routing descriptions, artifact-governance section,
+  global bans (no hashes/counts/commands/skill-names/line-numbered paths),
+  ~7-item limit, product-location convention.
+- Must change: `:66` stale claim → plain-prose pointer convention; `:68-76` entries →
+  one English line per station from the real templates (+IIIB entry), stale
+  files-checked / skills-ran / quoted-comment claims removed; `:82-86` ordering line
+  scoped to templates that use change groups; `:5`, `:47-60`, README `:22-24` only
+  if they quote removed templates.
+- Out of scope: any `SKILL.md` or template content change, sync/mirror scripts,
+  translations, `i-pick-issue`, quoting Hebrew in docs.
+
+## Interfaces
+Skipped — no types, schemas, or function signatures change (docs-only).
+
+## Improvement proposal (adopted by default — simplification)
+Use plain prose (not `local-only` markers) for the template pointer in the workflow
+doc, so the pointer survives publication as `docs/pipeline.md`. Evidence: the issue
+requires "point readers at each station's `references/output-template.md` (local-only,
+never published)", and the recorded publication design strips only marked
+`local-only` blocks while preserving ordinary prose. Folded into T2.
+
+## Dependency graph
+- T1 (precondition base) → T2, T3 (need templates to read). T2 + T3 → T4 (verify all).
+
+## Tasks
+- [x] **T1** (S) `[Docs]` — Merge `wip/extract-output-templates` into this branch as the
+  precondition base; verify all 9 `references/output-template.md` files exist and all 9
+  `SKILL.md` pointer blocks are present. Helper: `documentation-and-adrs`.
+  Depends on: none.
+  Verify: `git ls-tree` lists 9 templates; `Select-String 'output-template.md' skills/*/SKILL.md`
+  matches 9 files; `git diff --stat main` touches only skills (no docs yet).
+- [ ] **T2** (M) `[Docs]` — Rewrite the Chat Reporting Contract (`:64-76`): replace the
+  `:66` claim with the plain-prose pointer convention; rewrite each station entry as one
+  English line from the template inventory (folder-state + GitHub-checks shape,
+  walkthrough inputs where used, signal words `must`/`recommended`/`skip`/`do not invent`);
+  add the missing IIIB entry; delete files-checked / skills-ran / quoted-comment claims.
+  Helper: `documentation-and-adrs` + `humanizer`.
+  Depends on: T1.
+  Verify: `Select-String 'output-template\.md'` count ≥ 1; `'contracts themselves stay
+  in each skill'` count = 0; stale phrases ("files checked", "which skills ran",
+  "original style") return no matches in `:64-76`.
+- [ ] **T3** (S) `[Docs]` — Align the What's-changed rule (`:80-86`): scope the
+  ➕→✏️→❌→🩹 ordering to templates that use change groups; reconcile the clean-tree ban
+  with the template folder-state field; keep the VI clean-base line only if the VI
+  template uses it. Check `:5`, `:47-60` and change only stale inline-template wording.
+  Helper: `documentation-and-adrs`.
+  Depends on: T1.
+  Verify: read-back of `:80-86`; `Select-String` for Hebrew chars in edited sections = 0.
+- [ ] **T4** (XS) `[Docs]` — Fix the README cross-reference (`:22-24`) only if
+  "station contracts, and Hebrew reporting" now misleads; then run the full acceptance
+  battery from the issue. Helper: none (mechanical check).
+  Depends on: T2, T3.
+  Verify: both issue acceptance commands green; `git diff --stat` shows only the workflow
+  doc (+ README if edited); no Hebrew chars in edited sections.
+
+Checkpoint after T1: one-line precondition proof (9 templates + 9 pointers present).
+Checkpoint after T3: one-line rewrite proof (counts + zero stale matches).
+
+---
+
+## Superseded plan (Issue #10 — completed, merged as 0707f1d, kept for session memory)
+
 Branch: i10/station-iv-step-01-whole-gate-is-3-tool-calls-con | Issue: #10
 
 # Plan — Issue #10: Step 0.1 budget wording contradicts the 6-call flow

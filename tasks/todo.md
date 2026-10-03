@@ -1,2 +1,4 @@
-- [x] T1 — Reword Step 0.1 budget sentence (SKILL.md)
-- [x] T2 — Verify criteria 1–2, record criterion 3 as UNVERIFIED
+- [x] T1 — Merge wip refactor as base, verify 9 templates + 9 pointers
+- [ ] T2 — Rewrite Chat Reporting Contract from real templates (+IIIB, plain-prose pointer)
+- [ ] T3 — Align What's-changed rule, table, and convention line
+- [ ] T4 — README cross-ref if needed + full acceptance battery
