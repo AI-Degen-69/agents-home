@@ -62,7 +62,7 @@ observed refused on issues #5 and #7 on this account. **Adopted:** nothing from 
 - **Verify:** `grep -q 'untested path' config/coderabbit/README.md` fails; `grep -q 'PR #23'`
   succeeds; every still-valid passage from `CONSTRAINTS.md` still present.
 
-### T2 [M] [Docs/Research] — Record the config-source finding and its consequence
+### T2 [x] [M] [Docs/Research] — Record the config-source finding and its consequence
 
 - **Target:** `config/coderabbit/README.md` — the precedence paragraph at `:119` and a new
   subsection near the observed-behaviour block
@@ -77,7 +77,7 @@ observed refused on issues #5 and #7 on this account. **Adopted:** nothing from 
 - **Helper:** `documentation-and-adrs`
 - **Depends on:** —
 - **Verify:** the finding, the precedence contradiction, and the sync consequence are all present;
-### T3 [XS] [Docs] — Fix the `.coderabbit.yaml` comment (comment lines only)
+### T3 [x] [XS] [Docs] — Fix the `.coderabbit.yaml` comment (comment lines only)
 
 - **Target:** `config/coderabbit/.coderabbit.yaml:53-55`
 - **Build:** replace "The pipeline still writes titles itself (skills/iv-review-build-and-pr/SKILL.md:137)
@@ -89,7 +89,7 @@ observed refused on issues #5 and #7 on this account. **Adopted:** nothing from 
 - **Verify:** `git diff config/coderabbit/.coderabbit.yaml` shows only `#` comment lines changed;
   `grep -q 'is the work of #7'` fails; the two `auto_title_*` settings are byte-identical.
 
-### T4 [S] [Docs] — Note the `SUMMARY_ONLY` guard + run the gates
+### T4 [x] [S] [Docs] — Note the `SUMMARY_ONLY` guard + run the gates
 
 - **Targets:** `config/coderabbit/README.md` (the Station IV/V consequence block at `:89-92`), then
   the verification set
