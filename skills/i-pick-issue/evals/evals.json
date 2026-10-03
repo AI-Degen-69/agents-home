@@ -5,16 +5,16 @@
     {
       "id": "discovery-backlog-map",
       "prompt": "Run /i-pick-issue with no arguments on a repo that has several open issues.",
-      "expected_output": "Hebrew backlog map: every open issue listed with number, title, labels and one-line summary, grouped by domain/risk/dependency, a concrete recommended execution order with one single highlighted issue to start, and a halt asking the operator which issue to proceed with. Never picks silently.",
+      "expected_output": "Hebrew backlog map: every open issue listed with number, title, labels and one-line summary, grouped by domain/risk/dependency, a concrete recommended execution order with one single highlighted issue to start. The recommended issue is selected by default and the run proceeds with it unless the operator overrides.",
       "mode_coverage": ["discovery"],
       "files": [],
       "static_assertions": [
         { "id": "discovery-always-first", "type": "regex", "pattern": "Always Start[s]? With Discovery", "must_match": true, "why": "every invocation must begin with the Discovery station regardless of arguments" },
-        { "id": "no-silent-pick", "type": "regex", "pattern": "Do NOT pick silently", "must_match": true, "why": "the operator must choose — the skill never picks an issue on its own" },
-        { "id": "halt-for-selection", "type": "regex", "pattern": "Halt for user selection", "must_match": true, "why": "Discovery must stop and wait for operator input before any station runs" },
+        { "id": "no-silent-pick", "type": "regex", "pattern": "unless the operator overrides", "must_match": true, "why": "the recommended issue is selected by default, but the operator can always override it" },
+        { "id": "halt-for-selection", "type": "regex", "pattern": "Confirm or override", "must_match": true, "why": "Discovery must present the auto-selected issue and the override path before any station runs" },
         { "id": "gh-issue-list-command", "type": "regex", "pattern": "gh issue list --state open", "must_match": true, "why": "Discovery must prescribe the canonical gh command to fetch the backlog" },
         { "id": "group-by-domain", "type": "regex", "pattern": "(group|categori)[a-z]* .*(domain|risk|component|dependency)", "must_match": true, "why": "issues must be grouped logically, not listed flat" },
-        { "id": "no-false-selection-claim", "type": "not_regex", "pattern": "selected.{0,30}#[0-9]+|#[0-9]+.{0,30}selected", "must_match": true, "why": "before the operator picks, the report may only recommend an issue — a header claiming one was selected is a silent pick wearing a heading" },
+        { "id": "no-false-selection-claim", "type": "not_regex", "pattern": "nothing is selected until the operator answers", "must_match": true, "why": "the old halt rule is gone — the recommended issue is selected by default, so the old rule text must not remain" },
         { "id": "recommendation-is-default", "type": "regex", "pattern": "references/output-template\\.md", "must_match": true, "why": "the Discovery recommendation header lives in the Hebrew output template — SKILL.md must point at it, marking the issue recommended, never selected" },
         { "id": "no-catchall-trigger", "type": "not_regex", "pattern": "whenever the user (mentions|talks|says anything)", "must_match": true, "why": "a catch-all trigger would fire the skill on unrelated conversation" }
       ],
@@ -22,10 +22,10 @@
         "Every open issue is presented with number, title, labels and a concise summary",
         "Issues are grouped logically by domain area, risk, component or dependency chain",
         "A concrete execution order is proposed with exactly one highlighted issue to start",
-        "The report recommends the leading issue and never describes any issue as already selected before the operator answers",
+        "The report presents the recommended issue as selected by default with a chance to override",
         "The recommendation screen does not duplicate itself as a separate 'pick a number' menu",
-        "The run halts for operator selection instead of picking an issue silently",
-        "No planning, building or PR actions are taken before the operator chooses",
+        "The run proceeds with the recommended issue unless the operator overrides",
+        "No planning, building or PR actions are taken before the operator confirms or overrides",
         "The output follows the Discovery Hebrew report template"
       ]
     },

@@ -38,9 +38,9 @@ Every invocation of this skill begins with the **Discovery Station**, regardless
 2. **Categorize and group:**
    Group them logically by domain area, risk, architectural component, or dependency chain.
 3. **Recommend an execution sequence:**
-   Propose a concrete order of work (unblockers and core infrastructure before dependent features, quick wins vs. deep changes), and explicitly highlight the single recommended issue to start. The report header and wording follow `references/output-template.md` — the header marks the issue as recommended, never selected. Never write that an issue was *selected* — nothing is selected until the operator answers. No separate recommendation screen, and no separate "pick a number" menu: the alternatives are one line under the recommendation.
-4. **Halt for user selection:**
-   Stop and ask the operator which issue to proceed with. Do NOT pick silently. A recommended default is not permission to proceed — the operator still confirms or overrides.
+   Propose a concrete order of work (unblockers and core infrastructure before dependent features, quick wins vs. deep changes), and explicitly highlight the single recommended issue to start. By default the recommended issue IS the selected one — the run proceeds with it unless the operator overrides. The report header and wording follow `references/output-template.md`. No separate recommendation screen, and no separate "pick a number" menu: the alternatives are one line under the recommendation.
+4. **Confirm or override:**
+   Present the recommended (auto-selected) issue and proceed with it. The operator may override with another issue number at any point before Station II starts.
 5. **Route non-issue states:** no open issues and the operator has a brand-new idea → `create-issue`. No open issues and nothing new → say so and route to `pipeline-triage`.
 
 ### 1b. Execution Mode Gate (mandatory, after issue selection)
