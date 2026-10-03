@@ -59,7 +59,7 @@ never published)", and the recorded publication design strips only marked
   Depends on: none.
   Verify: `git ls-tree` lists 9 templates; `Select-String 'output-template.md' skills/*/SKILL.md`
   matches 9 files; `git diff --stat main` touches only skills (no docs yet).
-- [ ] **T2** (M) `[Docs]` — Rewrite the Chat Reporting Contract (`:64-76`): replace the
+- [x] **T2** (M) `[Docs]` — Rewrite the Chat Reporting Contract (`:64-76`): replace the
   `:66` claim with the plain-prose pointer convention; rewrite each station entry as one
   English line from the template inventory (folder-state + GitHub-checks shape,
   walkthrough inputs where used, signal words `must`/`recommended`/`skip`/`do not invent`);
