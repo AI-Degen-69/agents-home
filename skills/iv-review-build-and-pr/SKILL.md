@@ -162,17 +162,24 @@ silently falling back to a hand-written title.
 
 **Allowance pre-check (plan-gated — know what it costs before you spend it):**
 `@coderabbitai rate limit` reports the remaining review allowance and when the next review frees
-up **without consuming a review**. It is worth posting when the quota is thin — but it is a
-**chat-gated command**: on the Free plan it is refused with the "upgrade to CodeRabbit Essentials"
-notice, and that refusal is its own outcome, **never** "zero allowance". On a paid tier, branch on
-the answer (allowance available → trigger now; no allowance → carry the reported minutes into the
-handoff instead of spending a 60-second wait on a trigger that will be declined). On Free, skip the
-comment entirely and read the allowance from the trigger acknowledgement below — it carries the same
-signal. This is a pre-check only; it does not replace the post-trigger ack.
+up **without consuming a review**. Post it only when the quota is thin — but it is a **chat-gated
+command**: on the Free plan it is refused with the "upgrade to CodeRabbit Essentials" notice, and
+that refusal is its own outcome, **never** "zero allowance". On Free, skip the comment entirely and
+read the allowance from the trigger acknowledgement below — it carries the same signal. This is a
+pre-check only; it never replaces the post-trigger ack.
 
 ```bash
 gh pr comment <pr_number> --body "@coderabbitai rate limit"   # Free: declines — skip it
 ```
+
+**Two exits from this step — take exactly one:**
+
+- **Allowance available (or the probe was skipped/unavailable)** → post the trigger and run the
+  60-second acknowledgement wait below, unchanged.
+- **Zero allowance reported** (probe answers with a window, e.g. "next review in N minutes") →
+  **do not post the trigger and do not run the acknowledgement wait.** Report the rate-limited
+  status with the reported minutes as the handoff line, and stop. A trigger posted here would be
+  declined anyway, so the wait would burn a minute to learn nothing.
 
 Immediately post the review trigger comment (**post exactly once** — pick ONE of the two forms below, never both):
 

@@ -6,6 +6,10 @@ Branch: i7/hand-pr-titles-the-review-allowance-and-resolve-to | Issue: #7
 > issue closed, work merged). Issue #18 is closed and its work landed, so the plan is replaced.
 > The full #18 plan remains in git history at `tasks/plan.md` on `main`.
 
+> Structure note: an earlier revision of this file was corrupted by mid-file inserts — the T3
+> section and the "Open questions" list were split apart and their tails left orphaned. Rebuilt in
+> reading order on 2026-10-03 during Station V triage (CodeRabbit finding 4174519800).
+
 ## Stack & tier
 
 - Stack: Markdown skill contracts only. No app runtime, no code, no new dependency. Verification
@@ -37,6 +41,16 @@ comments, each verified against `config/coderabbit/README.md` and recorded in `S
 2. *Always hand over the title?* → **Yes.** The issue states the operator asked for it by name, and
    `.coderabbit.yaml` already carries the full TAG vocabulary plus an explicit
    `auto_title_placeholder`. Both `reviews.auto_title_*` keys are live, so the precondition holds
+   on this repo.
+3. *Is a standalone `rate limit` probe viable?* → **No — chat-gated on Free**
+   (`README.md:87,161`). The allowance signal is classified inside the trigger ack instead. The
+   literal string stays in Station IV as a documented, plan-gated probe so the issue's acceptance
+   grep still passes and the command is ready the day the account upgrades.
+4. *Does this repo get inline findings?* → **Assumed No** (private repo on Free, summarization-only;
+   `README.md:86,92`). `README.md:86` calls this "the untested path… treat that as the operating
+   assumption, not a measured fact — the next PR on this repo is the measurement."
+   **Measured on 2026-10-03, PR #23: the assumption was WRONG** — CodeRabbit posted 5 inline
+---
 
 ### T1 [x] [S] [Docs/UX-Copy] — Hand PR title-writing to CodeRabbit
 
@@ -51,6 +65,8 @@ comments, each verified against `config/coderabbit/README.md` and recorded in `S
 - **Verify:** the Conventional-Commits grammar is gone from the file;
   `grep -q 'type>(<scope>)' skills/iv-review-build-and-pr/SKILL.md` must now FAIL;
   `score.js skills/iv-review-build-and-pr` >= 100.
+- **Result:** done — verified live on PR #23, where CodeRabbit replaced the title with
+  `[UPDATE] Replace Issue 18 audit guidance with Issue 7 workflow requirements`.
 
 ### T2 [x] [M] [Docs/UX-Copy] — Four-outcome trigger classification + plan-gated allowance probe
 
@@ -86,6 +102,20 @@ statuses and the exact wording chosen.
      explicitly too.
   2. **Config probe** — `@coderabbitai configuration` is the first diagnostic when a review
      contradicts the committed config, with the resolved-config output quoted in the report.
+     Chat-gated on Free: state the plan requirement and the fallback.
+  3. **False clean pass guard** — a completed review with zero inline findings is not an approval
+     when the repo is private on the Free plan (summarization-only). Classify it `SUMMARY_ONLY`,
+     keep it mutually exclusive with `COMPLETED`, route it to the existing agent-fallback / reuse
+     path (`triage-and-apply.md:91-95`, Station IV evidence + delta check), and say so in the
+     report.
+- **Helper:** `documentation-and-adrs`, `humanizer`
+- **Depends on:** —
+- **Verify:** `grep -q '@coderabbitai resolve' skills/v-babysit-pr-and-merge/SKILL.md` passes
+  (the resolve rule must be reachable from the station contract, not only from a `references/`
+  file — if the body line budget blocks this, the pointer line in `SKILL.md` must still carry the
+  literal); existing V assertions (`explicit inline reply.+posted before resolution`,
+  `proceed directly to Step 2 extraction & triage`,
+  `gh api repos/:owner:/repo/pulls/<pr_number>/comments`) still match; `score.js` >= 100.
 
 ### T4 [x] [S] [Docs] — Triage consistency + acceptance gates
 
@@ -125,8 +155,8 @@ and `config/coderabbit/README.md:92`:
 The issue describes the guard as a change to "Station V's clean-pass branch", but that branch is
 not one place — it is the *conjunction* of the `COMPLETED` classification above and the Step 2
 extraction that finds zero comments in `triage-and-apply.md`. Guarding only one leaves the trap
-open. Adopted: T3 guards the classification **and** names the reuse-path routing at the extraction
-seam.
+open. Adopted: T3 item 3 guards the classification **and** names the reuse-path routing at the
+extraction seam.
 
 ## Rejected proposals
 
@@ -138,12 +168,11 @@ seam.
 - **Editing `.coderabbit.yaml`** to fix its stale `#7` pointer comment (near line 57 it still says
   the pipeline writes titles itself at `SKILL.md:137`) — **NOTICED-BUT-NOT-TOUCHING**: the file
   belongs to closed issue #6 and this issue excludes it. Recorded as an `open` row for Station VI.
-
-     Chat-gated on Free: state the plan requirement and the fallback.
-  3. **False clean pass guard** — `COMPLETED` with zero inline findings is the *expected shape* of
-     a summary-only review on a private Free repo, so it must not read as approval. Route that case
-     to the existing agent-fallback / reuse path (`triage-and-apply.md:91-95`, Station IV evidence +
-     delta check) and say so in the report.
+  3. **False clean pass guard** — a completed review with zero inline findings is not an approval
+     when the repo is private on the Free plan (summarization-only). Classify it `SUMMARY_ONLY`,
+     keep it mutually exclusive with `COMPLETED`, route it to the existing agent-fallback / reuse
+     path (`triage-and-apply.md:91-95`, Station IV evidence + delta check), and say so in the
+     report.
 - **Helper:** `documentation-and-adrs`, `humanizer`
 - **Depends on:** —
 - **Verify:** `grep -q '@coderabbitai resolve' skills/v-babysit-pr-and-merge/SKILL.md` passes
@@ -152,16 +181,9 @@ seam.
   literal); existing V assertions (`explicit inline reply.+posted before resolution`,
   `proceed directly to Step 2 extraction & triage`,
   `gh api repos/:owner:/repo/pulls/<pr_number>/comments`) still match; `score.js` >= 100.
-
-   on this repo.
-3. *Is a standalone `rate limit` probe viable?* → **No — chat-gated on Free**
-   (`README.md:87,161`). The allowance signal is classified inside the trigger ack instead. The
-   literal string stays in Station IV as a documented, plan-gated probe so the issue's acceptance
-   grep still passes and the command is ready the day the account upgrades.
-4. *Does this repo get inline findings?* → **No — private repo on Free, summarization-only**
-   (`README.md:86,92`). Note `README.md:86` calls this "the untested path… treat that as the
-   operating assumption, not a measured fact — the next PR on this repo is the measurement." So the
-   skills must not *depend* on findings existing; they must degrade honestly.
+   findings on this private repo, and its run config reported `Plan: Advanced` with
+   `Configuration used: Organization UI`. The skills must therefore stay tier/visibility-agnostic
+   and degrade honestly rather than assume a summary-only shape. See `README.md` for the follow-up.
 
 ## Dependency graph
 
