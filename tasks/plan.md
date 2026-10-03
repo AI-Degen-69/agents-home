@@ -54,14 +54,14 @@ Helper: none (one-line edit). Depends on: none.
 Verify: file parses as JSON; that entry contains "selected by default"; the string
 "never selected" no longer appears in that entry.
 
-### T2 [Research] — XS — i-pick-issue id-set diff table
+### T2 [x] [Research] — XS — i-pick-issue id-set diff table
 Compare static assertion ids: canonical `skills/i-pick-issue/evals/evals.json`
 vs pack `skills/i-pick-issue/evals/evals.json` (read-only `gh api`), append the
 table to this plan's appendix. Helper: `research`. Depends on: none.
 Verify: table lists both id sets and names exactly the two missing ids
 (`no-false-selection-claim`, `recommendation-is-default`).
 
-### T3 [Research] — S — Nine-station id-set sweep
+### T3 [x] [Research] — S — Nine-station id-set sweep
 Same mechanical comparison for every other station present in both repos
 (canonical `skills/*/evals/evals.json` vs pack via `gh api`), record per-station
 gaps in the appendix using the repeatable command from the appendix.
@@ -89,6 +89,28 @@ $b64 = (gh api repos/AI-Degen-69/issue-to-pr-skills/contents/skills/<station>/ev
 $pack = ([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b64)) | ConvertFrom-Json).evals.static_assertions.id
 Compare-Object $canon $pack
 Stations without evals in either repo are skipped with a reason, never simulated.
+
+## Appendix — nine-station sweep (T3, verified live 2026-10-03)
+Counts are static-assertion ids, canonical vs pack. "Renamed" = verified
+counterpart: same type, equivalent pattern, same why.
+
+- ii-plan-issue: 19 = 19, no gap.
+- iii-build-plan: 15 = 15, 1 renamed pair (hebrew-report → output-contract,
+  same why "the output contract must be present").
+- iiib-iterate-after-build: 18 = 18, 1 renamed pair (hebrew-report →
+  next-station-iv, identical pattern + why).
+- iv-review-build-and-pr: 26 = 26, 1 renamed pair (hebrew-report →
+  output-contract, Hebrew pattern → "Chat Output Contract").
+- v-babysit-pr-and-merge: 16 = 16, no gap.
+- vi-close-pipeline: 9 = 9, 1 renamed pair (hebrew-report-contract →
+  closeout-report-contract).
+- create-issue: 16 = 16, 1 renamed pair (hebrew-report-contract →
+  chat-output-contract).
+- pipeline-triage: older numeric-id schema, no static_assertions on either side;
+  same shape both sides (Hebrew → English translated). No gap.
+- present-pr: older numeric-id schema, identical both sides. No gap.
+Conclusion: one-off, not a pattern. Only i-pick-issue lost assertions (2) with
+no counterpart.
 
 ## Appendix — i-pick-issue diff (planning-time evidence, T2 re-verifies at build)
 Canonical static ids (22): discovery-always-first, no-silent-pick,
