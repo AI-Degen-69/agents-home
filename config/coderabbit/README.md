@@ -146,6 +146,11 @@ precedence order ranks *repository file* above *organization UI*, the file now g
 through `sync-coderabbit.ps1`; a repo that carries a deliberately richer file (e.g.
 `crypto-spread`) keeps it, exactly as before.
 
+**Verified after merge (PR #25, 2026-10-03).** Re-running `@coderabbitai configuration` on the
+merged PR returns `# Source: Repository YAML (base)` for both `auto_title_placeholder` and
+`auto_title_instructions` — previously `Organization UI (base)`. The fix is confirmed by
+measurement, not assumed: https://github.com/AI-Degen-69/agents-home/pull/25#issuecomment-5973563333
+
 ## Config cheat-sheet
 
 Keys from the [configuration reference](https://docs.coderabbit.ai/reference/configuration) (schema-generated, page updated 2026-09-30) that actually change outcomes. All names below are the documented ones — if a name is not here, it is not in the schema.
