@@ -1,0 +1,2 @@
+- [x] T1 — Reword Step 0.1 budget sentence (SKILL.md)
+- [x] T2 — Verify criteria 1–2, record criterion 3 as UNVERIFIED

@@ -51,7 +51,7 @@ This skill implements **Station IV (Review, Verify & Ship)** of the 6-station pi
 
 Only the tools listed above may run in this gate. No other browser automation tool is permitted, and none is a substitute for a failing one. Daemon-backed browser CLIs in particular retry internally several times per call before surfacing a failure, so a single dead session silently burns dozens of attempts — that is why the gate is pinned to a daemon-free tool and a hard call cap.
 
-**Attempt budget — the whole gate is 3 tool calls plus one optional screenshot.** If a check needs a 4th call, the check is badly designed; batch it.
+**Fast-path target — aim for 3 calls plus one optional screenshot when checks can be batched. This is not the whole-gate limit. Count every gate call, including `open`, `eval`, `console`, `requests`, `screenshot`, and `close`, toward the hard cap of 8.**
 
 **Abort rule — mandatory, no exceptions:**
 
