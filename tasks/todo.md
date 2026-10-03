@@ -1,0 +1,4 @@
+- [x] T1 [Docs/XS] Fix stale recommendation-is-default.why (selected-by-default wording)
+- [x] T2 [Research/XS] i-pick-issue id-set diff table in plan appendix
+- [x] T3 [Research/S] Nine-station id-set sweep (checkpoint after T3)
+- [x] T4 [Docs/XS] Handoff comment on issue #3 with both tables

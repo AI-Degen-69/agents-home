@@ -15,7 +15,7 @@
         { "id": "gh-issue-list-command", "type": "regex", "pattern": "gh issue list --state open", "must_match": true, "why": "Discovery must prescribe the canonical gh command to fetch the backlog" },
         { "id": "group-by-domain", "type": "regex", "pattern": "(group|categori)[a-z]* .*(domain|risk|component|dependency)", "must_match": true, "why": "issues must be grouped logically, not listed flat" },
         { "id": "no-false-selection-claim", "type": "not_regex", "pattern": "nothing is selected until the operator answers", "must_match": true, "why": "the old halt rule is gone — the recommended issue is selected by default, so the old rule text must not remain" },
-        { "id": "recommendation-is-default", "type": "regex", "pattern": "references/output-template\\.md", "must_match": true, "why": "the Discovery recommendation header lives in the Hebrew output template — SKILL.md must point at it, marking the issue recommended, never selected" },
+        { "id": "recommendation-is-default", "type": "regex", "pattern": "references/output-template\\.md", "must_match": true, "why": "the Discovery recommendation header lives in the Hebrew output template — SKILL.md must point at it, and the recommended issue is selected by default unless the operator overrides" },
         { "id": "no-catchall-trigger", "type": "not_regex", "pattern": "whenever the user (mentions|talks|says anything)", "must_match": true, "why": "a catch-all trigger would fire the skill on unrelated conversation" }
       ],
       "live_assertions": [
