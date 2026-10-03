@@ -12,6 +12,29 @@
         "The try-it-yourself steps point at the real application screen, not at the generated page",
         "No test-runner commands appear anywhere in the page or the chat summary",
         "The chat summary follows the Hebrew output contract with issue and PR links"
+      ],
+      "static_assertions": [
+        {
+          "id": "one-centerpiece-rule",
+          "type": "regex",
+          "pattern": "exactly 1 big visual that carries the story",
+          "must_match": true,
+          "why": "one centerpiece per page is the core composition rule"
+        },
+        {
+          "id": "no-test-runners",
+          "type": "regex",
+          "pattern": "NEVER output test-runner commands",
+          "must_match": true,
+          "why": "the customer never sees test-runner commands"
+        },
+        {
+          "id": "real-app-not-the-page",
+          "type": "regex",
+          "pattern": "in the REAL APPLICATION / PROJECT itself.{0,120}NEVER in the generated presentation",
+          "must_match": true,
+          "why": "try-it-yourself points at the running app, never the generated page"
+        }
       ]
     },
     {
@@ -23,6 +46,22 @@
         "No PR links or status badge appear in the output",
         "No files table, code blocks, or architecture jargon appear unless asked",
         "The words stay customer-simple with no unexplained dev terms"
+      ],
+      "static_assertions": [
+        {
+          "id": "explain-mode",
+          "type": "regex",
+          "pattern": "explain-mode",
+          "must_match": true,
+          "why": "explain-mode is a first-class job of this skill"
+        },
+        {
+          "id": "no-fixed-template",
+          "type": "regex",
+          "pattern": "Pick the visual AFTER you understand, never before",
+          "must_match": true,
+          "why": "the visual is chosen from context, not from a fixed layout"
+        }
       ]
     },
     {
@@ -34,6 +73,15 @@
         "The page contains a one-line plain summary",
         "The page contains no flow chart and no interactive demo",
         "The page stays within 3 blocks total"
+      ],
+      "static_assertions": [
+        {
+          "id": "block-budget",
+          "type": "regex",
+          "pattern": "Max 3 blocks total \\(1 centerpiece \\+ up to 2 supports\\)",
+          "must_match": true,
+          "why": "even a trivial page stays inside the 3-block budget"
+        }
       ]
     },
     {
@@ -45,6 +93,15 @@
         "The page uses sequence or dataflow centerpiece, not before/after",
         "The page includes one interaction set: step-play, slider, tabs, or flow",
         "The page uses a different skeleton or palette from a plain dark before/after"
+      ],
+      "static_assertions": [
+        {
+          "id": "no-repeat-enforced",
+          "type": "regex",
+          "pattern": "If your last 2 pages used before/after \\+ flow cards, you MUST choose a different centerpiece family",
+          "must_match": true,
+          "why": "consecutive-page repetition is explicitly forbidden"
+        }
       ]
     },
     {
@@ -57,6 +114,15 @@
         "Exactly one block is the centerpiece; no page carries four visuals",
         "Every kept support block adds information the centerpiece does not already show",
         "Dropped blocks are named in the reasoning, not silently pasted into the page"
+      ],
+      "static_assertions": [
+        {
+          "id": "block-budget-again",
+          "type": "regex",
+          "pattern": "Max 3 blocks total \\(1 centerpiece \\+ up to 2 supports\\)",
+          "must_match": true,
+          "why": "the drafted four-block page must be cut to the budget"
+        }
       ]
     },
     {
@@ -69,6 +135,29 @@
         "The page does not reuse the hero-demo skeleton from the last 2 pages",
         "The centerpiece family differs from the last 2 pages' centerpiece family",
         "The pick is logged in thinking in the Core Rule 3 shape: last 2 were [X,Y], so this one is [Z] + palette [P] + skeleton [S]"
+      ],
+      "static_assertions": [
+        {
+          "id": "station-vi-conditional",
+          "type": "regex",
+          "pattern": "Station VI \\(`vi-close-pipeline`\\) suggests it after closeout",
+          "must_match": true,
+          "why": "the Station VI handoff is stated conditionally, not assumed"
+        },
+        {
+          "id": "pre-vi-handoff",
+          "type": "regex",
+          "pattern": "If Station VI has not run yet",
+          "must_match": true,
+          "why": "an invocation before closeout must say the pipeline is not closed yet"
+        },
+        {
+          "id": "post-vi-clean-exit",
+          "type": "regex",
+          "pattern": "If Station VI already ran.{0,200}re-verify the clean exit",
+          "must_match": true,
+          "why": "building the page writes a file, so the clean exit is re-verified after VI ran"
+        }
       ]
     },
     {
@@ -80,6 +169,22 @@
         "Step 2 classification runs for this change instead of copying the previous page",
         "If the same centerpiece/palette/skeleton is reused, the content demand is stated explicitly",
         "The chat report never claims operator instruction as license to skip the rotation rule"
+      ],
+      "static_assertions": [
+        {
+          "id": "component-kit-usage",
+          "type": "regex",
+          "pattern": "references/component-kit\\.md",
+          "must_match": true,
+          "why": "the shared kit is borrowed rather than re-copied"
+        },
+        {
+          "id": "static-verify-only",
+          "type": "regex",
+          "pattern": "Verify before reveal — statically, no browser",
+          "must_match": true,
+          "why": "this station owns no browser-based verification"
+        }
       ]
     }
   ]

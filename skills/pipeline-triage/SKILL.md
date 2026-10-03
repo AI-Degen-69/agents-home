@@ -32,6 +32,23 @@ Run these read-only checks before deciding anything. Never change files in this 
 4. Run `gh pr status` and `gh pr view --comments` when a PR exists for the branch to see open state and review comments. Search the comments for a `coderabbit` review and for an `@coderabbitai review` comment from you. When neither exists, no `coderabbit` review has run yet.
 5. Look for `tasks/plan.md` and `tasks/todo.md` with an incomplete checklist. When found, read the issue number from those files and check the issue state with `gh issue view <num>`. When the issue is closed, check how it closed: a merged PR means the work landed, any other close reason means it did not.
 
+## Unknown-origin dirt — stop rule (BEFORE the routing table)
+
+Dirt you cannot attribute to the work in front of you is **never routed by size**.
+Rows 10-11 classify dirt as "small" or "large", which is meaningless when nobody
+knows where it came from. So classify origin **first**:
+
+1. Can every changed file be traced to the operator's stated task, an open issue,
+   or the merged work already named in this session?
+2. **Yes** → dirt is scoped. Continue to the routing table; rows 10-11 apply normally.
+3. **No** → the origin is **unknown**. Stop. Do NOT route to `ii-plan-issue` or
+   `iii-build-plan` on a guess about size, and do NOT stash, discard, commit, or
+   branch away from it. Report the foreign paths and ask one question: whose work is this?
+4. **Uncertain** (mixed known/unknown files) → treat as unknown-origin. Ask.
+
+Only a human can attribute foreign dirt. This station guides — it never absorbs
+another stream's changes into the current issue.
+
 ## Routing table
 
 Pick exactly one row. First matching row wins.
@@ -45,8 +62,8 @@ Pick exactly one row. First matching row wins.
 7. Branch merged already, leftover branch or worktree exists -> prune and sync. Route to `vi-close-pipeline` (its Clean Exit Gate syncs master).
 8. `tasks/plan.md` (or `tasks/todo.md`) with an incomplete checklist and the linked issue still open -> work started but unfinished. Resume it. Route to `iii-build-plan`.
 9. `tasks/plan.md` (or `tasks/todo.md`) with an incomplete checklist and the linked issue closed -> stale work. When a PR was merged the work landed, otherwise it was abandoned. Either way sweep the leftovers. Route to `vi-close-pipeline`.
-10. Dirty tree with a clear small task and no PR -> finish the work first. Route to `iii-build-plan`.
-11. Dirty tree with an unclear or large task -> needs scoping first. Route to `ii-plan-issue`.
+10. Dirty tree with a clear small task and no PR -> finish the work first. Route to `iii-build-plan`. (Origin must be known — see the stop rule above.)
+11. Dirty tree with an unclear or large task -> needs scoping first. Route to `ii-plan-issue`. (Origin must be known — see the stop rule above.)
 12. Brand new idea with no code yet -> capture it. Route to `create-issue` (intake branch), then back to `i-pick-issue`.
 13. Work merged and the operator wants a visual summary -> route to `present-pr` (ad-hoc visual presentation, not a pipeline station).
 14. The request is ad-hoc (not Issue work at all) -> say so in one line and route to `using-agent-skills`.

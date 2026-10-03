@@ -120,6 +120,35 @@ The pipeline is NOT closed until every check passes:
 
 If any check fails → fix it or escalate with the exact state. **Never declare closeout on a dirty or diverged folder.**
 
+### Blocked / Incomplete — a real outcome, not a failure to hide
+
+The Clean Exit Gate has exactly two honest endings: **closed** (all seven checks green) or
+**blocked** (at least one check could not be made green). Report the blocked state as its
+own outcome — never round it up to "closed" and never bury it under the success summary.
+
+The report MUST name, for each blocking item: the exact failing check, the observed state
+(verbatim command output, not a paraphrase), and what is needed to clear it. Blocking items
+that make closeout **incomplete** rather than merely delayed:
+
+1. **Foreign dirt** in `git status --porcelain` you did not create and may not commit.
+2. **Failed push** — local commits unpushed, or the remote rejected the push.
+3. **Residual branches, worktrees, or stashes** tied to this issue (or unattributable ones).
+4. **API failure** — `gh` unauthenticated, rate-limited, or the tracker unreachable, so an
+   issue-close or PR-merge state could not be confirmed.
+5. **Unresolved `open` rows** in the NOTICED-BUT-NOT-TOUCHING ledger awaiting operator disposition.
+
+When closeout ends blocked: keep every permanent-knowledge and uncommitted file intact,
+do **not** force-push, do **not** force-delete branches, and do **not** close an issue whose
+state you could not verify. Name the next action and who owns it.
+
+### A presentation offered after this station ends with the same clean-exit check
+
+`/present-pr <id>` may be suggested from this report, but building the page writes a file.
+Offering it never exempts the folder from Section 8: when the operator accepts and the page
+is staged or committed, re-run the Clean Exit Gate (`git push`, base branch, spotless, pruned)
+before ending the session. A closeout that passed the gate and then went dirty by adding a
+presentation file is **not** a clean exit — it ends blocked, and the report says so.
+
 ---
 
 ## 9. Final verification walkthrough (mandatory input to the report)

@@ -1,6 +1,6 @@
 ---
 name: i-pick-issue
-description: Station I (Pick & Orchestrate) — The single entry point for Issue work. Always starts with Discovery. Lists open issues, groups them by domain, recommends the next logical one by dependency order, takes the operator's pick and execution mode, then orchestrates Stations II through VI through to merge and closeout.
+description: Station I (Pick & Orchestrate) — The single entry point for Issue work. Always starts with Discovery. Lists open issues, groups them by domain, recommends the next logical one by dependency order (the recommendation is the default selection unless the operator overrides it), takes the execution mode, then orchestrates Stations II through VI through to merge and closeout.
 ---
 
 # Station I: Pick Issue (`i-pick-issue`)
@@ -61,7 +61,10 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
 ### Step 1: Assignment & Setup
 
 - Read the issue details: `gh issue view <number> --comments`
-- Claim the issue: `gh issue edit <number> --add-assignee @me`
+- **Do not claim the issue here.** Station II (`ii-plan-issue`) owns the first write —
+  it checks the tree is clean *before* claiming and branching, so the assignee signal
+  never lands on a dirty checkout. Claiming twice races the two stations; claiming
+  early marks work started over a tree that may hold someone else's changes.
 - Apply `context-engineering` principles to lock session scope before opening files.
 
 ### Step 2: Station II — Plan (`ii-plan-issue <number>`)

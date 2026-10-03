@@ -32,6 +32,49 @@ function kebabCandidates(text) {
   return [...tokens];
 }
 
+// Agent personas are a separate tree: skills/<name>/scripts/ → <home>/agents/.
+// A backticked `tdd-guide` is a real reference when agents/tdd-guide.md exists.
+const AGENTS_DIR = path.resolve(GLOBAL_SKILLS_DIR, '..', 'agents');
+
+// Narrow, enumerated list — NOT a blanket shape rule. Each entry is a token that
+// is genuinely not a skill or persona reference. Anything not listed here must
+// still resolve, so a genuine typo keeps failing. `pr-test-analyzer` is an
+// external ECC provenance citation ("Absorbed from ECC ..."), not a local ref —
+// the workbench allowlist carries it at validate-lib.js `NON_SKILL_TOKENS`.
+const NON_SKILL_TOKENS = new Set([
+  'html_url', 'step-play', 'hero-demo', 'pr-test-analyzer',
+  // Label and API field names, not skill references.
+  'needs-answers', 'needs-triage', 'ready-for-agent', 'blocked-by', 'start_line',
+]);
+
+function read(p) {
+  return fs.readFileSync(p, 'utf8');
+}
+
+function kebabCandidates(text) {
+  // Backticked tokens that look like skill names (kebab/snake case, no slash, no dot).
+  const tokens = new Set();
+  const re = /`([a-z][a-z0-9]*(?:[_-][a-z0-9]+)+)`/g;
+  let m;
+  while ((m = re.exec(text)) !== null) tokens.add(m[1]);
+  return [...tokens];
+}
+
+/** A token resolves when it is a real skill folder, a real agent persona file,
+ *  the skill's own file basenames, or an enumerated non-skill token. */
+function resolves(token, skillPath) {
+  if (NON_SKILL_TOKENS.has(token)) return true;
+  const p = path.join(GLOBAL_SKILLS_DIR, token);
+  if (fs.existsSync(p) && fs.statSync(p).isDirectory()) return true;
+  if (fs.existsSync(path.join(AGENTS_DIR, `${token}.md`))) return true;
+  const own = path.dirname(skillPath);
+  for (const sub of ['', 'references', 'scripts', 'assets', 'evals', 'docs']) {
+    if (fs.existsSync(path.join(own, sub, `${token}.md`))) return true;
+    if (fs.existsSync(path.join(own, sub, token))) return true;
+  }
+  return false;
+}
+
 function audit(skillPath) {
   const text = read(skillPath);
   const lines = text.split(/\r?\n/);
@@ -40,10 +83,7 @@ function audit(skillPath) {
 
   // 1) Phantom skill references: backticked kebab/snake tokens with no folder on disk.
   const candidates = kebabCandidates(text);
-  const missing = candidates.filter((t) => {
-    const p = path.join(GLOBAL_SKILLS_DIR, t);
-    return !(fs.existsSync(p) && fs.statSync(p).isDirectory());
-  });
+  const missing = candidates.filter((t) => !resolves(t, skillPath));
   if (missing.length) {
     add('fail', 'phantom-skill-refs',
       `Referenced skills with no folder in ${GLOBAL_SKILLS_DIR}: ${missing.join(', ')}`);

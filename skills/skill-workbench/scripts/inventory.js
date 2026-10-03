@@ -19,9 +19,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const DEFAULT_SKILLS_ROOT = 'C:/Users/Tiger/.agents/skills';
-// Reuse the validator in-process.
-const { runOn } = require('./validate-lib.js');
+// Reuse the validator in-process, including its single default skills root.
+const { runOn, DEFAULT_SKILLS_ROOT } = require('./validate-lib.js');
 
 function main() {
   const argv = process.argv.slice(2);

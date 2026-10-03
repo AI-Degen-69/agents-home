@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Deterministic grader for the vi-close-pipeline refinement loop.
+ * Deterministic grader for the iv-review-build-and-pr refinement loop.
  * Zero dependencies. Node >= 18.
  *
  * Subcommands:

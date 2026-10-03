@@ -1,5 +1,7 @@
-# Todo — Issue #19
+# Todo — Issue #18
 
-- [x] T1: Station VI owner contract + ledger + blocking gate
-- [x] T2: Owner pointers in active capture-and-surface instructions
-- [x] T3: Station map handoff + eval coverage
+- [x] T1 [Code]: Workbench tooling — portable root, frontmatter guard, narrow phantom matcher, `node:test` regression, score.js comment
+- [x] T2 [Docs]: Station contradictions — triage unknown-origin, claim ownership, III preconditions, IV 60s, V/VI closeout, present-pr handoff
+- [x] T3 [Code]: Eval + runner gaps — 6 new `grade.js`, eval expansions across 11 skills, workbench doc reconciliation
+- [x] T4 [Code]: Final gates re-run + findings ledger + closeout report
+

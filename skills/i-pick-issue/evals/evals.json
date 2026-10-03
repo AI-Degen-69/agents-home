@@ -55,7 +55,7 @@
       "mode_coverage": ["orchestration"],
       "files": [],
       "static_assertions": [
-        { "id": "claim-issue-first", "type": "regex", "pattern": "gh issue edit .+ --add-assignee @me", "must_match": true, "why": "the issue must be claimed before any station runs" },
+        { "id": "claim-issue-first", "type": "regex", "pattern": "Do not claim the issue here", "must_match": true, "why": "Station II owns the first write; Station I must delegate rather than claim" },
         { "id": "station-ii-handoff", "type": "regex", "pattern": "ii-plan-issue", "must_match": true, "why": "Station II planning must be the first hand-off after assignment" },
         { "id": "station-iii-handoff", "type": "regex", "pattern": "iii-build-plan", "must_match": true, "why": "Station III build must follow planning" },
         { "id": "station-iv-handoff", "type": "regex", "pattern": "iv-review-build-and-pr", "must_match": true, "why": "Station IV review must follow build" },
@@ -64,7 +64,8 @@
         { "id": "router-gate", "type": "regex", "pattern": "pipeline-triage", "must_match": true, "why": "the router gate must reference pipeline-triage for dirty repos" }
       ],
       "live_assertions": [
-        "The issue details are read and the issue is claimed before any station runs",
+        "The issue details are read by Station I, and the claim happens in Station II after its clean-tree check",
+        "Station I does not claim the issue itself; it delegates the first write to Station II",
         "Station II planning hand-off produces tasks/plan.md before building starts",
         "Stations run in order III then IV then V then VI with no station skipped",
         "Each completed station is reported concisely in Hebrew with the next station named",
