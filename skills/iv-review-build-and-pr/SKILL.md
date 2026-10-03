@@ -59,6 +59,7 @@ Only the tools listed above may run in this gate. No other browser automation to
 - **The whole gate is capped at 8 tool calls.** At the cap, stop and report.
 - **A dead browser session is not a product failure.** If the tooling cannot verify (daemon down, port taken, server not up), that is an *unverified* gate, **not** a red gate. Do **not** route it to `iiib-iterate-after-build` as a correction item — there is no defect to fix, and sending one wastes a full fix loop.
 - **Unverified is an allowed outcome, and the honest one.** A gate that reports "curl smoke green (3/3), DOM check unverified — playwright session failed to launch" passes this station. Fabricating a pass, or looping on broken tooling to manufacture one, does not.
+- **An unverified gate is a PR-body disclosure, never a silent omission.** When any gate item ends `unverified`, the Step 5 PR body MUST carry a `## Verification` section naming exactly what was proven, what was not, and the tooling reason. A reviewer reading only the PR must never read an unverified gate as a passed one. Omitting the section is as dishonest as fabricating the pass — and it blocks the station just as hard.
 - **Never open a browser at all** when `curl` already proves the change. If the smoke check is green and the change has no visual/interactive surface, that *is* the gate — skip the browser.
 
 ### Step 1: OCR Delegation Review (MANDATORY, FIRST — embedded procedure)
@@ -160,19 +161,19 @@ Fresh-run one-liner alternative (post + 15s wait + poll in one — use INSTEAD o
 gh pr comment <pr_number> --body "@coderabbitai review" 2>&1 | Select-Object -Last 1; Start-Sleep -Seconds 60; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
 ```
 
-**Wait for the trigger acknowledgement (MANDATORY before handoff):** Do not conclude the station on a blind post. Post the trigger, wait **15s**, then read CodeRabbit's reply to the trigger comment once, then classify it:
+**Wait for the trigger acknowledgement (MANDATORY before handoff):** Do not conclude the station on a blind post. Post the trigger, wait **60s**, then read CodeRabbit's reply to the trigger comment once, then classify it:
 
 - `Review triggered.` ("Action performed" reply) — review started. Proceed to handoff.
 - Rate-limit reply (`## Review limit reached` / `rate limited by coderabbit.ai` / `Next included review available in N minutes`) — review NOT started. Record the reported minutes and carry them into the handoff report so the operator (and Station V) know the quota window.
 - Any other refusal/skip notice (e.g. "does not re-review already reviewed commits") — record verbatim; it may mean incremental review found nothing new, which is itself a signal Station V must read (not a silent pass).
-- No reply within ~15s — report `trigger acknowledgement not received` honestly; do not claim the review started.
-- **Ack polling (PowerShell, 15s wait, matches the real rate-limit header):** only when the trigger was already posted via the snippet above — do NOT re-post:
+- No reply within ~60s — report `trigger acknowledgement not received` honestly; do not claim the review started.
+- **Ack polling (PowerShell, 60s wait, matches the real rate-limit header):** only when the trigger was already posted via the snippet above — do NOT re-post:
 
 ```powershell
-Start-Sleep -Seconds 15; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
+Start-Sleep -Seconds 60; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
 ```
 
-- **Ack polling (bash fallback, same 15s wait, same markers):**
+- **Ack polling (bash fallback, same 60s wait, same markers):**
 
 ```bash
 sleep 60; gh pr view <pr_number> --comments 2>&1 | grep -iE "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | tail -6

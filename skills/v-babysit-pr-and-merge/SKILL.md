@@ -119,10 +119,10 @@ digraph babysit_pr_and_merge {
 After the local reset lands on a clean base, run these three quick checks to decide the vi-close-pipeline recommendation in the report:
 
 1. **Issue state:** `gh issue view <id> --json state --jq .state` — OPEN = 🔴 (must).
-2. **Leftover artifacts:** `git ls-files --others --exclude-standard | Select-String -Pattern '<id>|tasks/plan|scratch'` — any hit = 🟡 (recommended); hits from 3+ distinct closed issues = 🟡 even without matching the current id.
+2. **Leftover artifacts:** run Station VI's **full** discovery set — never a single narrow `git ls-files` grep. It covers: tracked stale per-issue plans and checklists; untracked scratch in knowledge-home or alternate layouts (`tasks/`, `scratch/`, repo root, or any other path); leftover stashes (`git stash list`); and leftover branches/worktrees (`git branch`, `gh pr status`). Any hit = 🟡 (recommended); hits from 3+ distinct closed issues = 🟡 even without matching the current id. This station recommends — it never prunes, so an under-broad check here silently hands a dirty folder to the next issue.
 3. **Git cleanliness:** `git status --porcelain` — non-empty = 🔴 (must).
 
-Pick the highest signal: 🔴 > 🟡 > 🟢. All three clean = 🟢 (skip, continue to `/i-pick-issue`).
+Pick the highest signal: 🔴 > 🟡 > 🟢. All three clean = 🟢 (skip, continue to `/i-pick-issue`). **When any check is inconclusive** — a stash you cannot attribute, a branch whose owner is unknown, an artifact matching no known issue — it is not 🟢. Classify 🟡 and recommend `/vi-close-pipeline`; uncertain means recommend VI, never skip it.
 
 ---
 

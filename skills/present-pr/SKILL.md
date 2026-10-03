@@ -30,7 +30,9 @@ Word swaps to use:
 - "endpoint / API / CLI" -> "connection / screen / button you press"
 
 ## Usage Context
-- **Ad-hoc skill — no station number, never mandatory.** Station VI (`vi-close-pipeline`) suggests it after closeout; the operator may also invoke it directly at any time.
+- **Ad-hoc skill — no station number, never mandatory.** The operator may invoke it directly at any time. Station VI (`vi-close-pipeline`) suggests it after closeout — but only a **clean** one; when Station VI ends blocked or incomplete, it does not offer this skill until the folder is cleared.
+- **If Station VI has not run yet:** this skill is invoked after the merge but before closeout — run `/vi-close-pipeline` first, or state in the report that the pipeline is not closed yet.
+- **If Station VI already ran:** building the page writes a file, so re-verify the clean exit afterwards — `git status --porcelain` empty, on base branch, and push anything staged. If the page cannot be committed cleanly (foreign dirt present), report the staged path and leave the commit to the operator rather than bundling strangers.
 - **Sources:** the story is built from the merged PR, the diff, and the conversation — the issue's plan/notes are a nice-to-have, not a requirement, so this skill works even long after cleanup.
 
 ---

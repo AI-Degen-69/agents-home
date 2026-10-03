@@ -34,6 +34,10 @@ This command supports two execution modes:
 For every task executed, follow these phases:
 
 ### Phase 1: Pre-flight & Specialized Skill Routing
+0. **Preconditions — verify all three before touching a file:**
+   1. **Right branch.** Run `git branch --show-current`. You must be on the plan's feature branch (`i<number>/<slug>`). On the base branch, or on a branch that is not the plan's, stop and route to `pipeline-triage` — never start a build on the wrong branch.
+   2. **Dirt has a known origin.** Run `git status --short`. Every changed file must trace to the plan's tasks. Foreign or unattributable dirt → stop and route to `pipeline-triage` for the unknown-origin stop rule. Do not absorb another stream's changes into this build, and do not stash them away silently.
+   3. **Resume an unfinished plan.** If `tasks/plan.md` exists with unchecked `[ ]` items, you are resuming: continue from the first unchecked task in `tasks/todo.md`, keeping the `[x]` history intact. Never restart a plan from task 1, and never overwrite `tasks/plan.md` (Station II owns reconciliation).
 1. **Verify Plan:** Confirm `tasks/plan.md` exists. If missing, halt: "No plan found! Run `/ii-plan-issue` first."
 2. **Quality Guardrails:** Respect constraints from `CONSTRAINTS.md` (anti-cheat, forbidden edits, zero regressions).
 3. **Rule 0 — simplicity before writing:** for every task, first ask "what is the simplest thing that fully works?" The boring, shortest solution wins; complexity must justify itself before it gets written.
