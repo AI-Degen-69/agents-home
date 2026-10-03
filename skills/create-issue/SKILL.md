@@ -111,31 +111,8 @@ last item is a runnable verification command.
 
 ---
 
-## Hebrew Chat Output Contract (חובת דיווח בעברית)
+<!-- local-only:begin -->
+The chat output template for this station is `references/output-template.md`.
+Read it before writing your first report.
+<!-- local-only:end -->
 
-At the conclusion of this intake, you MUST report to the user in clean, everyday Hebrew using this exact structured format:
-
-```markdown
-# 📝 סיכום יצירת Issue:
-
-## 🔍 מה נמצא בקוד:
-* **קבצים ומיקומים:**
-  - `[נתיב_קובץ:שורה]` — [מה יש שם ולמה זה קשור למשימה]
-* **מה כלול ומה לא (Scope):** [שורה-שתיים: מה המשימה מכסה, ומה מפורש מחוץ לתחום]
-* **תנאי קבלה:**
-  - [קריטריון קבלה מרכזי]
-  - פקודת אימות: `[בדיקה שחייבת לעבור]`
-
----
-
-## 📊 פרטי ה-Issue:
-* **מספר וקישור:** [#<id> - <כותרת ה-Issue>](<קישור ישיר ל-Issue ב-GitHub>)
-* **סאב-אישיוז:** [רק אם הרעיון פוצל — פירוט ה-siblings ומספריהם; אם לא פוצל, שורה זו לא מופיעה כלל]
-
-## 🧠 סיכום במילים פשוטות:
-[2-3 משפטים בשפה שכל אדם מבין, בלי מונחי קוד: מה היה הרעיון או הבעיה, מה ה-Issue מבקש לעשות בעבודה, ואיך יידעו שהעבודה הושלמה. אין מילוי, אין באזוורדים.]
-
-## 👉 מה עכשיו:
-1. הרץ `/i-pick-issue` כדי למפות את כל ה-Backlog ולבחור על איזה Issue עובדים.
-2. אם יש הצעה לשיפור ה-Issue שנכתב (הבהרה, תיחום, תנאי קבלה חסר) — הצע אותה כאן בשורה-שתיים; אם אין, כתוב "אין הצעות" — אין להמציא.
-```

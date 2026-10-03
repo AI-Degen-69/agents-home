@@ -40,7 +40,7 @@ For every task executed, follow these phases:
 4. **Risk-first order:** follow the plan's task order (risk-first from Station II); when the plan leaves freedom, take the riskiest, most-uncertain task first — while being wrong is still cheap.
 5. **Route & Invoke Domain Skill:** Inspect the task's domain tag in `tasks/plan.md` and invoke the matching specialized skill (full matrix in `references/routing.md`):
    - **UI / Frontend / Design:** Activate `frontend-ui-engineering` (and `tailwind-design-system` if applicable). Identify what visual components, styling, or layouts are missing or broken, and implement them across the project according to modern standards.
-   - **Code / Backend / API:** Activate `test-driven-development`, `source-driven-development`, and `api-and-interface-design`. When the task is test-writing-heavy, deploy the `tdd-guide` agent persona (from `~/.agents/agents/`): write-tests-first, ~80%+ coverage on touched code. Persona not found on disk → skip and record the skip (never invent — אין להמציא).
+   - **Code / Backend / API:** Activate `test-driven-development`, `source-driven-development`, and `api-and-interface-design`. When the task is test-writing-heavy, deploy the `tdd-guide` agent persona (from `~/.agents/agents/`): write-tests-first, ~80%+ coverage on touched code. Persona not found on disk → skip and record the skip (never invent — do not invent).
    - **Debug / Defect:** Activate `debugging-and-error-recovery` (investigate root cause before writing fixes).
    - **Performance:** Activate `performance-optimization`.
    - **Security:** Activate `security-and-hardening`.
@@ -67,27 +67,12 @@ For every task executed, follow these phases:
 
 ---
 
-## Hebrew Chat Output Contract (חובת דיווח בעברית)
+## Final check walkthrough (mandatory input to the report)
 
-At the conclusion of Station III, you MUST report to the user in clean, everyday Hebrew using this exact structured format.
-What's-changed only: report the product changes grouped by tag. Never mention commits, hashes, tree state, test commands, test counts, skill names, or file paths. The branch stays as the work ID. Omit empty groups. Max ~7 items — group beyond that.
+Build the walkthrough from the live product: real screen names, at most 3 steps, every step is where -> what to do -> what to see. Prefer visual proof. Nothing visual -> say so in one line plus how it was checked automatically.
 
-```markdown
-# 🔨 III - בנייה: Issue #<מספר> — <כותרת ה-Issue>
+<!-- local-only:begin -->
+The chat output template for this station is `references/output-template.md`.
+Read it before writing your first report.
+<!-- local-only:end -->
 
-Branch: `i<מספר>/<slug>`
-
-## ➕ מה חדש?
-- [מיקום מוצרי (דף/לשונית/חלק) + מה נוצר — רק קבוצות עם תוכן]
-
-## ✏️ מה שונה?
-- [מיקום מוצרי + מה השתנה]
-
-## ❌ מה הוסר?
-- [מיקום מוצרי + מה הוסר]
-
-## 🩹 מה תוקן?
-- [מיקום מוצרי + מה היה שבור ומה עובד עכשיו]
-
-👉 **הבא:** `/iv-review-build-and-pr` — סקירה ושליחה.
-```

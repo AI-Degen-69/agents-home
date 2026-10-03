@@ -49,18 +49,12 @@ For every item, in order:
 
 Respect `CONSTRAINTS.md` (no skipped tests, no new external dependencies without approval, zero regressions in touched modules). Never touch code outside the reported items. Never push to origin — `iv-review-build-and-pr` is the only station that pushes.
 
-## Hebrew Chat Output Contract
+## Final check walkthrough (mandatory input to the report)
 
-Report in clean, everyday Hebrew. Write for the customer who ordered the product, never for a developer. What's-changed only: one line per fixed item — product location + what was wrong in plain words, then what works now. No skill names, no commits, no tests, no file paths. Never use the word console. Say "checked in the browser, no errors" instead.
+Build the walkthrough from the live product: real screen names, at most 3 steps, every step is where -> what to do -> what to see. Prefer visual proof. Nothing visual -> say so in one line plus how it was checked automatically.
 
-```markdown
-# 🔁 IIIB - תיקונים אחרי בנייה (סיכום איטרציה):
+<!-- local-only:begin -->
+The chat output template for this station is `references/output-template.md`.
+Read it before writing your first report.
+<!-- local-only:end -->
 
-## 🩹 מה תוקן?
-* **[מיקום מוצרי]** — [לפני: מה לא עבד לאדם. עכשיו: מה עובד]
-
-## ➕ מה חדש? / ✏️ מה שונה?
-* [רק אם תיקון הוסיף או שינה משהו מעבר לתיקון עצמו — אחרת הקבוצה לא מופיעה]
-
-👉 **שלב הבא:** `/iv-review-build-and-pr` — הכל עובד, מוכן לסקירה ושליחה.
-```

@@ -144,32 +144,23 @@ Example tone:
 
 ---
 
-## Hebrew Chat Output Contract
+## Final verification walkthrough (mandatory input to the report)
+
+Build the walkthrough in the report from the live product, not from the presentation file:
+
+1. Name the real screen / tab / button the operator opens in the running app.
+2. Write at most 5 steps. Every step is: where → what to do → what to see.
+3. Use `→` arrows between screens and give a direct link when one exists.
+4. Say exactly what to look at (text, state, count) so the operator knows it worked.
+5. Prefer visual proof. Backend-only with nothing to see → say so in one line plus how it was checked automatically.
 
 **Strict Prohibition:** NEVER output test-runner commands (`pytest`, `npm test`, `jest`, `vitest`, or equivalents). Tests already passed earlier. Manual check is human touch-and-see only.
 **Strict Instruction on "Try it yourself":** Direct the user to try the change in the REAL APPLICATION / PROJECT itself (the running system, UI dashboard, app screen, or CLI), NEVER in the generated presentation/HTML showcase.
-**No Meta-showcase in Chat:** Do NOT output the section "🖼️ איך בחרתי להציג את זה / How I chose to show it" in the chat report — keep the chat report focused solely on the value, how to try it in the real application, and links/paths.
-
-```markdown
-# 🎨 סיכום והצגת PR:
-
-## 📊 Issue ו-PR:
-* **Issue:** [#<id> - <title>](<url>)
-* **PR:** [#<n> - <title>](<url>) 🟢 MERGED
-
-## 💡 מה השתנה:
-* [לפני העדכון: מה לא עבד או מה היה חסר]
-* [עכשיו: מה השתפר ומה אפשר לעשות]
-
-## 👁️ ווידוא ידני:
-1. **מה לוודא:** פתח את [מסך האפליקציה / טאב / כפתור במערכת החיה עצמה]
-2. **מה לצפות לראות:** [מה השינוי אמור לעשות, או מה התוצאה שהמשתמש אמור לראות]
-
-## 🎨 קובץ פרזנטציה:
-- **נתיב:** [נתיב מלא לקובץ שנוצר]
-- **פתח:** [start <file.html>]
+**No meta-showcase in chat:** Keep the chat report focused solely on the value, how to try it in the real application, and links/paths.
 
 ---
 
-# ➡️ השלב הבא: 
-- סגירת ה-issue והכנה ל-Issue הבא: **`/vi-close-pipline`**
+<!-- local-only:begin -->
+The chat output template for this station is `references/output-template.md`.
+Read it before writing your first report.
+<!-- local-only:end -->
