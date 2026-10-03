@@ -33,7 +33,7 @@
         { "id": "tdd-routing", "type": "regex", "pattern": "test-driven-development", "must_match": true, "why": "code/backend tasks must route to TDD" },
         { "id": "code-simplification", "type": "regex", "pattern": "code-simplification", "must_match": true, "why": "every task gets simplification pass before commit" },
         { "id": "next-station-iv", "type": "regex", "pattern": "iv-review-build-and-pr", "must_match": true, "why": "build must hand off to Station IV" },
-        { "id": "hebrew-report", "type": "regex", "pattern": "חובת דיווח בעברית", "must_match": true, "why": "the output contract must be present" },
+        { "id": "hebrew-report", "type": "regex", "pattern": "chat output template for this station is\\s+`references/output-template\\.md`", "must_match": true, "why": "the Hebrew output contract is extracted to references/output-template.md; SKILL.md must carry the pointer that loads it" },
         { "id": "noticed-not-touching", "type": "regex", "pattern": "NOTICED-BUT-NOT-TOUCHING", "must_match": true, "why": "out-of-scope findings must be captured, never silently fixed" }
       ],
       "live_assertions": [

@@ -44,6 +44,10 @@ levels:
 
 ## Hard gates
 
+This section is the **single list of final-summary gates** for every skill that
+defers here. A SKILL.md may add flow-specific vocabulary below; it must not
+restate or contradict these gates.
+
 - **No mid-flow summaries.** No partial loop record, no final summary, no
   usage example after any item except the last. A summary after one finding
   out of three implies the job is done — that is the failure mode this
@@ -54,6 +58,11 @@ levels:
 - **Final gate before the summary.** Re-run the scorer/validator (workbench)
   or the graded eval cases (refinement loop) clean, then present the final
   summary.
+- **A waiver is not clean.** A **waiver** is a residual finding the operator
+  decided not to fix, recorded with its reason. A waived finding may be
+  *reported* and may permit advancing — but it is never described as clean,
+  and the final summary lists every waiver (check, tokens/evidence, reason).
+  Un-waived residual findings keep the gate closed.
 - **Operator decisions block, not bypass.** If an item cannot be completed
   without a decision (explicit rule waiver, adopt/defer/drop, retired
   capability), stop and ask. Do not present a final summary before the
@@ -61,6 +70,10 @@ levels:
 - **Silent resolutions are labeled.** Unanswered open questions resolved by
   the stated guess (ניחוש) are applied and labeled as such in the progress
   note. Proposals enter the queue only on explicit operator adoption.
+
+A final summary also states: the deploy state (completed, or explicitly
+deferred), the count of adopted proposals, and the count of remaining
+findings and open questions.
 
 ## Flow-specific vocabulary
 

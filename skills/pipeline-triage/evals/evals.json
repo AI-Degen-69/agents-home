@@ -1,1 +1,262 @@
-{"evals": [{"expected_output": "Two short Hebrew sections routing to i-pick-issue.", "files": [], "id": 1, "prompt": "The repo is on main, synced with remote, clean tree, no open PR. What is the next step?"}, {"expected_output": "Two short Hebrew sections routing to v-babysit-pr-and-merge.", "files": [], "id": 2, "prompt": "My feature branch has an open PR with failing checks and requested changes. What is the next step?"}, {"expected_output": "Two short Hebrew sections routing to iii-build-plan.", "files": [], "id": 3, "prompt": "The tree is dirty with a few uncommitted edits for one small clear fix and there is no PR. What is the next step?"}, {"expected_output": "Two short Hebrew sections: start a coderabbit review, then route to v-babysit-pr-and-merge.", "files": [], "id": 4, "prompt": "My open PR has green checks but no coderabbit review and no review comment from me yet. What is the next step?"}, {"expected_output": "Two short Hebrew sections routing to ii-plan-issue.", "files": [], "id": 5, "prompt": "The tree is dirty with half-finished changes for a large vague refactor and there is no PR. What is the next step?"}, {"expected_output": "Two short Hebrew sections routing to iv-review-build-and-pr.", "files": [], "id": 6, "prompt": "Clean tree on a feature branch, two commits not pushed yet, no PR exists. What is the next step?"}, {"expected_output": "Two short Hebrew sections routing to vi-close-pipeline.", "files": [], "id": 7, "prompt": "My branch was already merged and the leftover branch still exists. What is the next step?"}, {"expected_output": "Two short Hebrew sections routing to iii-build-plan to resume the unfinished work.", "files": [], "id": 8, "prompt": "There is a `tasks/plan.md` whose checklist is not fully checked, the linked issue number is written in the file, and that issue is still open. What is the next step?"}], "skill_name": "pipeline-triage"}
+{
+  "evals": [
+    {
+      "expected_output": "Two short Hebrew sections routing to i-pick-issue.",
+      "files": [],
+      "id": 1,
+      "prompt": "The repo is on main, synced with remote, clean tree, no open PR. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "routes-to-station-i",
+          "type": "regex",
+          "pattern": "Route to `i-pick-issue`",
+          "must_match": true,
+          "why": "row 1 routes a fully clean repo to Station I"
+        }
+      ]
+    },
+    {
+      "expected_output": "Two short Hebrew sections routing to v-babysit-pr-and-merge.",
+      "files": [],
+      "id": 2,
+      "prompt": "My feature branch has an open PR with failing checks and requested changes. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "routes-to-station-v",
+          "type": "regex",
+          "pattern": "Open PR with change requests or failing checks.*v-babysit-pr-and-merge",
+          "must_match": true,
+          "why": "failing checks plus change requests route to Station V"
+        }
+      ]
+    },
+    {
+      "expected_output": "Two short Hebrew sections routing to iii-build-plan.",
+      "files": [],
+      "id": 3,
+      "prompt": "The tree is dirty with a few uncommitted edits for one small clear fix and there is no PR. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "routes-to-station-iii",
+          "type": "regex",
+          "pattern": "Dirty tree with a clear small task and no PR.*iii-build-plan",
+          "must_match": true,
+          "why": "a small clear dirty task routes to Station III"
+        },
+        {
+          "id": "row10-requires-known-origin",
+          "type": "regex",
+          "pattern": "Dirty tree with a clear small task.*Origin must be known",
+          "must_match": true,
+          "why": "row 10 must not be readable without passing the unknown-origin stop rule first"
+        }
+      ]
+    },
+    {
+      "expected_output": "Two short Hebrew sections: start a coderabbit review, then route to v-babysit-pr-and-merge.",
+      "files": [],
+      "id": 4,
+      "prompt": "My open PR has green checks but no coderabbit review and no review comment from me yet. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "coderabbit-trigger-row",
+          "type": "regex",
+          "pattern": "no `coderabbit` review and no `@coderabbitai review` comment from you.*v-babysit-pr-and-merge",
+          "must_match": true,
+          "why": "an untriggered review starts the review then routes to Station V"
+        },
+        {
+          "id": "approval-before-posting",
+          "type": "regex",
+          "pattern": "With operator approval, post `@coderabbitai review`",
+          "must_match": true,
+          "why": "the trigger is a GitHub write and needs explicit operator approval"
+        }
+      ]
+    },
+    {
+      "expected_output": "Two short Hebrew sections routing to ii-plan-issue.",
+      "files": [],
+      "id": 5,
+      "prompt": "The tree is dirty with half-finished changes for a large vague refactor and there is no PR. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "routes-to-station-ii",
+          "type": "regex",
+          "pattern": "Dirty tree with an unclear or large task.*ii-plan-issue",
+          "must_match": true,
+          "why": "a large vague dirty task needs scoping first"
+        },
+        {
+          "id": "row11-requires-known-origin",
+          "type": "regex",
+          "pattern": "Dirty tree with an unclear or large task.*Origin must be known",
+          "must_match": true,
+          "why": "row 11 must not be readable without passing the unknown-origin stop rule first"
+        }
+      ]
+    },
+    {
+      "expected_output": "Two short Hebrew sections routing to iv-review-build-and-pr.",
+      "files": [],
+      "id": 6,
+      "prompt": "Clean tree on a feature branch, two commits not pushed yet, no PR exists. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "routes-to-station-iv",
+          "type": "regex",
+          "pattern": "Clean tree, on a feature branch, commits unpushed, no PR yet.*iv-review-build-and-pr",
+          "must_match": true,
+          "why": "unpushed commits on a feature branch route to Station IV"
+        },
+        {
+          "id": "iiib-alternative-named",
+          "type": "regex",
+          "pattern": "unless the operator just reported corrections on a fresh build, then route to `iiib-iterate-after-build`",
+          "must_match": true,
+          "why": "row 2 must name the IIIB alternative, not silently prefer IV"
+        }
+      ]
+    },
+    {
+      "expected_output": "Two short Hebrew sections routing to vi-close-pipeline.",
+      "files": [],
+      "id": 7,
+      "prompt": "My branch was already merged and the leftover branch still exists. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "routes-to-station-vi",
+          "type": "regex",
+          "pattern": "leftover branch or worktree exists.*vi-close-pipeline",
+          "must_match": true,
+          "why": "a merged branch with leftovers routes to Station VI"
+        }
+      ]
+    },
+    {
+      "expected_output": "Two short Hebrew sections routing to iii-build-plan to resume the unfinished work.",
+      "files": [],
+      "id": 8,
+      "prompt": "There is a `tasks/plan.md` whose checklist is not fully checked, the linked issue number is written in the file, and that issue is still open. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "unfinished-open-issue-resumes",
+          "type": "regex",
+          "pattern": "incomplete checklist and the linked issue still open.*iii-build-plan",
+          "must_match": true,
+          "why": "an unfinished plan whose issue is still open resumes at Station III"
+        }
+      ]
+    },
+    {
+      "expected_output": "One short Hebrew section naming the foreign files as unknown-origin and asking whose work they are. No routing to II or III.",
+      "files": [],
+      "id": 9,
+      "prompt": "The tree has uncommitted changes I did not make and cannot explain - some files are unrelated to anything I am working on. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "unknown-origin-stops",
+          "type": "regex",
+          "pattern": "the origin is \\*\\*unknown\\*\\*\\. Stop\\. Do NOT route to `ii-plan-issue` or",
+          "must_match": true,
+          "why": "unknown-origin dirt must never be routed to II/III by size"
+        },
+        {
+          "id": "unknown-origin-asks-once",
+          "type": "regex",
+          "pattern": "ask one question: whose work is this\\?",
+          "must_match": true,
+          "why": "the stop rule resolves by asking exactly one attribution question"
+        },
+        {
+          "id": "unknown-origin-no-destructive",
+          "type": "regex",
+          "pattern": "do NOT stash, discard, commit, or\\s*branch away from it",
+          "must_match": true,
+          "why": "triage guides only - it never absorbs or destroys another stream's changes"
+        }
+      ]
+    },
+    {
+      "expected_output": "A folder-state section listing every stash with its number and a one-line classification of its contents.",
+      "files": [],
+      "id": 10,
+      "prompt": "There are three stashes on this repo and I have no idea what is in them. What is the next step?",
+      "static_assertions": [
+        {
+          "id": "stash-check-required",
+          "type": "regex",
+          "pattern": "git stash list",
+          "must_match": true,
+          "why": "stashes are part of the read-only checks that run before deciding"
+        },
+        {
+          "id": "stashes-reported",
+          "type": "regex",
+          "pattern": "list each stash with its number, age, branch, and a one-line classification",
+          "must_match": true,
+          "why": "each stash must be classified, not merely counted"
+        }
+      ]
+    },
+    {
+      "expected_output": "A What-now section asking one question to resolve Issue-work versus ad-hoc.",
+      "files": [],
+      "id": 11,
+      "prompt": "How do I decide what to do next? I am not sure whether this is Issue work or just a quick question.",
+      "static_assertions": [
+        {
+          "id": "ambiguity-tiebreak",
+          "type": "regex",
+          "pattern": "If it will end in a PR on code, treat as Issue work",
+          "must_match": true,
+          "why": "ambiguity resolves by the PR-on-code test"
+        },
+        {
+          "id": "one-question-rule",
+          "type": "regex",
+          "pattern": "Still ambiguous.*ask one question",
+          "must_match": true,
+          "why": "residual ambiguity escalates as exactly one question"
+        },
+        {
+          "id": "single-router-handoff",
+          "type": "regex",
+          "pattern": "Never run this skill and `i-pick-issue` or `using-agent-skills` on the same request",
+          "must_match": true,
+          "why": "two routers on one request is the failure mode this gate prevents"
+        }
+      ]
+    },
+    {
+      "expected_output": "A What-now section whose trigger-status line reads \"trigger acknowledgement not received\" - never \"review started\".",
+      "files": [],
+      "id": 12,
+      "prompt": "I posted the coderabbit review trigger but got no reply at all. What do I report?",
+      "static_assertions": [
+        {
+          "id": "no-invented-pr-state",
+          "type": "regex",
+          "pattern": "Never invent PR state or check results",
+          "must_match": true,
+          "why": "a missing reply is reported as missing, never as a started review"
+        },
+        {
+          "id": "report-only-observed",
+          "type": "regex",
+          "pattern": "Report only what the commands above showed",
+          "must_match": true,
+          "why": "triage reports observed command output only"
+        },
+        {
+          "id": "safety-stop-before-write",
+          "type": "regex",
+          "pattern": "Ask for explicit approval before any destructive step",
+          "must_match": true,
+          "why": "destructive steps always require explicit approval"
+        }
+      ]
+    }
+  ],
+  "skill_name": "pipeline-triage"
+}

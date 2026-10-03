@@ -55,7 +55,7 @@
       "mode_coverage": ["orchestration"],
       "files": [],
       "static_assertions": [
-        { "id": "claim-issue-first", "type": "regex", "pattern": "gh issue edit .+ --add-assignee @me", "must_match": true, "why": "the issue must be claimed before any station runs" },
+        { "id": "claim-issue-first", "type": "regex", "pattern": "Do not claim the issue here", "must_match": true, "why": "Station II owns the first write; Station I must delegate rather than claim" },
         { "id": "station-ii-handoff", "type": "regex", "pattern": "ii-plan-issue", "must_match": true, "why": "Station II planning must be the first hand-off after assignment" },
         { "id": "station-iii-handoff", "type": "regex", "pattern": "iii-build-plan", "must_match": true, "why": "Station III build must follow planning" },
         { "id": "station-iv-handoff", "type": "regex", "pattern": "iv-review-build-and-pr", "must_match": true, "why": "Station IV review must follow build" },

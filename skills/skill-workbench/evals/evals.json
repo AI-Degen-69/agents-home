@@ -24,14 +24,14 @@
     },
     {
       "id": "single-skill-routing-with-gate",
-      "prompt": "skill-workbench on vi-present-pr: validate it, audit it, and tell me where it goes next in its lifecycle.",
-      "expected_output": "Title opens with a Hebrew word plus the skill name with Pipeline group tag and full path line, validator run on vi-present-pr, an audit loop record with grounded findings and any proactive proposals, a routing decision, and a helper-integrity validation of the routed helper before hand-off. Latin terms use isolated backticks.",
+      "prompt": "skill-workbench on present-pr: validate it, audit it, and tell me where it goes next in its lifecycle.",
+      "expected_output": "Title opens with a Hebrew word plus the skill name with Pipeline group tag and full path line, validator run on present-pr, an audit loop record with grounded findings and any proactive proposals, a routing decision, and a helper-integrity validation of the routed helper before hand-off. Latin terms use isolated backticks.",
       "files": [],
       "assertions": [
         "The report title opens with a Hebrew word followed by the skill name, with a Pipeline group tag and a full path line below it",
         "Every line opens with a Hebrew word",
         "Every Latin term, path, or command in Hebrew text uses isolated backticks (bidi isolates)",
-        "The validator is run against the vi-present-pr skill folder and its findings are reported by check-id",
+        "The validator is run against the present-pr skill folder and its findings are reported by check-id",
         "The findings are presented as a CodeRabbit-style grouped category table (category | count | severity) followed by a detail card per finding",
         "Each finding card opens with a three-tag line: category first, then severity (🔴 critical / 🟠 major / 🟡 minor), then effort (⚡ quick win / 🔧 medium / 🏗️ structural), separated by pipes",
         "Each finding card has a short bold action-title followed by a 2-3 line description citing concrete file and line references",
@@ -83,6 +83,44 @@
         "No skill is routed and no helper hand-off occurs",
         "No deploy/link commands are executed or printed as executed",
         "No files are modified by this request"
+      ]
+    },
+    {
+      "id": "validate-only-single-skill-no-scorecard",
+      "prompt": "Just validate pipeline-triage — I only want to know if it passes.",
+      "expected_output": "A validation report for the named skill only. No scorecard, no audit, no routing, no deploy: validate-only mode produces a validation result and nothing else.",
+      "files": [],
+      "assertions": [
+        "The validator is run against the pipeline-triage skill folder only, not across the whole root",
+        "The output is a validation report listing findings by check-id",
+        "No scorecard is presented — the scorecard comes only from score.js and is not part of validate-only mode",
+        "No audit findings, routing decision, or deploy action is produced",
+        "The skill does not escalate validate-only into a full workbench run on its own"
+      ]
+    },
+    {
+      "id": "waiver-is-not-clean",
+      "prompt": "The validator still reports one failure on shadcn (phantom-skill-refs on CSS tokens) and I don't want to touch shadcn content. Wrap it up.",
+      "expected_output": "The agent records the residual failure as a waiver with its reason, and the final summary lists it explicitly. The skill never describes a waived finding as clean and never silently passes the gate.",
+      "files": [],
+      "assertions": [
+        "The residual phantom-skill-refs failure is recorded as a waiver carrying a reason (shadcn content is out of scope)",
+        "The waiver lists the check-id and the offending tokens as evidence",
+        "The final summary states the waiver explicitly instead of reporting the skill as clean",
+        "The word clean is not used to describe the waived finding",
+        "The operator's decision is recorded before the final summary is presented"
+      ]
+    },
+    {
+      "id": "scorecard-from-real-output-explains-low-metrics",
+      "prompt": "Run the workbench on i-pick-issue and show me the score.",
+      "expected_output": "The scorecard reproduces actual score.js output — the five metrics and the overall — and every metric below 100 carries an explanation of what costs it, rather than a bare number.",
+      "files": [],
+      "assertions": [
+        "The scorecard shows the five metrics and the overall score exactly as score.js produced them",
+        "Any metric below 100 is accompanied by a line explaining what is costing it",
+        "No metric, weight, or total is invented or rounded differently from the scorer output",
+        "The scorecard is a separate block from the short status lines, not merged into them"
       ]
     }
   ]

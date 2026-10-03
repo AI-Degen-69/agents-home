@@ -27,6 +27,9 @@ Claude Code / Hermes, SymbolicLink for Gemini CLI / Antigravity).
   `--json` for machine use). Exit 0 = clean, 1 = findings, 2 = usage error.
 - `scripts/score.js` — zero-dependency scorer: 0–100 per metric + overall, for
   one skill (`--json` for machine use). Deterministic; reuses validate-lib.js.
+  It **exits 0 even when validation finds fails** — always read the metrics, never
+  the exit code, to judge a score. The scorecard shown to the operator is this
+  command's actual output; every metric below 100 is explained, never shown bare.
 - `scripts/inventory.js` — one-glance state of every skill in the root.
 - `evals/evals.json` — this skill's own eval set.
 
@@ -113,7 +116,9 @@ deferred by the operator, and the summary must state the deploy state.
 
 ### 3. Validate-only
 
-Run the validator, report findings, stop. No audit, no routing, no deploy.
+Run the validator on the named skill, report findings by check-id, stop. This
+mode produces a **validation report only** — no scorecard, no audit, no
+routing, no deploy. It never escalates itself into a full workbench run.
 
 ## Conventions
 

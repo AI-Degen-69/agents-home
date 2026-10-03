@@ -24,7 +24,7 @@ scripts/inventory.js emit them verbatim.
 | Spec rule | Check | Check-id | Severity |
 |---|---|---|---|
 | Keep main SKILL.md under ~500 lines; move detail to on-demand files | Body line count | `body-length` | fail (>500) |
-| File references use relative paths from the skill root, one level deep | Every markdown link target and backticked `scripts|references|assets|docs|evals/...` path resolves on disk | `file-refs` | fail |
+| File references use relative paths from the skill root | Every **inline Markdown link** target (`[x](path)`) in SKILL.md resolves on disk. Backticked paths are **not** checked — they are usually write-targets or format names. Depth is **not** enforced | `file-refs` | fail |
 | Agents load the full body on activation — keep it high-signal | Human judgment at audit time (see audit-policy.md) | — | — |
 
 ## Ecosystem rule (repo-local, learned from ii-plan-issue v0)

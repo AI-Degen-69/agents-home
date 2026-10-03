@@ -70,9 +70,9 @@
         {
           "id": "hebrew-report-contract",
           "type": "regex",
-          "pattern": "VI - .{2,8}",
+          "pattern": "Close Pipeline — Station VI: \\[#<id>",
           "must_match": true,
-          "why": "the Hebrew closeout report is a hard contract of this skill"
+          "why": "the Hebrew report contract is the shipped Station VI closeout template"
         }
       ],
       "live_assertions": [

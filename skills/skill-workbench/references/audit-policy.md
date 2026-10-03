@@ -15,6 +15,10 @@ Every finding must be grounded in something actually read or observed:
 discipline the pipeline skills enforce. An audit with zero findings is a valid
 outcome; say "clean" and stop.
 
+"Audit is clean" closes **the audit step only**. It is not the end of the flow:
+when the operator also asked for routing or deploy, the main workbench flow
+continues to those steps, reporting a clean audit as an input to them.
+
 Low confidence ⇒ mark it explicitly as an **open question**, never a finding.
 A finding implies you would bet the fix on it.
 

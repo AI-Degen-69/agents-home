@@ -36,7 +36,7 @@
       "files": [],
       "static_assertions": [
         { "id": "proof-gate-mandatory", "type": "regex", "pattern": "Proof-Before-Review Gate.*MANDATORY.*FIRST", "must_match": true, "why": "no review runs on unproven code" },
-        { "id": "playwright-cli-preferred", "type": "regex", "pattern": "playwright-cli.*preferred", "must_match": true, "why": "playwright-cli is faster than DevTools MCP for routine checks" },
+        { "id": "playwright-cli-preferred", "type": "regex", "pattern": "playwright-cli.{0,40}only|only.{0,40}playwright-cli", "must_match": true, "why": "the shipped gate is playwright-cli ONLY; DevTools MCP is profiling-only (docs/issue-to-pr-skill-workflow.md:107)" },
         { "id": "devtools-profiling-only", "type": "regex", "pattern": "browser-testing-with-devtools.*only.*when.*performance traces or profiling", "must_match": true, "why": "DevTools MCP is for profiling, not routine DOM checks" },
         { "id": "failure-routes-to-iiib", "type": "regex", "pattern": "iiib-iterate-after-build", "must_match": true, "why": "failed gate must route back to IIIB, never ship broken code" },
         { "id": "single-owner-browser", "type": "regex", "pattern": "single owner of browser-based verification", "must_match": true, "why": "no other station runs browser checks — Station IV owns this" }
@@ -76,7 +76,7 @@
         { "id": "rate-limit-classification", "type": "regex", "pattern": "Rate-limit reply", "must_match": true, "why": "rate-limit replies must be classified as a distinct status" },
         { "id": "comment-links-mandatory", "type": "regex", "pattern": "Comment links.*mandatory", "must_match": true, "why": "jump links to trigger and reply comments are required" },
         { "id": "handoff-to-v", "type": "regex", "pattern": "v-babysit-pr-and-merge", "must_match": true, "why": "handoff must go to Station V" },
-        { "id": "hebrew-report", "type": "regex", "pattern": "חובת דיווח בעברית", "must_match": true, "why": "output must follow the Hebrew contract" }
+        { "id": "hebrew-report", "type": "regex", "pattern": "chat output template for this station is\\s+`references/output-template\\.md`", "must_match": true, "why": "the Hebrew output contract is extracted to references/output-template.md; SKILL.md must carry the pointer that loads it" }
       ],
       "live_assertions": [
         "The trigger status is classified correctly based on CodeRabbit's reply",
