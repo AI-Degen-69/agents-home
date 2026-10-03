@@ -34,11 +34,11 @@ This command supports two execution modes:
 For every task executed, follow these phases:
 
 ### Phase 1: Pre-flight & Specialized Skill Routing
-0. **Preconditions — verify all three before touching a file:**
+0. **Verify Plan:** Confirm `tasks/plan.md` exists. If missing, halt: "No plan found! Run `/ii-plan-issue` first." Nothing below can run without it.
+1. **Preconditions — verify all three before touching a file:**
    1. **Right branch.** Run `git branch --show-current`. You must be on the plan's feature branch (`i<number>/<slug>`). On the base branch, or on a branch that is not the plan's, stop and route to `pipeline-triage` — never start a build on the wrong branch.
    2. **Dirt has a known origin.** Run `git status --short`. Every changed file must trace to the plan's tasks. Foreign or unattributable dirt → stop and route to `pipeline-triage` for the unknown-origin stop rule. Do not absorb another stream's changes into this build, and do not stash them away silently.
-   3. **Resume an unfinished plan.** If `tasks/plan.md` exists with unchecked `[ ]` items, you are resuming: continue from the first unchecked task in `tasks/todo.md`, keeping the `[x]` history intact. Never restart a plan from task 1, and never overwrite `tasks/plan.md` (Station II owns reconciliation).
-1. **Verify Plan:** Confirm `tasks/plan.md` exists. If missing, halt: "No plan found! Run `/ii-plan-issue` first."
+   3. **Resume an unfinished plan.** If `tasks/plan.md` has unchecked `[ ]` items, you are resuming. Take the next task from **`tasks/plan.md`** — the single source of truth for completion state. `tasks/todo.md` is a derived checklist, so read it for reporting but never select the next task from it: Phase 4 marks completion in `tasks/plan.md` only, and selecting from the checklist can replay an already-completed task. Never restart a plan from task 1, and never overwrite `tasks/plan.md` (Station II owns reconciliation).
 2. **Quality Guardrails:** Respect constraints from `CONSTRAINTS.md` (anti-cheat, forbidden edits, zero regressions).
 3. **Rule 0 — simplicity before writing:** for every task, first ask "what is the simplest thing that fully works?" The boring, shortest solution wins; complexity must justify itself before it gets written.
 4. **Risk-first order:** follow the plan's task order (risk-first from Station II); when the plan leaves freedom, take the riskiest, most-uncertain task first — while being wrong is still cheap.

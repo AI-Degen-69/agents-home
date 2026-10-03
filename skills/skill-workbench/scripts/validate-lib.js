@@ -32,11 +32,25 @@ function parseFrontmatter(text) {
       // (`>-`, `|+`). The indicator is not part of the value; the real text is
       // on the following indented lines.
       const blockScalar = value.match(/^([>|])([+-]?)$/);
-      if (blockScalar) value = '';
-      // Folded scalar: the value continues across indented lines. Two shapes are
-      // supported — `key: >` (empty inline value) and `key: text` continued on
-      // the next indented line. Indented lines that are themselves nested keys
-      // (`  sub: v`) are left to the nested branch below.
+      if (blockScalar) {
+        // Inside a block scalar every indented line is scalar CONTENT, even when
+        // it looks like `  when: use this skill`. YAML binds by indentation, not
+        // by key shape, so the nested-key branch must never see these lines.
+        const parts = [];
+        let j = i + 1;
+        while (j < lines.length && /^[ \t]/.test(lines[j]) && lines[j].trim() !== ''
+          && !/^\s*#/.test(lines[j])) {
+          parts.push(lines[j].trim());
+          j++;
+        }
+        fm[currentKey] = parts.join(' ');
+        i = j - 1;
+        continue;
+      }
+      // Plain folded scalar: the value continues across indented lines. Two shapes
+      // are supported — `key: text` continued on the next indented line. Indented
+      // lines that are themselves nested keys (`  sub: v`) are left to the nested
+      // branch below.
       {
         const parts = value ? [value] : [];
         let j = i + 1;

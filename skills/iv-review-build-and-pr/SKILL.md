@@ -125,7 +125,7 @@ Before applying fixes, run the Spec axis in full:
 2. **For Backend / API / Logic Changes:**
    - Run targeted test suites matching modified files (e.g. `pytest tests/test_<module>.py`) to confirm zero regressions in touched modules. Avoid running full repository test sweeps locally; GitHub CI runs the full regression suite on push as the merge gate.
    - If review fixes in Step 2 modified logic, run targeted tests for those modified files. If Step 2 applied no logic changes, Step 0's proof already stands.
-3. **Only when verification is completely green** may the agent proceed to Git push.
+3. **Only when verification is green may the agent push** — where "green" means *proved or honestly unverified*: every check either passed, or ended `unverified` under the Step 0.1 abort rule and is disclosed in the PR body's `## Verification` section. **A genuine failure** (a check that ran and failed) blocks the push and returns to `iiib-iterate-after-build`. An unverified gate does not: there is no defect to fix, so blocking would stall the pipeline on broken tooling. Record the trigger status honestly — never present an unverified item as passed.
 
 ### Step 4: Git Synchronization & Push (`git-workflow-and-versioning`)
 

@@ -9,9 +9,9 @@
         {
           "id": "routes-to-station-i",
           "type": "regex",
-          "pattern": "Route to `i-pick-issue`",
+          "pattern": "Clean tree, on (master|main|the base branch), synced with remote, no open PR",
           "must_match": true,
-          "why": "row 1 routes a fully clean repo to Station I"
+          "why": "row 1 must cover the evaluated case: a clean, synced BASE branch (not only the literal name 'master') routes to Station I"
         }
       ]
     },
@@ -149,7 +149,7 @@
       ]
     },
     {
-      "expected_output": "One short Hebrew section naming the foreign files as unknown-origin and asking whose work they are. No routing to II or III.",
+      "expected_output": "One short Hebrew section naming the foreign files as unknown-origin, quoting each changed path, and asking whose work they are. It does NOT route to II or III, and it does not stash, commit, discard, or branch away the changes.",
       "files": [],
       "id": 9,
       "prompt": "The tree has uncommitted changes I did not make and cannot explain - some files are unrelated to anything I am working on. What is the next step?",

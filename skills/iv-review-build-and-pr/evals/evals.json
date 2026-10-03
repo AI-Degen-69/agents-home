@@ -55,7 +55,7 @@
       "mode_coverage": ["failure-loop"],
       "files": [],
       "static_assertions": [
-        { "id": "green-before-push", "type": "regex", "pattern": "Only when verification is completely green", "must_match": true, "why": "push is gated on green verification" },
+        { "id": "green-before-push", "type": "regex", "pattern": "Only when verification is green may the agent push[\\s\\S]{0,240}genuine failure[\\s\\S]{0,140}blocks the push", "must_match": true, "why": "push requires a green gate where green = proved or honestly unverified; a genuine failure still blocks the push" },
         { "id": "never-push-main", "type": "regex", "pattern": "never push directly to.*master.*main", "must_match": true, "why": "direct push to base branch is forbidden" },
         { "id": "reviewer-honesty", "type": "regex", "pattern": "Never invent or simulate a missing reviewer", "must_match": true, "why": "missing reviewer personas are skipped, never fabricated" }
       ],

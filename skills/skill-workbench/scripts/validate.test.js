@@ -144,9 +144,32 @@ test('a missing SKILL.md reports fm-present without reading it', () => {
 });
 
 test('the default skills root follows the script, not a hardcoded path', () => {
-  const expected = path.resolve(__dirname, '..', '..');
-  assert.strictEqual(require('./validate-lib.js').DEFAULT_SKILLS_ROOT, expected);
-  assert.ok(fs.existsSync(path.join(expected, 'skill-workbench')), 'derived root must contain skills');
+  // SKILLS_ROOT legitimately wins over the script-relative fallback, so this test
+  // asserts whichever root is actually in effect — it must never fail because the
+  // environment supplied a valid root.
+  const { DEFAULT_SKILLS_ROOT } = require('./validate-lib.js');
+  if (!process.env.SKILLS_ROOT) {
+    const expected = path.resolve(__dirname, '..', '..');
+    assert.strictEqual(DEFAULT_SKILLS_ROOT, expected);
+    assert.ok(fs.existsSync(path.join(expected, 'skill-workbench')), 'derived root must contain skills');
+  } else {
+    assert.strictEqual(DEFAULT_SKILLS_ROOT, process.env.SKILLS_ROOT,
+      'an explicit SKILLS_ROOT must take precedence over the fallback');
+  }
+});
+
+test('a block scalar keeps indented key-shaped lines as text', () => {
+  // YAML binds a block scalar by indentation, not by key shape: `when: ...` inside
+  // `description: >` is content, and must never become a nested object.
+  const fm = parseFrontmatter(
+    '---\nname: x\ndescription: >\n  first line\n  when: use this skill\n  last line\n---\nbody');
+  assert.strictEqual(typeof fm.fm.description, 'string');
+  assert.strictEqual(fm.fm.description, 'first line when: use this skill last line');
+});
+
+test('a nested key outside a block scalar still becomes an object', () => {
+  const fm = parseFrontmatter('---\nname: x\nmeta:\n  a: 1\n  b: 2\n---\nbody');
+  assert.deepStrictEqual(fm.fm.meta, { a: '1', b: '2' });
 });
 
 test('parseFrontmatter keeps folded scalars intact', () => {

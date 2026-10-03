@@ -63,6 +63,13 @@ restate or contradict these gates.
   *reported* and may permit advancing — but it is never described as clean,
   and the final summary lists every waiver (check, tokens/evidence, reason).
   Un-waived residual findings keep the gate closed.
+- **How a waiver satisfies the gates.** A waiver substitutes for *fixing*, never
+  for *reporting*: the check still runs and its finding still counts as a finding.
+  A gate is satisfied by a waiver only when (a) the operator approved it, (b) the
+  waiver is recorded with its reason, and (c) the final summary lists every waived
+  check with its evidence. A waived finding is reported as **waived**, never as
+  passed and never as clean. An unapproved or unrecorded waiver does not satisfy
+  any gate.
 - **Operator decisions block, not bypass.** If an item cannot be completed
   without a decision (explicit rule waiver, adopt/defer/drop, retired
   capability), stop and ask. Do not present a final summary before the
