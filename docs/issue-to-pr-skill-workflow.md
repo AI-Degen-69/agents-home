@@ -85,7 +85,7 @@ The English rules in `SKILL.md` use signal words (`must`, `recommended`, `skip`,
 The chat reports **what changed in the product — never how it was saved.** No commit hashes, no commit counts, no clean-tree announcements, no test commands, no test counts, no skill names, no file paths with line numbers. Git and test details live in files (`tasks/plan.md`, the PR) — not in chat.
 
 - The **branch name stays** where it identifies the work (`i<number>/<slug>` — number + title), and the return to a clean synced base gets **one line** in Station VI. Hashes and counts never appear. A template's fixed folder-state field belongs to the template shape — it is not a free-form clean-tree announcement.
-- Stations whose template uses change groups (II, III) report changes **grouped by tag**, in fixed order: ➕ new → ✏️ changed → ❌ removed → 🩹 fixed (fixed = something broken now works, not a redesign). Other stations use their template's own shape (before/now lines, reviewer findings, comment triage). Groups with no content are omitted — never an empty group.
+- Stations whose template uses change groups (II, III) report changes **grouped by tag**, in fixed order: ➕ new → ✏️ changed → ❌ removed → 🩹 fixed (fixed = something broken now works, not a redesign; each station uses its subset). Other stations use their template's own shape (before/now lines, reviewer findings, comment triage). Groups with no content are omitted — never an empty group.
 - Each item names the **product location** (page / tab / section), never a code path, plus what happened there. Max ~7 items; beyond that the skill groups instead of enumerating.
 
 ---
