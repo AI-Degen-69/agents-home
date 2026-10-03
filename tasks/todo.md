@@ -1,7 +1,18 @@
-# Todo — Issue #18
+# Todo — Issue #7
 
-- [x] T1 [Code]: Workbench tooling — portable root, frontmatter guard, narrow phantom matcher, `node:test` regression, score.js comment
-- [x] T2 [Docs]: Station contradictions — triage unknown-origin, claim ownership, III preconditions, IV 60s, V/VI closeout, present-pr handoff
-- [x] T3 [Code]: Eval + runner gaps — 6 new `grade.js`, eval expansions across 11 skills, workbench doc reconciliation
-- [x] T4 [Code]: Final gates re-run + findings ledger + closeout report
+Branch: i7/hand-pr-titles-the-review-allowance-and-resolve-to | Issue: #7
 
+- [ ] **T1** [S] [Docs/UX-Copy] — Station IV hands the PR title to CodeRabbit
+      (`iv-review-build-and-pr/SKILL.md:144-150`). Verify: Conventional-Commits grammar gone,
+      score >= 100.
+- [ ] **T2** [M] [Docs/UX-Copy] — Four-outcome ack classification + plan-gated allowance probe
+      (`iv-review-build-and-pr/SKILL.md:164-169, 191`). Verify: `@coderabbitai rate limit` present
+      and documented, existing evals still match, body <= 250 lines.
+- [ ] **Checkpoint A** — Station IV contract internally consistent; four statuses reported.
+- [ ] **T3** [M] [Docs/UX-Copy] — Station V: `resolve` before merge, `configuration` probe,
+      false-clean-pass guard (`merge-and-reset.md:19-25`, `review-loop.md:100-105`,
+      `triage-and-apply.md:87-95,121`). Verify: `@coderabbitai resolve` reachable from the station
+      contract, existing V assertions still match, score >= 100.
+- [ ] **T4** [S] [Docs] — `pipeline-triage/SKILL.md:58` trigger wording consistent; run the gates.
+      Verify: `WIRING-OK`, validator 0 fail / 0 warn, three scores >= 100.
+- [ ] **Checkpoint B** — acceptance command green; hand to Station IV (`iv-review-build-and-pr`).
