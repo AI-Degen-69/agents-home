@@ -50,9 +50,17 @@ reviews:
 
   # The trigger for the instructions above: put this keyword in the PR title and
   # CodeRabbit writes the title itself. The schema default is the same string; it
-  # is set explicitly so the switch is visible. The pipeline still writes titles
-  # itself (skills/iv-review-build-and-pr/SKILL.md:137) — handing that over is
-  # the work of #7.
+  # is set explicitly so the switch is visible. The handover landed in #7
+  # (merged as PR #23), where Station IV stopped writing Conventional-Commits
+  # titles and passes this keyword instead.
+  #
+  # NOTE — this file is NOT read by CodeRabbit on this repository. It lives at
+  # config/coderabbit/, and CodeRabbit reads YAML only from the git repo root or
+  # a central `coderabbit` repository. Measured on PR #23 (2026-10-03): the
+  # resolved config annotates these values as "Source: Organization UI (base)".
+  # The file is the canonical copy synced into *consumer* repos by
+  # scripts/sync-coderabbit.ps1. Editing values here changes those repos, not
+  # this one. See config/coderabbit/README.md for the full evidence chain.
   auto_title_placeholder: "@coderabbitai"
 
   # Review scope. Exclusions must be !-prefixed: a bare glob is an INCLUDE
