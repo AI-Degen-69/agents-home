@@ -93,9 +93,48 @@ Dead or zombie code tied to the merged work (unused modules, superseded APIs, or
    - `refactor: remove dead code from #<id>` if Section 6 fired.
    - If foreign dirt exists (files you did not touch), commit ONLY your files and list the foreign paths in the report — never bundle strangers.
 
+5. Prune leftover branches per Section 8 — after the last commit, never before.
+
 ---
 
-## 8. The Clean Exit Gate (mandatory, last step)
+## 8. Branch Pruning (every closeout)
+
+Every merge leaves a branch behind. Prune on **every** run rather than when someone notices — but prune on *proof*, because a squash-merged branch never becomes "merged" and `git branch -d` refuses it forever.
+
+**Never touch:** the base branch (`gh repo view --json defaultBranchRef -q .defaultBranchRef`), any branch with an open PR, or any branch carrying commits the base lacks.
+
+### Inventory first (read-only)
+
+```bash
+BASE=$(gh repo view --json defaultBranchRef -q .defaultBranchRef)
+git fetch --prune origin
+for b in $(git for-each-ref --format='%(refname:short)' refs/heads | grep -vx "$BASE"); do
+  printf "%-40s unique=%s openPR=%s\n" "$b" \
+    "$(git cherry "$BASE" "$b" | grep -c '^+')" \
+    "$(gh pr list --state open --head "$b" --json number -q 'length')"
+done
+```
+
+| `unique` | `openPR` | Verdict |
+|---|---|---|
+| `0` | `0` | Safe — every change is already in the base |
+| `0` | `>0` | Squash-merged but PR still open → keep, escalate |
+| `>0` | any | Work may never have landed → **never delete**, name it in the report |
+
+`unique` counts commits whose patch-id is absent from the base (`git cherry`) — the question that stays correct across a squash merge. `git branch --merged` answers it wrongly: it reports every squash-merged branch as unmerged, so trusting it either refuses the delete forever (`-d`) or destroys work (`-D`).
+
+### Delete
+
+```bash
+git branch -d "$b"   # ancestry-merged (fast-forward or true merge)
+git branch -D "$b"   # squash-merged: -d refuses; `unique=0` is the only justification for -D
+```
+
+Report every pruned branch by name. Pruning a branch is not pruning its remote: propose remote deletions, never perform them unasked — they are the last copy of those commits once the local copy is gone.
+
+---
+
+## 9. The Clean Exit Gate (mandatory, last step)
 
 The pipeline is NOT closed until every check passes:
 
@@ -103,7 +142,7 @@ The pipeline is NOT closed until every check passes:
 2. Confirm checkout is on the base branch (`master`/`main` per `gh repo view --json defaultBranchRef`).
 3. `git status --porcelain` → **empty**.
 4. `git status` → `up to date with 'origin/<base>'` (no ahead/behind).
-5. `git fetch --prune` → no dead remote branches; `git branch` → no leftover merged feature branches.
+5. `git fetch --prune` → no dead remote branches; `git branch` → no leftover merged feature branches (pruned in Section 8).
 6. Stashes: none related to this issue remain (list any foreign stashes in the report).
 
 If any check fails → fix it or escalate with the exact state. **Never declare closeout on a dirty or diverged folder.**

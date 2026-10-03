@@ -42,7 +42,7 @@ Every command from the vendor's [review-commands reference](https://docs.coderab
 | `@coderabbitai generate project vocabulary` | Lists up to 50 project-specific terms with their spellings | PR comment | — |
 | `@coderabbitai help` | Quick reference of available commands | PR comment | — |
 | `@coderabbitai configuration override` | Adjusts a small set of settings for one PR only | **PR description**: the plain-text line immediately followed by a fenced YAML block (line outside the fence) | Accepts only `reviews.review_details` and `knowledge_base.code_guidelines.filePatterns`; guidelines from fork PRs are rejected |
-| `@coderabbitai plan` | Generates a Coding Plan for an issue (posted back as an issue comment on GitHub/GitLab; 5–10 min) | **Issue comment** on any issue | **Team+** (issue planning). On Free it returns a refusal — observed on agents-home #5 |
+| `@coderabbitai plan` | Generates a Coding Plan for an issue (posted back as an issue comment on GitHub/GitLab; 5–10 min) | **Issue comment** on any issue | **Team+** (issue planning). Refused 2026-10-02 04:19–05:34 (agents-home #1/#5/#6/#7), then delivered real plans the same day: 06:00 on crypto-spread #401, 07:54 on agents-home #11 — conditional, not a constant; see "Observed behaviour on this account" |
 
 ## Plan-gating table
 
@@ -58,7 +58,7 @@ Per the [plans page](https://docs.coderabbit.ai/management/plans) and per-comman
 | Knowledge base (incl. code guidelines) | — | Included | Included | Included |
 | Linter and SAST tool support (`reviews.tools.*`) | — | Included | Included | Included |
 | MCP server connections | — | 5 | 10 | Advanced 15 / Enterprise 20 |
-| Issue planning (`@coderabbitai plan`) | Refused (observed) | — | Included | Included |
+| Issue planning (`@coderabbitai plan`) | Refused 2026-10-02 04:19–05:34, plans delivered the same day 06:00 / 07:54 — re-probe instead of assuming | — | Included | Included |
 | CI fixer (`fix-ci`) | — | — | Included | Included |
 | Unit test generation | — | — | Included | Included |
 | Merge-conflict resolution | — | — | Included | Included |
@@ -86,10 +86,16 @@ Docs alone were not enough here, so the account's actual behaviour was read off 
 - **The private repo is the untested path.** `agents-home` is private, so the Free plan applies to it and the documented expectation is a **summarization-only review with no inline findings**. No PR exists there yet to observe, so treat that as the operating assumption, not a measured fact — the next PR on this repo is the measurement.
 - **Chat-dependent commands are refused on this account.** On this repo's issues, `@coderabbitai plan` returned "The author of this PR is on the CodeRabbit Free Plan… upgrade to CodeRabbit Essentials", and the same refusal appeared after each plan request. Expect the same for the standalone `configuration` / `rate limit` probes: the allowance signal arrives instead inside the trigger acknowledgement ("Review limit reached" / "Next included review available in N minutes").
 
+- **Issue planning works on this account — measured 2026-10-02, twice.** `@coderabbitai plan` produced a real `## Coding Plan` on crypto-spread #401 (public; prompt 05:55:08 → plan 06:00:45, 5m37s) and on agents-home #11 (private; prompt 07:48:40 → plan 07:54:14, 5m34s). Earlier the same command was **refused** on agents-home #1, #5, #6 and #7 (04:19–05:34). What changed between the two states is not recorded — the organization layer was edited in between, and there is no read-back path for it (`@coderabbitai configuration` may itself be refused). Treat plan availability as conditional and re-probe; do not let a skill hard-code either answer.
+
+- **Issue enrichment has never fired on this account — measured 2026-10-02 with a purpose-built probe.** Probe issue agents-home #11 (created 07:48:28Z, organization settings already saved) drew exactly one bot comment: the requested Coding Plan. No duplicate-detection, similar-issues, related-PRs or suggested-assignee comment, and no label was applied (`labels: []`) even though the organization layer carries `issue_enrichment.auto_enrich.enabled: true` and `issue_enrichment.labeling.auto_apply_labels: true`. The docs page says enrichment is enabled by default on GitHub issues while the schema default for `auto_enrich.enabled` is `false` — treat enrichment as **off** until a probe says otherwise. Practical consequence: no bot-applied label can currently disturb the pipeline's state labels (`ready-for-agent`, `needs-answers`, `idea`, `needs-triage`, `ready-for-human`).
+
 **Consequence for Stations IV and V (decision recorded; the station edits belong to #7):**
 
 - **Station IV** should classify the post-trigger reply into four outcomes, not three: *review started* / *rate limited (N minutes)* / **summary-only review (private repo on Free — no findings expected)** / *other reply*. On summary-only it must hand off saying plainly that CodeRabbit will not produce findings here and that verification rests on the local gates (OCR delegation, type-matched reviewers, Spec axis, targeted tests) — never imply a bot review passed.
 - **Station V**'s existing branch "completed with zero inline comments → clean pass" is **unsafe on a private Free repo**: a summary-only review reports exactly that, and the station would report a clean pass ("no comments found — the code is approved as is"). That branch must route to the station's existing agent-fallback / reuse path (Station IV's evidence + delta check) instead, and say so in the report.
+
+- **`create-issue`'s plan-retry rule races the plan itself (measured).** Both plans landed at 5m34s–5m37s after the prompt, while the skill waits five minutes before deciding the reply never came and re-posting — the retry therefore fires *while a plan is landing*. That is what produced the duplicate prompts on #5, #6 and #7. The skill must wait the vendor's documented 5–10 minute window, recognise a plan by its `## Coding Plan` body rather than by "any bot comment", and never retry once the bot has answered at all.
 
 ## Config cheat-sheet
 
