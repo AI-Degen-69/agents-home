@@ -81,6 +81,50 @@
         "The repo ends on the base branch, pushed, synced, and spotless",
         "The Hebrew closeout report names the PR, the issue, every deletion, and the exit-gate state"
       ]
+    },
+    {
+      "id": "noticed-disposition-blocks-gate",
+      "prompt": "/vi-close-pipeline 19 with docs/issues/19-noticed-but-not-touching.md holding one open row N1. Resolve it with the operator, then pass the Clean Exit Gate.",
+      "expected_output": "Agent presents open row N1 for operator decision (publish via create-issue, dismiss with reason, or confirm duplicate), records the resolution in the ledger, and refuses closeout while any row stays open — a recorded dismissal with reason closes the loop.",
+      "mode_coverage": [
+        "numbered"
+      ],
+      "files": [],
+      "static_assertions": [
+        {
+          "id": "disposition-owner",
+          "type": "regex",
+          "pattern": "Candidate Disposition",
+          "must_match": true,
+          "why": "Station VI must own candidates end to end in a named step"
+        },
+        {
+          "id": "ledger-path",
+          "type": "regex",
+          "pattern": "noticed-but-not-touching\\.md",
+          "must_match": true,
+          "why": "the durable per-issue ledger path is the contract other stations point at"
+        },
+        {
+          "id": "open-blocks-gate",
+          "type": "regex",
+          "pattern": "zero rows with status `open`",
+          "must_match": true,
+          "why": "no candidate may reach closeout unresolved"
+        },
+        {
+          "id": "no-defer-resolution",
+          "type": "regex",
+          "pattern": "`defer` is not a resolution",
+          "must_match": true,
+          "why": "defer must not silently close the loop"
+        }
+      ],
+      "live_assertions": [
+        "Each open ledger row is presented for operator decision",
+        "The ledger update is committed before the exit gate",
+        "Closeout is refused while any row stays open"
+      ]
     }
   ]
 }

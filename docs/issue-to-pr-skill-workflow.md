@@ -56,7 +56,7 @@ A universal, project-agnostic development pipeline deployed globally across all 
 | **III-B** | `iiib-iterate-after-build` | `/iiib-iterate-after-build` | Station III-B (Iterate After Build): the operator reports corrections on a fresh build in free text — each item is classified, fixed by the right specialist skill, committed atomically, nothing pushed. Also entered from IV when the proof gate fails. |
 | **IV** | `iv-review-build-and-pr` | `/iv-review-build-and-pr` | Station IV (Review, Verify & Ship): proof-before-review gate (browser or tests; failure → IIIB), OCR delegation scan, dynamic ECC reviewers (`.py/.ts/.tsx/.rs/.go/.sql/a11y`; React diffs get `typescript-reviewer` + `react-reviewer` together) plus the Spec axis (missing / added-not-asked / implemented-wrong), local fix commits, final verification gate, pushes branch, opens PR, posts `@coderabbitai review`, **waits for CodeRabbit's acknowledgement** and classifies it (triggered / rate-limited with reported minutes / other reply / no ack) with jump links on any non-clean ack. |
 | **V** | `v-babysit-pr-and-merge` | `/v-babysit-pr-and-merge` | Station V (Babysit & Merge): **consumes Station IV's trigger-status handoff** (no re-detection), 1-round CodeRabbit review tracking (5m-4m-3m-2m-1m countdown), reuse-first fallback on rate limit (Station IV review evidence + delta check before any fresh subagent review), autonomous triage, squash merge, and fast-forwards local base branch (`master`/`main`). |
-| **VI** | `vi-close-pipeline` | `/vi-close-pipeline` | Station VI (Close Pipeline): verifies/closes the issue, signal-based sweep of stale per-issue artifacts in any project layout (two-gate obsolescence test, strict knowledge preservation, investigate-before-stage), on-the-spot dead-code removal with zero-reference proof + targeted tests, and the mandatory Clean Exit Gate (pushed, on base, spotless, no leftover branches). Pipeline closeout. |
+| **VI** | `vi-close-pipeline` | `/vi-close-pipeline` | Station VI (Close Pipeline): verifies/closes the issue, resolves NOTICED-BUT-NOT-TOUCHING candidates (ledger disposition) before the clean exit, signal-based sweep of stale per-issue artifacts in any project layout (two-gate obsolescence test, strict knowledge preservation, investigate-before-stage), on-the-spot dead-code removal with zero-reference proof + targeted tests, and the mandatory Clean Exit Gate (pushed, on base, spotless, no leftover branches). Pipeline closeout. |
 | ad-hoc (not numbered) | `present-pr` | `/present-pr <id>` (or `explain`) | Visual HTML presentation in `docs/issues/<id>-presentation-*.html` — ELI5 explanation, visual aids, manual verification guide; absorbs the former `explain` builtin. Not a station: suggested by VI, runnable any time, sources the story from the merged PR + conversation (plan/notes are a bonus, not a requirement). |
 
 ---
@@ -175,7 +175,8 @@ Three homes, three purposes — never mixed:
 
 1. `runs/.../research-papers/` — **per-run** research papers and experiment findings.
 2. `docs/issues/<id>-presentation-<slug>.html` — **per-issue** visual HTML explanation & showcase artifacts (produced by the ad-hoc `present-pr` skill; legacy names `<id>-showcase-*.html` and `<id>-explained.html` remain recognized).
-3. `.freebuff/`, `%TEMP%` — **transient scratch / preview only**. Never the canonical home of anything.
+3. `docs/issues/<id>-noticed-but-not-touching.md` — **per-issue** NOTICED-BUT-NOT-TOUCHING candidate ledger (any station appends an `open` row; only Station VI resolves rows; never pruned).
+4. `.freebuff/`, `%TEMP%` — **transient scratch / preview only**. Never the canonical home of anything.
 
 ---
 
