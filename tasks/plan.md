@@ -38,7 +38,7 @@ comments, each verified against `config/coderabbit/README.md` and recorded in `S
    `.coderabbit.yaml` already carries the full TAG vocabulary plus an explicit
    `auto_title_placeholder`. Both `reviews.auto_title_*` keys are live, so the precondition holds
 
-### T1 [S] [Docs/UX-Copy] — Hand PR title-writing to CodeRabbit
+### T1 [x] [S] [Docs/UX-Copy] — Hand PR title-writing to CodeRabbit
 
 - **Target:** `skills/iv-review-build-and-pr/SKILL.md:144-150`
 - **Build:** replace the hardcoded `--title "<type>(<scope>): <summary>"` with the
@@ -52,7 +52,7 @@ comments, each verified against `config/coderabbit/README.md` and recorded in `S
   `grep -q 'type>(<scope>)' skills/iv-review-build-and-pr/SKILL.md` must now FAIL;
   `score.js skills/iv-review-build-and-pr` >= 100.
 
-### T2 [M] [Docs/UX-Copy] — Four-outcome trigger classification + plan-gated allowance probe
+### T2 [x] [M] [Docs/UX-Copy] — Four-outcome trigger classification + plan-gated allowance probe
 
 - **Target:** `skills/iv-review-build-and-pr/SKILL.md:164-169, 191`
 - **Build:** split the current three-outcome ack classification into four — *review started* /
@@ -73,7 +73,7 @@ comments, each verified against `config/coderabbit/README.md` and recorded in `S
 **Checkpoint A** — after T1+T2: Station IV's contract is internally consistent; report the four
 statuses and the exact wording chosen.
 
-### T3 [M] [Docs/UX-Copy] — Station V: resolve before merge, config probe, no false clean pass
+### T3 [x] [M] [Docs/UX-Copy] — Station V: resolve before merge, config probe, no false clean pass
 
 - **Targets:** `skills/v-babysit-pr-and-merge/references/merge-and-reset.md:19-25`,
   `.../references/review-loop.md:100-105`, `.../references/triage-and-apply.md:87-95,121`
@@ -87,7 +87,7 @@ statuses and the exact wording chosen.
   2. **Config probe** — `@coderabbitai configuration` is the first diagnostic when a review
      contradicts the committed config, with the resolved-config output quoted in the report.
 
-### T4 [S] [Docs] — Triage consistency + acceptance gates
+### T4 [x] [S] [Docs] — Triage consistency + acceptance gates
 
 - **Targets:** `skills/pipeline-triage/SKILL.md:58` (trigger wording), then re-run the gates
 - **Build:** confirm row 3's `@coderabbitai review` wording still matches Station IV's trigger
