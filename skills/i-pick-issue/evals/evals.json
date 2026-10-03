@@ -14,8 +14,8 @@
         { "id": "halt-for-selection", "type": "regex", "pattern": "Halt for user selection", "must_match": true, "why": "Discovery must stop and wait for operator input before any station runs" },
         { "id": "gh-issue-list-command", "type": "regex", "pattern": "gh issue list --state open", "must_match": true, "why": "Discovery must prescribe the canonical gh command to fetch the backlog" },
         { "id": "group-by-domain", "type": "regex", "pattern": "(group|categori)[a-z]* .*(domain|risk|component|dependency)", "must_match": true, "why": "issues must be grouped logically, not listed flat" },
-        { "id": "no-false-selection-claim", "type": "not_regex", "pattern": "המשימה הבאה שנבחרה", "must_match": true, "why": "before the operator picks, the report may only recommend an issue — a header claiming one was selected is a silent pick wearing a heading" },
-        { "id": "recommendation-is-default", "type": "regex", "pattern": "המשימה המומלצת להתחלה", "must_match": true, "why": "the Discovery header must name the action and mark the issue as recommended, not selected" },
+        { "id": "no-false-selection-claim", "type": "not_regex", "pattern": "selected.{0,30}#[0-9]+|#[0-9]+.{0,30}selected", "must_match": true, "why": "before the operator picks, the report may only recommend an issue — a header claiming one was selected is a silent pick wearing a heading" },
+        { "id": "recommendation-is-default", "type": "regex", "pattern": "references/output-template\\.md", "must_match": true, "why": "the Discovery recommendation header lives in the Hebrew output template — SKILL.md must point at it, marking the issue recommended, never selected" },
         { "id": "no-catchall-trigger", "type": "not_regex", "pattern": "whenever the user (mentions|talks|says anything)", "must_match": true, "why": "a catch-all trigger would fire the skill on unrelated conversation" }
       ],
       "live_assertions": [

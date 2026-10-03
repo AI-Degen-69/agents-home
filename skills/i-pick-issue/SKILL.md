@@ -38,7 +38,7 @@ Every invocation of this skill begins with the **Discovery Station**, regardless
 2. **Categorize and group:**
    Group them logically by domain area, risk, architectural component, or dependency chain.
 3. **Recommend an execution sequence:**
-   Propose a concrete order of work (unblockers and core infrastructure before dependent features, quick wins vs. deep changes), and explicitly highlight the single recommended issue to start. Header names the action: `המשימה המומלצת להתחלה 🎯` with the recommendation as the default. Never write that an issue was *selected* (`נבחר`) — nothing is selected until the operator answers. No separate recommendation screen, and no separate "pick a number" menu: the alternatives are one line under the recommendation.
+   Propose a concrete order of work (unblockers and core infrastructure before dependent features, quick wins vs. deep changes), and explicitly highlight the single recommended issue to start. The report header and wording follow `references/output-template.md` — the header marks the issue as recommended, never selected. Never write that an issue was *selected* — nothing is selected until the operator answers. No separate recommendation screen, and no separate "pick a number" menu: the alternatives are one line under the recommendation.
 4. **Halt for user selection:**
    Stop and ask the operator which issue to proceed with. Do NOT pick silently. A recommended default is not permission to proceed — the operator still confirms or overrides.
 5. **Route non-issue states:** no open issues and the operator has a brand-new idea → `create-issue`. No open issues and nothing new → say so and route to `pipeline-triage`.
@@ -93,40 +93,7 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
 
 ---
 
-## Hebrew Chat Output Contract (חובת דיווח בעברית)
-
-### במצב Discovery (ללא ארגומנט):
-
-```markdown
-# 🗺️ I - מיפוי ובחירת משימה (Backlog):
-
-## 📋 חלוקת ה-Issues הפתוחים לפי תחומים:
-* **[תחום / קבוצה 1]:**
-  - [#<id> - <כותרת>](<link>) `[labels]` — <תקציר מהות המשימה במשפט>
-* **[תחום / קבוצה 2]:**
-  - [#<id> - <כותרת>](<link>) `[labels]` — <תקציר מהות המשימה במשפט>
-
-## 🎯 סדר עבודה מומלץ (Dependencies & Impact):
-1. **#<id>** — [נימוק: משימת בסיס/תשתית שחוסמת משימות אחרות]
-2. **#<id>** — [נימוק: משימת המשך ישירה]
-3. **#<id>** — [נימוק: עצמאית ומשנית]
-
----
-
-## 📊 המשימה המומלצת להתחלה:
-* **Issue מוביל (מומלץ, טרם נבחר):** [#<id> - <כותרת>](<link>)
-* **סיבת ההמלצה:** מסירה חסימות ומאפשרת התקדמות חלקה לשאר ה-Backlog.
-
-## 🧠 סיכום:
-בשורות בודדות בעברית פשוטה: מה תמונת המצב הכוללת של המשימות הפתוחות, ולמה סדר הביצוע הזה יחסוך שבירת קוד ובנייה כפולה.
-
-👉 **שלב הבא:** בחר את ה-Issue להתחלה, ואז בחר מצב ביצוע:
-* **🚶 מצב צעד-צעד (מומלץ):** תחנה אחת בכל פעם — עצירה ואישור שלך בין כל תחנה.
-* **🚀 מצב תזמור מלא:** ריצה רציפה מתכנון (II) ועד מיזוג, ניקוי וסגירה (VI) — עם דיווח בכל תחנה.
-
-רק לאחר בחירת Issue + מצב נמשך ל-`/ii-plan-issue <id>`.
-```
-
-### במצב תזמור (End-to-End Orchestration):
-
-דווח בצורה תמציתית בעברית על כל תחנה שהושלמה בהתאם לחוזה הדיווח שלה, והצג את המצב הנוכחי ואת התחנה הבאה בתור.
+<!-- local-only:begin -->
+The chat output template for this station is `references/output-template.md`.
+Read it before writing your first report.
+<!-- local-only:end -->
