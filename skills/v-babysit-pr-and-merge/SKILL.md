@@ -118,59 +118,22 @@ digraph babysit_pr_and_merge {
 
 After the local reset lands on a clean base, run these three quick checks to decide the vi-close-pipeline recommendation in the report:
 
-1. **Issue state:** `gh issue view <id> --json state --jq .state` — OPEN = 🔴 (חובה).
-2. **Leftover artifacts:** `git ls-files --others --exclude-standard | Select-String -Pattern '<id>|tasks/plan|scratch'` — any hit = 🟡 (מומלץ); hits from 3+ distinct closed issues = 🟡 even without matching the current id.
-3. **Git cleanliness:** `git status --porcelain` — non-empty = 🔴 (חובה).
+1. **Issue state:** `gh issue view <id> --json state --jq .state` — OPEN = 🔴 (must).
+2. **Leftover artifacts:** `git ls-files --others --exclude-standard | Select-String -Pattern '<id>|tasks/plan|scratch'` — any hit = 🟡 (recommended); hits from 3+ distinct closed issues = 🟡 even without matching the current id.
+3. **Git cleanliness:** `git status --porcelain` — non-empty = 🔴 (must).
 
-Pick the highest signal: 🔴 > 🟡 > 🟢. All three clean = 🟢 (דלג, continue to `/i-pick-issue`).
-
----
-
-## Hebrew Chat Output Contract (חובת דיווח בעברית)
-
-Two reports, both in clean everyday Hebrew. Never dump raw CodeRabbit text — always condensed and to the point. What's-changed only: no commit hashes or counts, no test commands or counts, no `file:line`, no fix-type letters. Each item names the product location + what was found and what works now.
-
-### Report 1 — Triage Decisions (right after Step 4.4, before merge)
-
-One concise, matter-of-fact line per review comment, in simple language: product location + what was found and what was decided about it. Inline replies on GitHub (`ACCEPT:` / `REJECT:`) still happen for every thread as usual — the chat list only summarizes the decisions. Order the lines most critical first. No full quotes of bot comments:
-
-```markdown
-## 🔍 V - ליווי PR: טריאז׳ הערות CodeRabbit:
-* **ACCEPT** — [מיקום מוצרי + מה נמצא ומה תוקן, במילים פשוטות]
-* **REJECT** — [מה נטען ולמה נדחה, משפט קצר אחד]
-```
-
-**HARD RULE — never claim a clean pass when the review never finished.** Pick exactly one ending line:
-
-* If `COMPLETED` with zero inline comments: `לא נמצאו הערות — CodeRabbit סיים סקירה מלאה והקוד אושר כפי שהוא.`
-* If `IN_PROGRESS_STUCK` (only "Currently processing..." placeholder, zero inline, `CodeRabbit` check still `PENDING` after countdown — PR #244 case): `CodeRabbit לא סיים את הסקירה — נשאר תקוע על "processing" אחרי הזמן הקצוב (~16-19 דקות), אפס הערות inline ואפס reviews. לא מדובר באישור נקי — עברנו לסקירת גיבוי של הסוכן (Step 2B).`
-* If `RATE_LIMITED / SKIPPED` (quota text or false `Pull request is closed` on an open PR): `CodeRabbit לא סקר — [צטט שורת הסיבה: rate-limit / skipped / PR-closed-שגוי]. עברנו לסקירת גיבוי של הסוכן (Step 2B).`
-
-### Report 2 — Final Summary (after the Step 5 merge)
-
-```markdown
-# 🟢 V - ליווי PR עד מיזוג: [#<pr_number> - <title>](<url>)
-
-## 🔍 סטטוס סקירת CodeRabbit:
-[אחת מ: סיים סקירה מלאה + N הערות טופלו / לא סיים — נתקע על processing אחרי X דקות, מוזג על סמך סקירת גיבוי + CI ירוק / לא סקר — rate-limit, מוזג על סמך סקירת גיבוי + CI ירוק]
-**מצב הענף אחרי המיזוג:**
-* חזרנו לענף הבסיס (`origin/<base>`) וה־PR הזה מוזג אחרי התיקונים.
-
-## 🩹 מה תוקן בעקבות ההערות:
-* [מיקום מוצרי — מה הייתה הבעיה ואיך נפתרה, בשפה פשוטה]
-* [תיקון 2 — ...]
-
-## 🗺️ המסע המלא:
-[3–4 שורות: מה הייתה הבעיה ← מה נבנה ← מה נמצא בסקירה ← סטטוס עכשיו. בלי מושגי קוד.]
+Pick the highest signal: 🔴 > 🟡 > 🟢. All three clean = 🟢 (skip, continue to `/i-pick-issue`).
 
 ---
 
-👉 **השלב הבא:**
-* `/present-pr` — אם רלוונטי, הרץ כדי להכין פרזנטציה ויזואלית.
-* [בחר אחד מהשלושה — לפי בדיקת הלכלוך:]
-  - 🟢 **דלג** — `הלכלוך קטן מדי, אין צורך בניקיון עכשיו. אפשר להמשיך ישירות ל-/i-pick-issue.` ← כשאין tasks/plan.md תועה, אין קבצי scratch, ה-issue נסגר אוטומטית, ואין dead code שזוהה.
-  - 🟡 **מומלץ** — `/vi-close-pipeline` — `[סיבה ספציפית]` ← כש-3+ issues הצטברו בלי ניקיון, או יש tasks/plan.md ישנים של issues קודמים, או יש קבצי scratch שנשארו.
-  - 🔴 **חובה** — `/vi-close-pipeline` — `[סיבה ספציפית]` ← כש-issue לא נסגר (חסר Closes), או יש dead code מוכח שנשאר, או git status לא נקי אחרי המיזוג.
-```
+## Report rules (mandatory)
 
-**Timeout-merge rule:** when `IN_PROGRESS_STUCK` or `RATE_LIMITED`, the `CodeRabbit` check may stay `PENDING` forever. Do NOT wait for it. Merge gate = agent fallback review clean (or its nits triaged) + `gh pr checks` green (excluding the stuck `CodeRabbit` context). State this explicitly in the `סטטוס סקירת CodeRabbit` line so the operator knows the merge was NOT on a completed bot review.
+Two reports in Hebrew from the template. The closing What-now states the build is live with a `/present-pr` option, then the repo-state choice: clean skips to `/i-pick-issue`, otherwise run `/vi-close-pipeline` with the reason. PR and issue links are hyperlinks. The summary is 3 quick lines.
+
+<!-- local-only:begin -->
+The chat output template for this station is `references/output-template.md`.
+Read it before writing your first report.
+<!-- local-only:end -->
+
+
+**Timeout-merge rule:** when `IN_PROGRESS_STUCK` or `RATE_LIMITED`, the `CodeRabbit` check may stay `PENDING` forever. Do NOT wait for it. Merge gate = agent fallback review clean (or its nits triaged) + `gh pr checks` green (excluding the stuck `CodeRabbit` context). State this explicitly in the `CodeRabbit review status` line so the operator knows the merge was NOT on a completed bot review.

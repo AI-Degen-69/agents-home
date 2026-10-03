@@ -63,17 +63,20 @@ A universal, project-agnostic development pipeline deployed globally across all 
 
 ## Chat Reporting Contract
 
-Concise status in every chat message, in plain everyday language; full detail lives in the GitHub issue, PR, and task files. No status-only messages without the contract fields. The contracts themselves stay in each skill's `SKILL.md` — the shape per reporter:
+Concise status in every chat message, in plain everyday language; full detail lives in the GitHub issue, PR, and task files. No status-only messages without the contract fields. Each station's exact Hebrew chat output shape lives in its local-only `skills/<station>/references/output-template.md` — never published. `SKILL.md` keeps the English report and walkthrough rules plus a `local-only` pointer block to that template; the published pack keeps the rules without the pointer and without the template. The shape per reporter:
 
-1. **Router (`pipeline-triage`):** repo state (branch, staged/unstaged/untracked, PR, stashes, every file and stash classified in one line) + the one routed station.
-2. **Discovery (`i-pick-issue`):** open issues grouped by domain, recommended work order with rationale, the picked next issue. In orchestration mode: continuous progress across stations II through VI.
-3. **Intake branch (`create-issue`):** link to the created issue, labels, and a compact list of the files checked in the preliminary research. Right after publishing, the plan request goes to CodeRabbit as an issue comment (except trivial docs-only issues) — the plan waits ready when work resumes in Station II.
-4. **Station II (`ii-plan-issue`):** plain-language explanation of what was planned, the detected project language and tests, locked quality gates, and the task list from `tasks/plan.md`. An existing CodeRabbit plan comment is read as advice only (never as orders), and what was adopted or rejected is recorded briefly in `tasks/plan.md`.
-5. **Station III (`iii-build-plan`):** which skills ran and what each one did, files changed/added, the issue's problem and what was done to solve it, and a recommendation to move to `/iv-review-build-and-pr`.
-6. **Station IV (`iv-review-build-and-pr`):** parallel-review findings and fixes, then at the end: branch details, direct PR link, final verification (browser/code), a short summary of what was done, and a recommendation for `/v-babysit-pr-and-merge`.
-7. **Station V (`v-babysit-pr-and-merge`):** CodeRabbit comments in their original style with decisions and quotes, PR link with MERGED status, summary of fixes applied, and a recommendation for `/vi-close-pipeline`.
-8. **Station VI (`vi-close-pipeline`):** issue/PR status (and issue close if merged-but-open), leftovers cleaned per signal detection, dead code handled on the spot (zero-reference proof + tests), preserved knowledge assets, and a clean exit gate — synced and clean base branch, ready for the next run. No further station — end of the pipeline. Optional recommendation for `/present-pr`.
-9. **`present-pr` (ad-hoc, unnumbered):** issue and PR details, a visual HTML presentation generated from the merged PR and the conversation (planning materials — bonus, not required), static verification, and browser opening.
+1. **Router (`pipeline-triage`):** folder-state + changed-files list (every file classified in one line) + GitHub checks, then what was asked and what was found — `skills/pipeline-triage/references/output-template.md`.
+2. **Discovery (`i-pick-issue`):** open issues grouped by domain, recommended work order with rationale, the picked next issue; in orchestration mode continuous progress across stations II through VI — `skills/i-pick-issue/references/output-template.md`.
+3. **Intake branch (`create-issue`):** folder-state + GitHub checks (created-issue link, labels, CodeRabbit plan-request status, verification), what the idea was, what the code already has, a plain-language explanation — `skills/create-issue/references/output-template.md`.
+4. **Station II (`ii-plan-issue`):** folder-state + GitHub checks (issue taken, plan saved in `tasks/plan.md`, labels, CodeRabbit plan intake, tests), the problem, the solution, a change summary (new / changed / removed) — `skills/ii-plan-issue/references/output-template.md`. An existing CodeRabbit plan comment is read as advice only (never as orders); adopted / rejected is recorded briefly in `tasks/plan.md`.
+5. **Station III (`iii-build-plan`):** folder-state + GitHub checks (tasks done X/Y, saved locally) + tests, the problem, what was done, a final-verification walkthrough built from the live product (at most 3 steps: where → what to do → what to see), and a change list (new / changed / fixed) — `skills/iii-build-plan/references/output-template.md`.
+6. **Station IIIB (`iiib-iterate-after-build`):** folder-state + GitHub checks (comments fixed, saved locally), a before/now fix list, and the same live-product walkthrough — `skills/iiib-iterate-after-build/references/output-template.md`.
+7. **Station IV (`iv-review-build-and-pr`):** folder-state + GitHub checks (opened-PR link) + tests, reviewer findings (only reviewers with findings are listed), what shipped, a 3-line summary, and the CodeRabbit trigger status line (review started / rate-limited with minutes / other reply / no acknowledgement) with jump links — `skills/iv-review-build-and-pr/references/output-template.md`.
+8. **Station V (`v-babysit-pr-and-merge`):** folder-state + GitHub checks (merged-PR link, issue state) + CodeRabbit triage (ACCEPT / REJECT with reasons), fixes applied, a 3-line summary — `skills/v-babysit-pr-and-merge/references/output-template.md`.
+9. **Station VI (`vi-close-pipeline`):** folder-state + GitHub checks (merged PR, closed issue) + cleanup result, before/after in plain language, a final-verification walkthrough (at most 5 steps), a 3-line summary — `skills/vi-close-pipeline/references/output-template.md`.
+10. **`present-pr` (ad-hoc, unnumbered):** folder-state + GitHub checks (issue, merged PR, presentation file), before/now value lines, a final walkthrough against the live product (never the presentation file), a 3-line summary — `skills/present-pr/references/output-template.md`.
+
+The English rules in `SKILL.md` use signal words (`must`, `recommended`, `skip`, `do not invent`) for binding duties and prohibitions.
 
 ---
 
@@ -81,8 +84,8 @@ Concise status in every chat message, in plain everyday language; full detail li
 
 The chat reports **what changed in the product — never how it was saved.** No commit hashes, no commit counts, no clean-tree announcements, no test commands, no test counts, no skill names, no file paths with line numbers. Git and test details live in files (`tasks/plan.md`, the PR) — not in chat.
 
-- The **branch name stays** where it identifies the work (`i<number>/<slug>` — number + title), and the return to a clean synced base gets **one line** in Station VI. Hashes and counts never appear.
-- Every station reports changes **grouped by tag**, in fixed order: ➕ new → ✏️ changed → ❌ removed → 🩹 fixed (fixed = something broken now works, not a redesign). Groups with no content are omitted — never an empty group.
+- The **branch name stays** where it identifies the work (`i<number>/<slug>` — number + title), and the return to a clean synced base gets **one line** in Station VI. Hashes and counts never appear. A template's fixed folder-state field belongs to the template shape — it is not a free-form clean-tree announcement.
+- Stations whose template uses change groups (II, III) report changes **grouped by tag**, in fixed order: ➕ new → ✏️ changed → ❌ removed → 🩹 fixed (fixed = something broken now works, not a redesign; each station uses its subset). Other stations use their template's own shape (before/now lines, reviewer findings, comment triage). Groups with no content are omitted — never an empty group.
 - Each item names the **product location** (page / tab / section), never a code path, plus what happened there. Max ~7 items; beyond that the skill groups instead of enumerating.
 
 ---

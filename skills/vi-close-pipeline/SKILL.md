@@ -110,23 +110,20 @@ If any check fails → fix it or escalate with the exact state. **Never declare 
 
 ---
 
-## Hebrew Chat Output Contract (חובת דיווח בעברית)
+## 9. Final verification walkthrough (mandatory input to the report)
 
-```markdown
-# 🏁 VI - סגירת צינור — Issue #<id>:
+Build the walkthrough in the report from the live product, not from memory:
 
-## ✅ סטטוס Issue ו-PR:
-* **PR:** [#<n>](<url>) — [מוזג / סגור]
-* **Issue:** [#<id>](<url>) — [פתוח / סגור]
-* **Current Branch:** [מה המצב ענף עכשיו? Master נקי / מלוכלך, יש ענפים נוספים שקשורים למשימה / שלא קשורים למשימה וכו' וכו'. אם נקי אז לציין פשוט Master נקי. אם יש ענפים נוספים שקשורים לISSUE, לציין את זה כאן. ] 
+1. Name the real screen / tab / button the operator opens — never the presentation file.
+2. Write at most 5 steps. Every step is: where → what to do → what to see.
+3. Use `→` arrows between screens and give a direct link when one exists.
+4. Say exactly what to look at (text, state, count) so the operator knows it worked.
+5. Prefer visual proof. Backend-only with nothing to see → say so in one line plus how it was checked automatically.
 
-## 💡 סיכום:
-* [תיאור של מה שנעשה החל מהצגת הבעיה / תיאור הISSUE להצגת הפתרון, מה שנעשה בפועל, הסבר טכני ופשוט, ואיך להשתמש במה שנעשה. סדר עניינים כללי. במידה ורלוונטי, אפשר להוסיף קצת מידע כללי על הבעיה עצמה, ולא רק על הפתרון.]
+---
 
-## 🎬 פרזנטציה:
-* אם רלוונטי, הרץ `/present-pr <n>` כדי להכין פרזנטציה ויזואלית.
-
-👉 **שלב הבא:**
-* אין — הצינור סגור, מוכן ל-`/i-pick-issue` הבא.
-```
+<!-- local-only:begin -->
+The chat output template for this station is `references/output-template.md`.
+Read it before writing your first report.
+<!-- local-only:end -->
 

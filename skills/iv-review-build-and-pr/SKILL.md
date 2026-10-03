@@ -71,7 +71,7 @@ Use OCR only for fixed work (file pick + rules). The thinking stays with you. No
 
 Feed the OCR file list + Rule Groups + OCR finds into each reviewer below (no file left out, line numbers from OCR win on conflicts). Inspect the diff (`git diff --name-only origin/<base>...HEAD`) and discover matching specialized reviewers from the project's agent repository (`.agents/agents/`, `~/.agents/agents/`, or builtins):
 
-**Reviewer honesty rule:** a reviewer persona that is not found on disk is skipped — record the skip and the reason in the report. Never invent or simulate a missing reviewer (אין להמציא).
+**Reviewer honesty rule:** a reviewer persona that is not found on disk is skipped — record the skip and the reason in the report. Never invent or simulate a missing reviewer (do not invent).
 
 1. **General Code Quality (`code-review-and-quality`):**
    - Check diff clarity, clean naming, absence of dead code, and adherence to project patterns.
@@ -92,7 +92,7 @@ Feed the OCR file list + Rule Groups + OCR finds into each reviewer below (no fi
    - Verify that test assertions test real domain behavior and edge cases, not hollow mocks.
    - Map each changed behavior to the test that covers it; rate uncovered paths by impact (critical / important / nice-to-have). (Absorbed from ECC `pr-test-analyzer`.)
 6. **Docs Drift (`doc-updater`, diff-triggered):**
-   - Deploy when the diff touches `*.md` files, docstrings, or README/docs adjacent to changed behavior. Verify that documentation touched by the diff still matches the code — no stale examples, no outdated API references. Persona from `~/.agents/agents/`; not found on disk → skip and record the skip (אין להמציא).
+   - Deploy when the diff touches `*.md` files, docstrings, or README/docs adjacent to changed behavior. Verify that documentation touched by the diff still matches the code — no stale examples, no outdated API references. Persona from `~/.agents/agents/`; not found on disk → skip and record the skip (do not invent).
 
 ### Step 1C: Spec Axis — Diff vs Issue & Plan (from Matt Pocock's two-axis review)
 
@@ -191,30 +191,12 @@ gh api repos/:owner/:repo/issues/<pr_number>/comments --jq '[.[] | select(.user.
 
 ---
 
-## Hebrew Chat Output Contract (חובת דיווח בעברית)
+## Report rules (mandatory)
 
-At the conclusion of Station IV, you MUST report to the user in clean, everyday Hebrew using this exact structured format. Output rules: what's-changed only — what the review changed in the product, grouped by tag. Never mention commits, hashes, test commands, test counts, skill names, or file paths. The branch stays as the work ID. A reviewer that came back clean is not listed at all — only reviewers whose findings changed something appear, with plain-language fixes ordered easy → hard.
+List review findings per reviewer (name + what was found + fixed or not). A reviewer with nothing found is not listed. The What-now section carries the PR hyperlink and the CodeRabbit trigger status line. The summary is 3 quick lines, not a journey.
 
-```markdown
-# 🚢 IV - סקירת קוד ויצירת PR
+<!-- local-only:begin -->
+The chat output template for this station is `references/output-template.md`.
+Read it before writing your first report.
+<!-- local-only:end -->
 
-Branch: `[שם הענף שנשלח]`
-**קישור ישיר ל-Pull Request:** [לינק ישיר ל-PR ב-GitHub]
-**סטטוס CodeRabbit** *(שורה אחת כנה):*
-  - ✅ `CodeRabbit אישר שהסקירה התחילה` — ראינו את תגובת הבוט ("Review triggered")
-  - ⏳ `המכסה מלאה — הסקירה תתחיל בעוד N דקות` — לפי תגובת הבוט, עם קישור
-  - ❓ `נשלחה בקשת הפעלה אבל לא התקבל אישור תוך 60 שניות` — לא יודעים אם הסקירה התחילה
-  - ❗ `תגובה אחרת של הבוט` — מצוטטת כמות שהיא, עם קישור
-* **קישורים לתגובות:** [חובה אם הסטטוס אינו ✅: קישור ישיר לתגובת הטריגר ולתגובת הבוט]
-
-## 🩹 מה תוקן בעקבות הסקירה?
-* **[מיקום מוצרי]** — [מה נמצא ומה עובד עכשיו, בשפה פשוטה — רק קבוצות עם תוכן]
-
-## ➕ מה חדש? / ✏️ מה שונה?
-* [רק אם הסקירה הוסיפה או שינתה משהו מעבר לתיקונים — אחרת הקבוצה לא מופיעה]
-
-## 🧠 סיכום מההתחלה עד כאן:
-[מהמשתמש ביקש, מה תוכנן, מה נבנה ומה נשלח ל-PR — במילים פשוטות, בלי מושגי קוד.]
-
-👉 **שלב הבא:** `/v-babysit-pr-and-merge` יושב על ה-PR ומחכה לתגובות, מתקן, וממזג.
-```
