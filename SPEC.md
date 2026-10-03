@@ -1,90 +1,93 @@
-# SPEC — Issue #7: Hand PR titles, the review allowance and resolve to CodeRabbit
+# SPEC — Issue #24: Correct the CodeRabbit playbook after PR #23
 
-Branch: `i7/hand-pr-titles-the-review-allowance-and-resolve-to`
+Branch: `i24/correct-the-coderabbit-playbook-pr-23-disproved-three`
 
-> Reconciliation note: this file previously held the completed Issue #18 spec (all tasks `[x]`,
-> issue closed, work merged). Issue #18 is closed and its work landed, so the spec is replaced.
-> The full #18 spec remains in git history at `SPEC.md` on `main`.
+> Reconciliation note: this file previously held the completed Issue #7 spec (all tasks `[x]`,
+> issue closed, merged as PR #23). Issue #7 is closed and its work landed, so the spec is replaced.
+> The full #7 spec remains in git history at `SPEC.md` on `main`.
 
 ## Goal
 
-Three CodeRabbit capabilities the pipeline leaves on the table get wired into the stations that
-own each moment, and the two traps that follow from this repo being **private on the Free plan**
-get closed so neither station can report a false clean pass.
+The CodeRabbit playbook records three facts about this account that live measurement on PR #23
+disproved, and the committed `.coderabbit.yaml` turns out **not to govern this repository at all**.
+Correct the record so the next station plans against measurements, not assumptions.
 
-1. **Station IV stops writing PR titles.** CodeRabbit writes them from `auto_title_instructions`.
-2. **Station IV classifies its post-trigger reply into four outcomes**, including summary-only.
-3. **Station V posts `@coderabbitai resolve` before merge**, and opens with `@coderabbitai
-   configuration` when a review contradicts the committed config.
+## What PR #23 measured (all read from live artifacts, not inferred)
 
-## Why the issue's own text is not buildable as written
-
-Station II verified every seam against the live repo. Three corrections in the issue's comments
-are load-bearing, and one is not yet reflected anywhere in the skills:
-
-| # | Issue text says | Verified reality | Source |
+| Claim in the playbook | Line (pre-#24) | Measured on PR #23 | Verdict |
 |---|---|---|---|
-| 1 | key is `auto_title_keyword` | **`reviews.auto_title_placeholder`** (default `@coderabbitai`); `auto_title_keyword` is not in the schema | `config/coderabbit/README.md:106` |
-| 2 | run `@coderabbitai rate limit` as a separate probe before triggering | chat-gated on Free — refused with the upgrade notice; the allowance signal arrives **inside the trigger ack** | `config/coderabbit/README.md:87,161` |
-| 3 | Station V's "zero inline comments → clean pass" is a branch | this repo is private on Free, so a summary-only review **is** that exact shape | `config/coderabbit/README.md:86,92` |
+| "The private repo is the untested path… summarization-only with no inline findings" | `README.md:86` | **5 inline findings** + a full walkthrough review | **FALSE** |
+| "This account is Free with OSS access" | `README.md:84` | run config reported **`Plan: Advanced`** | **FALSE for PR reviews** |
+| "Chat-dependent commands are refused on this account… Expect the same for `configuration`" | `README.md:87` | `@coderabbitai configuration` **returned the full resolved config** | **FALSE** |
 
-Correction 2 is why the issue's own acceptance grep still passes: the string
-`@coderabbitai rate limit` must appear in Station IV — but as a **documented, plan-gated**
-line, not as an instruction to spend a command that declines.
+(Line numbers in this table are the **pre-#24** positions of the retracted claims. They are kept
+only to identify what was rewritten; live anchors are section names, not line numbers.)
 
-## Acceptance criteria (from the issue, verified against live anchors)
+Evidence sources: PR #23 review-in-progress comment (run config), and the resolved-config reply
+at https://github.com/AI-Degen-69/agents-home/pull/23#issuecomment-5972661199 (466 lines of YAML).
 
-- [ ] Station IV no longer writes a Conventional-Commits title; the auto-title keyword is used and
-      the TAG vocabulary is documented as the single title grammar.
-- [ ] Station IV classifies the post-trigger reply into four outcomes and every one reaches the
-      handoff report.
-- [ ] Station V posts `@coderabbitai resolve` before merge and reports the result.
-- [ ] Every plan-gated step states its plan requirement and degrades to a clear report.
-- [ ] `skills/pipeline-triage/SKILL.md` trigger wording stays consistent with the Station IV change.
+## The root cause behind the config finding — resolved, not open
 
-## Ground-truth seams (all read at plan time, 2026-10-03)
+The issue asked whether `reviews.*` comes from Organization UI instead of the committed file.
+**It does, and the reason is concrete:**
 
-| File | Lines | What is there today |
-|---|---|---|
-| `skills/iv-review-build-and-pr/SKILL.md` | 149 | `gh pr create --title "<type>(<scope>): <summary>"` — the Conventional-Commits title to remove |
-| `skills/iv-review-build-and-pr/SKILL.md` | 164-169 | three-outcome ack classification (`Review triggered.` / rate-limit / other / no reply) |
-| `skills/iv-review-build-and-pr/SKILL.md` | 191 | the handoff line that must carry the fourth status |
-| `skills/v-babysit-pr-and-merge/references/review-loop.md` | 100-105 | `COMPLETED` classification — the summary-only ambiguity |
-| `skills/v-babysit-pr-and-merge/references/triage-and-apply.md` | 87-95 | the agent-fallback / reuse path the false clean pass must route into |
-| `skills/v-babysit-pr-and-merge/references/triage-and-apply.md` | 121 | round exit condition |
-| `skills/v-babysit-pr-and-merge/references/merge-and-reset.md` | 19-25 | the merge decision — where `resolve` goes |
-| `skills/pipeline-triage/SKILL.md` | 58 | row 3, the early-review trigger wording |
-| `skills/self-improve-loop/SKILL.md` | 65 | the existing `@coderabbitai resolve` precedent to follow |
+- `config/coderabbit/README.md` → **"Precedence (how values actually win)"** ranks the sources:
+  `… organization global overrides → **repository file** → central coderabbit repo → repository UI
+  → **organization UI** → …`. A repository file therefore *outranks* organization UI — so if the
+  file were being read, the
+  resolved config would name it.
+- The resolved config instead annotates both keys we care about as
+  `# Source: Organization UI (base)`:
+  - `auto_title_placeholder: '@coderabbitai'`
+  - `auto_title_instructions: 'Title format: "[TAG] short plain-English summary"…'`
+  (the TAG vocabulary is character-for-character the one in the committed file.)
+- **There is no `.coderabbit.yaml` at the repository root** — `Test-Path .coderabbit.yaml` → `False`;
+  `git ls-files` lists exactly one: `config/coderabbit/.coderabbit.yaml`.
+- The file's own header states CodeRabbit "reads YAML only from the git repo root or a central
+  coderabbit repo — never from a local path". `config/coderabbit/` is not the repo root.
 
-**The issue's cited line numbers are stale** (it cites Station IV 135-141 / 145-165 / 179-180 and
-`triage-and-apply.md` for the merge sequence; the real anchors are above). Station III re-reads
-each anchor before editing.
+**Conclusion:** on `agents-home` the committed file is **inert**. The identical values live in the
+Organization UI, which is why the observed behaviour still matches. The `sync-coderabbit.ps1`
+copy model has never actually applied to this repository.
+
+## Acceptance criteria
+
+- [ ] `README.md` no longer claims this private repo is summarization-only, that the account is on
+      Free for PR reviews, or that `configuration` is chat-refused; each carries the dated PR #23
+      measurement that replaced it.
+- [ ] `README.md` states the precedence finding: this repo has no root `.coderabbit.yaml`, the
+      committed file at `config/coderabbit/` is not read by CodeRabbit, and `reviews.*` resolves
+      from Organization UI — with the implication for the sync-copy model named.
+- [ ] `.coderabbit.yaml` carries no claim that the pipeline writes titles itself and no stale line
+      reference; comment text only, no setting changes.
+- [ ] A note records that `SUMMARY_ONLY` is a guard for the summarization-only tier, **not** this
+      repo's normal shape.
+- [ ] Verification command: `! grep -q 'untested path' config/coderabbit/README.md &&
+      ! grep -q 'is the work of #7' config/coderabbit/.coderabbit.yaml &&
+      grep -q 'PR #23' config/coderabbit/README.md && echo FACTS-CORRECTED`
 
 ## Executed baseline (2026-10-03, `C:\Users\Tiger\.agents`)
 
-`node skills/skill-workbench/scripts/validate.js --all` → **`Validated 90 skill(s): 0 fail, 0 warn`**
-(one skipped link entry, `cua-driver`, reported outside validation scope).
-
-`node skills/skill-workbench/scripts/score.js skills/<name>` overall:
-
-| Skill | Baseline | Body lines |
-|---|---|---|
-| `iv-review-build-and-pr` | **100** | 201 |
-| `v-babysit-pr-and-merge` | **100** | 137 |
-| `pipeline-triage` | **100** | 89 |
+- `node skills/skill-workbench/scripts/validate.js --all` → `Validated 90 skill(s): 0 fail, 0 warn`
+- `node skills/skill-workbench/scripts/score.js skills/iv-review-build-and-pr` → `overall 100/100`,
+  body 234 lines; `v-babysit-pr-and-merge` and `pipeline-triage` likewise 100/100.
 
 ## Edge cases
 
-- **Probe returns the upgrade refusal instead of an answer.** Classify it as its own outcome and
-  fall back to the ack — never report it as zero allowance.
-- **Summary-only review on a private Free repo.** Zero inline findings is the expected shape, not
-  evidence of quality. Station V must route to the reuse path and say so.
-- **No threads exist** (nothing to resolve). `resolve` and `approve` degrade to an explicit
-  "not applicable on this repo" line, never a silent no-op.
-- **Auto-title on a repo without the two `reviews.auto_title_*` keys.** Document the precondition
-  rather than assuming the handover happens.
+- **Do not delete the still-valid parts.** The Free-vs-paid rate figures, the "what spends a
+  review" table, and the OSS-vs-UI precedence discussion remain correct; only the three disproved
+  claims change.
+- **`Plan: Advanced` may describe PR review, not issue planning.** `@coderabbitai plan` was still
+  refused on issues #5 and #7. Record both facts side by side rather than collapsing them into one
+  "the account is Advanced" claim.
+- **The config comment must not imply the file works.** Fixing the stale `#7` pointer without adding
+  the "not read from this path" note would make a doubly misleading comment.
 
 ## Out of scope
 
-`config/coderabbit/.coderabbit.yaml` content (#6), the `create-issue` plan prompt, and writing
-the playbook (#5) — all closed or explicitly excluded by the issue.
+- Any `.coderabbit.yaml` **setting** change (comment text only).
+- Any station skill's behaviour. The `SUMMARY_ONLY` wording in the stations is conditional
+  ("on a private repo on the Free plan") and stays correct as a guard — only the playbook's claim
+  that this is the *expected shape here* was wrong.
+- Redesigning `sync-coderabbit.ps1`; the finding is recorded, the model is not changed.
+- Any change to CodeRabbit's UI, plan, or billing.

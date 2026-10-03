@@ -1,198 +1,173 @@
-Branch: i7/hand-pr-titles-the-review-allowance-and-resolve-to | Issue: #7
+Branch: i24/correct-the-coderabbit-playbook-pr-23-disproved-three | Issue: #24
 
-# Plan — Issue #7: Hand PR titles, the review allowance and resolve to CodeRabbit
+# Plan — Issue #24: Correct the CodeRabbit playbook after PR #23
 
-> Reconciliation note: this file previously held the completed Issue #18 plan (all tasks `[x]`,
-> issue closed, work merged). Issue #18 is closed and its work landed, so the plan is replaced.
-> The full #18 plan remains in git history at `tasks/plan.md` on `main`.
-
-> Structure note: an earlier revision of this file was corrupted by mid-file inserts — the T3
-> section and the "Open questions" list were split apart and their tails left orphaned. Rebuilt in
-> reading order on 2026-10-03 during Station V triage (CodeRabbit finding 4174519800).
+> Reconciliation note: this file previously held the completed Issue #7 plan (all tasks `[x]`,
+> merged as PR #23). Issue #7 is closed and its work landed, so the plan is replaced. The full #7
+> plan remains in git history at `tasks/plan.md` on `main`.
 
 ## Stack & tier
 
-- Stack: Markdown skill contracts only. No app runtime, no code, no new dependency. Verification
-  surface is `node skills/skill-workbench/scripts/validate.js` + `score.js` + the issue's own
-  `grep` acceptance command.
-- Tier: **Standard** — 4 skills / 5 files, one architectural decision (the four-outcome ack
-  classification that both Station IV and Station V depend on).
-- Task type: **Docs** (primary — station contracts) + **UX / Copy** (the report wording that
-  carries honest CodeRabbit status).
+- Stack: Markdown playbook + config comments. No runtime, no code, no new dependency.
+  Verification is `grep` against the acceptance command plus `validate.js` as a regression guard.
+- Tier: **Standard** — 2 files, one real decision: how to record the config-source finding
+  without either overstating it (the file is useless) or understating it (the values still match).
+- Task type: **Docs** (primary) + **Research** (the precedence question, resolved from artifacts).
 
 ## CodeRabbit plan intake
 
-`@coderabbitai plan` was posted on this issue and **refused** — the account is on the Free plan
-("The author of this PR is on the CodeRabbit Free Plan… upgrade to CodeRabbit Essentials").
-There is no CodeRabbit plan comment to mine.
+No `@coderabbitai plan` comment exists on this issue, and none was requested: the intake rule
+skips the plan prompt for docs/comment-only changes. Independently, `@coderabbitai plan` was
+observed refused on issues #5 and #7 on this account. **Adopted:** nothing from CodeRabbit.
+**`[UNVERIFIED]`:** none — every seam was read at plan time.
 
-- **Adopted:** nothing from CodeRabbit — no plan was produced.
-- **Rejected:** n/a.
-- **`[UNVERIFIED]`:** none outstanding. Every seam below was read from the live repo at plan time.
+## Open questions — resolved from evidence (no operator ask)
 
-The substantive planning input was instead the operator's own three corrections in the issue
-comments, each verified against `config/coderabbit/README.md` and recorded in `SPEC.md`.
+1. *Which tier does this repo run under?* → **Partially resolved, and the honest answer is split.**
+   PR #23's run config reported `Plan: Advanced`, but `@coderabbitai plan` was refused on issues
+   #5 and #7. Record both: **PR review path reports Advanced; issue-planning chat is refused.**
+   Collapsing this into one claim would be a new inaccuracy.
+2. *Does `.coderabbit.yaml` govern this repo?* → **No — resolved with hard evidence.**
+   `Test-Path .coderabbit.yaml` → `False`; `git ls-files` lists only
+   `config/coderabbit/.coderabbit.yaml`; the file's own header says CodeRabbit reads YAML only from
+   the repo root or a central repo; and the resolved config annotates both `auto_title_*` keys as
+   `# Source: Organization UI (base)`. The playbook's **"Precedence (how values actually win)"**
+   section ranks the repository file **above** organization UI, so the annotation proves the file
+   was never consulted.
+3. *Should the sync-copy model be revisited?* → **Out of scope, per the issue.** The finding is
+   recorded in the playbook with its consequence named; `sync-coderabbit.ps1` is untouched.
 
-## Open questions — resolved from code (no operator ask)
+## Dependency graph
 
-1. *Free or paid tier?* → **Free with OSS access.** `config/coderabbit/README.md:84` records it
-   from live behaviour: "You've used all free OSS reviews for now… Next included review available
-   in 25 minutes." The issue's default assumption is confirmed.
-2. *Always hand over the title?* → **Yes.** The issue states the operator asked for it by name, and
-   `.coderabbit.yaml` already carries the full TAG vocabulary plus an explicit
-   `auto_title_placeholder`. Both `reviews.auto_title_*` keys are live, so the precondition holds
-   on this repo.
-3. *Is a standalone `rate limit` probe viable?* → **No — chat-gated on Free**
-   (`README.md:87,161`). The allowance signal is classified inside the trigger ack instead. The
-   literal string stays in Station IV as a documented, plan-gated probe so the issue's acceptance
-   grep still passes and the command is ready the day the account upgrades.
-4. *Does this repo get inline findings?* → **Assumed No** (private repo on Free, summarization-only;
-   `README.md:86,92`). `README.md:86` calls this "the untested path… treat that as the operating
-   assumption, not a measured fact — the next PR on this repo is the measurement."
-   **Measured on 2026-10-03, PR #23: the assumption was WRONG** — CodeRabbit posted 5 inline
+- **T1** (correct the three disproved claims) is independent.
+- **T2** (config-source finding) is independent of T1 but must not contradict it.
+- **T3** (`.coderabbit.yaml` comment) depends on **T2** — the replacement comment has to carry the
+  "not read from this path" fact, or fixing the stale pointer alone leaves it doubly misleading.
 ---
 
-### T1 [x] [S] [Docs/UX-Copy] — Hand PR title-writing to CodeRabbit
+### T1 [x] [S] [Docs/Research] — Replace the three disproved claims with PR #23 measurements
 
-- **Target:** `skills/iv-review-build-and-pr/SKILL.md:144-150`
-- **Build:** replace the hardcoded `--title "<type>(<scope>): <summary>"` with the
-  `reviews.auto_title_placeholder` keyword (`@coderabbitai`), and state that the TAG vocabulary
-  (`[ADD] [FIX] [IMPROVE] …` per `config/coderabbit/.coderabbit.yaml`) is the single title
-  grammar. State the two-key precondition (`auto_title_placeholder` + `auto_title_instructions`)
-  so the handover is not assumed on a repo that never set them. The **body** stays byte-identical.
-- **Helper:** `documentation-and-adrs`, `humanizer` (report copy)
+- **Target:** `config/coderabbit/README.md` → **"Observed behaviour on this account"**
+- **Build:** rewrite the three false bullets against the measured record, keeping the framing that
+  these are dated observations on this account:
+  - `:86` "The private repo is the untested path… summarization-only" → replace with the PR #23
+    result (5 inline findings across 5 files, walkthrough review, `Plan: Advanced`), and delete
+    the now-false "no PR exists there yet" clause.
+  - `:84` "This account is Free with OSS access" → state that the PR-review path reports
+    `Plan: Advanced` while `@coderabbitai plan` is still refused on issues, so both facts stand.
+  - `:87` "chat-dependent commands are refused… expect the same for `configuration`" → record that
+    `@coderabbitai configuration` returned the full resolved config on PR #23.
+  Leave `:85` (public-repo findings), the rate figures, and the "what spends a review" table alone.
+- **Helper:** `documentation-and-adrs`
 - **Depends on:** —
-- **Verify:** the Conventional-Commits grammar is gone from the file;
-  `grep -q 'type>(<scope>)' skills/iv-review-build-and-pr/SKILL.md` must now FAIL;
-  `score.js skills/iv-review-build-and-pr` >= 100.
-- **Result:** done — verified live on PR #23, where CodeRabbit replaced the title with
-  `[UPDATE] Replace Issue 18 audit guidance with Issue 7 workflow requirements`.
+- **Verify:** `grep -q 'untested path' config/coderabbit/README.md` fails; `grep -q 'PR #23'`
+  succeeds; every still-valid passage from `CONSTRAINTS.md` still present.
 
-### T2 [x] [M] [Docs/UX-Copy] — Four-outcome trigger classification + plan-gated allowance probe
+### T2 [x] [M] [Docs/Research] — Record the config-source finding and its consequence
 
-- **Target:** `skills/iv-review-build-and-pr/SKILL.md:164-169, 191`
-- **Build:** split the current three-outcome ack classification into four — *review started* /
-  *rate limited (N minutes)* / **summary-only review (private repo on Free — no findings
-  expected)** / *other reply* — plus the existing no-acknowledgement case. Add the allowance
-  pre-check as a **documented, plan-gated probe**: state that `@coderabbitai rate limit` is
-  chat-gated and declines on Free, that the trigger ack is the real signal on this tier, and that
-  an upgrade-refusal reply is its own outcome (never "zero allowance"). Carry all four into the
-  handoff line. Summary-only must say plainly that verification rests on the local gates
-  (OCR delegation, type-matched reviewers, Spec axis, targeted tests).
-- **Helper:** `documentation-and-adrs`, `humanizer`
+- **Target:** `config/coderabbit/README.md` — the precedence paragraph at `:119` and a new
+  subsection near the observed-behaviour block
+- **Build:** state the resolved finding with its evidence chain: no root `.coderabbit.yaml`
+  (`Test-Path` → `False`), the only copy is at `config/coderabbit/`, the file's own header says
+  CodeRabbit reads YAML only from the repo root or a central repo, and the resolved config
+  annotates `auto_title_placeholder` / `auto_title_instructions` as `Source: Organization UI (base)`.
+  Because `:119` ranks the repository file above organization UI, the annotation proves the file
+  was never read. Name the consequence for `sync-coderabbit.ps1` (its copy model has never applied
+  to this repo) and state that the TAG vocabulary currently matches **only** because the same
+  values were also entered in the Organization UI — which is exactly why this went unnoticed.
+- **Helper:** `documentation-and-adrs`
 - **Depends on:** —
-- **Verify:** `grep -q '@coderabbitai rate limit' skills/iv-review-build-and-pr/SKILL.md` passes;
-  the existing `rate-limit-classification` eval assertion (`Rate-limit reply`) still matches;
-  `trigger-ack-mandatory` and `comment-links-mandatory` still match; `score.js` >= 100 and body
-  <= 250 lines.
+- **Verify:** the finding, the precedence contradiction, and the sync consequence are all present;
+### T3 [x] [XS] [Docs] — Fix the `.coderabbit.yaml` comment (comment lines only)
 
-**Checkpoint A** — after T1+T2: Station IV's contract is internally consistent; report the four
-statuses and the exact wording chosen.
+- **Target:** `config/coderabbit/.coderabbit.yaml:53-55`
+- **Build:** replace "The pipeline still writes titles itself (skills/iv-review-build-and-pr/SKILL.md:137)
+  — handing that over is the work of #7" with a comment that says the handover landed in #7/PR #23,
+  drops the stale line reference, and carries the T2 fact that this file is not read from
+  `config/coderabbit/` by CodeRabbit. **No setting, key, or value changes.**
+- **Helper:** `documentation-and-adrs`
+- **Depends on:** T2
+- **Verify:** `git diff config/coderabbit/.coderabbit.yaml` shows only `#` comment lines changed;
+  `grep -q 'is the work of #7'` fails; the two `auto_title_*` settings are byte-identical.
 
-### T3 [x] [M] [Docs/UX-Copy] — Station V: resolve before merge, config probe, no false clean pass
+### T4 [x] [S] [Docs] — Note the `SUMMARY_ONLY` guard + run the gates
 
-- **Targets:** `skills/v-babysit-pr-and-merge/references/merge-and-reset.md:19-25`,
-  `.../references/review-loop.md:100-105`, `.../references/triage-and-apply.md:87-95,121`
-- **Build:** three changes.
-  1. **Resolve** — post `@coderabbitai resolve` as a top-level PR comment after fixes are applied
-     and verified, immediately before the squash merge; report resolved / declined / no reply.
-     Follow the `self-improve-loop/SKILL.md:65` precedent. When no threads exist it degrades to an
-     explicit "not applicable on this repo" line, never a silent no-op. `@coderabbitai approve` is
-     **not** used: without `reviews.request_changes_workflow` it submits nothing, so it degrades
-     explicitly too.
-  2. **Config probe** — `@coderabbitai configuration` is the first diagnostic when a review
-     contradicts the committed config, with the resolved-config output quoted in the report.
-     Chat-gated on Free: state the plan requirement and the fallback.
-  3. **False clean pass guard** — a completed review with zero inline findings is not an approval
-     when the repo is private on the Free plan (summarization-only). Classify it `SUMMARY_ONLY`,
-     keep it mutually exclusive with `COMPLETED`, route it to the existing agent-fallback / reuse
-     path (`triage-and-apply.md:91-95`, Station IV evidence + delta check), and say so in the
-     report.
-- **Helper:** `documentation-and-adrs`, `humanizer`
-- **Depends on:** —
-- **Verify:** `grep -q '@coderabbitai resolve' skills/v-babysit-pr-and-merge/SKILL.md` passes
-  (the resolve rule must be reachable from the station contract, not only from a `references/`
-  file — if the body line budget blocks this, the pointer line in `SKILL.md` must still carry the
-  literal); existing V assertions (`explicit inline reply.+posted before resolution`,
-  `proceed directly to Step 2 extraction & triage`,
-  `gh api repos/:owner:/repo/pulls/<pr_number>/comments`) still match; `score.js` >= 100.
-
-### T4 [x] [S] [Docs] — Triage consistency + acceptance gates
-
-- **Targets:** `skills/pipeline-triage/SKILL.md:58` (trigger wording), then re-run the gates
-- **Build:** confirm row 3's `@coderabbitai review` wording still matches Station IV's trigger
-  exactly (no wording drift introduced by T1/T2), and record the plan-gated status vocabulary so
-  the gate can read a Station IV handoff honestly. Then run the full verification set.
+- **Targets:** `config/coderabbit/README.md` (the Station IV/V consequence block at `:89-92`), then
+  the verification set
+- **Build:** add one line recording that `SUMMARY_ONLY` is a guard for the summarization-only tier,
+  **not** this repository's normal shape, so no future station assumes findings are absent here.
+  Station skills are **not** edited — their wording is conditional and stays correct.
 - **Helper:** `documentation-and-adrs`
 - **Depends on:** T1, T2, T3
 - **Verify:**
 
   ```bash
-  ! grep -q 'type>(<scope>)' skills/iv-review-build-and-pr/SKILL.md \
-    && grep -q '@coderabbitai rate limit' skills/iv-review-build-and-pr/SKILL.md \
-    && grep -q '@coderabbitai resolve' skills/v-babysit-pr-and-merge/SKILL.md \
-    && echo WIRING-OK
-  node skills/skill-workbench/scripts/validate.js --all            # 0 fail, 0 warn
-  node skills/skill-workbench/scripts/score.js skills/iv-review-build-and-pr   # >= 100
-  node skills/skill-workbench/scripts/score.js skills/v-babysit-pr-and-merge  # >= 100
-  node skills/skill-workbench/scripts/score.js skills/pipeline-triage         # >= 100
+  ! grep -q 'untested path' config/coderabbit/README.md \
+    && ! grep -q 'is the work of #7' config/coderabbit/.coderabbit.yaml \
+    && grep -q 'PR #23' config/coderabbit/README.md \
+    && echo FACTS-CORRECTED
+  node skills/skill-workbench/scripts/validate.js --all   # 0 fail, 0 warn
+  node skills/skill-workbench/scripts/score.js skills/iv-review-build-and-pr   # still 100
+  git diff --name-only                                   # only the 2 in-scope files
   ```
 
-**Checkpoint B** — after T4: the issue's own acceptance command prints `WIRING-OK`, all three
-scores hold at 100, and the validator is clean. Then hand to Station IV.
+**Checkpoint B** — after T4: `FACTS-CORRECTED` prints, validator clean, and the diff touches exactly
+`config/coderabbit/README.md` and `.coderabbit.yaml`.
 
-## Improvement proposal (adopted by default — simplification / edge-case hardening)
+### T5 [M] [Docs/Config] — Operator-approved scope expansion: make the config actually govern
 
-**Evidence, verbatim** — `skills/v-babysit-pr-and-merge/references/review-loop.md:101`:
+- **Approved by the operator during Station III (2026-10-03):** "שיהיה אותו קונפיגורציה של הארנב בכל
+  ריפו" — the same config must apply in every repo. This reverses the plan's own rejected proposal
+  ("Move `.coderabbit.yaml` to the repo root"), so it is recorded here explicitly rather than done
+  silently.
+- **Targets:** `.coderabbit.yaml` (moved from `config/coderabbit/`), `scripts/sync-coderabbit.ps1`,
+  `config/coderabbit/README.md`
+- **Build:** move the canonical file to the repository root — the only location CodeRabbit reads —
+  and update the sync script's `$canonical` path and the README's stale path references. Precedence
+  ranks *repository file* above *organization UI*, so this makes the file govern `agents-home`
+  without any UI change. Consumer repos keep receiving the same bytes via the script; a repo with a
+  deliberately richer file (`crypto-spread`) keeps it, as before.
+- **Verification (this is the proof, not an assumption):** root `yaml.safe_load` parses with both
+  `auto_title_*` settings intact · PowerShell tokenizes `sync-coderabbit.ps1` with 0 errors and its
+  `$canonical` path resolves to an existing file · `FACTS-CORRECTED` still prints · validator clean.
+  **Post-merge, Station V must re-run `@coderabbitai configuration` and confirm the resolved
+  values now read `Source: repository YAML` (or equivalent), not `Organization UI`.** Until that
+  probe returns, the fix is *believed* correct, not proven.
+- **Helper:** `documentation-and-adrs` · **Depends on:** T2, T3
 
-> `COMPLETED` — summary review and/or inline findings posted. Proceed to Step 2.
+## Improvement proposal (adopted by default — edge-case hardening)
 
-and `config/coderabbit/README.md:92`:
+**Evidence, verbatim** — the retracted bullet in `config/coderabbit/README.md` → **"Observed
+behaviour on this account"** (removed by this issue; quoted here as the pre-#24 text):
 
-> Station V's existing branch "completed with zero inline comments → clean pass" is **unsafe on a
-> private Free repo**: a summary-only review reports exactly that.
+> The private repo is the untested path.
 
-The issue describes the guard as a change to "Station V's clean-pass branch", but that branch is
-not one place — it is the *conjunction* of the `COMPLETED` classification above and the Step 2
-extraction that finds zero comments in `triage-and-apply.md`. Guarding only one leaves the trap
-open. Adopted: T3 item 3 guards the classification **and** names the reuse-path routing at the
-extraction seam.
+and the resolved-config annotation on PR #23:
+
+> `# Source: Organization UI (base)` / `auto_title_placeholder: '@coderabbitai'`
+
+The playbook proves its claims against live PRs, which is why it was wrong in a checkable way.
+Adopted: every rewritten claim keeps an explicit **date + PR number + artifact**, and T2 records the
+evidence chain for the precedence conclusion, so the next correction can check the same way rather
+than re-derive from memory.
 
 ## Rejected proposals
 
-- **Post `@coderabbitai approve` alongside `resolve`** — rejected: `README.md:36` records that it
-  "submits an approval only when `reviews.request_changes_workflow` is enabled", so on this repo it
-  merely resolves threads and reports approval disabled. `resolve` alone states the intent.
-- **A separate pre-trigger `rate limit` command** — rejected per correction 2: chat-gated on Free,
-  it spends a comment to learn nothing. Documented as plan-gated instead (T2).
-- **Editing `.coderabbit.yaml`** to fix its stale `#7` pointer comment (near line 57 it still says
-  the pipeline writes titles itself at `SKILL.md:137`) — **NOTICED-BUT-NOT-TOUCHING**: the file
-  belongs to closed issue #6 and this issue excludes it. Recorded as an `open` row for Station VI.
-  3. **False clean pass guard** — a completed review with zero inline findings is not an approval
-     when the repo is private on the Free plan (summarization-only). Classify it `SUMMARY_ONLY`,
-     keep it mutually exclusive with `COMPLETED`, route it to the existing agent-fallback / reuse
-     path (`triage-and-apply.md:91-95`, Station IV evidence + delta check), and say so in the
-     report.
-- **Helper:** `documentation-and-adrs`, `humanizer`
-- **Depends on:** —
-- **Verify:** `grep -q '@coderabbitai resolve' skills/v-babysit-pr-and-merge/SKILL.md` passes
-  (the resolve rule must be reachable from the station contract, not only from a `references/`
-  file — if the body line budget blocks this, the pointer line in `SKILL.md` must still carry the
-  literal); existing V assertions (`explicit inline reply.+posted before resolution`,
-  `proceed directly to Step 2 extraction & triage`,
-  `gh api repos/:owner:/repo/pulls/<pr_number>/comments`) still match; `score.js` >= 100.
-   findings on this private repo, and its run config reported `Plan: Advanced` with
-   `Configuration used: Organization UI`. The skills must therefore stay tier/visibility-agnostic
-   and degrade honestly rather than assume a summary-only shape. See `README.md` for the follow-up.
+- **"Move `.coderabbit.yaml` to the repo root so it governs this repo."** — rejected: a settings
+  relocation changes live CodeRabbit behaviour for this repo and every consumer of the sync model,
+  which the issue explicitly excludes ("changing `.coderabbit.yaml` settings (comment text only)"
+  and "redesigning `sync-coderabbit.ps1`"). The finding is recorded; the decision belongs to the
+  operator as a follow-up.
+- **Editing the station skills to drop the summary-only guard.** — rejected: the guard is
+  conditional ("on a private repo on the Free plan") and remains correct as a safety net. Only the
+  playbook's claim that this is the *expected shape here* was false.
+- **Collapsing "Free" and "Advanced" into one tier statement.** — rejected: they describe
+  different paths (PR review vs issue planning chat) and both observations are true.
+  `scripts/sync-coderabbit.ps1` is unmodified (`git diff --name-only` does not list it).
 
-## Dependency graph
+**Checkpoint A** — after T1+T2: the playbook contains no claim contradicted by PR #23, and every
+claim carries the artifact it came from. Report both conclusions in one line each.
+- **T4** (gates + sync) depends on T1, T2, T3.
 
-- **T1** (Station IV title) is independent of T2.
-- **T2** (Station IV four-outcome ack) unblocks **T4** — Station V's classification consumes the
-  status Station IV hands over.
-- **T3** (Station V resolve + config probe + false-clean-pass guard) is textually independent of
-  T1/T2 but must agree with T2's status vocabulary.
-- **T4** (triage consistency + gates) depends on T1, T2, T3.
-
-Order is risk-first: T2 carries the most judgement (it is what prevents a false clean pass), so it
-lands early while the diff is still cheap to correct.
+Risk-first: T2 is the task whose conclusion could still change (it is the one carrying a
+conclusion, not just text), so it runs before the file edits that reference it.
