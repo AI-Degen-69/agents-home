@@ -69,7 +69,7 @@ never published)", and the recorded publication design strips only marked
   Verify: `Select-String 'output-template\.md'` count ≥ 1; `'contracts themselves stay
   in each skill'` count = 0; stale phrases ("files checked", "which skills ran",
   "original style") return no matches in `:64-76`.
-- [ ] **T3** (S) `[Docs]` — Align the What's-changed rule (`:80-86`): scope the
+- [x] **T3** (S) `[Docs]` — Align the What's-changed rule (`:80-86`): scope the
   ➕→✏️→❌→🩹 ordering to templates that use change groups; reconcile the clean-tree ban
   with the template folder-state field; keep the VI clean-base line only if the VI
   template uses it. Check `:5`, `:47-60` and change only stale inline-template wording.
