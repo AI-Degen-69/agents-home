@@ -119,8 +119,9 @@ The comment is false: `references` + `evals` yields `2 + 1 = 3`, i.e. **60/100**
 | 17 | all graders | `max_template_lines` reported "template has -1 lines" — the Hebrew contract had moved to `references/`, unfixable from SKILL.md | **Fixed** — falls back to the referenced file |
 | 18 | ii-plan, v-babysit, vi-close, create-issue | 9 assertions referenced prose that exists nowhere in the repo (verified: phrases return NOWHERE) | **Fixed** — repointed at shipped templates, intent preserved |
 | 19 | l1-description check | Required `Station|issue|plan|GitHub`; rejected valid "Use when the user says…" descriptions | **Fixed** — accepts an explicit trigger phrase |
+| 20 | docs (out of scope) | `validate.js --docs` → `doc-phantom-skill-refs`: `docs/issue-to-pr-skill-workflow.md:66` names `local-only`, which is not a skill | **Open question — pre-existing and out of scope.** Reproduced: the token is present at `ac01d5f`, before this branch. It is a marker word in prose, not a skill reference. Not fixed here — docs content is outside Issue #18's scope and `--docs` is not one of this issue's gates. Raise as a follow-up: either add `local-only` to the workbench allowlist, or backtick it differently in the doc. |
 
-**Pre-existing, not introduced here:** findings 17 and 18 produced 18 failing assertions *at HEAD* — verified by running the committed graders against committed files. Now 0.
+**Pre-existing, not introduced here:** findings 17 and 18 produced 18 failing assertions *at HEAD* — verified by running the committed graders against committed files. Now 0. Finding 20 is likewise pre-existing, verified against `ac01d5f`.
 
 ## T4 — Executed gates (observed, not predicted)
 
