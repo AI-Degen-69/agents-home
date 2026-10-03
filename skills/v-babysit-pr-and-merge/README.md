@@ -28,11 +28,18 @@ green CI. Zero human in the loop.
 1. Ensures the PR exists (delegates opening to Station IV if needed),
    auto-triggers `@coderabbitai review` when auto-review skipped.
 2. Waits on the deterministic **5m → 4m → 3m → 2m → 1m** countdown;
-   on quota-limit falls back to the agent review path.
+   on quota-limit falls back to the agent review path. A summary-only
+   review (zero inline findings — the expected shape on a private Free
+   repo) is `SUMMARY_ONLY`, never a clean pass: it routes to the
+   Station IV evidence + delta-check reuse path.
 3. Extracts comments, triages **ACCEPT** (Type A/B fixes) vs **REJECT**
    (with reasoned reply + thread resolve) — exactly one focused round,
    one batch commit + push.
-4. Merges (squash) on green CI, resets local checkout to base. Reports
+4. Posts `@coderabbitai resolve` to close the review loop (reporting
+   resolved / declined / no reply, or "not applicable" when there are no
+   threads), probes `@coderabbitai configuration` first when a review
+   contradicts the committed config, then merges (squash) on green CI and
+   resets the local checkout to base. Reports
    triage + what was fixed (product location per item) in Hebrew — see the contracts in `SKILL.md`.
    Never claims a clean pass when the review never finished.
 

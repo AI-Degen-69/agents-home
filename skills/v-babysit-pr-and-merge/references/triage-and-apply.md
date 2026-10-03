@@ -50,6 +50,12 @@ gh api graphql -f query='
 Map each `databaseId` back to the REST comment `id` to build the working triage table:
 `(id, threadId, path, start_line, line, body, verdict)`.
 
+**Zero extracted comments is not a verdict.** When extraction returns nothing, do not report a
+clean pass. Check whether the review was `SUMMARY_ONLY` (see `review-loop.md` Step 1 item 6): on a
+private repo on the Free plan that is the expected summary-only shape, and it routes to the Step 2B
+reuse path — Station IV's recorded evidence plus a delta check — not to "the code is approved as
+is". State which case you are in.
+
 #### 2.2 — Single Review Round (Quota-Conscious)
 
 This habit executes **exactly one focused review round** to conserve CodeRabbit quota and prevent indefinite review churn. All valid comments in this single round are triaged, fixed, tested, and resolved, followed directly by CI verification and merge.
@@ -82,6 +88,23 @@ gh api graphql -f query='mutation($t:ID!) { resolveReviewThread(input: {threadId
 
 Rationale must be specific and falsifiable — name the constant, the exception, the file, or the spec/domain rule. NEVER resolve a thread silently without an inline reply, and never leave a rejected comment open.
 
+**Config contradiction → probe resolved config FIRST (before blaming the repo file or re-reviewing).**
+When CodeRabbit's behaviour contradicts the committed `.coderabbit.yaml`, run the configuration
+probe as the first diagnostic step and quote the resolved output in the report:
+
+```bash
+gh pr comment <pr_number> --body "@coderabbitai configuration"
+```
+
+The reply prints the fully resolved config annotated with the **source of every value** (repository
+YAML, central configuration, UI settings, defaults, global overrides), which answers "why is
+CodeRabbit not doing what I configured?" in one command. Compare it against `.coderabbit.yaml`
+before concluding a setting is broken — sources do not merge by default and global overrides win
+everywhere. This command is **chat-gated**: on the Free plan it is refused with the "upgrade to
+CodeRabbit Essentials" notice. Record that refusal as a plan gate and fall back to the reuse path's
+Station IV evidence plus the delta check — never treat the refusal as "config is fine".
+
+### Step 2B — Agent Fallback Review (When CodeRabbit Limit Reached or Silent)
 ---
 
 ### Step 2B — Agent Fallback Review (When CodeRabbit Limit Reached or Silent)

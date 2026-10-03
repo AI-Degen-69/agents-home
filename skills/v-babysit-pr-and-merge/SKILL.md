@@ -33,12 +33,12 @@ Multiple open PRs and no specific number → follow `references/multi-pr-pipelin
 | Step | What it does | Detail |
 | --- | --- | --- |
 | **Step 0** | Ship handshake — find the PR, or delegate to `iv-review-build-and-pr` | `references/review-loop.md` |
-| **Step 1** | Verify the `@coderabbitai review` trigger, then wait out the 5m→4m→3m→2m→1m countdown and classify completion honestly | `references/review-loop.md` |
+| **Step 1** | Verify the `@coderabbitai review` trigger, then wait out the 5m→4m→3m→2m→1m countdown and classify completion honestly — a summary-only review with zero inline findings (private repo on Free) is `SUMMARY_ONLY`, **not** a clean pass | `references/review-loop.md` |
 | **Step 2** | Pull every comment via the API; triage each one yourself — ACCEPT or REJECT, no rubber-stamping | `references/triage-and-apply.md` |
-| **Step 2B** | Agent fallback review when CodeRabbit is rate-limited, skipped, or stuck on `processing` | `references/triage-and-apply.md` |
+| **Step 2B** | Agent fallback review when CodeRabbit is rate-limited, skipped, or stuck on `processing`; probe `@coderabbitai configuration` first when a review contradicts the committed config | `references/triage-and-apply.md` |
 | **Step 3** | Late rejections — pointer only, Step 2.4 is the one canonical REJECT flow | `references/triage-and-apply.md` |
 | **Step 4** | Apply accepted fixes (Type A suggestions / Type B intent), run targeted tests, self-heal, one batch commit, reply to and resolve every thread | `references/triage-and-apply.md` |
-| **Step 5** | GitHub CI is the merge gate; squash-merge, or deploy a `<stack>-build-resolver` persona on failure | `references/merge-and-reset.md` |
+| **Step 5** | GitHub CI is the merge gate; post `@coderabbitai resolve` to close the review loop, then squash-merge, or deploy a `<stack>-build-resolver` persona on failure | `references/merge-and-reset.md` |
 | **Step 5a** | Close the issue — verify GitHub auto-closed it via `Closes #<id>`, or close manually if it missed | `references/merge-and-reset.md` |
 | **Step 5b** | Return the local checkout to a clean, fast-forwarded base and delete the merged branch | `references/merge-and-reset.md` |
 
