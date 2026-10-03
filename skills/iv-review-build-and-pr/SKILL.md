@@ -143,11 +143,22 @@ Before applying fixes, run the Spec axis in full:
 
 ### Step 5: Open Pull Request & Trigger Review
 
-Create PR via GitHub CLI:
+**CodeRabbit writes the PR title — you do not.** Pass the `reviews.auto_title_placeholder`
+keyword as the title and CodeRabbit replaces it with a title built from
+`reviews.auto_title_instructions`. The TAG vocabulary defined there (`[ADD] [CREATE] [FIX]
+[IMPROVE] [REFACTOR] [OPTIMIZE] [TEST] [DOCUMENT] [FORMAT] [UPDATE] [CONFIGURE] [REVERT]`) is the
+**single title grammar** for every PR in the pipeline. Conventional-Commits types (`feat:`, `fix:`)
+belong to commit messages only — never write one into a PR title. See
+`config/coderabbit/README.md` for the full command playbook.
 
 ```bash
-gh pr create --title "<type>(<scope>): <summary>" --body "## Summary`n...`n`nCloses #<issue>`n`n@coderabbitai summary"
+gh pr create --title "@coderabbitai" --body "## Summary`n...`n`nCloses #<issue>`n`n@coderabbitai summary"
 ```
+
+Preconditions for the handover, both required: the repo's `.coderabbit.yaml` sets
+`reviews.auto_title_placeholder` (default `@coderabbitai`) **and** `reviews.auto_title_instructions`.
+If either is missing, CodeRabbit cannot write a compliant title — say so in the handoff instead of
+silently falling back to a hand-written title.
 
 Immediately post the review trigger comment (**post exactly once** — pick ONE of the two forms below, never both):
 
