@@ -112,6 +112,36 @@ wrong. A new measurement changes one bullet, never the whole section.
 
 - **Station IV** should classify the post-trigger reply into four outcomes, not three: *review started* / *rate limited (N minutes)* / **summary-only review (private repo on Free — no findings expected)** / *other reply*. On summary-only it must hand off saying plainly that CodeRabbit will not produce findings here and that verification rests on the local gates (OCR delegation, type-matched reviewers, Spec axis, targeted tests) — never imply a bot review passed.
 - **Station V**'s existing branch "completed with zero inline comments → clean pass" is **unsafe on a private Free repo**: a summary-only review reports exactly that, and the station would report a clean pass ("no comments found — the code is approved as is"). That branch must route to the station's existing agent-fallback / reuse path (Station IV's evidence + delta check) instead, and say so in the report.
+- **`SUMMARY_ONLY` is a guard, not this repo's normal shape.** The station wording is deliberately conditional ("on a private repo on the Free plan") because it exists to catch the summarization-only tier if it ever applies here. After PR #23 measured real findings on `agents-home`, no station may read that guard as "no findings are expected here" — if a station on this repo reports `SUMMARY_ONLY`, that is a signal worth investigating, not a routine outcome.
+
+### Which configuration source actually governs `agents-home` (measured 2026-10-03)
+
+**The committed `config/coderabbit/.coderabbit.yaml` is not read by CodeRabbit on this repo.** The
+evidence chain, all checkable:
+
+1. **There is no config file at the repository root.** `Test-Path .coderabbit.yaml` → `False`;
+   `git ls-files` lists exactly one: `config/coderabbit/.coderabbit.yaml`.
+2. **CodeRabbit reads YAML only from the git repo root** (or a central `coderabbit` repository) —
+   that constraint is stated in the file's own header comment. `config/coderabbit/` is not the root.
+3. **The resolved config agrees.** On PR #23, `@coderabbitai configuration` annotated both keys as
+   `# Source: Organization UI (base)`:
+   - `auto_title_placeholder: '@coderabbitai'`
+   - `auto_title_instructions: 'Title format: "[TAG] short plain-English summary"…'`
+4. **That annotation is only possible if the file was never consulted.** The precedence order below
+   ranks *repository file* **above** *organization UI*. A file that was being read would have
+   supplied these values and been named as their source.
+
+**Why nobody noticed:** the TAG vocabulary and placeholder in the Organization UI are
+character-for-character the ones in the committed file, so the observed behaviour matched the
+file's intent either way. The values agree; the *mechanism* does not.
+
+**Consequence for the sync-copy model.** `scripts/sync-coderabbit.ps1` exists to copy this file
+"into repository roots". That copy step has never applied to `agents-home` itself — a home repo
+cannot sync a config into its own root without relocating or duplicating the file. So this
+repository is governed by Organization UI, not by its versioned config, and any future change to
+this file will **not** take effect here until that is resolved. Deciding how to resolve it is the
+operator's call (see `.coderabbit.yaml` and `scripts/sync-coderabbit.ps1`, both deliberately
+untouched by Issue #24).
 
 ## Config cheat-sheet
 

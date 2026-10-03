@@ -44,7 +44,7 @@ observed refused on issues #5 and #7 on this account. **Adopted:** nothing from 
   "not read from this path" fact, or fixing the stale pointer alone leaves it doubly misleading.
 ---
 
-### T1 [S] [Docs/Research] — Replace the three disproved claims with PR #23 measurements
+### T1 [x] [S] [Docs/Research] — Replace the three disproved claims with PR #23 measurements
 
 - **Target:** `config/coderabbit/README.md:80-92` ("Observed behaviour on this account")
 - **Build:** rewrite the three false bullets against the measured record, keeping the framing that
