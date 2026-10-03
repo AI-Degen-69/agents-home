@@ -29,6 +29,8 @@ const AGENTS_DIR = path.resolve(GLOBAL_SKILLS_DIR, '..', 'agents');
 // the workbench allowlist carries it at validate-lib.js `NON_SKILL_TOKENS`.
 const NON_SKILL_TOKENS = new Set([
   'html_url', 'step-play', 'hero-demo', 'pr-test-analyzer',
+  // Label and API field names, not skill references.
+  'needs-answers', 'needs-triage', 'ready-for-agent', 'blocked-by', 'start_line',
 ]);
 
 function read(p) {
@@ -82,11 +84,23 @@ function audit(skillPath) {
   else add('pass', 'skill-length', `${lines.length} lines`);
 
   // 3) L1 description specificity: must name trigger context + output, not be generic.
+  //    A description passes when it is substantial AND names either a station
+  //    context or an explicit "Use when ..." trigger. Requiring one narrow noun
+  //    (Station/issue/plan) rejects valid descriptions that trigger on user
+  //    phrasing instead, e.g. skill-workbench's "Use when the user says ...".
   const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  const desc = fm ? (fm[1].match(/description:\s*(.+)/) || [])[1] || '' : '';
-  const specificity = /(Station|issue|plan|GitHub|tasks\/plan\.md)/i.test(desc) && desc.length > 80;
+  // `description` may be the last frontmatter key, so terminate on the next
+  // key OR the end of the block.
+  const desc = fm ? (fm[1].match(/description:\s*([\s\S]*?)\r?\n[a-zA-Z][\w-]*:/)
+    || fm[1].match(/description:\s*([^\r\n]*)/)
+    || [])[1] || '' : '';
+  const descText = desc.trim().replace(/^["']|["']$/g, '');
+  const specificity =
+    descText.length > 80 &&
+    (/(Station|issue|plan|GitHub|tasks\/plan\.md)/i.test(descText) ||
+      /(Use when|when the user|trigger)/i.test(descText));
   add(specificity ? 'pass' : 'fail', 'l1-description',
-    specificity ? 'Description names trigger context and outputs' : `Description too generic or short: "${desc.slice(0, 120)}"`);
+    specificity ? 'Description names trigger context and outputs' : `Description too generic or short: "${descText.slice(0, 120)}"`);
 
   // 4) Structured sections (Anthropic: distinct sections).
   const sections = (text.match(/^#{1,3} /gm) || []).length;
@@ -103,6 +117,22 @@ function audit(skillPath) {
     /```/.test(text) ? 'Has a fenced example (report template)' : 'No canonical example');
 
   return { skill: skillPath, lines: lines.length, findings };
+}
+
+/**
+ * The station contract plus its on-demand references. A skill that splits its
+ * detail into references/ is still one contract: an assertion about Step 4 must
+ * pass whether the prose lives in SKILL.md or in the file that step points at.
+ */
+function corpus(skillPath) {
+  let text = read(skillPath);
+  const refs = path.join(path.dirname(skillPath), 'references');
+  let entries = [];
+  try { entries = fs.readdirSync(refs).filter((f) => /\.md$/i.test(f)).sort(); } catch { return text; }
+  for (const f of entries) {
+    try { text += '\n\n' + read(path.join(refs, f)); } catch { /* unreadable ref is not fatal here */ }
+  }
+  return text;
 }
 
 function extractTemplate(text) {
@@ -194,7 +224,7 @@ function main() {
   if (cmd === 'case') {
     const evals = JSON.parse(read(arg('evals')));
     const skillArg = arg('skill');
-    const text = read(skillArg);
+    const text = corpus(skillArg);
     const tpl = extractTemplateFor(skillArg, text);
     const wanted = arg('id');
     const cases = evals.evals.filter((e) => !wanted || e.id === wanted);

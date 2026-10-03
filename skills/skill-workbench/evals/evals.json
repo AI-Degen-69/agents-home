@@ -20,6 +20,22 @@
         "Nothing in the report is described as chosen or selected before the operator answers — the wording is מומלץ (recommended)",
         "The inventory command exits 0 and its JSON has counts matching the grouped report",
         "No deploy commands are run or printed as executed"
+      ],
+      "static_assertions": [
+        {
+          "id": "validator-is-the-gate",
+          "type": "regex",
+          "pattern": "`scripts/validate\\.js`",
+          "must_match": true,
+          "why": "validate-all runs the validator as its gate"
+        },
+        {
+          "id": "reports-per-skill",
+          "type": "regex",
+          "pattern": "ציון מספרי|פורמט ממצאים",
+          "must_match": true,
+          "why": "the report enumerates findings in the mandatory CodeRabbit-style format"
+        }
       ]
     },
     {
@@ -42,6 +58,22 @@
         "The routing is one concise line stating what happens next and who does it, including any blocking approval",
         "The helper-integrity gate ran the validator on the routed helper before hand-off",
         "Proactive proposals, if any, are presented for adopt/defer/drop and none were applied silently"
+      ],
+      "static_assertions": [
+        {
+          "id": "gate-before-routing",
+          "type": "regex",
+          "pattern": "gate|Gate",
+          "must_match": true,
+          "why": "routing is gated"
+        },
+        {
+          "id": "routes-to-helper",
+          "type": "regex",
+          "pattern": "skill-creator|skill-refinement-loop",
+          "must_match": true,
+          "why": "deep work routes to the right helper skill"
+        }
       ]
     },
     {
@@ -58,6 +90,15 @@
         "Before the final summary the validator is re-run clean and the scorer is re-run on the skill",
         "The final summary includes the usage example section and is stated to close the workbench for the skill",
         "The progress notes open with a Hebrew word and use isolated backticks for Latin terms"
+      ],
+      "static_assertions": [
+        {
+          "id": "one-at-a-time",
+          "type": "regex",
+          "pattern": "ממצאים נכתבים אחד־אחד",
+          "must_match": true,
+          "why": "findings are written and handled one at a time, not batched blind"
+        }
       ]
     },
     {
@@ -71,6 +112,15 @@
         "The summary ends with exactly one next-step recommendation",
         "The summary includes a one-sentence usage example of the worked-on skill",
         "The summary is presented only because all findings and open questions are already addressed, not mid-flow"
+      ],
+      "static_assertions": [
+        {
+          "id": "summary-plain",
+          "type": "regex",
+          "pattern": "no «סיכום סופי» before Step D",
+          "must_match": true,
+          "why": "the closing summary is gated on Step D being done, never emitted early"
+        }
       ]
     },
     {
@@ -83,6 +133,15 @@
         "No skill is routed and no helper hand-off occurs",
         "No deploy/link commands are executed or printed as executed",
         "No files are modified by this request"
+      ],
+      "static_assertions": [
+        {
+          "id": "validate-only-has-no-side-effects",
+          "type": "regex",
+          "pattern": "validation report only.{0,80}no scorecard|no audit, no routing, no deploy",
+          "must_match": true,
+          "why": "validate-only must not escalate into a full run"
+        }
       ]
     },
     {
@@ -96,6 +155,15 @@
         "No scorecard is presented — the scorecard comes only from score.js and is not part of validate-only mode",
         "No audit findings, routing decision, or deploy action is produced",
         "The skill does not escalate validate-only into a full workbench run on its own"
+      ],
+      "static_assertions": [
+        {
+          "id": "no-scorecard-in-validate-only",
+          "type": "regex",
+          "pattern": "no scorecard",
+          "must_match": true,
+          "why": "validate-only produces no scorecard"
+        }
       ]
     },
     {
@@ -109,6 +177,15 @@
         "The final summary states the waiver explicitly instead of reporting the skill as clean",
         "The word clean is not used to describe the waived finding",
         "The operator's decision is recorded before the final summary is presented"
+      ],
+      "static_assertions": [
+        {
+          "id": "waiver-not-clean",
+          "type": "regex",
+          "pattern": "waiver|residual",
+          "must_match": true,
+          "why": "a recorded residual finding is never reported as clean"
+        }
       ]
     },
     {
@@ -121,6 +198,22 @@
         "Any metric below 100 is accompanied by a line explaining what is costing it",
         "No metric, weight, or total is invented or rounded differently from the scorer output",
         "The scorecard is a separate block from the short status lines, not merged into them"
+      ],
+      "static_assertions": [
+        {
+          "id": "scorecard-is-real-output",
+          "type": "regex",
+          "pattern": "actual output",
+          "must_match": true,
+          "why": "the scorecard shown to the operator is this command's actual output"
+        },
+        {
+          "id": "explain-below-100",
+          "type": "regex",
+          "pattern": "below 100 is explained",
+          "must_match": true,
+          "why": "every metric below 100 is explained, never shown bare"
+        }
       ]
     }
   ]

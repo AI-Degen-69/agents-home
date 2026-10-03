@@ -96,7 +96,59 @@ The comment is false: `references` + `evals` yields `2 + 1 = 3`, i.e. **60/100**
 - Depends on: T1, T2, T3.
 - Verification: `--all` exits 0, or the single waiver's skill + check + tokens + reason recorded verbatim; every in-scope overall >= baseline; `git status --short` lists only in-scope paths.
 
-Checkpoints: after T1 — `--all` exits 0 with shadcn untouched; after T2 — all 10 stations validate clean at baseline-or-better; after T3 — all 11 graders execute green.
+## T4 — Findings ledger (all rows verified by executed command, 2026-10-03)
+
+| # | Skill | Evidence | Outcome |
+|---|---|---|---|
+| 1 | shadcn | `validate.js --all` → `phantom-skill-refs` on 14 Tailwind/ARIA/package tokens | **Fixed** — `isNonSkillVocabulary()` by shape, not prefix; `validate.test.js` proves `bg-cleanup`/`data-import-skill` still fail |
+| 2 | (workbench) | `DEFAULT_SKILLS_ROOT` hardcoded `'C:/Users/Tiger/.agents/skills'` | **Fixed** — derived from `__dirname`; `inventory.js` imports it |
+| 3 | (workbench) | `parseFrontmatter` kept the block-scalar indicator as the value: `description: >` parsed as `">"` for `agent-reach`, `humanizer`, `orca-cli`, `orchestration`, `vercel-composition-patterns`, `vercel-react-native-skills` | **Fixed** — indicators stripped, folded scalars joined |
+| 4 | (workbench) | `parseFrontmatter` truncated `description: one` + `  two` to `"one"` | **Fixed** — `validate.test.js` covers both shapes |
+| 5 | (workbench) | `score.js:70` comment claimed full marks at two folders; the real formula gives `references`+`evals` = 3/5 = 60 | **Fixed** — comment corrected; the 60→100 rise came from adding real graders, not from touching the scorer |
+| 6 | pipeline-triage | Rows 10-11 routed dirt to II/III by size with no origin check | **Fixed** — unknown-origin stop rule precedes the table |
+| 7 | i-pick-issue | Step 1 claimed the issue, then delegated to II which claims again | **Fixed** — II owns the first write |
+| 8 | iii-build-plan | No preconditions: could build on the wrong branch or restart a finished plan | **Fixed** — branch, dirt-origin, resume |
+| 9 | iv-review-build-and-pr | Shipped waits were 60s; the prose said 15s (lines 163/169/172/175) | **Fixed** — all 60s |
+| 10 | v-babysit-pr-and-merge | Artifact check was one narrow `git ls-files` grep, narrower than VI's real discovery set | **Fixed** — full set; inconclusive ≠ skip |
+| 11 | vi-close-pipeline | No distinct blocked/incomplete outcome | **Fixed** — five named blocking classes |
+| 12 | present-pr | Claimed VI "suggests it after closeout" unconditionally | **Fixed** — three-way conditional handoff |
+| 13 | 6 skills | No `scripts/grade.js`; 24 static assertions never executed | **Fixed** — 6 graders added |
+| 14 | pipeline-triage, present-pr | 15 eval cases, **0** `static_assertions` — prose `expectations` only | **Fixed** — 36 assertions added |
+| 15 | skill-workbench | 8 cases, 0 assertions, and no grader at all | **Fixed** — grader + 11 assertions |
+| 16 | all graders | Resolver checked only `skills/`, so real personas (`tdd-guide`, `code-explorer`) read as phantom | **Fixed** — resolves against `agents/` too |
+| 17 | all graders | `max_template_lines` reported "template has -1 lines" — the Hebrew contract had moved to `references/`, unfixable from SKILL.md | **Fixed** — falls back to the referenced file |
+| 18 | ii-plan, v-babysit, vi-close, create-issue | 9 assertions referenced prose that exists nowhere in the repo (verified: phrases return NOWHERE) | **Fixed** — repointed at shipped templates, intent preserved |
+| 19 | l1-description check | Required `Station|issue|plan|GitHub`; rejected valid "Use when the user says…" descriptions | **Fixed** — accepts an explicit trigger phrase |
+
+**Pre-existing, not introduced here:** findings 17 and 18 produced 18 failing assertions *at HEAD* — verified by running the committed graders against committed files. Now 0.
+
+## T4 — Executed gates (observed, not predicted)
+
+| Gate | Observed |
+|---|---|
+| `validate.js --all` | exit **0** — 90 skills, 0 fail, 0 warn |
+| `validate.js --all "$PWD/skills" --json` | exit **0** |
+| `validate.test.js` | **12/12 pass** |
+| `grade.js audit` × 11 | **0 fails** each |
+| `grade.js case` × 11 | **192 assertions, 192 passed, 0 failed** |
+| `score.js` × 11 | all **≥ baseline**; 8 skills rose 98 → 100 |
+| Body lines | all ≤ 250; `skill-workbench` 310 (ceiling ~340) |
+| Prompt coverage | 58 cases, **0** missing prompts |
+| Phantom negative test | `ghost-skill` **fails**, real persona `tdd-guide` **resolves** — exemption is enumerated, not blanket |
+| Scope | `git status` lists only in-scope skill files; no snapshot, no `iteration-1/`, no non-pipeline skill content |
+
+## T4 — Closeout
+
+All four tasks complete. No waivers were needed: every finding was fixed at the source
+and is now covered by an executable check. Zero regressions against `SPEC.md` baselines.
+
+Live `gh` assertions remain `not-run` by design — never executed against a real repository.
+
+NOTICED-BUT-NOT-TOUCHING: no new candidate found that is worth publishing. The stale
+assertions in finding 18 were fixed inside this issue's scope rather than deferred.
+
+Checkpoints held: after T1 `--all` exits 0 with shadcn untouched; after T2 all 10 stations
+validate clean at baseline-or-better; after T3 all 11 graders execute green.
 
 ## Findings ledger (T4 — every row is observed, not predicted)
 

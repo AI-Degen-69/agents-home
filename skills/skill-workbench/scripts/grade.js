@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Deterministic grader for the vi-close-pipeline refinement loop.
+ * Deterministic grader for the skill-workbench refinement loop.
  * Zero dependencies. Node >= 18.
  *
  * Subcommands:
@@ -31,6 +31,9 @@ const NON_SKILL_TOKENS = new Set([
   'html_url', 'step-play', 'hero-demo', 'pr-test-analyzer',
   // Label and API field names, not skill references.
   'needs-answers', 'needs-triage', 'ready-for-agent', 'blocked-by', 'start_line',
+  // score.js metric names, not skill references.
+  'spec-compliance', 'file-integrity', 'eval-readiness', 'size-discipline',
+  'self-containment',
 ]);
 
 function read(p) {
