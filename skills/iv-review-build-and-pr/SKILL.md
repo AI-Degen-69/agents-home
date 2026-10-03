@@ -101,7 +101,7 @@ Before applying fixes, run the Spec axis in full:
 1. Load the linked GitHub issue (`gh issue view <n> --comments`) and the plan (`tasks/plan.md`).
 2. Compare the diff against them and report, with the spec line quoted for every finding:
    - **Missing** — requirements the issue/plan asked for that are absent or partial.
-   - **Added-not-asked** — behavior in the diff that nothing requested (scope creep; the NOTICED-BUT-NOT-TOUCHING leftovers of Station III belong here — flag, don't silently keep).
+    - **Added-not-asked** — behavior in the diff that nothing requested (scope creep; the NOTICED-BUT-NOT-TOUCHING leftovers of Station III belong here — flag, don't silently keep). Review findings that are out of scope become `open` rows in `docs/issues/<id>-noticed-but-not-touching.md`; only Station VI (`vi-close-pipeline`) resolves them.
    - **Implemented-wrong** — requirements that look implemented but behave differently than specified.
 3. Spec-axis findings join the fix list (Step 2) with severity from operator impact. Spec axis runs **separately** from the quality axes — never merged or re-ranked into them: "follows every standard but implements the wrong thing" is not the same finding as "implements correctly but breaks standards".
 

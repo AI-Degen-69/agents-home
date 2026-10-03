@@ -32,7 +32,7 @@ atomic local commits, and simplification — no push, no PR here.
    perf / security / docs), implement with TDD, simplify, commit locally
    (`<type>(<scope>): <summary> (#<issue>)`), mark `[x]`.
 3. Out-of-scope findings become `NOTICED-BUT-NOT-TOUCHING` one-liners —
-   never silent side changes. Build errors route to resolver personas.
+   never silent side changes. Each one is an `open` row in the per-issue ledger; only Station VI resolves rows. Build errors route to resolver personas.
 4. Reports what's changed grouped by tag (new / changed / removed / fixed) — see the report template in `SKILL.md`.
 
 > Report rule: product changes only — no commits, hashes, tree state, tests, skill names, or file paths. Branch name stays as the work ID.

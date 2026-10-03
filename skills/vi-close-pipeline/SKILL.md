@@ -56,6 +56,7 @@ A candidate file is eligible for deletion **only when BOTH conditions hold**:
 2. **Research papers & findings:** `runs/.../research-papers/`, dated reports and benchmarks.
 3. **Active planning & backlog:** `TODO.md`, `ideas/`, active RFCs.
 4. **Permanent docs:** anything linked from `README.md` or indexed in project documentation.
+5. **NOTICED-BUT-NOT-TOUCHING ledger:** `docs/issues/<id>-noticed-but-not-touching.md` — the per-issue candidate record defined below; never pruned, even when its issue is closed.
 
 ---
 
@@ -95,6 +96,16 @@ Dead or zombie code tied to the merged work (unused modules, superseded APIs, or
 
 ---
 
+## 7B. Candidate Disposition — NOTICED-BUT-NOT-TOUCHING owner (Station VI)
+
+Station VI is the single end-to-end owner of NOTICED-BUT-NOT-TOUCHING candidates. Any discovering station only appends an `open` row to the ledger; only Station VI resolves rows.
+
+1. **Ledger:** `docs/issues/<id>-noticed-but-not-touching.md` — one Markdown table with columns `ID (N1, N2, …) | candidate (one line) | discovering station | evidence (path:line) | status | resolution`. Allowed statuses only: `open`, `published`, `duplicate`, `dismissed`. Each resolution is an issue reference (`#N`) or a dismissal reason. Absent ledger means zero candidates; a station creates the ledger only when recording its first candidate.
+2. **Disposition:** read the ledger and present each `open` row to the operator — one decision per row: publish, dismiss with a reason, or confirm a duplicate. Before offering publish, search existing issues with the tracker list command; on a probable duplicate propose `duplicate #N` for confirmation. On a publish decision invoke `create-issue` with the candidate plus provenance (`Found during #<id>`) and record the returned issue number. Merged PR, clean tree, and automation never replace operator approval; `defer` is not a resolution — undecided stays `open`.
+3. **Commit:** commit the ledger update alone (`chore: record noticed-but-not-touching disposition (#<id>)`); the Clean Exit Gate push sends it.
+
+---
+
 ## 8. The Clean Exit Gate (mandatory, last step)
 
 The pipeline is NOT closed until every check passes:
@@ -105,6 +116,7 @@ The pipeline is NOT closed until every check passes:
 4. `git status` → `up to date with 'origin/<base>'` (no ahead/behind).
 5. `git fetch --prune` → no dead remote branches; `git branch` → no leftover merged feature branches.
 6. Stashes: none related to this issue remain (list any foreign stashes in the report).
+7. NOTICED-BUT-NOT-TOUCHING ledger contains zero rows with status `open` (absent ledger counts as zero).
 
 If any check fails → fix it or escalate with the exact state. **Never declare closeout on a dirty or diverged folder.**
 
