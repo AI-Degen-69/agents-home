@@ -1,4 +1,4 @@
 - [x] T1 — Merge wip refactor as base, verify 9 templates + 9 pointers
 - [x] T2 — Rewrite Chat Reporting Contract from real templates (+IIIB, plain-prose pointer)
 - [x] T3 — Align What's-changed rule, table, and convention line
-- [ ] T4 — README cross-ref if needed + full acceptance battery
+- [x] T4 — README cross-ref if needed + full acceptance battery

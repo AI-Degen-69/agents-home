@@ -20,8 +20,8 @@ via links back to the canonical folder — **and the link type matters per harne
 ## Global Issue-to-PR Pipeline (Stations I–VI + system skills)
 
 The canonical delivery pipeline lives in numbered folders (`i-pick-issue` through `vi-close-pipeline`). **A numbered prefix means the skill is a step in the chain, invoked in order — I → II → III → IIIB → IV → V → VI.** Everything without a numeral is a system skill: the `pipeline-triage` state gate, the `create-issue` intake branch, and the ad-hoc `present-pr` visual presentation skill.
-Detailed documentation of the entire pipeline, station contracts, and Hebrew reporting is in:
-👉 [`issue-to-pr-skill-workflow.md`](../docs/issue-to-pr-skill-workflow.md)
+Detailed documentation of the entire pipeline and its reporting rules is in:
+👉 [`issue-to-pr-skill-workflow.md`](../docs/issue-to-pr-skill-workflow.md) — it summarizes the rules and points to each station's local-only template for the exact Hebrew shape.
 
 | Step | Canonical Name | Purpose |
 |---|---|---|---|

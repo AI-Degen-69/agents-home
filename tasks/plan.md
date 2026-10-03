@@ -76,7 +76,7 @@ never published)", and the recorded publication design strips only marked
   Helper: `documentation-and-adrs`.
   Depends on: T1.
   Verify: read-back of `:80-86`; `Select-String` for Hebrew chars in edited sections = 0.
-- [ ] **T4** (XS) `[Docs]` — Fix the README cross-reference (`:22-24`) only if
+- [x] **T4** (XS) `[Docs]` — Fix the README cross-reference (`:22-24`) only if
   "station contracts, and Hebrew reporting" now misleads; then run the full acceptance
   battery from the issue. Helper: none (mechanical check).
   Depends on: T2, T3.
