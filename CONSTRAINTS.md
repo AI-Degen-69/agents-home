@@ -6,7 +6,9 @@
   and `git diff --stat` showing only the allowed docs files.
 - Anti-cheat: no tests to skip, no assertions to delete, no linters to suppress.
 - Dependencies: no new external dependencies.
-- Scope: touch only `docs/issue-to-pr-skill-workflow.md` and, if its cross-reference
-  misleads, `skills/README.md`. Station `SKILL.md` files, `references/output-template.md`
+- Scope: product changes touch only `docs/issue-to-pr-skill-workflow.md` and, if its cross-reference
+  misleads, `skills/README.md`. Station working records (`CONSTRAINTS.md`, `tasks/plan.md`,
+  `tasks/todo.md`) are inherent per-issue files and ride along in the branch; they are not
+  product scope. Station `SKILL.md` files, `references/output-template.md`
   files, sync/mirror scripts, translations, and the `i-pick-issue` station stay unchanged.
 - No Hebrew template text is quoted or copied into the docs — English descriptions only.
