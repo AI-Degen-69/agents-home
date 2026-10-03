@@ -31,8 +31,9 @@ observed refused on issues #5 and #7 on this account. **Adopted:** nothing from 
    `Test-Path .coderabbit.yaml` → `False`; `git ls-files` lists only
    `config/coderabbit/.coderabbit.yaml`; the file's own header says CodeRabbit reads YAML only from
    the repo root or a central repo; and the resolved config annotates both `auto_title_*` keys as
-   `# Source: Organization UI (base)`. `README.md:119` ranks the repository file **above**
-   organization UI, so the annotation proves the file was never consulted.
+   `# Source: Organization UI (base)`. The playbook's **"Precedence (how values actually win)"**
+   section ranks the repository file **above** organization UI, so the annotation proves the file
+   was never consulted.
 3. *Should the sync-copy model be revisited?* → **Out of scope, per the issue.** The finding is
    recorded in the playbook with its consequence named; `sync-coderabbit.ps1` is untouched.
 
@@ -46,7 +47,7 @@ observed refused on issues #5 and #7 on this account. **Adopted:** nothing from 
 
 ### T1 [x] [S] [Docs/Research] — Replace the three disproved claims with PR #23 measurements
 
-- **Target:** `config/coderabbit/README.md:80-92` ("Observed behaviour on this account")
+- **Target:** `config/coderabbit/README.md` → **"Observed behaviour on this account"**
 - **Build:** rewrite the three false bullets against the measured record, keeping the framing that
   these are dated observations on this account:
   - `:86` "The private repo is the untested path… summarization-only" → replace with the PR #23
@@ -136,7 +137,8 @@ observed refused on issues #5 and #7 on this account. **Adopted:** nothing from 
 
 ## Improvement proposal (adopted by default — edge-case hardening)
 
-**Evidence, verbatim** — `config/coderabbit/README.md:86`:
+**Evidence, verbatim** — the retracted bullet in `config/coderabbit/README.md` → **"Observed
+behaviour on this account"** (removed by this issue; quoted here as the pre-#24 text):
 
 > The private repo is the untested path.
 

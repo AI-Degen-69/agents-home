@@ -3,7 +3,8 @@
 Branch: i24/correct-the-coderabbit-playbook-pr-23-disproved-three | Issue: #24
 
 - [x] **T1** [S] [Docs/Research] — Replace the three disproved claims in
-      `config/coderabbit/README.md:80-92` with the PR #23 measurements. Verify: `untested path`
+      `config/coderabbit/README.md` → **"Observed behaviour on this account"** with the PR #23
+      measurements. Verify: `untested path`
       gone, `PR #23` present, still-valid passages intact.
 - [x] **T2** [M] [Docs/Research] — Record the config-source finding (no root `.coderabbit.yaml`;
       `reviews.*` resolves from Organization UI) and its consequence for the sync model. Verify:

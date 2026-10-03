@@ -15,9 +15,9 @@ Locked by Station II (`ii-plan-issue`). Station III must respect every line.
 - **Forbidden edits:** every `skills/**` file, `agents/**`, `scripts/**` (including
   `sync-coderabbit.ps1` — the finding is recorded, the model is not redesigned), and
   `docs/issue-to-pr-skill-workflow.md`.
-- **Preserved content:** the rate-limit figures and "what spends a review" table
-  (`README.md:73-78, 196-210`), the command tables, and the OSS-vs-UI precedence discussion stay.
-  Only the three disproved claims and their consequences change.
+- **Preserved content:** the rate-limit figures (the "Free-tier contradiction is retired" block),
+  the "What spends a review — and what does not" table, the command tables, and the OSS-vs-UI
+  precedence discussion stay. Only the three disproved claims and their consequences change.
 - **Doc-truth invariant:** the rewritten section must keep its "measured on" framing. No claim may
   be stated as general truth when it is one dated observation on one repository.
 - **No new dependency, no code:** Markdown-only change set.

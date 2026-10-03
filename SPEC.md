@@ -14,11 +14,14 @@ Correct the record so the next station plans against measurements, not assumptio
 
 ## What PR #23 measured (all read from live artifacts, not inferred)
 
-| Claim in the playbook | Line | Measured on PR #23 | Verdict |
+| Claim in the playbook | Line (pre-#24) | Measured on PR #23 | Verdict |
 |---|---|---|---|
 | "The private repo is the untested path… summarization-only with no inline findings" | `README.md:86` | **5 inline findings** + a full walkthrough review | **FALSE** |
 | "This account is Free with OSS access" | `README.md:84` | run config reported **`Plan: Advanced`** | **FALSE for PR reviews** |
 | "Chat-dependent commands are refused on this account… Expect the same for `configuration`" | `README.md:87` | `@coderabbitai configuration` **returned the full resolved config** | **FALSE** |
+
+(Line numbers in this table are the **pre-#24** positions of the retracted claims. They are kept
+only to identify what was rewritten; live anchors are section names, not line numbers.)
 
 Evidence sources: PR #23 review-in-progress comment (run config), and the resolved-config reply
 at https://github.com/AI-Degen-69/agents-home/pull/23#issuecomment-5972661199 (466 lines of YAML).
@@ -28,9 +31,10 @@ at https://github.com/AI-Degen-69/agents-home/pull/23#issuecomment-5972661199 (4
 The issue asked whether `reviews.*` comes from Organization UI instead of the committed file.
 **It does, and the reason is concrete:**
 
-- `config/coderabbit/README.md:119` ranks the sources: `… organization global overrides →
-  **repository file** → central coderabbit repo → repository UI → **organization UI** → …`.
-  A repository file therefore *outranks* organization UI — so if the file were being read, the
+- `config/coderabbit/README.md` → **"Precedence (how values actually win)"** ranks the sources:
+  `… organization global overrides → **repository file** → central coderabbit repo → repository UI
+  → **organization UI** → …`. A repository file therefore *outranks* organization UI — so if the
+  file were being read, the
   resolved config would name it.
 - The resolved config instead annotates both keys we care about as
   `# Source: Organization UI (base)`:
