@@ -54,6 +54,12 @@ foreach ($repo in $targets) {
         continue
     }
     $dest = Join-Path $repo '.coderabbit.yaml'
+    # agents-home IS the canonical home since #24, so targeting it here would
+    # make source and destination the same file and Copy-Item would fail.
+    if ([System.IO.Path]::GetFullPath($dest) -eq [System.IO.Path]::GetFullPath($canonical)) {
+        Write-Host "Skip (this is the canonical home repo): $repo"
+        continue
+    }
     if (Test-Path $dest) {
         $existing = [System.IO.File]::ReadAllBytes($dest)
         $identical = $existing.Length -eq $canonicalBytes.Length
