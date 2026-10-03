@@ -160,6 +160,20 @@ Preconditions for the handover, both required: the repo's `.coderabbit.yaml` set
 If either is missing, CodeRabbit cannot write a compliant title — say so in the handoff instead of
 silently falling back to a hand-written title.
 
+**Allowance pre-check (plan-gated — know what it costs before you spend it):**
+`@coderabbitai rate limit` reports the remaining review allowance and when the next review frees
+up **without consuming a review**. It is worth posting when the quota is thin — but it is a
+**chat-gated command**: on the Free plan it is refused with the "upgrade to CodeRabbit Essentials"
+notice, and that refusal is its own outcome, **never** "zero allowance". On a paid tier, branch on
+the answer (allowance available → trigger now; no allowance → carry the reported minutes into the
+handoff instead of spending a 60-second wait on a trigger that will be declined). On Free, skip the
+comment entirely and read the allowance from the trigger acknowledgement below — it carries the same
+signal. This is a pre-check only; it does not replace the post-trigger ack.
+
+```bash
+gh pr comment <pr_number> --body "@coderabbitai rate limit"   # Free: declines — skip it
+```
+
 Immediately post the review trigger comment (**post exactly once** — pick ONE of the two forms below, never both):
 
 ```bash
@@ -175,8 +189,9 @@ gh pr comment <pr_number> --body "@coderabbitai review" 2>&1 | Select-Object -La
 **Wait for the trigger acknowledgement (MANDATORY before handoff):** Do not conclude the station on a blind post. Post the trigger, wait **60s**, then read CodeRabbit's reply to the trigger comment once, then classify it:
 
 - `Review triggered.` ("Action performed" reply) — review started. Proceed to handoff.
+- **Summary-only review** — an acknowledgement with a high-level summary and **no inline findings**. This is the expected shape on a **private repo on the Free plan**, where PR reviews are summarization-only. It is **not** a pass and **not** a quality signal: hand off stating plainly that CodeRabbit produced no findings here and that verification rests on the local gates (OCR delegation, type-matched reviewers, Spec axis, targeted tests). Never imply a bot review approved the code. Public repos and paid tiers do produce inline findings, so read the reply rather than assuming this shape.
 - Rate-limit reply (`## Review limit reached` / `rate limited by coderabbit.ai` / `Next included review available in N minutes`) — review NOT started. Record the reported minutes and carry them into the handoff report so the operator (and Station V) know the quota window.
-- Any other refusal/skip notice (e.g. "does not re-review already reviewed commits") — record verbatim; it may mean incremental review found nothing new, which is itself a signal Station V must read (not a silent pass).
+- Any other refusal/skip notice (e.g. "does not re-review already reviewed commits", or the Free-plan "upgrade to CodeRabbit Essentials" notice on a chat-gated command) — record verbatim; it may mean incremental review found nothing new, which is itself a signal Station V must read (not a silent pass). An upgrade refusal is a plan gate, not a quota reading.
 - No reply within ~60s — report `trigger acknowledgement not received` honestly; do not claim the review started.
 - **Ack polling (PowerShell, 60s wait, matches the real rate-limit header):** only when the trigger was already posted via the snippet above — do NOT re-post:
 
@@ -199,7 +214,7 @@ gh api repos/:owner/:repo/issues/<pr_number>/comments --jq '[.[] | select(.user.
 
   Report shape: `Trigger: <html_url>` / `CodeRabbit reply: <html_url>` (e.g. `https://github.com/<owner>/<repo>/pull/<n>#issuecomment-<id>`). For the no-reply case, post the trigger-comment link alone.
 
-**Handoff:** Conclude Station IV and recommend `v-babysit-pr-and-merge`. The handoff report MUST state the trigger status in one line: review started / rate limited (N minutes) / other reply (quoted) / no acknowledgement.
+**Handoff:** Conclude Station IV and recommend `v-babysit-pr-and-merge`. The handoff report MUST state the trigger status in one line, choosing exactly one of: *review started* / *rate limited (N minutes)* / **summary-only review — no findings expected on a private Free repo; verification rests on the local gates** / *other reply (quoted)* / *no acknowledgement*. Station V reads this line to classify the review, so it must never present a summary-only review as a pass.
 
 ---
 
