@@ -6,7 +6,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const DEFAULT_SKILLS_ROOT = 'C:/Users/Tiger/.agents/skills';
+// Default skills root: `SKILLS_ROOT` wins, else the `skills/` folder this script
+// lives in (skills/<workbench>/scripts/ → skills/). Portable by construction —
+// the same pattern the per-skill graders use.
+const DEFAULT_SKILLS_ROOT = process.env.SKILLS_ROOT ||
+  path.resolve(__dirname, '..', '..');
 
 function read(p) { return fs.readFileSync(p, 'utf8'); }
 
@@ -24,11 +28,20 @@ function parseFrontmatter(text) {
     if (top) {
       currentKey = top[1];
       let value = top[2].trim();
-      // Folded scalar: value continues on indented lines (YAML multi-line).
-      if (value === '') {
-        const parts = [];
+      // YAML block scalar indicator: `key: >`, `key: |`, with optional chomping
+      // (`>-`, `|+`). The indicator is not part of the value; the real text is
+      // on the following indented lines.
+      const blockScalar = value.match(/^([>|])([+-]?)$/);
+      if (blockScalar) value = '';
+      // Folded scalar: the value continues across indented lines. Two shapes are
+      // supported — `key: >` (empty inline value) and `key: text` continued on
+      // the next indented line. Indented lines that are themselves nested keys
+      // (`  sub: v`) are left to the nested branch below.
+      {
+        const parts = value ? [value] : [];
         let j = i + 1;
-        while (j < lines.length && /^[ \t]/.test(lines[j]) && lines[j].trim() !== '' && !/^\s*#/.test(lines[j])) {
+        while (j < lines.length && /^[ \t]/.test(lines[j]) && lines[j].trim() !== ''
+          && !/^\s*#/.test(lines[j]) && !/^\s+[a-zA-Z][\w-]*:/.test(lines[j])) {
           parts.push(lines[j].trim());
           j++;
         }
@@ -101,6 +114,76 @@ const NON_SKILL_TOKENS = new Set([
 // Tokens that look like role names rather than skills.
 const ROLE_SUFFIX_RE = /-(reviewer|architect)$/;
 
+/**
+ * Narrow vocabulary shapes that read as kebab-case but are never skill names.
+ * A token is exempt only when it matches a *known shape* — never by prefix alone,
+ * so a typo like `bg-cleanup` or `data-import-skill` still fails the check.
+ */
+
+// Tailwind utility prefix → the token is a class, not a skill.
+const TAILWIND_PREFIXES = new Set([
+  'bg', 'text', 'border', 'ring', 'shadow', 'outline', 'fill', 'stroke', 'from',
+  'via', 'to', 'divide', 'placeholder', 'accent', 'caret', 'decoration', 'size',
+  'animate', 'transition', 'duration', 'delay', 'ease', 'order', 'z',
+]);
+
+// Tailwind suffix that names a semantic design token (may be two words, e.g. muted-foreground).
+const TAILWIND_SEMANTIC_SUFFIX = /^(primary|secondary|accent|muted|background|foreground|card|card-foreground|popover|popover-foreground|input|ring|destructive|success|warning|info|destructive-foreground|primary-foreground|secondary-foreground|muted-foreground|accent-foreground|none|transparent|current|inherit|full|auto|xs|sm|md|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|pulse|spin|ping|bounce|plus|minus|check|x|default|destructive\/10)$/;
+
+// Tailwind suffix that names a palette colour, optionally with a scale step.
+const TAILWIND_COLOR_SUFFIX = /^(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|slate|gray|zinc|neutral|stone|black|white)(-(50|100|200|300|400|500|600|700|800|900|950))?$/;
+
+// Standard WAI-ARIA attributes.
+const ARIA_ATTRS = new Set([
+  'aria-activedescendant', 'aria-atomic', 'aria-autocomplete', 'aria-busy',
+  'aria-checked', 'aria-colcount', 'aria-colindex', 'aria-colspan', 'aria-controls',
+  'aria-current', 'aria-describedby', 'aria-details', 'aria-disabled', 'aria-dropeffect',
+  'aria-errormessage', 'aria-expanded', 'aria-flowto', 'aria-grabbed', 'aria-haspopup',
+  'aria-hidden', 'aria-invalid', 'aria-keyshortcuts', 'aria-label', 'aria-labelledby',
+  'aria-level', 'aria-live', 'aria-modal', 'aria-multiline', 'aria-multiselectable',
+  'aria-orientation', 'aria-owns', 'aria-placeholder', 'aria-posinset', 'aria-pressed',
+  'aria-readonly', 'aria-relevant', 'aria-required', 'aria-roledescription', 'aria-rowcount',
+  'aria-rowindex', 'aria-rowspan', 'aria-selected', 'aria-setsize', 'aria-sort', 'aria-valuemax',
+  'aria-valuemin', 'aria-valuenow', 'aria-valuetext',
+]);
+
+// Component-state data-* attributes, not references to a data skill.
+const DATA_STATE_ATTRS = new Set([
+  'data-invalid', 'data-valid', 'data-disabled', 'data-enabled', 'data-loading',
+  'data-checked', 'data-unchecked', 'data-selected', 'data-open', 'data-closed',
+  'data-active', 'data-focus', 'data-hover', 'data-icon', 'data-state', 'data-slot',
+  'data-orientation', 'data-side', 'data-collapsed', 'data-hidden', 'data-visible',
+]);
+
+// CSS property names that hyphenate.
+const CSS_PROPERTIES = new Set([
+  'z-index', 'line-height', 'max-width', 'min-width', 'max-height', 'min-height',
+  'font-size', 'font-weight', 'word-break', 'white-space', 'overflow-wrap',
+  'text-align', 'flex-grow', 'flex-shrink', 'grid-area', 'aspect-ratio',
+]);
+
+// npm packages commonly named in frontmatter/design-system prose.
+const KNOWN_PACKAGES = new Set([
+  'lucide-react', 'react-router', 'react-router-dom', 'clsx', 'tailwind-merge',
+  'class-variance-authority', 'next-themes', 'date-fns', 'react-day-picker',
+]);
+
+function isNonSkillVocabulary(token) {
+  if (ARIA_ATTRS.has(token)) return true;
+  if (DATA_STATE_ATTRS.has(token)) return true;
+  if (CSS_PROPERTIES.has(token)) return true;
+  if (KNOWN_PACKAGES.has(token)) return true;
+
+  const parts = token.split('-');
+  if (parts.length < 2) return false;
+  const prefix = parts[0];
+  if (!TAILWIND_PREFIXES.has(prefix)) return false;
+  const suffix = parts.slice(1).join('-');
+  return TAILWIND_SEMANTIC_SUFFIX.test(suffix) ||
+    TAILWIND_COLOR_SUFFIX.test(suffix) ||
+    /^\d+$/.test(suffix); // size-4, size-10, top-2 …
+}
+
 /** Basenames (extension-stripped) of every file in the skill folder, any depth. */
 function ownFileBasenames(skillDir) {
   const names = new Set();
@@ -140,6 +223,7 @@ function phantomSkillRefs(text, skillDir, skillsRoot) {
   return candidates.filter((t) => {
     if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)+$/.test(t)) return false;
     if (NON_SKILL_TOKENS.has(t) || ROLE_SUFFIX_RE.test(t)) return false;
+    if (isNonSkillVocabulary(t)) return false;
     if (knownNonSkill.has(t)) return false;
     if (own.has(t)) return false; // rule slugs / script names of this very skill
     const p = path.join(skillsRoot, t);
@@ -175,27 +259,36 @@ function validateSkill(skillDir, opts) {
   if (!fm) add('fail', 'fm-present', 'SKILL.md has no YAML frontmatter (--- ... ---)');
   else add('pass', 'fm-present', 'Frontmatter present');
 
+  // Without frontmatter every remaining frontmatter-dependent check would read
+  // `fm.name` off null and throw. Report the one real finding and stop here;
+  // body-length, file-refs and phantom-skill-refs still run below.
+  if (!fm) {
+    add('warn', 'fm-skipped', 'Frontmatter-dependent checks (fm-name-valid, fm-name-matches, fm-desc-nonempty, fm-compat-len) skipped: no frontmatter to read');
+  }
+
   // fm-name-valid
-  const name = typeof fm.name === 'string' ? fm.name : '';
-  const nameOk = ( /^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(name) || /^[a-z0-9]+$/.test(name) )
-    && name.length >= 1 && name.length <= 64 && !name.includes('--');
-  if (!nameOk) {
+  const name = fm && typeof fm.name === 'string' ? fm.name : '';
+  const nameOk = fm && ( ( /^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(name) || /^[a-z0-9]+$/.test(name) )
+    && name.length >= 1 && name.length <= 64 && !name.includes('--') );
+  if (fm && !nameOk) {
     add('fail', 'fm-name-valid', `name "${name}" violates spec (1-64 chars, lowercase a-z/0-9/hyphens, no lead/trail/double hyphen)`);
-  } else {
+  } else if (fm) {
     add('pass', 'fm-name-valid', `name "${name}" is spec-valid`);
   }
 
   // fm-name-matches
   const dirName = path.basename(skillDir);
-  if (name && name !== dirName) {
+  if (fm && name && name !== dirName) {
     add('fail', 'fm-name-matches', `name "${name}" does not match folder name "${dirName}"`);
-  } else if (name) {
+  } else if (fm && name) {
     add('pass', 'fm-name-matches', `name matches folder "${dirName}"`);
   }
 
   // fm-desc-nonempty
-  const desc = typeof fm.description === 'string' ? fm.description : '';
-  if (!desc || desc.length === 0) {
+  const desc = fm && typeof fm.description === 'string' ? fm.description : '';
+  if (!fm) {
+    // no finding — fm-present already failed and fm-skipped explains the gap
+  } else if (desc.length === 0) {
     add('fail', 'fm-desc-nonempty', 'description is missing or empty');
   } else if (desc.length > 1024) {
     add('fail', 'fm-desc-nonempty', `description is ${desc.length} chars (spec max 1024)`);
@@ -206,8 +299,10 @@ function validateSkill(skillDir, opts) {
   }
 
   // fm-compat-len
-  const compat = typeof fm.compatibility === 'string' ? fm.compatibility : '';
-  if (compat && compat.length > 500) {
+  const compat = fm && typeof fm.compatibility === 'string' ? fm.compatibility : '';
+  if (!fm) {
+    // no finding — fm-skipped already covers it
+  } else if (compat.length > 500) {
     add('fail', 'fm-compat-len', `compatibility is ${compat.length} chars (spec max 500)`);
   } else if (compat) {
     add('pass', 'fm-compat-len', `compatibility ${compat.length} chars`);
@@ -311,4 +406,4 @@ function validateDocs(docsRoot, opts) {
 
 function runOn(dir, skillsRoot) { return validateSkill(dir, { skillsRoot }); }
 
-module.exports = { validateSkill, validateDocs, findDocFiles, runOn, parseFrontmatter, kebabCandidates, phantomSkillRefs, DEFAULT_SKILLS_ROOT };
+module.exports = { validateSkill, validateDocs, findDocFiles, runOn, parseFrontmatter, kebabCandidates, phantomSkillRefs, isNonSkillVocabulary, DEFAULT_SKILLS_ROOT };

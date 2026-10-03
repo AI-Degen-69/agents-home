@@ -1,63 +1,106 @@
-Branch: i19/give-noticed-but-not-touching-candidates-an-owner | Issue: #19
+Branch: i18/audit-pipeline-station-skills-and-fix-findings-plus-evals | Issue: #18
 
-# Plan — Issue #19: Give NOTICED-BUT-NOT-TOUCHING candidates an owner
+# Plan — Issue #18: Audit pipeline station skills with skill-workbench and fix findings plus evals
+
+> Reconciliation note: this file previously held the completed Issue #19 plan (all tasks `[x]`,
+> merged as PR #21 / `ac01d5f`). Issue #19 is closed and its work landed, so the plan is replaced.
+> The full #19 plan remains in git history at `tasks/plan.md` on `main`.
 
 ## Stack & tier
 
-- Stack: Markdown skill docs + Node validator scripts (`skills/skill-workbench/scripts/validate.js`) + PowerShell automation. No app runtime.
-- Tier: **Standard** — 4–5 doc files, one architectural decision (owner = Station VI).
-- Task type: **Docs** (primary). Verification: validator + `git grep` acceptance, no browser.
+- Stack: Markdown skill docs + zero-dependency Node scripts (`skills/skill-workbench/scripts/*.js`, `skills/*/scripts/grade.js`). No app runtime, no installed test framework — the repo's test surface is `node:test`.
+- Tier: **Large** — cross-cutting: 10 pipeline skills + skill-workbench, validator/scorer/inventory scripts, 11 eval sets, plus new `node:test` coverage. One architectural decision (where the validator's skills root comes from).
+- Task type: **Code** (primary: validator + scorer + grader scripts) + **Docs** (station contracts) + **Design** (eval/audit contract reconciliation).
 
 ## CodeRabbit plan intake (read once; echo ignored)
 
-- Adopted: Station VI owns candidates end to end; durable ledger at `docs/issues/<id>-noticed-but-not-touching.md` with table (ID N1…, candidate, discovering station, evidence `path:line`, status, resolution); statuses `open/published/duplicate/dismissed`; absent-ledger = zero candidates; open rows block the Clean Exit Gate; operator confirms publish/dismiss/duplicate per row; duplicate search before publish via tracker list command; `create-issue` invoked only on publish approval; snapshots excluded from owner-language edits.
-- Rejected: 4-task split (Tasks 1.1–1.4) merged into 3 vertical tasks below; new `README.md` edits beyond one line dropped (keep minimal); no new abstraction files.
-- `[UNVERIFIED]`: exact line numbers cited in the CodeRabbit comment (`SKILL.md:52–58`, `:98–109`, `:113–130`, workflow `:59`, `:169–175`, `:80–86`) — verified against live files at plan time; Station III must re-check anchors before editing.
+- **Adopted:** Phase 2 shape (portable root → frontmatter guard → narrow phantom matcher → `node:test` regression → score.js comment) as T1; Phase 3 (workbench doc/eval reconciliation) folded into T3; Phase 4/5 station findings condensed into T2 (contracts) + T3 (evals); Phase 6 final gates as T4. Design Choice 1 (clean baseline) already satisfied. Design Choice 2 (tune the validator, keep the waiver only as fallback) adopted.
+- **Rejected:** its 6 phases / 20 tasks — over-split for 4 atomic slices (Rule 4). Its "keep the workbench body at or below about 330 lines" — the budget already lives in `CONSTRAINTS.md`. Its "replace the stale `playwright-cli.*preferred` check" — verified live at `skills/iv-review-build-and-pr/evals/evals.json:39`; kept, folded into T2/T3.
+- **`[UNVERIFIED]` / stale:** CodeRabbit claims a `pipeline-triage` baseline of 96 and two typos — a "Pipline Triage" heading and `/vi-close-pipline`. Executed `score.js` says **98**, and `search_codebase` for `Pipline` and `vi-close-pipline` returns **no results**. All three claims are stale; Station III must not act on them.
+- **Re-verify before editing:** every file:line CodeRabbit cites (`validate-lib.js:9`, `score.js:66-75`, `inventory.js:22`, `iv-review-build-and-pr/SKILL.md:163`) was spot-checked at plan time; Station III re-checks anchors before editing.
 
 ## Open questions — resolved from code (no operator ask)
 
-1. Publish immediately or queue for approval? → **Queue; publish only on explicit operator confirmation.** Evidence: issue default assumption ("queue for explicit operator approval") + CodeRabbit Design Choice 3 + `create-issue` publishes new issues without operator review, so candidates must not auto-enter it.
-2. Is recorded dismissal enough to close the loop? → **Yes — explicit dismissal with reason (or confirmed `duplicate #N`) closes the loop.** Evidence: issue default assumption + CodeRabbit Design Choice 3; "defer" is not a resolution; undecided stays `open` and blocks the gate.
+1. *Does the dirty tree block the audit?* → **No. Resolved before planning.** `pipeline-triage` ran at session start: clean on `main`, 0/0 with `origin/main`, no stashes, no open PR. The 9 modified files the issue describes were merged by PR #21 (`ac01d5f`) and are no longer dirty.
+2. *Is validator tuning in scope?* → **Yes**, and it is the whole of T1. The issue's default assumption allows validator tuning or a documented waiver; tuning is right because the failure is a validator classification defect, not a shadcn defect (`validate-lib.js` carries a 40-line `NON_SKILL_TOKENS` allowlist that never anticipated Tailwind utility *shapes*).
+3. *Are eval prompts missing?* → **No.** Executed counts: every case in all 11 in-scope skills has a prompt. The real gaps are (a) `vi-close-pipeline` has only 2 cases, and (b) 6 skills have evals but **no** `scripts/grade.js`, so their static assertions are never executed.
 
-## Spec (embedded — Small/Standard docs change)
+## Spec
 
-- Goal: every out-of-scope finding spotted mid-pipeline becomes a tracked ledger row with exactly one owner that converts or dismisses it before closeout.
-- Acceptance: (1) exactly one station owns candidates end to end; (2) no candidate reaches closeout unresolved — open rows block the exit gate or carry an explicit dismissal reason; (3) `git grep -n "NOTICED-BUT-NOT-TOUCHING" -- skills AGENTS.md docs` shows owner language in every active capture-and-surface instruction.
-- Out of scope: changing rule 5 itself, auto-fixing candidates, bulk-creating issues for old chat mentions, touching snapshots or shadcn content.
+See `SPEC.md` (goal, executed baseline table, acceptance criteria, edge cases, out-of-scope).
 
 ## Interface contracts
 
-No code interfaces. Doc contract only:
-- Ledger path: `docs/issues/<id>-noticed-but-not-touching.md` (per-issue; created only on first candidate).
-- Row: `| ID (N1…) | candidate (one line) | discovering station | evidence (path:line) | status (open/published/duplicate/dismissed) | resolution (#N or reason) |`.
-- Discovering stations: append `open` row only. Only Station VI resolves rows.
+No product API. Four script contracts are frozen before any edit:
+
+- **`DEFAULT_SKILLS_ROOT`** (`skills/skill-workbench/scripts/validate-lib.js:9`) changes from the hardcoded `'C:/Users/Tiger/.agents/skills'` to `process.env.SKILLS_ROOT || path.resolve(__dirname, '..', '..')`, matching the existing grader pattern at `skills/vi-close-pipeline/scripts/grade.js:19-20`. `inventory.js:22` deletes its duplicate constant and imports the export. `validate.js --docs` derives `DEFAULT_DOCS_ROOT` from the same value (already does, at `validate.js:32`). Exit codes 0/1/2 and positional-root overrides unchanged.
+- **`phantomSkillRefs(text, skillDir, skillsRoot)`** keeps its signature and return shape (array of unresolved tokens). A new `isNonSkillVocabulary(token)` predicate is added beside `NON_SKILL_TOKENS` (`validate-lib.js:61`) and `ROLE_SUFFIX_RE` (`:102`), and is consulted inside `phantomSkillRefs`. It must return `true` for the 14 observed shadcn tokens and `false` for the near-misses `bg-cleanup` and `data-import-skill`.
+- **`scoreSkill(skillDir, opts)`** — formula, weights, and every emitted score are frozen. Only a stale comment changes.
+- **New grader `scripts/grade.js`** must expose the exact subcommand contract documented at `skills/vi-close-pipeline/scripts/grade.js:6-9`: `audit --skill <SKILL.md>` and `case --evals <evals.json> --skill <SKILL.md> [--id <case-id>] --out <results.json>`. Live assertions report `not-run` and are excluded from pass rates.
+
+`type-design-analyzer` was **not** run: this issue freezes no domain model — the four contracts above are module-level function signatures with no invariants to express, and no data schema changes. Skip recorded per Step 4.
 
 ## Improvement proposal (adopted by default)
 
-Keep the ledger out of the prune sweep by adding it to the "Knowledge Is Untouchable" list — otherwise the closeout that resolves candidates could delete their evidence. Evidence: `skills/vi-close-pipeline/SKILL.md:52–58` lists permanent knowledge; issue acceptance requires the list to survive closeout. (Scope expansion: none — dropped nothing, added no behavior.)
+Ground evidence, verbatim from `skills/skill-workbench/scripts/score.js:66-75`:
+
+```js
+function selfContainment(skillDir) {
+  const dirs = ['scripts', 'references', 'assets', 'docs', 'evals'];
+  ...
+  // Full marks when at least two auxiliary folders exist; scripts/references count double.
+  const strong = (present.includes('scripts') ? 2 : 0) + (present.includes('references') ? 2 : 0);
+  const weak = present.filter((d) => !['scripts', 'references'].includes(d)).length;
+  const raw = Math.min(5, strong + weak); // out of 5
+```
+
+The comment is false: `references` + `evals` yields `2 + 1 = 3`, i.e. **60/100** — exactly the self-containment score measured on all six grader-less skills. Adding a real `scripts/grade.js` to those skills (needed anyway, their static assertions never execute today) takes them to 100 without touching a line of scorer logic. Adopted: the fix is the runner, not the metric.
 
 ## Dependency graph
 
-- T1 (owner contract + ledger + gate in Station VI) → unblocks T2 (capture pointers in discovering stations) and T3 (station map + evals). T2 and T3 are independent of each other once T1 lands.
+- **T1** (workbench tooling) unblocks **T4** — the `--all` gate cannot pass while shadcn fails.
+- **T2** (station contracts) unblocks **T3** (evals must assert the corrected wording) and **T4**.
+- **T3** unblocks **T4** — the grader runs need the new eval cases to execute.
+- T1 → T2 are independent; T2 and T3 may interleave once T1 lands.
+
+## Sub-issues
+
+**Skipped, deliberately.** Step 6.6 maps tasks to sub-issues for Standard/Large work so the tracker survives the session. Here the work is a single PR on one branch and every task is verified by a command in this plan; splitting 4 tasks into 4 tracker issues creates noise the operator then has to close. Recorded so a future session does not re-litigate it. Revisit if this issue is ever split across branches.
 
 ## Tasks
 
-### T1 [x] [M] [Docs] — Station VI owns candidates: ledger, disposition, blocking gate
-- Target files: `skills/vi-close-pipeline/SKILL.md`
-- What is built: ledger definition (path, table, statuses, absent-ledger rule) added to the contract; ledger added to "Knowledge Is Untouchable"; new Candidate Disposition step (present each `open` row, duplicate search, `create-issue` on publish approval, commit ledger alone); Clean Exit Gate item (zero `open` rows, fail → fix-or-escalate, never report closed); final-report lines (per-candidate outcome + blocked variant).
+### T1 [M] [Code] — Fix the workbench tooling at the source
+- Target files: `skills/skill-workbench/scripts/validate-lib.js`, `scripts/inventory.js`, `scripts/validate.js`, `scripts/score.js`, **new** `skills/skill-workbench/scripts/validate.test.js`.
+- What is built: (a) portable `DEFAULT_SKILLS_ROOT` derived from `__dirname` honoring `SKILLS_ROOT`; duplicate constant removed from `inventory.js`; `--docs` uses the same configurable root; (b) `validateSkill()` short-circuits frontmatter-dependent checks when `fm` is null, keeping the `fm-present` failure — missing SKILL.md, unclosed delimiter and CRLF frontmatter produce findings, not throws, and the aggregate `--all` JSON stays intact; (c) `isNonSkillVocabulary()` beside `NON_SKILL_TOKENS`/`ROLE_SUFFIX_RE`, applied in `phantomSkillRefs`: Tailwind prefix + numeric/color/semantic suffix, standard ARIA attributes, known state `data-*` (`data-invalid`, `data-disabled`, `data-icon`, `data-state`, `data-slot`), known CSS properties (`z-index`), package allowlist (`lucide-react`, `react-router`) — **no blanket prefix exclusion**; (d) a zero-dependency `node:test` script building fixtures in the OS temp dir covering both directions (real phantom fails, `bg-cleanup`/`data-import-skill` fail, an existing skill passes, all 14 shadcn tokens pass, personas/own-file slugs pass, LF + CRLF + unclosed + absent frontmatter); (e) fix the stale `score.js:70` comment only — formula and weights untouched.
 - Depends on: none.
-- Verification: `node skills/skill-workbench/scripts/validate.js -- skills/vi-close-pipeline/SKILL.md` passes; `git grep -n "noticed-but-not-touching" -- skills/vi-close-pipeline/SKILL.md` shows owner + ledger + gate lines.
+- Verification: `node skills/skill-workbench/scripts/validate.js --all` → **exit 0, 0 fail**; `node skills/skill-workbench/scripts/validate.test.js` → all tests pass; `node skills/skill-workbench/scripts/score.js skills/shadcn --json` → `file-integrity` rises 50 → 100, `overall` >= 84; `git diff skills/skill-workbench/scripts/score.js` shows comment-only changes.
 
-### T2 [x] [S] [Docs] — Point every active capture-and-surface instruction at the owner
-- Target files: `skills/iii-build-plan/SKILL.md` (:54), `skills/iv-review-build-and-pr/SKILL.md` (:104), `skills/iii-build-plan/README.md` (:34), `skills/iii-build-plan/evals/evals.json` (:37 — only if the eval needs an owner pointer; never weaken the must-match)
-- What is built: each active instruction keeps "never touch" and adds one owner line: append `open` row to the ledger; only Station VI resolves. Explicitly NOT touched: `skills/iv-review-build-and-pr/evals/snapshots/**`, `skills/shadcn/SKILL.md`, `AGENTS.md:25` (rule itself unchanged unless a pure pointer is needed).
-- Depends on: T1.
-- Verification: `git grep -n "NOTICED-BUT-NOT-TOUCHING" -- skills AGENTS.md docs` shows owner language at every active instruction; `git status --porcelain -- skills/iv-review-build-and-pr/evals/snapshots skills/shadcn` is empty.
+### T2 [M] [Docs] — Resolve the evidenced station contradictions, minimal diffs
+- Target files: `skills/pipeline-triage/SKILL.md`, `skills/i-pick-issue/SKILL.md`, `skills/ii-plan-issue/SKILL.md`, `skills/iii-build-plan/SKILL.md`, `skills/iiib-iterate-after-build/SKILL.md`, `skills/iv-review-build-and-pr/SKILL.md`, `skills/v-babysit-pr-and-merge/SKILL.md`, `skills/vi-close-pipeline/SKILL.md`, `skills/present-pr/SKILL.md`, `skills/create-issue/references/wayfinding-operations.md`, `skills/ii-plan-issue/references/issue-tracker.md`, and `docs/issue-to-pr-skill-workflow.md` **only if** a station row names the claim owner.
+- What is built (a): unknown-origin stop rule in `pipeline-triage` **before** routing rows 10–11 (never route dirt of unknown origin to II/III by size). Remove the duplicate claim at `i-pick-issue/SKILL.md:64` and delegate to Station II; align its description with "the recommended issue is the default selection unless the operator overrides". Keep II's claim *after* the clean-tree check (`ii-plan-issue/SKILL.md:22-24`) and state operator invocation as the consent. `iii-build-plan` gains preconditions — confirm the plan branch, stop on unknown-origin dirt, resume an unfinished `tasks/plan.md` from unchecked `tasks/todo.md` items (triage row 8) — plus an IIIB path beside `/iv-review-build-and-pr` in its report template.
+- What is built (b): in IV, make the acknowledgement prose match the shipped 60-second commands (`iv-review-build-and-pr/SKILL.md:160`, `:172` vs the prose at `:163`) and clarify that a tooling-unverified proof is a PR-body disclosure, not a shipping failure. `v-babysit-pr-and-merge`: skip/recommend/mandatory classification must consult VI's full discovery set (tracked stale plans, knowledge-home artifacts, stashes, alternate layouts); uncertain → recommend VI. `vi-close-pipeline`: add a distinct blocked/incomplete status to the report template (foreign dirt, failed push, residual branches or stashes, API failure) and state that a presentation offered after VI ends with the same clean-exit check. `present-pr`: replace the Station VI reference with a conditional handoff (before VI → `/vi-close-pipeline`; after VI → re-verify the clean exit and push or report the staged page). `create-issue/references/wayfinding-operations.md`: the first-write claim requires a clean tree first, and `ii-plan-issue/references/issue-tracker.md` agrees.
+- Depends on: T1 (so `validate.js` is clean while these land).
+- Verification: `node skills/skill-workbench/scripts/validate.js skills/<each> --json` → 0 fail for all 10; `node skills/skill-workbench/scripts/score.js skills/<each> --json` → every overall >= its `SPEC.md` baseline; each station body <= 250 lines (`score.js details.body_lines`); `git diff --stat` shows no snapshot and no non-pipeline path.
 
-### T3 [x] [S] [Docs] — Station map handoff + eval coverage
-- Target files: `docs/issue-to-pr-skill-workflow.md`, `skills/vi-close-pipeline/evals/evals.json` (or current eval file under `skills/vi-close-pipeline/evals/`)
-- What is built: Station VI row names candidate disposition before the clean exit; artifact-homes list gains the ledger path; one marker sentence (any station appends, only Station VI resolves). Eval: at least one prompt-bearing case asserting open-rows-block-gate + dismissal-closes-loop.
-- Depends on: T1.
-- Verification: `node skills/skill-workbench/scripts/validate.js -- skills/vi-close-pipeline/SKILL.md docs/issue-to-pr-skill-workflow.md` passes; new eval case runs green.
+### T3 [M] [Code] — Close the eval and runner gaps
+- Target files: **new** `scripts/grade.js` for `i-pick-issue`, `iii-build-plan`, `iiib-iterate-after-build`, `iv-review-build-and-pr`, `pipeline-triage`, `present-pr` (zero-dependency copies of the `vi-close-pipeline/scripts/grade.js` contract); `evals/evals.json` for those six plus `skill-workbench`, `ii-plan-issue`, `create-issue`, `v-babysit-pr-and-merge`; `skills/skill-workbench/references/spec-checklist.md`, `references/reporting-contract.md`, `references/audit-policy.md`, `SKILL.md`; `skills/i-pick-issue/references/output-template.md`.
+- What is built (a): every in-scope skill gains an executable runner for its static assertions. Expansions, each prompt-bearing — `pipeline-triage`: static + live assertions on all 8 existing cases, plus unknown-origin dirt, stashes, rows 12–14, and row 3's approval line. `i-pick-issue`: gate-blocked (dirty tree / unpushed commits / open PR) and unchosen-mode cases, plus the two-option mode prompt in `references/output-template.md`. `iii-build-plan`: dirty/unknown-origin tree, wrong branch, resume. `iiib-iterate-after-build`: multi-item split, red verification stops the loop. `iv-review-build-and-pr`: change the stale `playwright-cli.*preferred` assertion at `evals/evals.json:39` to the shipped "only" wording (`docs/issue-to-pr-skill-workflow.md:107`); add unverified-tooling, 8-call-cap exhaustion and two-failure abort cases.
+- What is built (b): `v-babysit-pr-and-merge` — tracked-stale-artifact means do not skip; rate-limit evidence reuse. `vi-close-pipeline` — add at least 4 cases beyond the current 2: already-clean no-op, unmerged PR blocked, referenced artifact retained, foreign-dirt partial closeout, reverted dead-code test failure, incomplete push failure. `create-issue` — `gh` auth-failure case. `ii-plan-issue` — dirty-tree-stops-the-claim and existing-`tasks/plan.md`-reconciliation cases; tighten the `no-args-auto-pick` regexes to require the clean-tree check before the claim. `skill-workbench` — fix the `vii-present-pr-example-eval-set` fixture name to `present-pr`, replace the unrelated negative prompt with a validate-only case naming a real skill, add a waiver case (a recorded residual finding is never reported as "clean") and a score-reporting case.
+- What is built (c) — workbench doc reconciliation: correct the `file-refs` claim in `spec-checklist.md` (it covers inline Markdown links only; it does not check backticked paths and does not enforce one-level depth), document that `score.js` exits 0 even when validation fails and that eval-readiness measures *declared prompts*, define "waiver" in `reporting-contract.md` as the single source of the final-summary gates, and clarify in `audit-policy.md` that a clean audit ends only the audit step.
+- Depends on: T2 (assertions must describe the corrected wording).
+- Verification: for each of the 11 in-scope skills `node skills/<name>/scripts/grade.js audit --skill skills/<name>/SKILL.md` → exit 0, and `node skills/<name>/scripts/grade.js case --evals skills/<name>/evals/evals.json --skill skills/<name>/SKILL.md --out $TEMP/<name>-results.json` → every static assertion passes with live assertions reported `not-run`; `score.js` self-containment for the six new graders rises 60 → 100 with overall >= 98; a node one-liner asserts every case in all 11 eval sets has a non-empty `prompt`.
 
-Checkpoints: after T1 — owner contract readable in Station VI; after T2+T3 — full grep + validator green.
+### T4 [S] [Code] — Re-run the gates and write the closeout report
+- Target files: `tasks/plan.md` (findings ledger + outcomes), `tasks/todo.md` (all boxes checked), `docs/issues/18-noticed-but-not-touching.md` **only if** a candidate is found and the operator approves publishing it.
+- What is built: execute every gate and record observed output — never predicted. `validate.js --all` (bare) and `validate.js --all "$PWD/skills" --json`; `score.js --json` per in-scope skill compared line-by-line against the `SPEC.md` baseline; `grade.js audit` + `grade.js case` for all 11 graders; `validate.test.js`. Every finding gets one ledger row: skill, evidence (file:line or verbatim quote), outcome (fixed / waived-with-reason / open question), eval link. Confirm with `git status --short` that no pre-existing unrelated path changed.
+- Depends on: T1, T2, T3.
+- Verification: `--all` exits 0, or the single waiver's skill + check + tokens + reason recorded verbatim; every in-scope overall >= baseline; `git status --short` lists only in-scope paths.
+
+Checkpoints: after T1 — `--all` exits 0 with shadcn untouched; after T2 — all 10 stations validate clean at baseline-or-better; after T3 — all 11 graders execute green.
+
+## Changed assumptions since the issue was written
+
+- Working tree is clean (PR #21 merged); the "9 modified station files" precondition no longer applies.
+- `pipeline-triage` scores 98, not CodeRabbit's claimed 96.
+- The "Pipline Triage" heading typo and the `/vi-close-pipline` misspelling **do not exist** in the current tree — `search_codebase` returns no hits. Those items are dropped; they were presumably fixed by PR #21.
+- Every eval case already has a prompt; the eval gap is case count + missing runners, not missing prompts.

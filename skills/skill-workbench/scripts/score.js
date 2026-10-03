@@ -67,7 +67,8 @@ function selfContainment(skillDir) {
   const dirs = ['scripts', 'references', 'assets', 'docs', 'evals'];
   const present = dirs.filter((d) => fs.existsSync(path.join(skillDir, d)));
   const referenced = dirs.filter((d) => present.includes(d) && d !== 'evals');
-  // Full marks when at least two auxiliary folders exist; scripts/references count double.
+  // Full marks need 5 raw points: `references` alone is 2, so the common
+  // references+evals shape scores 3/5 = 60. Add `scripts` (worth 2) to reach 5.
   const strong = (present.includes('scripts') ? 2 : 0) + (present.includes('references') ? 2 : 0);
   const weak = present.filter((d) => !['scripts', 'references'].includes(d)).length;
   const raw = Math.min(5, strong + weak); // out of 5
