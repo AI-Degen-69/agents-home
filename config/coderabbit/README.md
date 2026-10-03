@@ -77,14 +77,36 @@ Per the [plans page](https://docs.coderabbit.ai/management/plans) and per-comman
 - Chat on Free is **N/A**, so the observed "upgrade to CodeRabbit Essentials" refusal is consistent with the table, not a contradiction.
 - OSS: PR reviews 1–10 depending on stars, IDE 1 · CLI 3, files 100–300, chat 25.
 
-### Observed behaviour on this account (checked on live PRs, 2026-10-02)
+### Observed behaviour on this account (checked on live PRs; corrected 2026-10-03)
 
-Docs alone were not enough here, so the account's actual behaviour was read off live PRs:
+Docs alone were not enough here, so the account's actual behaviour was read off live PRs.
+Corrections below are dated so a future measurement can supersede them one claim at a time.
 
-- **This account is Free with OSS access.** CodeRabbit's own reply on a rate-limited PR says: "You've used all free OSS reviews for now… **Next included review available in 25 minutes**." The OSS track is what makes public repos reviewable at all — the Free plan card itself says PR reviews are summarization-only.
-- **Public repos get real reviews with findings.** `crypto-spread` PR #385 (public, 0 stars): 4 inline findings and a **CHANGES_REQUESTED** review, plus the acknowledgement "✅ Action performed — Review finished." PR #372: 14 inline findings. Both ran while this account was on Free — so on the public/OSS path the "summarization only" wording does not describe reality.
-- **The private repo is the untested path.** `agents-home` is private, so the Free plan applies to it and the documented expectation is a **summarization-only review with no inline findings**. No PR exists there yet to observe, so treat that as the operating assumption, not a measured fact — the next PR on this repo is the measurement.
-- **Chat-dependent commands are refused on this account.** On this repo's issues, `@coderabbitai plan` returned "The author of this PR is on the CodeRabbit Free Plan… upgrade to CodeRabbit Essentials", and the same refusal appeared after each plan request. Expect the same for the standalone `configuration` / `rate limit` probes: the allowance signal arrives instead inside the trigger acknowledgement ("Review limit reached" / "Next included review available in N minutes").
+- **PR reviews on this account report `Plan: Advanced`.** The run configuration on `agents-home`
+  PR #23 reported `Plan: Advanced`. `@coderabbitai plan`, posted separately on issues #5 and #7,
+  was still refused with "The author of this PR is on the CodeRabbit Free Plan… upgrade to
+  CodeRabbit Essentials". Treat those as two different paths — **PR review reports Advanced;
+  issue-planning chat stays refused** — not as one tier statement. The earlier "Free with OSS
+  access" reading was superseded by the PR #23 measurement (2026-10-03).
+- **Public repos get real reviews with findings.** `crypto-spread` PR #385 (public, 0 stars): 4
+  inline findings and a **CHANGES_REQUESTED** review, plus the acknowledgement "✅ Action performed
+  — Review finished." PR #372: 14 inline findings. Both ran while this account was on Free — so on
+  the public/OSS path the "summarization only" wording does not describe reality.
+- **Private repos on this account get real reviews with findings.** Measured on `agents-home`
+  PR #23 (2026-10-03): a full walkthrough review **and 5 inline findings** across
+  `skills/iv-review-build-and-pr/SKILL.md`, `skills/pipeline-triage/SKILL.md`,
+  `skills/v-babysit-pr-and-merge/references/review-loop.md`, `tasks/plan.md`, and `tasks/todo.md`
+  (three of the five were genuine defects). The earlier summarization-only expectation was wrong
+  here — treat it as retracted, not amended.
+- **The `configuration` command works on this account.** Posted during Station V triage on
+  `agents-home` PR #23, `@coderabbitai configuration` returned the full 466-line resolved config
+  instead of the upgrade refusal (issuecomment-5972661199). Treat it as the working diagnostic it
+  proved to be. `@coderabbitai plan` remains refused on issues — **record each command's status
+  individually, never assume chat-gating from one command's refusal.**
+
+**How this section stays true.** Every claim above is one dated observation on one repository
+(claim + date + PR number + artifact), because that is how the 2026-10-02 claims were caught being
+wrong. A new measurement changes one bullet, never the whole section.
 
 **Consequence for Stations IV and V (decision recorded; the station edits belong to #7):**
 
