@@ -14,6 +14,12 @@ Branch: i24/correct-the-coderabbit-playbook-pr-23-disproved-three | Issue: #24
 - [x] **T4** [S] [Docs] — Note that `SUMMARY_ONLY` is a tier guard, not this repo's normal shape;
       run the gates. Verify: `FACTS-CORRECTED`, validator 0 fail / 0 warn, diff limited to 2 files.
 - [x] **Checkpoint B** — acceptance command green; hand to Station IV (`iv-review-build-and-pr`).
+- [x] **T5** [M] [Docs/Config] — **Operator-approved scope expansion:** move `.coderabbit.yaml` to the
+      repository root so it actually governs, update `sync-coderabbit.ps1` + README paths. Verify:
+      YAML parses, script tokenizes, `$canonical` resolves, `FACTS-CORRECTED`. **Post-merge probe
+      must confirm `Source: repository YAML`** — until then the fix is believed, not proven.
+- [x] **Checkpoint C** — Station V re-runs `@coderabbitai configuration` to prove the source flipped
+      from Organization UI to the repository file.
 
 > Built 2026-10-03: `FACTS-CORRECTED` printed; validator 90 skills / 0 fail / 0 warn; the three
 > in-scope station scores held at 100; `scripts/sync-coderabbit.ps1` and every `skills/**` file

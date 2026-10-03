@@ -4,8 +4,10 @@
   Sync the canonical .coderabbit.yaml into repository roots.
 
 .DESCRIPTION
-  The canonical file lives at ~/.agents/config/coderabbit/.coderabbit.yaml
-  (part of the global agents family, like skills/ and docs/).
+  The canonical file lives at ~/.agents/.coderabbit.yaml, the repository root of
+  agents-home (part of the global agents family, like skills/ and docs/).
+  It sits at that root deliberately: CodeRabbit reads YAML only from a repo's
+  git root, so a file anywhere else never governs anything.
 
   DANGER - merge, never blind-copy: some repos already carry a full
   .coderabbit.yaml (path filters, profile, etc.). This script only writes
@@ -30,7 +32,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$canonical = Join-Path $env:USERPROFILE '.agents\config\coderabbit\.coderabbit.yaml'
+$canonical = Join-Path $env:USERPROFILE '.agents\.coderabbit.yaml'
 if (-not (Test-Path $canonical)) {
     Write-Error "Canonical file not found: $canonical"
     exit 2

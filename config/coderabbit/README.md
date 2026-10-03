@@ -1,6 +1,6 @@
 # CodeRabbit playbook
 
-Canonical knowledge for how CodeRabbit is configured, commanded, and verified here and in the repos it reviews. Companion to [`config/coderabbit/.coderabbit.yaml`](.coderabbit.yaml) — read this before editing that file. Everything below is grounded in the vendor docs fetched on **2026-10-02**; where the docs conflict with themselves, it is marked unresolved with a probe instead of being picked silently.
+Canonical knowledge for how CodeRabbit is configured, commanded, and verified here and in the repos it reviews. Companion to [`.coderabbit.yaml`](../../.coderabbit.yaml) at the repository root — read this before editing that file. Everything below is grounded in the vendor docs fetched on **2026-10-02**; where the docs conflict with themselves, it is marked unresolved with a probe instead of being picked silently.
 
 **Sources (verified 2026-10-02 against docs.coderabbit.ai):**
 
@@ -114,13 +114,13 @@ wrong. A new measurement changes one bullet, never the whole section.
 - **Station V**'s existing branch "completed with zero inline comments → clean pass" is **unsafe on a private Free repo**: a summary-only review reports exactly that, and the station would report a clean pass ("no comments found — the code is approved as is"). That branch must route to the station's existing agent-fallback / reuse path (Station IV's evidence + delta check) instead, and say so in the report.
 - **`SUMMARY_ONLY` is a guard, not this repo's normal shape.** The station wording is deliberately conditional ("on a private repo on the Free plan") because it exists to catch the summarization-only tier if it ever applies here. After PR #23 measured real findings on `agents-home`, no station may read that guard as "no findings are expected here" — if a station on this repo reports `SUMMARY_ONLY`, that is a signal worth investigating, not a routine outcome.
 
-### Which configuration source actually governs `agents-home` (measured 2026-10-03)
+### Which configuration source governs `agents-home` — diagnosis and fix (2026-10-03)
 
-**The committed `config/coderabbit/.coderabbit.yaml` is not read by CodeRabbit on this repo.** The
-evidence chain, all checkable:
+**Before #24, the committed `config/coderabbit/.coderabbit.yaml` was not read by CodeRabbit on this
+repo.** The evidence chain, all checkable:
 
-1. **There is no config file at the repository root.** `Test-Path .coderabbit.yaml` → `False`;
-   `git ls-files` lists exactly one: `config/coderabbit/.coderabbit.yaml`.
+1. **There was no config file at the repository root.** `Test-Path .coderabbit.yaml` → `False`;
+   `git ls-files` listed exactly one, at `config/coderabbit/`.
 2. **CodeRabbit reads YAML only from the git repo root** (or a central `coderabbit` repository) —
    that constraint is stated in the file's own header comment. `config/coderabbit/` is not the root.
 3. **The resolved config agrees.** On PR #23, `@coderabbitai configuration` annotated both keys as
@@ -136,12 +136,15 @@ character-for-character the ones in the committed file, so the observed behaviou
 file's intent either way. The values agree; the *mechanism* does not.
 
 **Consequence for the sync-copy model.** `scripts/sync-coderabbit.ps1` exists to copy this file
-"into repository roots". That copy step has never applied to `agents-home` itself — a home repo
-cannot sync a config into its own root without relocating or duplicating the file. So this
-repository is governed by Organization UI, not by its versioned config, and any future change to
-this file will **not** take effect here until that is resolved. Deciding how to resolve it is the
-operator's call (see `.coderabbit.yaml` and `scripts/sync-coderabbit.ps1`, both deliberately
-untouched by Issue #24).
+"into repository roots". That copy step had never applied to `agents-home` itself — a home repo
+cannot sync a config into its own root without relocating it.
+
+**Resolved in #24 (operator decision, 2026-10-03): the canonical file was moved to the repository
+root** (`.coderabbit.yaml`), and the sync script's canonical path was updated to match. Because the
+precedence order ranks *repository file* above *organization UI*, the file now governs
+`agents-home` as well — no UI change required. Consumer repos keep receiving the same content
+through `sync-coderabbit.ps1`; a repo that carries a deliberately richer file (e.g.
+`crypto-spread`) keeps it, exactly as before.
 
 ## Config cheat-sheet
 
@@ -204,7 +207,7 @@ How a repository receives its configuration, and what each route costs.
 | `remote_config` | This repo's file delegates to a shared file: `{repository, ref, path}` | Same owner/org only; a URL form exists but is public and unauthenticated (not recommended). Useful when a repo should not carry the full config inline |
 | UI layers | Repository / organization / workspace settings, plus global overrides | No merge by default (enable inheritance to merge); global overrides outrank every file. Sources appear in the resolved-config output |
 
-**This home today:** `scripts/sync-coderabbit.ps1` physically copies the canonical `config/coderabbit/.coderabbit.yaml` into the known repos, skipping any repo whose file differs from canonical (those merge the shared blocks by hand). The skip is deliberate protection, but every key canonical gains widens the hand-merge gap for diverged repos.
+**This home today:** `scripts/sync-coderabbit.ps1` physically copies the canonical `.coderabbit.yaml` (repository root of `agents-home`) into the known repos, skipping any repo whose file differs from canonical (those merge the shared blocks by hand). The skip is deliberate protection, but every key canonical gains widens the hand-merge gap for diverged repos.
 
 ## Verification recipes
 

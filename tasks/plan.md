@@ -111,7 +111,28 @@ observed refused on issues #5 and #7 on this account. **Adopted:** nothing from 
   ```
 
 **Checkpoint B** — after T4: `FACTS-CORRECTED` prints, validator clean, and the diff touches exactly
-`config/coderabbit/README.md` and `config/coderabbit/.coderabbit.yaml`.
+`config/coderabbit/README.md` and `.coderabbit.yaml`.
+
+### T5 [M] [Docs/Config] — Operator-approved scope expansion: make the config actually govern
+
+- **Approved by the operator during Station III (2026-10-03):** "שיהיה אותו קונפיגורציה של הארנב בכל
+  ריפו" — the same config must apply in every repo. This reverses the plan's own rejected proposal
+  ("Move `.coderabbit.yaml` to the repo root"), so it is recorded here explicitly rather than done
+  silently.
+- **Targets:** `.coderabbit.yaml` (moved from `config/coderabbit/`), `scripts/sync-coderabbit.ps1`,
+  `config/coderabbit/README.md`
+- **Build:** move the canonical file to the repository root — the only location CodeRabbit reads —
+  and update the sync script's `$canonical` path and the README's stale path references. Precedence
+  ranks *repository file* above *organization UI*, so this makes the file govern `agents-home`
+  without any UI change. Consumer repos keep receiving the same bytes via the script; a repo with a
+  deliberately richer file (`crypto-spread`) keeps it, as before.
+- **Verification (this is the proof, not an assumption):** root `yaml.safe_load` parses with both
+  `auto_title_*` settings intact · PowerShell tokenizes `sync-coderabbit.ps1` with 0 errors and its
+  `$canonical` path resolves to an existing file · `FACTS-CORRECTED` still prints · validator clean.
+  **Post-merge, Station V must re-run `@coderabbitai configuration` and confirm the resolved
+  values now read `Source: repository YAML` (or equivalent), not `Organization UI`.** Until that
+  probe returns, the fix is *believed* correct, not proven.
+- **Helper:** `documentation-and-adrs` · **Depends on:** T2, T3
 
 ## Improvement proposal (adopted by default — edge-case hardening)
 

@@ -1,14 +1,21 @@
 # CodeRabbit configuration — Tiger's global vocabulary
 #
-# Canonical home: ~/.agents/config/coderabbit/.coderabbit.yaml
-# Synced into repository roots by ~/.agents/scripts/sync-coderabbit.ps1
-# (CodeRabbit reads YAML only from the git repo root or a central
-#  coderabbit repo — never from a local path — so each repo carries a copy.)
+# Canonical home: THIS FILE, at the git repository root of agents-home.
+# CodeRabbit reads YAML only from the git repo root or a central coderabbit
+# repo, so a root file is the only place this can actually govern a repository.
+# On 2026-10-03 the canonical copy sat at config/coderabbit/ and was therefore
+# INERT here: PR #23's resolved config annotated every value as
+# "Source: Organization UI (base)". It was moved to the root in #24 — the
+# repository file outranks organization UI in the precedence order, so this
+# copy now wins on agents-home too.
+#
+# Synced into consumer repository roots by ~/.agents/scripts/sync-coderabbit.ps1
+# (canonical path updated to this root file).
 #
 # Playbook — commands, plan gates, distribution options, verification recipes:
-#   config/coderabbit/README.md (same folder as this file)
+#   config/coderabbit/README.md
 #
-# Distribution decision (recorded 2026-10-02): keep the sync-copy route. The
+# Distribution decision (revised 2026-10-03): keep the sync-copy route. The
 # script writes this file into a repo only when the repo has no .coderabbit.yaml
 # or its copy is byte-identical (sync-coderabbit.ps1:63-66), so any repo with a
 # richer file merges canonical blocks by hand — every key this file gains widens
@@ -16,9 +23,10 @@
 # {repository, ref, path} pointing at this file, which removes the copy step;
 # migrating the consumer repos is deliberately out of scope for now.
 #
-# Plan tier: Free (verified — chat-gated commands are refused on this account).
-# Settings that need a higher tier are written as commented blocks naming the
-# requirement, never committed as silent no-ops.
+# Plan tier: PR reviews on this account report `Plan: Advanced` (PR #23, 2026-10-03);
+# `@coderabbitai plan` is still refused on issues. Settings that need a higher
+# tier are written as commented blocks naming the requirement, never committed as
+# silent no-ops.
 #
 # This file is intentionally MINIMAL: anything omitted here continues to be
 # governed by the CodeRabbit UI settings, per repo.
@@ -53,14 +61,6 @@ reviews:
   # is set explicitly so the switch is visible. The handover landed in #7
   # (merged as PR #23), where Station IV stopped writing Conventional-Commits
   # titles and passes this keyword instead.
-  #
-  # NOTE — this file is NOT read by CodeRabbit on this repository. It lives at
-  # config/coderabbit/, and CodeRabbit reads YAML only from the git repo root or
-  # a central `coderabbit` repository. Measured on PR #23 (2026-10-03): the
-  # resolved config annotates these values as "Source: Organization UI (base)".
-  # The file is the canonical copy synced into *consumer* repos by
-  # scripts/sync-coderabbit.ps1. Editing values here changes those repos, not
-  # this one. See config/coderabbit/README.md for the full evidence chain.
   auto_title_placeholder: "@coderabbitai"
 
   # Review scope. Exclusions must be !-prefixed: a bare glob is an INCLUDE
