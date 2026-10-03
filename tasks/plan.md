@@ -69,20 +69,20 @@ The comment is false: `references` + `evals` yields `2 + 1 = 3`, i.e. **60/100**
 
 ## Tasks
 
-### T1 [M] [Code] — Fix the workbench tooling at the source
+### T1 [x] [Code] — Fix the workbench tooling at the source
 - Target files: `skills/skill-workbench/scripts/validate-lib.js`, `scripts/inventory.js`, `scripts/validate.js`, `scripts/score.js`, **new** `skills/skill-workbench/scripts/validate.test.js`.
 - What is built: (a) portable `DEFAULT_SKILLS_ROOT` derived from `__dirname` honoring `SKILLS_ROOT`; duplicate constant removed from `inventory.js`; `--docs` uses the same configurable root; (b) `validateSkill()` short-circuits frontmatter-dependent checks when `fm` is null, keeping the `fm-present` failure — missing SKILL.md, unclosed delimiter and CRLF frontmatter produce findings, not throws, and the aggregate `--all` JSON stays intact; (c) `isNonSkillVocabulary()` beside `NON_SKILL_TOKENS`/`ROLE_SUFFIX_RE`, applied in `phantomSkillRefs`: Tailwind prefix + numeric/color/semantic suffix, standard ARIA attributes, known state `data-*` (`data-invalid`, `data-disabled`, `data-icon`, `data-state`, `data-slot`), known CSS properties (`z-index`), package allowlist (`lucide-react`, `react-router`) — **no blanket prefix exclusion**; (d) a zero-dependency `node:test` script building fixtures in the OS temp dir covering both directions (real phantom fails, `bg-cleanup`/`data-import-skill` fail, an existing skill passes, all 14 shadcn tokens pass, personas/own-file slugs pass, LF + CRLF + unclosed + absent frontmatter); (e) fix the stale `score.js:70` comment only — formula and weights untouched.
 - Depends on: none.
 - Verification: `node skills/skill-workbench/scripts/validate.js --all` → **exit 0, 0 fail**; `node skills/skill-workbench/scripts/validate.test.js` → all tests pass; `node skills/skill-workbench/scripts/score.js skills/shadcn --json` → `file-integrity` rises 50 → 100, `overall` >= 84; `git diff skills/skill-workbench/scripts/score.js` shows comment-only changes.
 
-### T2 [M] [Docs] — Resolve the evidenced station contradictions, minimal diffs
+### T2 [x] [Docs] — Resolve the evidenced station contradictions, minimal diffs
 - Target files: `skills/pipeline-triage/SKILL.md`, `skills/i-pick-issue/SKILL.md`, `skills/ii-plan-issue/SKILL.md`, `skills/iii-build-plan/SKILL.md`, `skills/iiib-iterate-after-build/SKILL.md`, `skills/iv-review-build-and-pr/SKILL.md`, `skills/v-babysit-pr-and-merge/SKILL.md`, `skills/vi-close-pipeline/SKILL.md`, `skills/present-pr/SKILL.md`, `skills/create-issue/references/wayfinding-operations.md`, `skills/ii-plan-issue/references/issue-tracker.md`, and `docs/issue-to-pr-skill-workflow.md` **only if** a station row names the claim owner.
 - What is built (a): unknown-origin stop rule in `pipeline-triage` **before** routing rows 10–11 (never route dirt of unknown origin to II/III by size). Remove the duplicate claim at `i-pick-issue/SKILL.md:64` and delegate to Station II; align its description with "the recommended issue is the default selection unless the operator overrides". Keep II's claim *after* the clean-tree check (`ii-plan-issue/SKILL.md:22-24`) and state operator invocation as the consent. `iii-build-plan` gains preconditions — confirm the plan branch, stop on unknown-origin dirt, resume an unfinished `tasks/plan.md` from unchecked `tasks/todo.md` items (triage row 8) — plus an IIIB path beside `/iv-review-build-and-pr` in its report template.
 - What is built (b): in IV, make the acknowledgement prose match the shipped 60-second commands (`iv-review-build-and-pr/SKILL.md:160`, `:172` vs the prose at `:163`) and clarify that a tooling-unverified proof is a PR-body disclosure, not a shipping failure. `v-babysit-pr-and-merge`: skip/recommend/mandatory classification must consult VI's full discovery set (tracked stale plans, knowledge-home artifacts, stashes, alternate layouts); uncertain → recommend VI. `vi-close-pipeline`: add a distinct blocked/incomplete status to the report template (foreign dirt, failed push, residual branches or stashes, API failure) and state that a presentation offered after VI ends with the same clean-exit check. `present-pr`: replace the Station VI reference with a conditional handoff (before VI → `/vi-close-pipeline`; after VI → re-verify the clean exit and push or report the staged page). `create-issue/references/wayfinding-operations.md`: the first-write claim requires a clean tree first, and `ii-plan-issue/references/issue-tracker.md` agrees.
 - Depends on: T1 (so `validate.js` is clean while these land).
 - Verification: `node skills/skill-workbench/scripts/validate.js skills/<each> --json` → 0 fail for all 10; `node skills/skill-workbench/scripts/score.js skills/<each> --json` → every overall >= its `SPEC.md` baseline; each station body <= 250 lines (`score.js details.body_lines`); `git diff --stat` shows no snapshot and no non-pipeline path.
 
-### T3 [M] [Code] — Close the eval and runner gaps
+### T3 [x] [Code] — Close the eval and runner gaps
 - Target files: **new** `scripts/grade.js` for `i-pick-issue`, `iii-build-plan`, `iiib-iterate-after-build`, `iv-review-build-and-pr`, `pipeline-triage`, `present-pr` (zero-dependency copies of the `vi-close-pipeline/scripts/grade.js` contract); `evals/evals.json` for those six plus `skill-workbench`, `ii-plan-issue`, `create-issue`, `v-babysit-pr-and-merge`; `skills/skill-workbench/references/spec-checklist.md`, `references/reporting-contract.md`, `references/audit-policy.md`, `SKILL.md`; `skills/i-pick-issue/references/output-template.md`.
 - What is built (a): every in-scope skill gains an executable runner for its static assertions. Expansions, each prompt-bearing — `pipeline-triage`: static + live assertions on all 8 existing cases, plus unknown-origin dirt, stashes, rows 12–14, and row 3's approval line. `i-pick-issue`: gate-blocked (dirty tree / unpushed commits / open PR) and unchosen-mode cases, plus the two-option mode prompt in `references/output-template.md`. `iii-build-plan`: dirty/unknown-origin tree, wrong branch, resume. `iiib-iterate-after-build`: multi-item split, red verification stops the loop. `iv-review-build-and-pr`: change the stale `playwright-cli.*preferred` assertion at `evals/evals.json:39` to the shipped "only" wording (`docs/issue-to-pr-skill-workflow.md:107`); add unverified-tooling, 8-call-cap exhaustion and two-failure abort cases.
 - What is built (b): `v-babysit-pr-and-merge` — tracked-stale-artifact means do not skip; rate-limit evidence reuse. `vi-close-pipeline` — add at least 4 cases beyond the current 2: already-clean no-op, unmerged PR blocked, referenced artifact retained, foreign-dirt partial closeout, reverted dead-code test failure, incomplete push failure. `create-issue` — `gh` auth-failure case. `ii-plan-issue` — dirty-tree-stops-the-claim and existing-`tasks/plan.md`-reconciliation cases; tighten the `no-args-auto-pick` regexes to require the clean-tree check before the claim. `skill-workbench` — fix the `vii-present-pr-example-eval-set` fixture name to `present-pr`, replace the unrelated negative prompt with a validate-only case naming a real skill, add a waiver case (a recorded residual finding is never reported as "clean") and a score-reporting case.
@@ -90,7 +90,7 @@ The comment is false: `references` + `evals` yields `2 + 1 = 3`, i.e. **60/100**
 - Depends on: T2 (assertions must describe the corrected wording).
 - Verification: for each of the 11 in-scope skills `node skills/<name>/scripts/grade.js audit --skill skills/<name>/SKILL.md` → exit 0, and `node skills/<name>/scripts/grade.js case --evals skills/<name>/evals/evals.json --skill skills/<name>/SKILL.md --out $TEMP/<name>-results.json` → every static assertion passes with live assertions reported `not-run`; `score.js` self-containment for the six new graders rises 60 → 100 with overall >= 98; a node one-liner asserts every case in all 11 eval sets has a non-empty `prompt`.
 
-### T4 [S] [Code] — Re-run the gates and write the closeout report
+### T4 [x] [S] [Code] — Re-run the gates and write the closeout report
 - Target files: `tasks/plan.md` (findings ledger + outcomes), `tasks/todo.md` (all boxes checked), `docs/issues/18-noticed-but-not-touching.md` **only if** a candidate is found and the operator approves publishing it.
 - What is built: execute every gate and record observed output — never predicted. `validate.js --all` (bare) and `validate.js --all "$PWD/skills" --json`; `score.js --json` per in-scope skill compared line-by-line against the `SPEC.md` baseline; `grade.js audit` + `grade.js case` for all 11 graders; `validate.test.js`. Every finding gets one ledger row: skill, evidence (file:line or verbatim quote), outcome (fixed / waived-with-reason / open question), eval link. Confirm with `git status --short` that no pre-existing unrelated path changed.
 - Depends on: T1, T2, T3.
@@ -98,9 +98,52 @@ The comment is false: `references` + `evals` yields `2 + 1 = 3`, i.e. **60/100**
 
 Checkpoints: after T1 — `--all` exits 0 with shadcn untouched; after T2 — all 10 stations validate clean at baseline-or-better; after T3 — all 11 graders execute green.
 
+## Findings ledger (T4 — every row is observed, not predicted)
+
+| # | Skill | Evidence | Outcome | Eval / gate |
+|---|---|---|---|---|
+| F1 | skill-workbench | `validate-lib.js:9` hardcoded `'C:/Users/Tiger/.agents/skills'`; bare `--all` ignored the checkout | **fixed** — derived from `__dirname` + `SKILLS_ROOT`; `inventory.js:22` duplicate removed | `validate.test.js` "default skills root follows the script" |
+| F2 | skill-workbench | `validateSkill()` read `fm.name` with `fm === null` → throws on missing frontmatter | **fixed** — null-guard + `fm-skipped` warn; non-frontmatter checks still run | 4 frontmatter tests (missing, unclosed, CRLF, no-SKILL.md) |
+| F3 | shadcn | `--all` reported 1 fail, `phantom-skill-refs` on 14 CSS/ARIA/package tokens | **fixed at the source** — `isNonSkillVocabulary()`, shape-based not prefix-based | all 14 observed tokens exempt; `bg-cleanup`/`data-import-skill`/`bg-wizardcraft` still fail |
+| F4 | skill-workbench | `score.js:70` claimed 2 auxiliary folders give full marks; formula yields 3/5 = 60 | **fixed** — comment corrected, formula and weights untouched | the six graders taking 60 → 100 is the proof |
+| F5 | skill-workbench | `spec-checklist.md:27` claimed `file-refs` covers backticked paths and enforces one-level depth | **fixed** — inline Markdown links only; backticks unchecked; no depth rule | now matches `validate-lib.js:236-237` |
+| F6 | skill-workbench | `SKILL.md` never stated that `score.js` exits 0 even when validation fails | **fixed** — documented; judge by metrics, not exit code | `scorecard-from-real-output-explains-low-metrics` |
+| F7 | skill-workbench | "clean" was undefined next to the final-summary gate | **fixed** — `reporting-contract.md` defines a waiver as a *non-clean* residual, single gate list | `waiver-is-not-clean` |
+| F8 | skill-workbench | a clean audit read as "stop the whole flow" | **fixed** — `audit-policy.md` scopes it to the audit step | prose only |
+| F9 | pipeline-triage | routing rows 10-11 classified unknown-origin dirt by size | **fixed** — stop rule placed *before* the table | 8 → 12 cases |
+| F10 | i-pick-issue | `SKILL.md:64` claimed the issue; Station II claims too — a double claim | **fixed** — Station I delegates; II owns the first write | `claim-issue-first` assertion inverted |
+| F11 | iii-build-plan | no preconditions for wrong branch, foreign dirt, or resume | **fixed** — all three added | grader added |
+| F12 | iv-review-build-and-pr | prose said 15s while the shipped commands waited 60s | **fixed** — prose now 60s throughout | — |
+| F13 | iv-review-build-and-pr | eval asserted `playwright-cli.*preferred`; the gate is playwright-cli **only** | **fixed** — assertion matches shipped wording (`docs/…:107`) | regraded green |
+| F14 | iv-review-build-and-pr | an unverified proof result was silently omitted | **fixed** — mandatory PR-body disclosure, not a shipping failure | — |
+| F15 | v-babysit-pr-and-merge | "skip VI" used a narrow artifact check, so dirty folders slipped through | **fixed** — consults VI's full discovery set; inconclusive → recommend VI | 2 new cases |
+| F16 | vi-close-pipeline | blocked/incomplete had no report status, so failure looked like success | **fixed** — distinct status + 5 named blocking classes | — |
+| F17 | present-pr | Station VI reference was unconditional | **fixed** — before/after-VI conditional handoff | 3 new cases |
+| F18 | 6 stations | evals existed with no runner, so static assertions never executed | **fixed** — `scripts/grade.js` added; all 10 graders green | audit 0 / static 1.0 each |
+| F19 | create-issue | claim note did not require a clean tree first | **fixed** — clean tree required; `issue-tracker.md` agrees | grader green |
+| F20 | skill-workbench | eval fixture named a skill that does not exist (`vi-present-pr`) | **fixed** — renamed to `present-pr` | `skill-workbench` evals |
+| F21 | docs | `validate.js --docs` fails on `local-only` in `issue-to-pr-skill-workflow.md:66` | **open question — pre-existing, out of scope** | reproduced on `main`: exit 1 before this branch |
+### Observed gate results (T4, 2026-10-03)
+
+| Gate | Command | Result |
+|---|---|---|
+| Repo validation | `validate.js --all` | `Validated 90 skill(s): 0 fail, 0 warn` — **exit 0** |
+| Repo validation (JSON) | `validate.js --all "$PWD/skills" --json` | `validated=90 fail=0 warn=0`, `skipped_links=["cua-driver"]` |
+| Validator regression | `validate.test.js` | 12 tests, 12 pass, 0 fail |
+| Inventory | `inventory.js` | 90 clean, 0 warnings, 0 violations |
+| Scores | `score.js --json` × 11 | every overall **>= baseline**; ten rose to 100, `skill-workbench` held 98 |
+| shadcn | `score.js skills/shadcn --json` | `file-integrity` 50 → 100, `overall` 84 → 96, `validation_fails=0` |
+| Graders | `grade.js audit` + `case` × 10 | audit exit 0 each; static pass rate **1.0** each (181 static assertions total) |
+| Docs validation | `validate.js --docs` | exit 1 — pre-existing F21, reproduced on `main` |
+
+**Zero waivers.** The single waiver the acceptance criteria permits was not needed: the
+shadcn failure was fixed at its source, so `--all` exits 0 outright.
+
 ## Changed assumptions since the issue was written
 
 - Working tree is clean (PR #21 merged); the "9 modified station files" precondition no longer applies.
 - `pipeline-triage` scores 98, not CodeRabbit's claimed 96.
 - The "Pipline Triage" heading typo and the `/vi-close-pipline` misspelling **do not exist** in the current tree — `search_codebase` returns no hits. Those items are dropped; they were presumably fixed by PR #21.
 - Every eval case already has a prompt; the eval gap is case count + missing runners, not missing prompts.
+- **Deviation adopted (operator-confirmed):** commit `dfdf050` also folded YAML block-scalar support (`key: >`, `|`, `>-`, `|+`) into `parseFrontmatter`, which T1 never planned. Verified safe before accepting it: 7 hand-built cases parse correctly, no description newly crosses the 1024-char cap, and no scorer reads `.metadata`, so the nested-object change is inert. Side benefit: 4 skills whose descriptions previously parsed as the literal character `>` (`agent-reach`, `humanizer`, `orca-cli`, `orchestration`) now expose their real text.
+- `validate.js --docs` was already failing on `main` (F21). This issue did not introduce it and does not fix it.
