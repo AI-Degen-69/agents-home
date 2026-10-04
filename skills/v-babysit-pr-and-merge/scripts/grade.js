@@ -19,19 +19,6 @@ const path = require('path');
 const GLOBAL_SKILLS_DIR = process.env.SKILLS_ROOT ||
   path.resolve(__dirname, '..', '..');
 
-function read(p) {
-  return fs.readFileSync(p, 'utf8');
-}
-
-function kebabCandidates(text) {
-  // Backticked tokens that look like skill names (kebab/snake case, no slash, no dot).
-  const tokens = new Set();
-  const re = /`([a-z][a-z0-9]*(?:[_-][a-z0-9]+)+)`/g;
-  let m;
-  while ((m = re.exec(text)) !== null) tokens.add(m[1]);
-  return [...tokens];
-}
-
 // Agent personas are a separate tree: skills/<name>/scripts/ → <home>/agents/.
 // A backticked `tdd-guide` is a real reference when agents/tdd-guide.md exists.
 const AGENTS_DIR = path.resolve(GLOBAL_SKILLS_DIR, '..', 'agents');
@@ -39,8 +26,8 @@ const AGENTS_DIR = path.resolve(GLOBAL_SKILLS_DIR, '..', 'agents');
 // Narrow, enumerated list — NOT a blanket shape rule. Each entry is a token that
 // is genuinely not a skill or persona reference. Anything not listed here must
 // still resolve, so a genuine typo keeps failing. `pr-test-analyzer` is an
-// external ECC provenance citation ("Absorbed from ECC ..."), not a local ref —
-// the workbench allowlist carries it at validate-lib.js `NON_SKILL_TOKENS`.
+// external provenance citation, not a local ref — the workbench allowlist
+// carries it at validate-lib.js `NON_SKILL_TOKENS`.
 const NON_SKILL_TOKENS = new Set([
   'html_url', 'step-play', 'hero-demo', 'pr-test-analyzer',
   // Label and API field names, not skill references.
