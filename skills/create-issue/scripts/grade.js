@@ -190,6 +190,21 @@ function gradeCase(evalCase, text, tpl) {
   };
 }
 
+/**
+ * Windows reserved device names, with or without an extension (nul, nul.txt).
+ *
+ * Git Bash rewrites a `/dev/null` argument to the bare string `nul` before node
+ * ever sees it, so `--out /dev/null` used to leave a real file named `nul` in
+ * the working directory - untracked, unignored, and one `git add -A` from being
+ * committed. A null sink is a request to discard, so discard instead of writing.
+ */
+const WIN_DEVICE_RE = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\..*)?$/i;
+function isDiscardTarget(p) {
+  if (!p) return true;
+  const norm = String(p).trim().replace(/\\/g, '/').replace(/\/+$/, '');
+  return norm === '' || norm === '/dev/null' || norm === '/dev/nul' || WIN_DEVICE_RE.test(norm);
+}
+
 function main() {
   const argv = process.argv.slice(2);
   const cmd = argv[0];
@@ -226,7 +241,11 @@ function main() {
     };
     const outPath = arg('out');
     const payload = { summary, graded };
-    if (outPath) fs.writeFileSync(outPath, JSON.stringify(payload, null, 2));
+    if (isDiscardTarget(outPath)) {
+      if (outPath) console.error(`[grade] --out "${outPath}" is a null sink; output discarded, nothing written.`);
+    } else {
+      fs.writeFileSync(outPath, JSON.stringify(payload, null, 2));
+    }
     console.log(JSON.stringify(summary, null, 2));
     process.exitCode = totalStatic - totalPassed > 0 ? 1 : 0;
     return;

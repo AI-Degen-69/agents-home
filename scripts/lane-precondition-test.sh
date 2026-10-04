@@ -76,6 +76,11 @@ git init -q --bare "$T/remote.git"
 git clone -q "$SRC" "$T/r" 2>/dev/null || { echo "clone failed"; exit 2; }
 cd "$T/r"
 git config user.email t@t.t; git config user.name T
+# The clone's HEAD follows the SOURCE's default branch. When the operator is
+# working on a feature branch, no local `main` is created and `git push origin
+# main` dies with "src refspec main does not match any". Force it, so the test
+# behaves the same on main and on any feature branch.
+git checkout -q main 2>/dev/null || git checkout -q -B main
 git remote set-url origin "$T/remote.git"
 git push -q origin main 2>/dev/null || { echo "seed push failed"; exit 2; }
 git branch -q --set-upstream-to=origin/main main 2>/dev/null

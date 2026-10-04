@@ -37,7 +37,8 @@ spotless.
    zero-reference proof + targeted tests, or listed as suspect-only.
 4. Commits keep concerns separate (yours only — foreign dirt is listed,
    never bundled), then the **Clean Exit Gate**: pushed, on base,
-   empty status, synced, no dead branches, no related stashes.
+   empty status, synced, no merged branch left on the remote (checked with
+   `git ls-remote --heads origin`), no related stashes.
 
 ## Files in this folder
 

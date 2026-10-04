@@ -18,6 +18,9 @@ Since this habit runs **exactly one focused review round**, once all accepted fi
    ```
 2. **Merge Decision:**
    - If CI checks are green and zero unresolved blocking comments remain: merge PR autonomously.
+     `--delete-branch` is **best-effort, not the mechanism** — this repository has
+     `deleteBranchOnMerge` set to `false`, so a merged head branch regularly survives on the
+     server. The authoritative remote delete is step 5b.
      ```bash
      gh pr merge <pr_number> --squash --delete-branch
      ```
@@ -58,17 +61,34 @@ A merge on GitHub does NOT move the local checkout: the terminal keeps showing t
    ```bash
    git checkout <base> && git pull --ff-only origin <base>
    ```
-5. **Delete the merged local branch** (`-D` is safe here precisely because step 3 confirmed `MERGED` on the remote; the remote branch was already removed by `--delete-branch`):
+5. **Delete the merged local branch** (`-D` is safe here precisely because step 3 confirmed `MERGED` on the remote; the remote branch is **not** assumed gone — `--delete-branch` is best-effort):
    ```bash
    git branch -D <branch-name>
+   ```
+6. **Delete the merged branch on the remote** (authoritative; runs only after step 3 proved `MERGED` and after the local `-D`, never remote-first — a squash merge would otherwise strand commits with no ref):
+   ```bash
+   git push origin --delete <branch-name>
+   ```
+   Report the outcome honestly, one of: **deleted** (the push removed it) / **already gone** (the
+   remote never had it, `--delete-branch` removed it, **or the push failed because the remote ref
+   no longer exists** — e.g. another actor deleted it first; a missing-ref failure is *not* a
+   refusal) / **declined** (the push was refused for any other reason, e.g. branch protection or
+   missing scope) — never a silent no-op. On **declined**, name the exact command for the operator
+   to run by hand and hand the item to Station VI, whose check 5 will fail on the surviving branch.
+7. **Prune stale remote-tracking refs** (this is what `git fetch --prune` is for — local refs only, never the server):
+   ```bash
    git fetch --prune
    ```
-6. **Verify the fresh start:**
+8. **Verify the fresh start:**
    ```bash
    git branch --show-current   # -> <base>
    git status                   # -> clean, up to date with origin/<base>
+   # The just-merged branch must be gone from the remote. Do NOT require the
+   # remote to hold only the base branch — an unrelated active head would be
+   # reported here as a failure and strand the session on a healthy repo.
+   git ls-remote --heads origin | awk -v ref='refs/heads/<branch-name>' '$2 == ref'   # -> empty
    ```
-   Output note: `Local reset: on <base>, clean, merged branch <branch-name> deleted.`
+   Output note: `Local reset: on <base>, clean, merged branch <branch-name> deleted locally and on the remote (deleted / already gone).`
 
 **Failure handling:** if `git pull --ff-only` fails (diverged local base), or the tree cannot be safely cleaned, stop and escalate — never force-reset the operator's checkout.
 
