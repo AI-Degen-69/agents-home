@@ -52,8 +52,13 @@ if ! command -v node >/dev/null 2>&1; then
 fi
 # The guard itself must still be present, or scenarios A-C would "pass" for the
 # wrong reason. This tripwire keeps the negative control honest.
-if ! grep -qF 'WIN_DEVICE_RE' "$GRADE"; then
-  echo "TEST INVALID: $GRADE no longer defines WIN_DEVICE_RE"
+#
+# Match the DECLARATION, not the identifier: `isDiscardTarget` still mentions
+# WIN_DEVICE_RE in its body, so a plain substring search keeps matching after the
+# `const` line is deleted - and the tripwire would stay quiet while the guard was
+# actually gone. Anchoring on the declaration is what makes this a real check.
+if ! grep -qE '^const WIN_DEVICE_RE[[:space:]]*=' "$GRADE"; then
+  echo "TEST INVALID: $GRADE no longer declares WIN_DEVICE_RE"
   echo "             If the guard was removed on purpose these scenarios are"
   echo "             meaningless - delete this test rather than trust its verdict."
   exit 2
