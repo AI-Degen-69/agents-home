@@ -6,16 +6,28 @@ happens to match the Windows reserved-name pattern?*
 Method: `grep -rn -- "--out " .` over the whole tree with `.git` excluded, plus a
 `grep -rn "grade\.js"` sweep for anything that shells out to the grader.
 
-## Result: 37 hits, 0 invocations
+## Result: 49 hits, 0 invocations
+
+Counted against `origin/main` before this branch existed, so the number is not inflated by the
+test script this issue adds:
+
+```
+$ git archive origin/main | tar -x -C "$W" && cd "$W"
+$ grep -rn -- "--out " . | grep -v "^\./\.git/" | wc -l
+49
+```
 
 | Category | Count | Example |
 |---|---|---|
 | Usage line inside `grade.js` (`--out <results.json>`) | 12 | `skills/*/scripts/grade.js:8` |
-| Guard docblock mentioning `--out /dev/null` | 12 | `skills/*/scripts/grade.js:~213` |
-| `usage:` string listing `[--out f.json]` | 12 | `skills/*/scripts/grade.js:~271` |
+| Guard docblock mentioning `--out /dev/null` | 12 | `skills/*/scripts/grade.js:~192` |
+| The runtime notice (`--out "..." is a null sink`) | 12 | `skills/*/scripts/grade.js:~238` |
+| `usage:` string listing `[--out f.json]` | 12 | `skills/*/scripts/grade.js:~247` |
 | Historical prose in `docs/issues/26-noticed-but-not-touching.md` (row N3) | 1 | the row that produced #30 |
 
-Every one of the 37 is a string *inside a file*. None is a command that runs `grade.js`.
+Per-file: 4 hits x 12 `grade.js` copies + 1 in the #26 notes = 49.
+
+Every one of the 49 is a string *inside a file*. None is a command that runs `grade.js`.
 
 ## Corroborating sweep: does anything invoke `grade.js`?
 

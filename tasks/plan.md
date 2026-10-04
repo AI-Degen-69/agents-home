@@ -9,13 +9,12 @@ Tier: **Small** (task type: Code + Docs + Debug) | Verification: standalone bash
 
 **Answer: no. There are zero `--out` callers in this repo, so a bare reserved name is never a legitimate target here.**
 
-Full enumeration (`grep -rn -- "--out " .` over the whole tree, `.git` excluded) yields 37 hits,
+Full enumeration against `origin/main` (`grep -rn -- "--out " .`, `.git` excluded) yields 49 hits,
 and every one of them is a string *inside a file*, never a command that invokes `grade.js`:
 
 | Category | Count | Example |
 |---|---|---|
-| Usage/doc lines inside `grade.js` itself | 36 (12 files x 3) | `skills/*/scripts/grade.js:8` `--out <results.json>` |
-| Guard docblock mentioning `/dev/null` | included above | `skills/*/scripts/grade.js:213` |
+| Usage / doc / notice lines inside `grade.js` | 48 (12 files x 4) | `skills/*/scripts/grade.js:8` `--out <results.json>` |
 | Historical prose (`docs/issues/26-...md` row N3) | 1 | the row that produced this issue |
 
 Corroborating evidence that nothing shells out to `grade.js`:
