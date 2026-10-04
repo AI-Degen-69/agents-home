@@ -62,7 +62,7 @@ cannot silently regress.
 
 ---
 
-### T1 [S] [Docs] — Rewrite gate check 5 so it observes the server and can fail
+### T1 [x] [S] [Docs] — Rewrite gate check 5 so it observes the server and can fail
 
 - **Target:** `skills/vi-close-pipeline/SKILL.md:117` (check 5), plus the blocking-items list in
   "Blocked / Incomplete"
@@ -77,7 +77,7 @@ cannot silently regress.
 - **Depends on:** —
 - **Verify:** `grep -q 'ls-remote --heads' skills/vi-close-pipeline/SKILL.md`; `grep -q 'push origin --delete' skills/vi-close-pipeline/SKILL.md`; the other six gate checks byte-identical.
 
-### T2 [M] [Docs] — Give Station V step 5b the explicit remote delete
+### T2 [x] [M] [Docs] — Give Station V step 5b the explicit remote delete
 
 - **Target:** `skills/v-babysit-pr-and-merge/references/merge-and-reset.md:22` and `:61-64`
 - **Build:** keep `--delete-branch` on the merge command but annotate it as **best-effort**, not the
@@ -91,7 +91,7 @@ cannot silently regress.
 - **Depends on:** —
 - **Verify:** `grep -q 'git push origin --delete' skills/v-babysit-pr-and-merge/references/merge-and-reset.md`; line-number assertion that `MERGED` confirmation < `git branch -D` < `git push origin --delete` (asserted by T5); `grep -q 'already removed by' …` now fails.
 
-### T3 [XS] [Docs] — Fix the Station V station contract (adopted proposal)
+### T3 [x] [XS] [Docs] — Fix the Station V station contract (adopted proposal)
 
 - **Target:** `skills/v-babysit-pr-and-merge/SKILL.md:113`
 - **Build:** the post-merge reset line must mention the remote delete too. This file is what
@@ -101,7 +101,7 @@ cannot silently regress.
 - **Depends on:** — (must not contradict T2)
 - **Verify:** `grep -q 'push origin --delete' skills/v-babysit-pr-and-merge/SKILL.md`; score for `v-babysit-pr-and-merge` does not drop.
 
-### T4 [XS] [Docs] — Fix the README mirror of check 5
+### T4 [x] [XS] [Docs] — Fix the README mirror of check 5
 
 - **Target:** `skills/vi-close-pipeline/README.md:40`
 - **Build:** "no dead branches" must become "no merged branch left on the remote" so the summary
@@ -111,7 +111,7 @@ cannot silently regress.
 - **Depends on:** — (must not contradict T1)
 - **Verify:** `grep -q 'no dead branches' skills/vi-close-pipeline/README.md` fails; `README.md:25` row byte-identical.
 
-### T5 [M] [Code/Docs] — Executable proof that the gate can fail, then the gates
+### T5 [x] [M] [Code/Docs] — Executable proof that the gate can fail, then the gates
 
 - **Targets:** new `scripts/remote-branch-ownership-test.sh`; then the full verification set
 - **Build:** follow the `scripts/lane-precondition-test.sh` precedent — bash + grep only, exit 0 on
@@ -143,6 +143,22 @@ cannot silently regress.
 delete, and the ordering is visibly correct on the page.
 **Checkpoint B** — after T5: `BRANCH-OWNERSHIP-OK` and `BRANCH-OWNED` both print, validator clean,
 and the diff touches only the four in-scope documents plus the new test.
+
+**Build notes (Station III, recorded so Station IV does not re-derive them)**
+
+- **A defect was introduced and fixed during T4:** a bare backticked `` `ls-remote` `` in check 5
+  tripped `phantom-skill-refs` (backticked kebab tokens are parsed as skill names) and dropped
+  `vi-close-pipeline` to **88/100**. Fixed in the prose, not in the checker — reworded to "that
+  output". Both scores are back to **100/100**. Any future edit to these files must re-run
+  `score.js`, not just `validate.js`.
+- **The test was mutation-tested, not just run green.** Three deliberate breakages were each
+  caught: (M1) removing every `git ls-remote --heads origin` from the gate -> exit **2** (rule
+  drift); (M2) moving the remote delete before the `MERGED` guard -> exit **1**, `ordering wrong`;
+  (M3) removing the "fails this check" clause -> exit **2**. A first M1 attempt that only rewrote one
+  of two occurrences passed, and that was a **flawed mutation, not a weak test** — the clause also
+  lives in the blocking-items list.
+- Executed gate results: test `exit 0` / `6 passed, 0 failed`; `validate.js --all` `0 fail, 0 warn`
+  (91 skills); issue AC command prints `BRANCH-OWNED` (pipeline `exit 0`); both scores 100/100.
 
 ## Improvement proposal (adopted by default — edge-case hardening)
 
