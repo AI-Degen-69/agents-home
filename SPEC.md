@@ -37,8 +37,9 @@ measured in a prior session and is recorded in the issue.
 
 ## Goal state
 
-1. **Check 5 observes the server.** `git ls-remote --heads origin`, filtered against the base
-   branch, and a surviving merged branch **fails** the gate.
+1. **Check 5 observes the server.** `git ls-remote --heads origin` identifies remote heads. A
+   surviving merged feature branch **fails** the gate; an unrelated active head (one still belonging
+   to an open PR) does not.
 2. **Station V owns the delete.** `git push origin --delete <branch>`, ordered strictly *after* the
    existing `MERGED` confirmation, local `-D` then remote delete — never remote-first.
 3. **Honest reporting.** Step 5b reports `deleted` / `already gone` / `declined` — never silence,
@@ -52,17 +53,21 @@ measured in a prior session and is recorded in the issue.
 - [ ] Station V step 5b deletes the merged remote branch, ordered after the existing `MERGED`
       confirmation, and reports the result honestly (deleted / declined / already gone).
 - [ ] Neither file implies `--delete-branch` is what removes the remote branch.
-- [ ] Verification command:
+- [ ] Verification command (the issue's own, verbatim):
       `grep -q 'ls-remote --heads' skills/vi-close-pipeline/SKILL.md && grep -q 'git push origin --delete' skills/v-babysit-pr-and-merge/references/merge-and-reset.md && node skills/skill-workbench/scripts/validate.js --all | grep -q '0 fail' && echo BRANCH-OWNED`
+- [ ] Stricter station command — the issue's command can print `BRANCH-OWNED` without running the
+      ownership test at all, and `grep -q '0 fail'` would also accept warnings. The station gate
+      therefore requires the test itself plus **both** `0 fail` and `0 warn`:
+      `bash scripts/remote-branch-ownership-test.sh && node skills/skill-workbench/scripts/validate.js --all | grep -q '0 fail, 0 warn' && echo BRANCH-OWNED`
 
 ## Edge cases
 
 - **The remote delete must never run before the `MERGED` confirmation.** Squash merges leave the
   local branch with commits that are not ancestors of base; deleting the remote first would strand
   commits with no ref. Order is: confirm `MERGED` -> local `-D` -> remote delete.
-- **`git push origin --delete` on an already-gone branch is a success, not a failure.** The step
-  must distinguish "deleted" from "already gone" and say which — a silent no-op is the ambiguity
-  this issue exists to remove.
+- **If `git push origin --delete` fails because the remote ref no longer exists, that is `already
+  gone`, not `declined`.** It includes a ref another actor removed first; a missing-ref failure is
+  not a refusal. `declined` is reserved for other rejections (branch protection, missing scope).
 - **A blocked remote delete must block closeout.** Station VI already has a "Blocked / Incomplete"
   section that makes a blocked gate an honest outcome ("never round it up to closed"); this issue
   adds a blocking item there rather than inventing a new policy.

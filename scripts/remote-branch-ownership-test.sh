@@ -19,7 +19,9 @@
 
 set -u
 PASS=0; FAIL=0
-SRC="${1:-/c/Users/Tiger/.agents}"
+# Default to the checkout this script lives in, so the test runs in any clone.
+# A positional argument still wins, which is how the fixtures below are tested.
+SRC="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 GATE="$SRC/skills/vi-close-pipeline/SKILL.md"
 MERGE="$SRC/skills/v-babysit-pr-and-merge/references/merge-and-reset.md"
 CONTRACT="$SRC/skills/v-babysit-pr-and-merge/SKILL.md"
@@ -40,6 +42,7 @@ require_clause() {
   exit 2
 }
 require_clause "$GATE"     'git ls-remote --heads origin'
+require_clause "$GATE"     'no merged feature branch survives on the server'
 require_clause "$GATE"     'fails** this check'
 require_clause "$MERGE"    'git push origin --delete <branch-name>'
 require_clause "$MERGE"    'must print MERGED'
@@ -49,6 +52,7 @@ echo "=============================================================="
 echo " RULE BINDING - check 5 / step 5b"
 echo "=============================================================="
 echo "  gate clause (server-observing) : present"
+echo "  gate clause (merged-branch rule): present"
 echo "  gate clause (can fail)         : present"
 echo "  step 5b clause (remote delete) : present"
 echo "  step 5b clause (MERGED guard)  : present"
@@ -60,11 +64,19 @@ bad() { echo "    FAIL  $1"; FAIL=$((FAIL+1)); }
 
 # The Clean Exit Gate's check 5, implementing vi-close-pipeline/SKILL.md
 # (bound above). Input is raw `git ls-remote --heads origin` output.
-# Only refs/heads/<base> may remain.
+#   $1  base branch name
+#   $2  the ls-remote output
+#   $@  branches that are legitimately active (e.g. heads of open PRs)
+# The rule is "no MERGED feature branch survives", NOT "the remote holds only
+# the base branch" - an unrelated active head is not this gate's business, and
+# failing on it would strand closeout on a healthy repo.
 verdict() {
-  local base="$1" lsremote="$2" stray
+  local base="$1" lsremote="$2"; shift 2
+  local allow="$base" a stray
+  for a in "$@"; do allow="$allow|$a"; done
   stray=$(printf '%s\n' "$lsremote" | grep -v '^[[:space:]]*$' \
-            | grep -v "refs/heads/${base}\$" | sed 's#.*refs/heads/##')
+            | sed 's#.*refs/heads/##' \
+            | awk -v allow="$allow" 'BEGIN{n=split(allow,A,"|");for(i=1;i<=n;i++)skip[A[i]]=1} !($0 in skip)')
   if [ -n "$stray" ]; then
     echo "FAIL(stale-remote-branch:$(printf '%s' "$stray" | tr '\n' ','))"; return
   fi
@@ -95,6 +107,19 @@ V=$(verdict main "$(printf 'a1b2c3d4e5f6\trefs/heads/main\n9f8e7d6c5b4a\trefs/he
 echo "  same state, but pruned refs + local git branch see main only -> the old check would have passed"
 echo "  VERDICT     : $V"
 case "$V" in FAIL*) ok "server-observing verdict catches what the local-only check could not";; *) bad "old-check blind spot: $V";; esac
+
+# A4: an UNRELATED ACTIVE branch is not a merged leftover. A base-only rule
+# would fail here and strand closeout on a healthy repo.
+V=$(verdict main "$(printf 'a1b2c3d4e5f6\trefs/heads/main\n9f8e7d6c5b4a\trefs/heads/i99/active-work\n')" i99/active-work)
+echo "  remote heads: main + i99/active-work (an OPEN PR's head)"
+echo "  VERDICT     : $V"
+case "$V" in PASS*) ok "active branch from an open PR does NOT fail the gate";; *) bad "active branch wrongly failed: $V";; esac
+
+# A5: a stale branch next to an active one is still caught.
+V=$(verdict main "$(printf 'a1b2c3d4e5f6\trefs/heads/main\n9f8e7d6c5b4a\trefs/heads/i99/active-work\ndead123\t\trefs/heads/i24/stale\n')" i99/active-work)
+echo "  remote heads: main + active + one stale"
+echo "  VERDICT     : $V"
+case "$V" in FAIL*stale-remote-branch:i24/stale*) ok "stale branch still caught alongside an active one";; *) bad "mixed-state verdict: $V";; esac
 
 echo
 echo "=============================================================="

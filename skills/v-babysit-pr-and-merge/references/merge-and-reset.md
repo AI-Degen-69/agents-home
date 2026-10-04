@@ -70,10 +70,11 @@ A merge on GitHub does NOT move the local checkout: the terminal keeps showing t
    git push origin --delete <branch-name>
    ```
    Report the outcome honestly, one of: **deleted** (the push removed it) / **already gone** (the
-   remote never had it, or `--delete-branch` did remove it) / **declined** (the push was refused,
-   e.g. branch protection or missing scope) — never a silent no-op. On **declined**, name the
-   exact command for the operator to run by hand and hand the item to Station VI, whose check 5
-   will fail on the surviving branch.
+   remote never had it, `--delete-branch` removed it, **or the push failed because the remote ref
+   no longer exists** — e.g. another actor deleted it first; a missing-ref failure is *not* a
+   refusal) / **declined** (the push was refused for any other reason, e.g. branch protection or
+   missing scope) — never a silent no-op. On **declined**, name the exact command for the operator
+   to run by hand and hand the item to Station VI, whose check 5 will fail on the surviving branch.
 7. **Prune stale remote-tracking refs** (this is what `git fetch --prune` is for — local refs only, never the server):
    ```bash
    git fetch --prune
@@ -82,7 +83,10 @@ A merge on GitHub does NOT move the local checkout: the terminal keeps showing t
    ```bash
    git branch --show-current   # -> <base>
    git status                   # -> clean, up to date with origin/<base>
-   git ls-remote --heads origin | grep -v 'refs/heads/<base>$'   # -> empty (step 6 succeeded)
+   # The just-merged branch must be gone from the remote. Do NOT require the
+   # remote to hold only the base branch — an unrelated active head would be
+   # reported here as a failure and strand the session on a healthy repo.
+   git ls-remote --heads origin | awk -v ref='refs/heads/<branch-name>' '$2 == ref'   # -> empty
    ```
    Output note: `Local reset: on <base>, clean, merged branch <branch-name> deleted locally and on the remote (deleted / already gone).`
 

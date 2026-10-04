@@ -114,7 +114,7 @@ The pipeline is NOT closed until every check passes:
 2. Confirm checkout is on the base branch (`master`/`main` per `gh repo view --json defaultBranchRef`).
 3. `git status --porcelain` → **empty**.
 4. `git status` → `up to date with 'origin/<base>'` (no ahead/behind).
-5. Remote branches: `git ls-remote --heads origin` → **no merged feature branch survives on the server**, and `git branch` → no leftover merged feature branches. This half reads server state, because the local half cannot see it: `git fetch --prune` only drops stale *remote-tracking refs*, and `git branch` without `-a` never lists the remote at all. A merged branch still present in that output **fails** this check. Station V step 5b owns deleting it (`git push origin --delete <branch>`); this gate observes and blocks, it does not delete.
+5. Remote branches: `git ls-remote --heads origin` → **no merged feature branch survives on the server**, and `git branch` → no leftover merged feature branches. This half reads server state, because the local half cannot see it: `git fetch --prune` only drops stale *remote-tracking refs*, and `git branch` without `-a` never lists the remote at all. A merged branch still present in that output **fails** this check. **An unrelated active branch does not** — a head that still belongs to an open PR is not a leftover, and failing on it would strand closeout on a healthy repo; treat only branches with no open PR as violations. Station V step 5b owns deleting it (`git push origin --delete <branch>`); this gate observes and blocks, it does not delete.
 6. Stashes: none related to this issue remain (list any foreign stashes in the report).
 7. NOTICED-BUT-NOT-TOUCHING ledger contains zero rows with status `open` (absent ledger counts as zero).
 

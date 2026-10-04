@@ -132,10 +132,17 @@ cannot silently regress.
   ```bash
   bash scripts/remote-branch-ownership-test.sh                     # exit 0, prints BRANCH-OWNERSHIP-OK
   node skills/skill-workbench/scripts/validate.js --all            # 0 fail, 0 warn
-  grep -q 'ls-remote --heads' skills/vi-close-pipeline/SKILL.md \
-    && grep -q 'git push origin --delete' skills/v-babysit-pr-and-merge/references/merge-and-reset.md \
-    && node skills/skill-workbench/scripts/validate.js --all | grep -q '0 fail' \
-    && echo BRANCH-OWNED                                           # the issue's own AC command
+  # Station gate — runs the test and requires BOTH counts. The issue's own
+  # command below is kept verbatim for traceability; on its own it would print
+  # BRANCH-OWNED without ever running the ownership test.
+  bash scripts/remote-branch-ownership-test.sh \
+    && node skills/skill-workbench/scripts/validate.js --all | grep -q '0 fail, 0 warn' \
+    && echo BRANCH-OWNED
+  # The issue's AC command, verbatim:
+  #   grep -q 'ls-remote --heads' skills/vi-close-pipeline/SKILL.md \
+  #     && grep -q 'git push origin --delete' skills/v-babysit-pr-and-merge/references/merge-and-reset.md \
+  #     && node skills/skill-workbench/scripts/validate.js --all | grep -q '0 fail' \
+  #     && echo BRANCH-OWNED
   git diff --name-only                                             # only the in-scope files
   ```
 
