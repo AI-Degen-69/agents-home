@@ -234,7 +234,7 @@ You have full shell access. Do NOT use the `/mnt/skills/` path. Follow the decis
 
 For the no-auth fallback, run the deploy script from the skill's installed location:
 ```bash
-bash ~/.claude/skills/deploy-to-vercel/resources/deploy.sh [path]
+bash ~/.agents/skills/deploy-to-vercel/resources/deploy.sh [path]
 ```
 The path may vary depending on where the user installed the skill.
 
