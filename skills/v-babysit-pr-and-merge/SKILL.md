@@ -110,7 +110,7 @@ digraph babysit_pr_and_merge {
 - **No auto-fix on partial rejections:** Never run `@coderabbitai auto-fix` when any comments were rejected. Apply fixes locally and test.
 - **Never commit red:** If a suggestion breaks a test, `git checkout <file>`, reply with the failure log, resolve as REJECT, and re-run the targeted tests.
 - **Repo conventions win:** Always observe repo-specific PR templates and review rules.
-- **Post-merge local reset is mandatory:** After every merge (or abandoned-PR escalation), return the checkout to base: confirm `MERGED` via `gh pr view`, switch to base, `git pull --ff-only`, force-delete the local branch (`-D` only after remote confirms `MERGED` — squash merges are never `-d`-deletable), and `git fetch --prune`. Never reset a dirty tree without committing/stashing first; escalate on ambiguity.
+- **Post-merge local reset is mandatory:** After every merge (or abandoned-PR escalation), return the checkout to base: confirm `MERGED` via `gh pr view`, switch to base, `git pull --ff-only`, force-delete the local branch (`-D` only after remote confirms `MERGED` — squash merges are never `-d`-deletable), then delete it **on the remote** with `git push origin --delete` (never remote-first; `--delete-branch` on the merge is best-effort and this repository's `deleteBranchOnMerge` is `false`), then `git fetch --prune`. Report the remote delete as deleted / already gone / declined — never a silent no-op. Never reset a dirty tree without committing/stashing first; escalate on ambiguity.
 
 ---
 
