@@ -1,93 +1,75 @@
-# SPEC — Issue #24: Correct the CodeRabbit playbook after PR #23
+# SPEC — Issue #26: Give the Clean Exit Gate an explicit owner for merged remote branches
 
-Branch: `i24/correct-the-coderabbit-playbook-pr-23-disproved-three`
+Branch: `i26/give-the-clean-exit-gate-an-explicit-owner-for-mer` | Issue: #26
 
-> Reconciliation note: this file previously held the completed Issue #7 spec (all tasks `[x]`,
-> issue closed, merged as PR #23). Issue #7 is closed and its work landed, so the spec is replaced.
-> The full #7 spec remains in git history at `SPEC.md` on `main`.
+> Reconciliation note: this file previously held the Issue #24 spec (issue closed, merged as
+> PR #25). Issue #24 is closed and its work landed, so the spec is replaced. The full #24 spec
+> remains in git history at `SPEC.md` on `main`.
 
 ## Goal
 
-The CodeRabbit playbook records three facts about this account that live measurement on PR #23
-disproved, and the committed `.coderabbit.yaml` turns out **not to govern this repository at all**.
-Correct the record so the next station plans against measurements, not assumptions.
+Station VI's Clean Exit Gate check 5 cannot observe the failure it is written to catch: a merged
+feature branch that still exists on the remote. No step in the pipeline owns remote-branch deletion.
+Give the pipeline one explicit owner, and give check 5 a command that can actually fail.
 
-## What PR #23 measured (all read from live artifacts, not inferred)
+## The defect, as written in the repo today
 
-| Claim in the playbook | Line (pre-#24) | Measured on PR #23 | Verdict |
-|---|---|---|---|
-| "The private repo is the untested path… summarization-only with no inline findings" | `README.md:86` | **5 inline findings** + a full walkthrough review | **FALSE** |
-| "This account is Free with OSS access" | `README.md:84` | run config reported **`Plan: Advanced`** | **FALSE for PR reviews** |
-| "Chat-dependent commands are refused on this account… Expect the same for `configuration`" | `README.md:87` | `@coderabbitai configuration` **returned the full resolved config** | **FALSE** |
+| Site | Current text | Why it cannot work |
+|---|---|---|
+| `skills/vi-close-pipeline/SKILL.md:117` | `git fetch --prune` -> no dead remote branches; `git branch` -> no leftover merged feature branches. | `fetch --prune` removes stale *remote-tracking refs*; it neither reports nor deletes branches that still exist on the server. `git branch` without `-a` is local-only. |
+| `skills/v-babysit-pr-and-merge/references/merge-and-reset.md:61-64` | local `-D` + `git fetch --prune`, with the claim "the remote branch was already removed by `--delete-branch`". | Nothing in the pipeline pushes a delete to the server. |
+| `skills/v-babysit-pr-and-merge/SKILL.md:113` | "force-delete the local branch (`-D` …) and `git fetch --prune`". | Same gap, in the file `merge-and-reset.md` itself declares "the source of truth". |
+| `skills/vi-close-pipeline/README.md:40` | "the **Clean Exit Gate**: pushed, on base, empty status, synced, no dead branches, no related stashes." | Restates check 5's unprovable claim in prose. |
 
-(Line numbers in this table are the **pre-#24** positions of the retracted claims. They are kept
-only to identify what was rewritten; live anchors are section names, not line numbers.)
+All four line references were read and confirmed accurate at plan time.
 
-Evidence sources: PR #23 review-in-progress comment (run config), and the resolved-config reply
-at https://github.com/AI-Degen-69/agents-home/pull/23#issuecomment-5972661199 (466 lines of YAML).
+## What was measured (not assumed)
 
-## The root cause behind the config finding — resolved, not open
+| Question | Measurement | Verdict |
+|---|---|---|
+| Is the token scope the reason `--delete-branch` fails? | `gh auth status` -> token `gho_...`, scopes `gist, read:org, repo, workflow` | **No.** `repo` scope is present, so this is not a permissions / app-installation problem. |
+| Does the repo auto-delete head branches on merge? | `gh repo view --json deleteBranchOnMerge` -> `false` | **No.** The server-side setting that would remove a merged head branch is off. |
+| Does the explicit delete work on this repo? | Issue #26 records `git push origin --delete` succeeding on both #23 and #25 | **Yes.** The explicit push is the working mechanism; `--delete-branch` is recorded as best-effort. |
+| Is the remote dirty right now? | `git ls-remote --heads origin` -> `main` only | Clean — both historical strays were removed by hand, exactly as the issue says. |
 
-The issue asked whether `reviews.*` comes from Organization UI instead of the committed file.
-**It does, and the reason is concrete:**
+Default branch is `main`; `gh` 2.91.0; `node` v24.14.1; the `git fetch --prune` behaviour on #25 was
+measured in a prior session and is recorded in the issue.
 
-- `config/coderabbit/README.md` → **"Precedence (how values actually win)"** ranks the sources:
-  `… organization global overrides → **repository file** → central coderabbit repo → repository UI
-  → **organization UI** → …`. A repository file therefore *outranks* organization UI — so if the
-  file were being read, the
-  resolved config would name it.
-- The resolved config instead annotates both keys we care about as
-  `# Source: Organization UI (base)`:
-  - `auto_title_placeholder: '@coderabbitai'`
-  - `auto_title_instructions: 'Title format: "[TAG] short plain-English summary"…'`
-  (the TAG vocabulary is character-for-character the one in the committed file.)
-- **There is no `.coderabbit.yaml` at the repository root** — `Test-Path .coderabbit.yaml` → `False`;
-  `git ls-files` lists exactly one: `config/coderabbit/.coderabbit.yaml`.
-- The file's own header states CodeRabbit "reads YAML only from the git repo root or a central
-  coderabbit repo — never from a local path". `config/coderabbit/` is not the repo root.
+## Goal state
 
-**Conclusion:** on `agents-home` the committed file is **inert**. The identical values live in the
-Organization UI, which is why the observed behaviour still matches. The `sync-coderabbit.ps1`
-copy model has never actually applied to this repository.
+1. **Check 5 observes the server.** `git ls-remote --heads origin`, filtered against the base
+   branch, and a surviving merged branch **fails** the gate.
+2. **Station V owns the delete.** `git push origin --delete <branch>`, ordered strictly *after* the
+   existing `MERGED` confirmation, local `-D` then remote delete — never remote-first.
+3. **Honest reporting.** Step 5b reports `deleted` / `already gone` / `declined` — never silence,
+   never implying success.
+4. **No file claims `--delete-branch` removes the remote branch.**
 
 ## Acceptance criteria
 
-- [ ] `README.md` no longer claims this private repo is summarization-only, that the account is on
-      Free for PR reviews, or that `configuration` is chat-refused; each carries the dated PR #23
-      measurement that replaced it.
-- [ ] `README.md` states the precedence finding: this repo has no root `.coderabbit.yaml`, the
-      committed file at `config/coderabbit/` is not read by CodeRabbit, and `reviews.*` resolves
-      from Organization UI — with the implication for the sync-copy model named.
-- [ ] `.coderabbit.yaml` carries no claim that the pipeline writes titles itself and no stale line
-      reference; comment text only, no setting changes.
-- [ ] A note records that `SUMMARY_ONLY` is a guard for the summarization-only tier, **not** this
-      repo's normal shape.
-- [ ] Verification command: `! grep -q 'untested path' config/coderabbit/README.md &&
-      ! grep -q 'is the work of #7' config/coderabbit/.coderabbit.yaml &&
-      grep -q 'PR #23' config/coderabbit/README.md && echo FACTS-CORRECTED`
-
-## Executed baseline (2026-10-03, `C:\Users\Tiger\.agents`)
-
-- `node skills/skill-workbench/scripts/validate.js --all` → `Validated 90 skill(s): 0 fail, 0 warn`
-- `node skills/skill-workbench/scripts/score.js skills/iv-review-build-and-pr` → `overall 100/100`,
-  body 234 lines; `v-babysit-pr-and-merge` and `pipeline-triage` likewise 100/100.
+- [ ] Gate check 5 observes server-side branches (e.g. `git ls-remote --heads`) and a surviving
+      merged branch fails it, **verified by test**.
+- [ ] Station V step 5b deletes the merged remote branch, ordered after the existing `MERGED`
+      confirmation, and reports the result honestly (deleted / declined / already gone).
+- [ ] Neither file implies `--delete-branch` is what removes the remote branch.
+- [ ] Verification command:
+      `grep -q 'ls-remote --heads' skills/vi-close-pipeline/SKILL.md && grep -q 'git push origin --delete' skills/v-babysit-pr-and-merge/references/merge-and-reset.md && node skills/skill-workbench/scripts/validate.js --all | grep -q '0 fail' && echo BRANCH-OWNED`
 
 ## Edge cases
 
-- **Do not delete the still-valid parts.** The Free-vs-paid rate figures, the "what spends a
-  review" table, and the OSS-vs-UI precedence discussion remain correct; only the three disproved
-  claims change.
-- **`Plan: Advanced` may describe PR review, not issue planning.** `@coderabbitai plan` was still
-  refused on issues #5 and #7. Record both facts side by side rather than collapsing them into one
-  "the account is Advanced" claim.
-- **The config comment must not imply the file works.** Fixing the stale `#7` pointer without adding
-  the "not read from this path" note would make a doubly misleading comment.
+- **The remote delete must never run before the `MERGED` confirmation.** Squash merges leave the
+  local branch with commits that are not ancestors of base; deleting the remote first would strand
+  commits with no ref. Order is: confirm `MERGED` -> local `-D` -> remote delete.
+- **`git push origin --delete` on an already-gone branch is a success, not a failure.** The step
+  must distinguish "deleted" from "already gone" and say which — a silent no-op is the ambiguity
+  this issue exists to remove.
+- **A blocked remote delete must block closeout.** Station VI already has a "Blocked / Incomplete"
+  section that makes a blocked gate an honest outcome ("never round it up to closed"); this issue
+  adds a blocking item there rather than inventing a new policy.
+- **Do not edit `evals/snapshots/v0-SKILL.md`.** It holds a past version of the skill; the
+  validator and closure scripts skip it for that reason.
 
 ## Out of scope
 
-- Any `.coderabbit.yaml` **setting** change (comment text only).
-- Any station skill's behaviour. The `SUMMARY_ONLY` wording in the stations is conditional
-  ("on a private repo on the Free plan") and stays correct as a guard — only the playbook's claim
-  that this is the *expected shape here* was wrong.
-- Redesigning `sync-coderabbit.ps1`; the finding is recorded, the model is not changed.
-- Any change to CodeRabbit's UI, plan, or billing.
+Merge strategy (squash stays), `pipeline-triage`'s routing table, git hosting configuration
+(including flipping `deleteBranchOnMerge`), and any station skill not listed above.
