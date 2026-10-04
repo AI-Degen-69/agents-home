@@ -8,7 +8,7 @@ Source of the 6 rules: Addy Osmani, `using-agent-skills` (github.com/addyosmani/
 
 `~/.agents` is the operator's **shared agent home** — one canonical copy of everything agents need, synced read-only into every harness (`scripts/sync-harness-skills.ps1`):
 
-- **`skills/`** (~89 skills) — the capability library. General-purpose skills (research, debugging, TDD, review, docs) plus the numbered issue→PR delivery pipeline below.
+- **`skills/`** (~91 skills) — the capability library. General-purpose skills (research, debugging, TDD, review, docs) plus the numbered issue→PR delivery pipeline below.
 - **`agents/`** — helper sub-agent personas (`code-explorer`, `code-reviewer`, stack-specific resolvers) that pipeline stations delegate to.
 - **`docs/`** — durable knowledge: the pipeline map (`docs/issue-to-pr-skill-workflow.md`) and nothing else.
 - **`scripts/`** — maintenance automation (harness sync, ECC drift check, CodeRabbit config sync, and project sync for the published pipeline repo — see `skills/README.md`).
