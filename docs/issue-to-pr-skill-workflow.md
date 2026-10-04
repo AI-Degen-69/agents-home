@@ -27,7 +27,7 @@ The diverting station **hands its 7-box verdict to the lane**, which carries box
      ├── nothing worth picking ──► [Intake] create-issue ──► publish issue + post @coderabbitai plan request (body only; skipped for trivial docs-only issues; retried once if no reply) ──► back to Discovery
      ▼
 [Station II]   ii-plan-issue            Define & Plan (right-sizing, spec, constraints, reads any coderabbitai plan comment as a non-binding suggestion, records adopted/rejected facts in tasks/plan.md)
-     │        └── Tiny tier + 7-box gate pass ──► quick-fix  (verified, committed, pushed straight to main; back to I)
+     │        └── Tiny tier + quick-fix label + 7-box gate pass ──► quick-fix  (verified, committed, pushed straight to main; back to I)
      │
      │
      ▼
@@ -37,7 +37,7 @@ The diverting station **hands its 7-box verdict to the lane**, which carries box
      │        (human feedback fix loop, no push)
      ▼
 [Station IV]   iv-review-build-and-pr   Review & Ship (proof gate, OCR, ECC reviewers + Spec axis, 100% test gate, push, PR)
-     │        └── after the proof gate, 7-box gate passes ──► quick-fix  (squash-merge to base, push; no reviews, no PR)
+     │        └── after the proof gate, quick-fix label + 7-box gate passes ──► quick-fix  (squash-merge to base, push; no reviews, no PR)
      │
      │  trigger handoff: IV posts @coderabbitai review, waits for ack,
      │  classifies (triggered / rate-limited N min / other reply / no ack),

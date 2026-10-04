@@ -72,3 +72,14 @@ Depends-on graph: T1 -> T2 -> T3 -> T4.
 ## Sub-issues
 Skipped: Standard work, but the tracker ceremony buys nothing here — this is a single
 coherent prose change with a linear T1->T4 order and no independent parallelism.
+
+## Execution record (Station III)
+- **T1–T4 complete.** Baseline 109/109 → final 109/109, no regression, no assertion touched.
+- All five graders ran with `--skill`/`--evals`; every `case` and `audit` exit code 0.
+- Rejected CodeRabbit's grader commands (missing `--skill`/`--evals` → ERR_INVALID_ARG_TYPE, real
+  exit 1) and its README "no label prerequisite" phrase (no such string in the repo).
+- Pre-existing audit warns, NOT introduced here: `ii-plan-issue` 159 lines and
+  `iv-review-build-and-pr` 256 lines both exceed the >150 warn threshold; they were already
+  153 and 252 on `main`. Out of scope per CONSTRAINTS.md (no scope expansion).
+- `gh issue list --label quick-fix --state open` → empty, confirming no currently-open issue
+  would trigger a station gate under the new text.
