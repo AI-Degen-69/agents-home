@@ -197,6 +197,15 @@ function gradeCase(evalCase, text, tpl) {
  * ever sees it, so `--out /dev/null` used to leave a real file named `nul` in
  * the working directory - untracked, unignored, and one `git add -A` from being
  * committed. A null sink is a request to discard, so discard instead of writing.
+ *
+ * Audited in #30 (docs/issues/30-caller-audit.md): there are zero callers of `--out` in
+ * this repo - it is a human-typed, on-demand command with no package.json, CI, or
+ * wrapper script - so a bare reserved name can never be a legitimate report target here.
+ * That is why discarding is safe, and why the rule below is not up for re-litigation.
+ *
+ * The regex is anchored to the whole normalized string on purpose: a path-qualified
+ * `dir/nul` is an ordinary file and IS written. Only a bare `nul` is swallowed, because
+ * Git Bash rewrites a bare `/dev/null` argument and nothing else.
  */
 const WIN_DEVICE_RE = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(\..*)?$/i;
 function isDiscardTarget(p) {
