@@ -6,18 +6,50 @@
 # Three scenarios:
 #   A. Station IV handoff  -> squash-merge staged work onto base -> ACCEPT
 #   B. Foreign dirt        -> an extra unrelated file                 -> REFUSE
-#   C. Mid-lane growth     -> a 1-file fix grows to 3 files           -> STOP
+#   C. Mid-lane growth     -> a fix grows past the box-1 limit      -> STOP
 #
 # Exit 0 = every scenario produced its expected verdict.
+# Exit 2 = the test could not run: quick-fix/SKILL.md no longer states the
+#           clauses this verdict function implements. That is rule drift, not
+#           a lane bug - re-derive `verdict()` before trusting any result.
 
 set -u
 PASS=0; FAIL=0
 SRC="${1:-/c/Users/Tiger/.agents}"
+SKILL="$SRC/skills/quick-fix/SKILL.md"
+
+# ---------------------------------------------------------------------------
+# Rule binding: prove SKILL.md still says what this test executes.
+#
+# `verdict()` cannot execute prose, so it is a transcription. These tripwires
+# stop it from silently testing a stale rule - if the skill is rewritten, the
+# test refuses to report PASS instead of going quietly out of date.
+# ---------------------------------------------------------------------------
+LIMIT=$(sed -n 's/.*at most \*\*\([0-9]\+\) files\*\*.*/\1/p' "$SKILL" | head -1)
+[ -n "$LIMIT" ] || { echo "TEST INVALID: cannot read the box-1 file limit from $SKILL"; exit 2; }
+
+require_clause() {
+  grep -qF "$2" "$SKILL" && return 0
+  echo "TEST INVALID: $SKILL no longer contains \"$2\""
+  echo "             `verdict()` below implements a rule the skill has dropped."
+  echo "             Re-derive verdict() against the current wording, then re-run."
+  exit 2
+}
+require_clause "handoff"   '**Station IV handoff**'
+require_clause "refusal"   'foreign dirt → route to'
+require_clause "growth"    'stop mid-lane'
+
+echo "=============================================================="
+echo " RULE BINDING - quick-fix/SKILL.md"
+echo "=============================================================="
+echo "  box-1 file limit (read from the skill): $LIMIT"
+echo "  clauses required by verdict()         : present"
+echo
 
 ok()   { echo "    PASS  $1"; PASS=$((PASS+1)); }
 bad()  { echo "    FAIL  $1"; FAIL=$((FAIL+1)); }
 
-# The lane's Step 2 verdict, transcribed from quick-fix/SKILL.md.
+# The lane's Step 2 verdict, implementing quick-fix/SKILL.md (bound above).
 # GATED = the files the 7-box gate counted. Anything else in the tree is foreign.
 verdict() {
   local branch="$1" gated="$2" tree="$3" unpushed="$4"
@@ -88,22 +120,22 @@ rm -f scratch.txt
 
 echo
 echo "=============================================================="
-echo " SCENARIO C - mid-lane growth: a 1-file fix becomes 3 files"
+echo " SCENARIO C - mid-lane growth past the box-1 limit"
 echo "=============================================================="
 git reset -q --hard "$BASE"
-# The gated file plus two more = 3 changed files, over the box-1 limit of 2.
+# The gated file plus LIMIT more = LIMIT+1 changed files, one over the limit.
 # This is the lane discovering mid-implementation that the fix grew.
 echo "grown" >> AGENTS.md
-echo "grown 1" > extra1.md; echo "grown 2" > extra2.md
+i=1; while [ "$i" -le "$LIMIT" ]; do echo "grown $i" > "extra$i.md"; i=$((i+1)); done
 TREE=$(git status --porcelain)
 UNPUSHED=$(git rev-list --count "$BASE"..HEAD)
 FILES=$(printf '%s\n' "$TREE" | grep -v '^$' | wc -l | tr -d ' ')
-echo "  files now: $FILES (box 1 limit: 2)"
+echo "  files now: $FILES (box 1 limit: $LIMIT)"
 V=$(verdict "$(git branch --show-current)" "$GATED" "$TREE" "$UNPUSHED")
 echo "  VERDICT  : $V"
 # Unconditional: a scenario that cannot assert must fail, never skip.
-if [ "$FILES" -le 2 ]; then
-  bad "test setup wrong: expected >2 changed files, got $FILES"
+if [ "$FILES" -le "$LIMIT" ]; then
+  bad "test setup wrong: expected >$LIMIT changed files, got $FILES"
 else
   case "$V" in
     REFUSE*foreign-dirt*) ok "growth past box 1 stops the lane before any push" ;;
