@@ -19,7 +19,7 @@ chain.
 
 - **Station:** Station I of VI (single entry point for Issue work)
 - **Previous Station:** `pipeline-triage` (state gate — only when the tree is dirty, commits are unpushed, or a PR is open)
-- **Next Station:** `quick-fix` (only when the 1a gate passes and the operator picks it) or `ii-plan-issue <issue-id>` (Plan)
+- **Next Station:** `quick-fix` (only when the recommendation is `quick-fix`-labeled or the operator explicitly requested the lane, **and** the §1a gate passes, **and** the operator picks it) or `ii-plan-issue <issue-id>` (Plan)
 
 ---
 
@@ -45,19 +45,24 @@ Every invocation of this skill begins with the **Discovery Station**, regardless
 
 ### 1a. Quick-Fix Lane Check (run before the execution-mode gate)
 
-Before offering step-by-step vs. full orchestration, test the recommended issue against the
+Before offering step-by-step vs. full orchestration, test the confirmed issue against the
 **7-box gate** in `quick-fix`. This is the one place the lane is cheapest to catch: here it costs
 a read, later it costs a plan.
 
-**Use the label to decide *where* to look, never *whether* to look.** An issue labeled
-`quick-fix` (applied by `create-issue` at intake) is a screening signal that trivial work is
-plausible — so start the gate there and report the boxes first, ahead of the issue summary. A
-label is never a bypass: **run all 7 boxes on every candidate regardless of its label.** A
-stale or optimistic label is exactly the case the gate exists to catch, and an unlabeled tiny
-issue is still a valid quick fix.
+**The label precondition.** Run the gate in exactly two cases:
 
-- **All 7 boxes pass** → present it as the quick option alongside the recommended issue, and let the operator choose: **quick fix** (push straight to `main`, no PR, no reviews, no CodeRabbit) or the **full pipeline**. If they choose quick, hand off to `quick-fix` **with your 7-box verdict** so it re-checks only size and its own diff instead of re-reading the issue — and skip the execution-mode gate entirely, there are no stations to step through.
-- **Any box fails** → the full pipeline runs as usual, and if the issue carries `quick-fix`, remove it so a later session is not misled:
+1. The confirmed issue carries the `quick-fix` label (applied by `create-issue` at intake), or
+2. the operator explicitly asks to consider it for the fast lane.
+
+The label is a **precondition for evaluation, never a bypass.** When it is present, run all 7
+boxes and report them first, ahead of the issue summary — the label was a guess from a
+one-sentence idea, and a stale or optimistic one is exactly the case the gate exists to catch.
+
+**Not `quick-fix`-labeled and not explicitly requested → skip the gate entirely.** Print no gate block, offer
+no quick-fix option, and continue to the execution-mode gate (§1b) directly.
+
+- **All 7 boxes pass** → present the confirmed issue as the quick option and let the operator choose: **quick fix** (push straight to `main`, no PR, no reviews, no CodeRabbit) or the **full pipeline**. If the operator changes the issue after this check, rerun §1a for the newly confirmed issue before offering or handing off. If they choose quick, hand off the confirmed issue ID **with its 7-box verdict** so `quick-fix` re-checks only size and its own diff instead of re-reading the issue — and skip the execution-mode gate entirely, there are no stations to step through.
+- **Any box fails** → the full pipeline runs as usual, and remove the label so a later session is not misled:
   `gh issue edit <number> --remove-label "quick-fix"`.
 
 The lane is offered, never forced. An issue the operator wants properly reviewed gets the full

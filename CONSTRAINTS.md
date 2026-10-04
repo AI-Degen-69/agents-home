@@ -1,32 +1,40 @@
-# CONSTRAINTS — Issue #30
+# CONSTRAINTS — Issue #31
 
-Branch: `i30/grade-null-sink-guard-test` | Issue: #30
+Branch: i31/show-the-7-box-quick-fix-gate-only-for-quick-fix-c | Issue: #31
 
 ## Stack (auto-detected)
-- Runtime: Node.js (zero-dependency, CommonJS, `fs` only)
-- Test runner: **none** — repo convention is standalone `bash` proof scripts in `scripts/*-test.sh`
-  printing PASS/FAIL counters, exit 0 = all pass, 1 = a scenario failed, 2 = test invalid.
-- No `package.json`, no CI config. Verification = running the script directly.
+- Documentation-contract repo (agent skills in markdown).
+- Verification = per-skill static graders, `node`, zero dependencies.
+
+## Zero regressions
+- All five affected graders must stay green: `i-pick-issue`, `ii-plan-issue`,
+  `iii-build-plan`, `iv-review-build-and-pr`, `quick-fix`.
+- Pre-change baseline recorded: **109/109 static assertions passing**
+  (22 + 19 + 15 + 26 + 27). Post-change must be >= 109 passing, 0 failing.
+- Run **without `--id`** (known numeric-ID filter defect selects zero cases).
+- Correct invocation (CodeRabbit's plan omitted the required flags, so its
+  command crashes with ERR_INVALID_ARG_TYPE):
+  - `node skills/<skill>/scripts/grade.js audit --skill skills/<skill>/SKILL.md`
+  - `node skills/<skill>/scripts/grade.js case --evals skills/<skill>/evals/evals.json --skill skills/<skill>/SKILL.md`
+- quick-fix case `labeled-issue-still-runs-gate` and case
+  `direct-entry-runs-full-gate` must keep passing.
 
 ## Hard boundaries
-1. **Zero regressions** — `scripts/grade-null-sink-test.sh` must exit 0.
-2. **No new dependency.** `node` + `bash` only, stdlib only.
-3. **Guard semantics frozen.** `WIN_DEVICE_RE` and `isDiscardTarget` bodies are NOT modified.
-   This issue proves the guard; it does not change it.
-4. **Docblock edits only** inside `skills/*/scripts/grade.js`. No logic, no reformat, no reorder.
-5. **Anti-cheat** — the test must FAIL if the guard is removed. A test that passes with the
-   guard deleted is not a test. Proved in Task 4.
-6. **No working-tree pollution** — every `grade.js` invocation runs in a `mktemp -d` sandbox
-   removed on exit; the script fails if a stray file is left behind.
-7. **No scope expansion** — no change to matching rules, no eval-pipeline change, no Windows
-   path work outside `grade.js`.
+1. **The 7 boxes are frozen.** Boxes 1-7, their thresholds, their failure
+   routes, "The `quick-fix` label is never box 8", and the literal phrase
+   "run all 7 boxes yourself" must not change.
+2. **Direct `/quick-fix` invocation is unchanged** - it runs all 7 boxes
+   whether or not a label is present.
+3. **Ordering unchanged.** Station II still owns the first write; Station IV's
+   proof gate still precedes the divert; label removal on failure is preserved
+   at every station-specific trigger.
+4. **Anti-cheat** - never skip, disable, or delete an assertion to make a run pass.
+   Never edit `skills/*/evals/snapshots/**` or recorded iteration results.
+5. **No scope expansion** - do not "fix" the three known unrelated defects
+   (box-6 routing conflict, quick-fix eval case 4 expectation, grader `--id` bug).
+   Do not change Station I Discovery, selection, execution-mode gate, or
+   `i-pick-issue/references/output-template.md`.
+6. **No new dependencies.** Markdown only; no runtime code changes.
 
-## Performance ceiling
-Four `node grade.js` invocations total. Budget under 15s wall clock. No threshold assertion
-beyond the exit code.
-
-## Test design constraint
-`lane-precondition-test.sh` transcribes prose rules into a `verdict()` shell function, which
-drifts when the skill is rewritten. Not applicable here: the guard is real executable code, so
-the test invokes the real `grade.js` instead of re-implementing the regex. That removes the
-rule-drift risk, so no `require_clause` tripwire is needed.
+## Terminology
+Use the phrase **"label precondition"** consistently across every edited file.

@@ -11,7 +11,7 @@ This skill implements **Station IV (Review, Verify & Ship)** of the 6-station pi
 
 - **Station:** Station IV of VI
 - **Previous Station:** `iii-build-plan` (Build)
-- **Next Station:** `quick-fix` (only on a Step 0.2 divert) or `v-babysit-pr-and-merge` (Babysit & Merge)
+- **Next Station:** `quick-fix` (only on a Step 0.2 divert — which itself requires a `quick-fix`-labeled issue, the gate passing, and the operator's choice) or `v-babysit-pr-and-merge` (Babysit & Merge)
 
 ---
 
@@ -66,7 +66,11 @@ Only the tools listed above may run in this gate. No other browser automation to
 
 Last chance to skip the review machinery, and the most valuable one — Steps 1 and 1B (OCR plus every ECC reviewer) plus the CodeRabbit round are the bulk of the cost. Step 0 has already proved the build works, so the gate below runs against known-good code.
 
-Read `git diff --name-only origin/<base>...HEAD`. If the **entire** change passes the **7-box gate** in `quick-fix`, offer the operator the lane in one line (push straight to `main`, no PR, no ECC reviewers, no CodeRabbit). **Yes** → hand off to `quick-fix`, passing your 7-box verdict with the handoff so the lane re-checks only size and its own diff instead of re-reading the issue; **no, or any box fails** → continue into Step 1 normally, and if the issue carries `quick-fix`, remove it (`gh issue edit <number> --remove-label "quick-fix"`) — this diff has already disproved the lane.
+**The label precondition comes first.** Read the current labels of the linked issue
+(`gh issue view <number> --json labels`). If no issue is linked, or the issue lacks the `quick-fix` label,
+skip the gate entirely — continue into Step 1 normally, with no gate text and no lane offer.
+
+Read `git diff --name-only origin/<base>...HEAD`. If the **entire** change passes the **7-box gate** in `quick-fix`, offer the operator the lane in one line (push straight to `main`, no PR, no ECC reviewers, no CodeRabbit). **Yes** → hand off to `quick-fix`, passing your 7-box verdict with the handoff so the lane re-checks only size and its own diff instead of re-reading the issue; **no, or any box fails** → continue into Step 1 normally, and remove the label (`gh issue edit <number> --remove-label "quick-fix"`) — this diff has already disproved the lane.
 
 One mechanical difference from the earlier divert points: the work is already committed on a feature branch, while `quick-fix` works on the base branch. Before handing off, return to base carrying the change:
 

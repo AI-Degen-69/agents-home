@@ -53,7 +53,9 @@ of the label, only alongside it.
 
 ### 1. Confirm the gate
 
-The diverting station hands over its 7-box verdict. **Do not re-derive it.** Read the verdict and carry boxes 2, 5, 6, and 7 forward — those are properties of the issue and do not change between the divert and here. Then re-check exactly two things against the tree in front of you:
+The diverting station hands over its 7-box verdict. A station produces one in only two cases: the
+issue carries the `quick-fix` label, or at Station I the operator explicitly requested the lane.
+**Do not re-derive it.** Read the verdict and carry boxes 2, 5, 6, and 7 forward — those are properties of the issue and do not change between the divert and here. Then re-check exactly two things against the tree in front of you:
 
 - **Box 1 (size)** — always. It is the one box that can drift: work may have grown after the divert. Re-count files and added lines.
 - **Boxes 3 and 4 (no new behavior, no contract surface)** — against your own diff, once you have made it. A divert that passed on the *issue* proves nothing about the *change* you are about to write.

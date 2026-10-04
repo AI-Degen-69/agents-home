@@ -1,154 +1,85 @@
-# Plan — Issue #30: Exercise the grade.js null-sink guard
+Branch: i31/show-the-7-box-quick-fix-gate-only-for-quick-fix-c | Issue: #31
 
-Branch: `i30/grade-null-sink-guard-test` | Issue: #30
-Tier: **Small** (task type: Code + Docs + Debug) | Verification: standalone bash proof script
+# Plan — Issue #31: show the 7-box gate only for quick-fix candidates
 
-## Open questions resolved from code (the `needs-answers` label)
+## Right-sizing (Step 0)
+- **Tier: Standard.** 10 markdown contract files across 5 skills, 3 shared docs and the
+  canonical `AGENTS.md`; one coherent architectural decision. No runtime code changes.
+- **Task type: Docs** (contract prose) with a behavioral change to *when* the gate evaluates.
+- Not Tiny, so Step 0C's quick-fix divert does not apply. The 7-box verdict at Station I
+  already failed this issue (boxes 1-4) and the full pipeline was chosen.
 
-### Q1 — Does any caller pass `--out` a bare reserved name?
+## Step 0A — CodeRabbit intake (adopted / rejected / unverified)
+- **Adopted:** its task grouping (3 phases), the exact per-file change list, the design
+  choice that Stations II-IV stay label-only (no explicit-request trigger), the rule that
+  direct `/quick-fix` keeps the full gate, and the Phase 3 contradiction grep list.
+- **Rejected:** its grader invocation `node skills/<skill>/scripts/grade.js audit`
+  and `... case` — both crash with `ERR_INVALID_ARG_TYPE` because `--skill` (and
+  `--evals` for `case`) are required. Verified by running them: real exit code 1.
+  Corrected commands recorded in `CONSTRAINTS.md`.
+- **Rejected:** editing `skills/README.md` to replace a phrase "no label prerequisite" —
+  **no such string exists in the repo** (grep returns nothing). README only needs the
+  lane/intake rows reworded to state the label precondition, not a phrase swap.
+- **Rejected:** changing `skills/quick-fix/references/output-template.md` — it contains no
+  gate/divert source description at all, so the conditional clarification it allows is moot.
+- **Unverified / out of scope:** its claim that `skills/create-issue/SKILL.md:95` is fine to
+  leave. That line says the label "still runs its own hard 7-box gate at the divert point",
+  which stays true for a labeled issue — no contradiction. Left unchanged.
+- **Verified line numbers (spot-checked against live files):** i-pick-issue §1a at 46-57 and
+  Next Station at 22; ii-plan-issue Step 0C at 50-66 and Next Station at 15; iii-build-plan
+  §1c at 53-67 and Next Station at 13; iv-review-build-and-pr Step 0.2 at 65-80 and Next
+  Station at 14. All accurate.
 
-**Answer: no. There are zero `--out` callers in this repo, so a bare reserved name is never a legitimate target here.**
-
-Full enumeration against `origin/main` (`grep -rn -- "--out " .`, `.git` excluded) yields 49 hits,
-and every one of them is a string *inside a file*, never a command that invokes `grade.js`:
-
-| Category | Count | Example |
-|---|---|---|
-| Usage / doc / notice lines inside `grade.js` | 48 (12 files x 4) | `skills/*/scripts/grade.js:8` `--out <results.json>` |
-| Historical prose (`docs/issues/26-...md` row N3) | 1 | the row that produced this issue |
-
-Corroborating evidence that nothing shells out to `grade.js`:
-- `grep -rn "grade\.js"` outside `scripts/grade.js` itself returns only `evals/intake.md` and
-  `README.md` prose lines ("Grader: `scripts/grade.js`"), plus `docs/issues/26-...md`.
-- No `package.json`, no npm scripts, no `.github/workflows`, no Makefile, no CI config at all.
-- `scripts/` holds four maintenance tools (`sync-harness-skills.ps1`, `sync-coderabbit.ps1`,
-  `ecc-drift.ps1`, `pipeline-closure.js`) and two proof scripts; none invokes `grade.js`.
-
-So `grade.js --out` is a **human-typed, on-demand** command. The only realistic values a caller
-passes are a real report path (`results.json`, `out/report.json`) or the Git Bash null sink.
-
-**Decision: a bare reserved name is never legitimate.** Record it in the guard docblock.
-
-### Q2 — Is the guard actually correct? (measured, not assumed)
-
-Verified live during Station II:
-
-```
-$ node skills/ii-plan-issue/scripts/grade.js case --evals ... --out "$T/nul"
-  -> writes $T/nul          # path-qualified: NOT discarded. Regex is anchored to the whole
-                             # normalized string, so only a *bare* reserved name is swallowed.
-
-$ node .../grade.js case --evals ... --out nul        # run from inside $T
-[grade] --out "nul" is a null sink; output discarded, nothing written.
-$ ls -a
-.  ..
-```
-
-The guard behaves exactly as the issue suspected: narrow, and correct. The asymmetry the issue
-names (silent discard that looks like success) is real — `grade.js` still exits 0 and still prints
-the summary to stdout — but it now has a stderr line naming the discarded value.
-
-Note the `$T/nul` case: Git Bash does **not** rewrite a path-qualified `/nul`, only a bare `/dev/null`
-argument. That is worth one sentence in the docblock so the next reader does not re-open it.
-
-### CodeRabbit plan intake
-No `coderabbitai` comment on #30. Nothing adopted, nothing rejected, nothing `[UNVERIFIED]`.
-
-## Spec (Small tier — embedded, no SPEC.md)
-
-**Goal.** Prove, executably, that the null-sink guard discards `--out nul` instead of writing a
-file, and record the reserved-name decision in the guard's own docblock.
-
-**Acceptance criteria (from the issue, mapped to tasks):**
-1. Every `--out` caller enumerated with its value → Task 1 (the table above, plus
-   `docs/issues/30-caller-audit.md`).
-2. The decision written in the guard docblock → Task 2.
-3. A runnable test proving `--out nul` writes nothing, no new dependency → Task 3.
-
-**Out of scope (issue's own words):** changing the guard's matching rules, changing the eval
-pipeline, any Windows path work outside `grade.js`.
-
-## Interface contracts
-
-None. No public API, no exported type, no schema. `isDiscardTarget` and `WIN_DEVICE_RE` keep their
-exact current bodies in all 12 files (verified byte-identical: the guard block md5s to
-`3dbfc6aea5fdee04a160cb8a4dfff4c7` in every one of the 12 copies).
+## Resolved answers (no operator question needed)
+- Unlabeled + no explicit request => no gate run, no gate output, no lane offer; go
+  straight to the execution-mode gate. Taken from the issue's stated acceptance criteria.
 
 ## Task decomposition
+Depends-on graph: T1 -> T2 -> T3 -> T4.
 
-Dependency graph:
-```
-T1 (caller audit)
- └──> T3 (test)          # the test's docblock names the audited caller set
-T2 (docblock x12) ──┐
-                    └──> T3
-T3 (test) ──> T4 (anti-cheat proof)
-```
-Ordering is risk-first: T3 is the task that can fail (a test that passes without the guard would
-be worse than no test), so it lands before the docblock work is considered done.
+- **T1** — Add the label precondition to Station I §1a + Next Station. [Docs] XS.
+  Files: `skills/i-pick-issue/SKILL.md`. Remove the three label-independent sentences; require
+  label or explicit request; state the silent unlabeled path; keep all-pass, operator choice,
+  verdict handoff, failure label removal. Depends on: none.
+  Verify: `node skills/i-pick-issue/scripts/grade.js case --evals skills/i-pick-issue/evals/evals.json --skill skills/i-pick-issue/SKILL.md`.
 
-### T1 — Audit and record every `--out` caller
-- **Size:** S | **Domain:** `[Research]` + `[Docs]`
-- **Files:** `docs/issues/30-caller-audit.md` (new)
-- **Builds:** the enumeration table above, committed as a durable artifact so Station VI can
-  point at it and a future session never re-runs the grep.
-- **Helper:** none (plain shell + prose)
-- **Depends on:** —
-- **Verify:** `test -f docs/issues/30-caller-audit.md` and the recorded count matches a fresh
-  `grep -rn -- "--out " . | grep -v '^\./\.git/' | wc -l`.
+- **T2** — Add the label precondition to Stations II, III, IV. [Docs] S.
+  Files: `skills/ii-plan-issue/SKILL.md`, `skills/iii-build-plan/SKILL.md`,
+  `skills/iv-review-build-and-pr/SKILL.md` (+ each Next Station line).
+  Require label AND (Tiny / fresh-plan / whole-diff) as today; unlabeled issues pass silently;
+  Station II also removes the label on a box failure. Depends on: T1 (establishes the shared term).
+  Verify: the three graders' `case` runs.
 
-### T2 — Record the reserved-name decision in the guard docblock
-- **Size:** M (12 files, same 4 added lines each) | **Domain:** `[Docs]`
-- **Files:** all 12 `skills/*/scripts/grade.js` — docblock only
-- **Builds:** append to the existing guard docblock:
-  - the caller-audit conclusion (no in-repo caller; `grade.js --out` is human-typed)
-  - why a bare reserved name can never be legitimate here
-  - the measured anchor behaviour (path-qualified `dir/nul` is written; only bare `nul` is swallowed)
-- **Helper:** none
-- **Depends on:** T1
-- **Verify:** guard block md5 is **identical across all 12** (drift check — they were identical
-  before, they must stay identical), and `node -c` / an actual `grade.js case` run still works.
+- **T3** — Align handoff + shared contracts. [Docs] S.
+  Files: `skills/quick-fix/SKILL.md` (divert-handoff wording only), `AGENTS.md`,
+  `docs/issue-to-pr-skill-workflow.md`, `skills/README.md`,
+  `skills/create-issue/references/issue-tracker.md`.
+  Preserve verbatim: "run all 7 boxes yourself", "The `quick-fix` label is never box 8", the
+  carry-over rule (boxes 2/5/6/7, recount 1, re-check 3-4), the ledger exemption at
+  docs:196. Depends on: T1, T2.
+  Verify: graders for i-pick-issue, ii-plan-issue, iii-build-plan, iv-review-build-and-pr, quick-fix.
 
-### T3 — Add `scripts/grade-null-sink-test.sh`
-- **Size:** S | **Domain:** `[Code]` + `[Debug]`
-- **Files:** `scripts/grade-null-sink-test.sh` (new)
-- **Builds:** follows the repo's existing proof-script convention (`lane-precondition-test.sh`,
-  `remote-branch-ownership-test.sh`): `set -u`, PASS/FAIL counters, three banner sections,
-  `SRC="${1:-...}"` so it runs from any clone, mktemp sandbox + `trap` cleanup. Four scenarios:
-  - **A** `--out nul` in a sandbox → no file named `nul` appears, stderr names the null sink
-  - **B** `--out /dev/null` and `--out /dev/nul` → nothing written
-  - **C** `--out nul.txt` and `--out con` → nothing written (the extension form)
-  - **D** negative control: `--out $T/real.json` → the file **is** written with valid JSON
-    (proves the guard is not simply refusing every write)
-- **Depends on:** T1, T2
-- **Verify:** `bash scripts/grade-null-sink-test.sh` → exit 0, 4 PASS, 0 FAIL.
+- **T4** — Consistency sweep + full grader run. [Docs] XS.
+  Grep `regardless of its label`, `unlabeled`, `every candidate`, `no label prerequisite`,
+  `7-box` outside snapshots; confirm zero contradictions remain. Run all five graders and
+  require >= 109 passing, 0 failing. Depends on: T3.
+  Verify: grep output reviewed by hand + grader exit codes.
 
-### T4 — Prove the test is not vacuous (anti-cheat)
-- **Size:** XS | **Domain:** `[Debug]`
-- **Files:** none (throwaway mutation in the sandbox copy, reverted)
-- **Builds:** copy the repo tree to a temp dir, delete the `isDiscardTarget` guard branch from one
-  `grade.js` copy, run the test against that copy → scenario A must FAIL. Then discard the copy.
-- **Depends on:** T3
-- **Verify:** the mutated run exits non-zero. This is the evidence for CONSTRAINTS rule 5.
+## Checkpoints
+- After T2: three station graders still green.
+- After T4: full five-grader run green, contradiction grep clean.
 
-### Checkpoints
-- After T2: "12/12 docblocks updated, guard blocks still byte-identical, `grade.js case` still runs."
-- After T4: "test proven to fail without the guard." Then hand to Station IIIB / IV.
+## Sub-issues
+Skipped: Standard work, but the tracker ceremony buys nothing here — this is a single
+coherent prose change with a linear T1->T4 order and no independent parallelism.
 
-## One improvement proposal (evidence-based, adopt-by-default)
-
-**Verbatim evidence, issue body:** *"The regex anchors the whole normalized string, so
-`path/to/con` is **not** discarded — only a bare `con`, `nul.txt`, `com1`, etc."*
-
-**Proposal:** T2's docblock addition states that path-qualified names are intentionally *written*,
-because Git Bash only rewrites a bare `/dev/null` argument — the guard rewrites nothing else.
-Classified as **simplification / documentation hardening**, grounded in a measurement taken in
-Station II, and folded into T2. No scope expansion.
-
-## Rejected
-- **A full unit-test suite for the regex** (`/dev/null`, `/dev/nul`, `com1`, `aux.txt`,
-  `path/to/con`, case-insensitivity): the operator chose the focused single test at the Station I
-  mode gate, and the four scenarios in T3 already cover the discard property plus the negative
-  control. Recorded here so it does not resurface.
-- **`isDiscardTarget` unit-export** (`module.exports`): would add a public surface to satisfy a
-  test. The real `grade.js` invocation is a stronger proof and needs no export.
+## Execution record (Station III)
+- **T1–T4 complete.** Baseline 109/109 → final 109/109, no regression, no assertion touched.
+- All five graders ran with `--skill`/`--evals`; every `case` and `audit` exit code 0.
+- Rejected CodeRabbit's grader commands (missing `--skill`/`--evals` → ERR_INVALID_ARG_TYPE, real
+  exit 1) and its README "no label prerequisite" phrase (no such string in the repo).
+- Pre-existing audit warns, NOT introduced here: `ii-plan-issue` 159 lines and
+  `iv-review-build-and-pr` 256 lines both exceed the >150 warn threshold; they were already
+  153 and 252 on `main`. Out of scope per CONSTRAINTS.md (no scope expansion).
+- `gh issue list --label quick-fix --state open` → empty, confirming no currently-open issue
+  would trigger a station gate under the new text.
