@@ -123,6 +123,9 @@ const NON_SKILL_TOKENS = new Set([
   // harness homes & doc-file slugs that look kebab-case
   'freebuff', 'antigravity', 'hermes', 'gemini', 'opencode', 'open-code',
   'issue-to-pr-skill-workflow', 'coderabbit-plan-prompt', 'agent-home',
+  // the <!-- local-only:begin/end --> pointer-marker slug that every SKILL.md
+  // uses to point at its un-published output template; a marker, not a skill
+  'local-only',
 ]);
 
 // Tokens that look like role names rather than skills.

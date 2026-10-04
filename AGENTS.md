@@ -8,7 +8,7 @@ Source of the 6 rules: Addy Osmani, `using-agent-skills` (github.com/addyosmani/
 
 `~/.agents` is the operator's **shared agent home** — one canonical copy of everything agents need, synced read-only into every harness (`scripts/sync-harness-skills.ps1`):
 
-- **`skills/`** (~88 skills) — the capability library. General-purpose skills (research, debugging, TDD, review, docs) plus the numbered issue→PR delivery pipeline below.
+- **`skills/`** (~89 skills) — the capability library. General-purpose skills (research, debugging, TDD, review, docs) plus the numbered issue→PR delivery pipeline below.
 - **`agents/`** — helper sub-agent personas (`code-explorer`, `code-reviewer`, stack-specific resolvers) that pipeline stations delegate to.
 - **`docs/`** — durable knowledge: the pipeline map (`docs/issue-to-pr-skill-workflow.md`) and nothing else.
 - **`scripts/`** — maintenance automation (harness sync, ECC drift check, CodeRabbit config sync, and project sync for the published pipeline repo — see `skills/README.md`).
@@ -44,4 +44,6 @@ One entry point per request, one handoff at most:
 
 ## The delivery pipeline (one part of this directory)
 
-The numbered skills in `skills/` form the issue→PR chain (stations I, II, III, IIIB, IV, V, VI — plus the `pipeline-triage` state gate, the `create-issue` intake branch, and the ad-hoc `present-pr` skill). The full station map lives in `docs/issue-to-pr-skill-workflow.md` in this directory. A numbered prefix means the skill is a step in the chain, invoked in order. Read it before any pipeline work.
+The numbered skills in `skills/` form the issue→PR chain (stations I, II, III, IIIB, IV, V, VI — plus the `pipeline-triage` state gate, the `create-issue` intake branch, the `quick-fix` fast lane, and the ad-hoc `present-pr` skill). The full station map lives in `docs/issue-to-pr-skill-workflow.md` in this directory. A numbered prefix means the skill is a step in the chain, invoked in order. Read it before any pipeline work.
+
+**Quick-fix lane:** trivial work (≤2 files, no new behavior, no contract change, no new test, existing verification available) skips Stations II–VI entirely — verified, committed, pushed straight to `main`, no PR, no reviews, no CodeRabbit. Stations I, II, III, and IV each carry a divert point that runs the hard 7-box gate. All seven must pass and the operator must choose it; any failure or a decline falls back to the full pipeline unchanged. `create-issue` labels trivial ideas `quick-fix` so Station I checks them first — a screening signal, never a bypass of the gate; a failing divert removes the label.

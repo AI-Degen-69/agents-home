@@ -12,7 +12,7 @@ This skill implements **Station II (Define & Plan)** of the 6-station pipeline (
 ## Pipeline Position
 - **Station:** II of VI
 - **Previous Station:** `i-pick-issue` (Station I — or the `create-issue` intake branch)
-- **Next Station:** `iii-build-plan auto` (Build)
+- **Next Station:** `quick-fix` (only on a Step 0C divert) or `iii-build-plan auto` (Build)
 
 ---
 
@@ -46,6 +46,25 @@ Stop the issue-dependent steps. Say in plain language exactly what failed, and a
    - **Standard** — 2–5 files, internal module changes, a single architectural decision.
    - **Large** — cross-cutting changes, a new external dependency, public API or database schema change.
 3. **Task type** — classify into one or more primary categories (combinations allowed): **Code** (default), **Design**, **Debug**, **Performance**, **Security**, **Docs**, **UX / Copy**, **Research**. Classify *before* planning: downstream stations (`iii-build-plan`, `iv-review-build-and-pr`) pick reviewers and test suites from this tag.
+
+### Step 0C: Quick-Fix Lane Divert (after the tier and task type, before Step 0A)
+
+**Tiny tier only** — every other tier continues into this station normally.
+
+A **Tiny** issue may still be the wrong lane: right-sizing measures size, the gate measures risk.
+Run the **7-box gate** in `quick-fix`. All 7 pass → tell the operator in one line that this looks
+like a quick fix (push straight to `main`, no PR, no reviews, no CodeRabbit) and ask whether to
+take it. They choose: **yes** → hand off to `quick-fix` **with your 7-box verdict** so it re-checks
+only size and its own diff instead of re-reading the issue, and stop this station; **no, or any box
+fails** → continue planning as normal.
+
+Right-sizing here is the **authority** the `quick-fix` label only guessed at: if the issue
+carries `quick-fix` but the tier is not Tiny, the label was wrong — remove it
+(`gh issue edit <number> --remove-label "quick-fix"`) so it cannot mislead a later session.
+
+Three things are deliberately still not offered here, because at this point the full chain costs
+almost nothing: a new test required, no runnable verification command, or an undecided approach.
+Those are boxes 5, 6, and 7 — failing them is not a near miss.
 
 ### Step 0A: Resolve Open Questions from Code & Consult CodeRabbit Plan
 1. **Check for CodeRabbit Plan in comments:** Look at the discussion comments fetched via `gh issue view <number> --comments`. If a plan comment from `coderabbitai` exists:

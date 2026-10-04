@@ -2,13 +2,19 @@
 
 A universal, project-agnostic development pipeline deployed globally across all harnesses (Gemini CLI, Antigravity IDE, Hermes, OpenCode, Freebuff) under `~/.agents/skills/`.
 
-**Convention:** a numbered prefix (`i-` through `vi-`) means the skill is a step in the chain, invoked in order — I → II → III → IIIB → IV → V → VI. Everything without a numeral is a **system skill**: the `pipeline-triage` state gate, the `create-issue` intake branch, and the ad-hoc `present-pr` visual presentation skill.
+**Convention:** a numbered prefix (`i-` through `vi-`) means the skill is a step in the chain, invoked in order — I → II → III → IIIB → IV → V → VI. Everything without a numeral is a **system skill**: the `pipeline-triage` state gate, the `create-issue` intake branch, the `quick-fix` fast lane, and the ad-hoc `present-pr` visual presentation skill.
 
 ## Entry Point
 
 **Session start:** one entry point for Issue work — `i-pick-issue` (Station I). It runs the state gate itself: when the tree is dirty, commits are unpushed, or a PR is open it hands off to `pipeline-triage` first. Ad-hoc requests (question, small fix, exploration) are not Issue work → `using-agent-skills`.
 
 `pipeline-triage` — the state gate, **not a numbered station**. When the working tree has uncommitted changes, unpushed commits, or an open PR and the next step is unclear, it inspects git state (and starts a missing `coderabbit` review early so it runs in parallel) and routes to the one station that resumes or closes the work.
+
+`quick-fix` — the fast lane, **not a numbered station and not a step in the chain**. Stations I, II, III, and IV each carry a divert point that tests the work against a hard 7-box gate (at most 2 files / ~30 lines · Tiny tier · no new behavior · no contract surface · no new test needed · a runnable verification command · the operator asked for a fix rather than a discussion). All seven pass, and the operator chooses it → the work is verified, committed, and pushed **straight to `main`**, skipping II–VI entirely: no branch, no PR, no ECC reviewers, no CodeRabbit wait, no merge station. Any box fails, or the operator declines, and the full pipeline runs unchanged. There is no partial lane and no override — a protected base branch that rejects the push routes to `pipeline-triage` rather than being routed around.
+
+The diverting station **hands its 7-box verdict to the lane**, which carries boxes 2, 5, 6, and 7 forward and re-checks only two things itself: box 1 (size), the one box that can drift after the divert, and boxes 3-4 against its own diff, which no verdict about the issue can settle. A lane entered with no divert verdict — a direct operator request, or an applied label — runs all 7 boxes itself.
+
+**The `quick-fix` label — a screening signal, never a bypass.** `create-issue` applies it at intake when an idea reads as trivial, and a labeled issue also skips the `@coderabbitai plan` request it will never use. Station I then checks that issue first, but **still runs all 7 boxes**: the label was a guess from a one-sentence idea, and an unlabeled tiny issue is just as valid a candidate. Any divert point whose gate fails removes the label (`--remove-label "quick-fix"`), and the lane removes it when it closes the issue, so a stale label can never mislead a later session or read as an unfinished lane in the backlog.
 
 ## Pipeline Architecture
 
@@ -21,6 +27,8 @@ A universal, project-agnostic development pipeline deployed globally across all 
      ├── nothing worth picking ──► [Intake] create-issue ──► publish issue + post @coderabbitai plan request (body only; skipped for trivial docs-only issues; retried once if no reply) ──► back to Discovery
      ▼
 [Station II]   ii-plan-issue            Define & Plan (right-sizing, spec, constraints, reads any coderabbitai plan comment as a non-binding suggestion, records adopted/rejected facts in tasks/plan.md)
+     │        └── Tiny tier + 7-box gate pass ──► quick-fix  (verified, committed, pushed straight to main; back to I)
+     │
      │
      ▼
 [Station III]  iii-build-plan           Build & Verify (TDD per task, atomic commits, auto-resolvers)
@@ -29,6 +37,7 @@ A universal, project-agnostic development pipeline deployed globally across all 
      │        (human feedback fix loop, no push)
      ▼
 [Station IV]   iv-review-build-and-pr   Review & Ship (proof gate, OCR, ECC reviewers + Spec axis, 100% test gate, push, PR)
+     │        └── after the proof gate, 7-box gate passes ──► quick-fix  (squash-merge to base, push; no reviews, no PR)
      │
      │  trigger handoff: IV posts @coderabbitai review, waits for ack,
      │  classifies (triggered / rate-limited N min / other reply / no ack),
@@ -49,8 +58,9 @@ A universal, project-agnostic development pipeline deployed globally across all 
 | Step | Canonical Name | Slash Command / Trigger | Purpose |
 |---|---|---|---|
 | **Gate** (not numbered, runs before I) | `pipeline-triage` | `/pipeline-triage` | State gate — reads git/PR state and routes to the one station that resumes or closes the work. Not numbered. |
-| **I** | `i-pick-issue` | `/i-pick-issue` (or `<id>`) | Station I (Pick & Orchestrate) — the single entry point for Issue work. **No args:** Discovery mode — lists all open issues, groups by domain, recommends the next logical issue by dependency order.<br>**With `<id>`:** drives Stations II through VI to merge and closeout. |
-| **Intake** (branch off I, not numbered) | `create-issue` | `/create-issue <idea>` | Intake branch — turn a raw thought into a researched GitHub issue labeled `ready-for-agent`, then post the canonical `@coderabbitai plan` request as its own comment (prompt body only; skipped for trivial docs-only issues; retried once if no reply lands). The plan arrives while the operator is still in Station I, so it is already waiting when the work resumes. Its output re-enters Discovery. Not numbered. |
+| **I** | `i-pick-issue` | `/i-pick-issue` (or `<id>`) | Station I (Pick & Orchestrate) — the single entry point for Issue work. **No args:** Discovery mode — lists all open issues, groups by domain, recommends the next logical issue by dependency order, and tests the recommendation against the quick-fix gate (a `quick-fix` label says where to look first, never whether to skip the gate).<br>**With `<id>`:** drives Stations II through VI to merge and closeout — or hands straight to `quick-fix` when the 1a gate passes and the operator picks it. |
+| **Lane** (not numbered, diverts from I, II, III, IV) | `quick-fix` | `/quick-fix` | Fast lane for trivial work — verifies, commits, and pushes **straight to the base branch**, skipping Stations II–VI: no branch, no PR, no ECC reviewers, no CodeRabbit. Gated by a hard 7-box checklist (all must pass, no override); any failure routes back into the normal pipeline. Exits to `i-pick-issue` for the next item. |
+| **Intake** (branch off I, not numbered) | `create-issue` | `/create-issue <idea>` | Intake branch — turn a raw thought into a researched GitHub issue labeled `ready-for-agent`, then post the canonical `@coderabbitai plan` request as its own comment (prompt body only; skipped for trivial docs-only issues and for any issue labeled `quick-fix`; retried once if no reply lands). Screens trivial ideas and pairs them with `quick-fix`. The plan arrives while the operator is still in Station I, so it is already waiting when the work resumes. Its output re-enters Discovery. Not numbered. |
 | **II** | `ii-plan-issue` | `/ii-plan-issue` (or `<id>`) | Station II (Plan): Claims issue (with `<id>` or auto-selects recommended if no arg), auto-detects tech stack and test framework, runs right-sizing, reads any `coderabbitai` plan comment as a non-binding suggestion (records what was adopted / rejected / left `[UNVERIFIED]` in `tasks/plan.md`), locks `CONSTRAINTS.md`, writes `tasks/plan.md`. |
 | **III** | `iii-build-plan` | `/iii-build-plan auto` | Station III (Build): Consumes `tasks/plan.md`, implements tasks via type-aware execution (frontend-ui-engineering, TDD, debug), code simplification, and local commits. |
 | **III-B** | `iiib-iterate-after-build` | `/iiib-iterate-after-build` | Station III-B (Iterate After Build): the operator reports corrections on a fresh build in free text — each item is classified, fixed by the right specialist skill, committed atomically, nothing pushed. Also entered from IV when the proof gate fails. |
@@ -69,12 +79,13 @@ Concise status in every chat message, in plain everyday language; full detail li
 2. **Discovery (`i-pick-issue`):** open issues grouped by domain, recommended work order with rationale, the picked next issue; in orchestration mode continuous progress across stations II through VI — `skills/i-pick-issue/references/output-template.md`.
 3. **Intake branch (`create-issue`):** folder-state + GitHub checks (created-issue link, labels, CodeRabbit plan-request status, verification), what the idea was, what the code already has, a plain-language explanation — `skills/create-issue/references/output-template.md`.
 4. **Station II (`ii-plan-issue`):** folder-state + GitHub checks (issue taken, plan saved in `tasks/plan.md`, labels, CodeRabbit plan intake, tests), the problem, the solution, a change summary (new / changed / removed) — `skills/ii-plan-issue/references/output-template.md`. An existing CodeRabbit plan comment is read as advice only (never as orders); adopted / rejected is recorded briefly in `tasks/plan.md`.
-5. **Station III (`iii-build-plan`):** folder-state + GitHub checks (tasks done X/Y, saved locally) + tests, the problem, what was done, a final-verification walkthrough built from the live product (at most 3 steps: where → what to do → what to see), and a change list (new / changed / fixed) — `skills/iii-build-plan/references/output-template.md`.
-6. **Station IIIB (`iiib-iterate-after-build`):** folder-state + GitHub checks (comments fixed, saved locally), a before/now fix list, and the same live-product walkthrough — `skills/iiib-iterate-after-build/references/output-template.md`.
-7. **Station IV (`iv-review-build-and-pr`):** folder-state + GitHub checks (opened-PR link) + tests, reviewer findings (only reviewers with findings are listed), what shipped, a 3-line summary, and the CodeRabbit trigger status line (review started / rate-limited with minutes / other reply / no acknowledgement) with jump links — `skills/iv-review-build-and-pr/references/output-template.md`.
-8. **Station V (`v-babysit-pr-and-merge`):** folder-state + GitHub checks (merged-PR link, issue state) + CodeRabbit triage (ACCEPT / REJECT with reasons), fixes applied, a 3-line summary — `skills/v-babysit-pr-and-merge/references/output-template.md`.
-9. **Station VI (`vi-close-pipeline`):** folder-state + GitHub checks (merged PR, closed issue) + cleanup result, before/after in plain language, a final-verification walkthrough (at most 5 steps), a 3-line summary — `skills/vi-close-pipeline/references/output-template.md`.
-10. **`present-pr` (ad-hoc, unnumbered):** folder-state + GitHub checks (issue, merged PR, presentation file), before/now value lines, a final walkthrough against the live product (never the presentation file), a 3-line summary — `skills/present-pr/references/output-template.md`.
+5. **Lane (`quick-fix`):** the 7 gate boxes as one-line pass/fail, folder state (base branch, clean, synced, push rejected by protection or not), the one-line fix, what verification ran and what did not, then which station to run next — `skills/quick-fix/references/output-template.md`. No CodeRabbit status line ever: the lane has no CodeRabbit.
+6. **Station III (`iii-build-plan`):** folder-state + GitHub checks (tasks done X/Y, saved locally) + tests, the problem, what was done, a final-verification walkthrough built from the live product (at most 3 steps: where → what to do → what to see), and a change list (new / changed / fixed) — `skills/iii-build-plan/references/output-template.md`.
+7. **Station IIIB (`iiib-iterate-after-build`):** folder-state + GitHub checks (comments fixed, saved locally), a before/now fix list, and the same live-product walkthrough — `skills/iiib-iterate-after-build/references/output-template.md`.
+8. **Station IV (`iv-review-build-and-pr`):** folder-state + GitHub checks (opened-PR link) + tests, reviewer findings (only reviewers with findings are listed), what shipped, a 3-line summary, and the CodeRabbit trigger status line (review started / rate-limited with minutes / other reply / no acknowledgement) with jump links — `skills/iv-review-build-and-pr/references/output-template.md`.
+9. **Station V (`v-babysit-pr-and-merge`):** folder-state + GitHub checks (merged-PR link, issue state) + CodeRabbit triage (ACCEPT / REJECT with reasons), fixes applied, a 3-line summary — `skills/v-babysit-pr-and-merge/references/output-template.md`.
+10. **Station VI (`vi-close-pipeline`):** folder-state + GitHub checks (merged PR, closed issue) + cleanup result, before/after in plain language, a final-verification walkthrough (at most 5 steps), a 3-line summary — `skills/vi-close-pipeline/references/output-template.md`.
+11. **`present-pr` (ad-hoc, unnumbered):** folder-state + GitHub checks (issue, merged PR, presentation file), before/now value lines, a final walkthrough against the live product (never the presentation file), a 3-line summary — `skills/present-pr/references/output-template.md`.
 
 The English rules in `SKILL.md` use signal words (`must`, `recommended`, `skip`, `do not invent`) for binding duties and prohibitions.
 
@@ -94,12 +105,13 @@ The chat reports **what changed in the product — never how it was saved.** No 
 
 Every external skill and reviewer persona each pipeline station invokes, read off the stations' own `SKILL.md` and `references/` files rather than a hand-maintained list. Station-to-station routing lives in the architecture diagram above; this table covers only the helper skills and personas a station delegates to. A name absent from a station's row is not invoked by that station.
 
-**Coverage: 46 skills (10 pipeline + 33 first-order + 3 second-order) and all 17 personas.**
+**Coverage: 47 skills (11 pipeline + 33 first-order + 3 second-order) and all 17 personas.**
 
 | Station | Invokes | When |
 |---|---|---|
 | **Gate** (`pipeline-triage`) | `using-agent-skills` | Ad-hoc (non-Issue) requests — route there and stop; this skill hands off at most once |
-| **I** (`i-pick-issue`) | `context-engineering`, `using-agent-skills` | `context-engineering` after issue selection — locks session scope before opening files. `using-agent-skills` when the request is ad-hoc rather than Issue work |
+| **Lane** (`quick-fix`) | `iiib-iterate-after-build`, `ii-plan-issue`, `iii-build-plan`, `pipeline-triage` | Escape routes only — a failed gate box or a mid-lane discovery that the fix is bigger than the gate. The lane's happy path invokes no skill: verify, commit, push to base, close the issue |
+| **I** (`i-pick-issue`) | `quick-fix`, `context-engineering`, `using-agent-skills` | `quick-fix` when the 1a gate passes and the operator picks the fast lane. `context-engineering` after issue selection — locks session scope before opening files. `using-agent-skills` when the request is ad-hoc rather than Issue work |
 | **Intake** (`create-issue`) | `using-agent-skills` | Hands a quick question or exploration back to the ad-hoc router instead of opening an issue |
 | **II** (`ii-plan-issue`) | **Domain routing (Step 1):** Design/UI → `frontend-ui-engineering`, `frontend-design`, `tailwind-design-system`, `extract-design-system` · API/Backend → `api-and-interface-design` · Debug → `debugging-and-error-recovery`, `doubt-driven-development` · Performance → `performance-optimization` · Security → `security-and-hardening` · Docs → `documentation-and-adrs` · UX / Copy → `humanizer` · Research → `idea-refine` · Core (default) → `test-driven-development`, `incremental-implementation`<br>**Later steps:** `spec-driven-development` (Step 2 specification), `constraint-driven-development` (Step 3 quality guardrails), `planning-and-task-breakdown` (Step 6 task decomposition)<br>**Personas:** `code-explorer`, `type-design-analyzer` | Task-type classification before any plan is written; every task then carries a domain tag Station III routes on |
 | **III** (`iii-build-plan`) | **Domain routing:** UI/Frontend/Design → `frontend-ui-engineering` (+ `tailwind-design-system` when tokens apply) · Code/Backend/API → `test-driven-development`, `source-driven-development`, `api-and-interface-design` · Debug/Defect → `debugging-and-error-recovery` · Performance → `performance-optimization` · Security → `security-and-hardening` · Docs → `documentation-and-adrs`<br>**Recurring:** `code-simplification` at the end of every task, `git-workflow-and-versioning` (commit discipline, feature flags, rollback), `observability-and-instrumentation` (production-facing changes)<br>**Personas:** `tdd-guide`, `build-error-resolver`, `react-build-resolver`, `go-build-resolver`, `rust-build-resolver` | Per task, by the domain tag Station II wrote. A persona absent from disk is skipped and the skip recorded — never invented |
@@ -112,8 +124,12 @@ Every external skill and reviewer persona each pipeline station invokes, read of
 ```
 create-issue ──────────► using-agent-skills (ad-hoc handoff)
 pipeline-triage ───────► using-agent-skills (ad-hoc handoff)
-i-pick-issue ──────────► context-engineering, using-agent-skills
-ii-plan-issue ─────────► frontend-ui-engineering, frontend-design,
+quick-fix ─────────────► ii-plan-issue, iii-build-plan,
+                         iiib-iterate-after-build, pipeline-triage
+                         (escape routes only — happy path invokes none)
+i-pick-issue ──────────► quick-fix, context-engineering,
+                         using-agent-skills
+ii-plan-issue ─────────► quick-fix, frontend-ui-engineering, frontend-design,
                          tailwind-design-system, extract-design-system,
                          api-and-interface-design,
                          debugging-and-error-recovery, doubt-driven-development,
@@ -123,7 +139,8 @@ ii-plan-issue ─────────► frontend-ui-engineering, frontend-d
                          spec-driven-development, constraint-driven-development,
                          planning-and-task-breakdown
                          + personas code-explorer, type-design-analyzer
-iii-build-plan ────────► frontend-ui-engineering, tailwind-design-system,
+iii-build-plan ────────► quick-fix, frontend-ui-engineering,
+                         tailwind-design-system,
                          test-driven-development, source-driven-development,
                          api-and-interface-design, debugging-and-error-recovery,
                          performance-optimization, security-and-hardening,
@@ -138,7 +155,8 @@ iiib-iterate-after-build► diagnosing-bugs, debugging-and-error-recovery,
                          security-and-hardening, browser-testing-with-devtools,
                          test-driven-development, verification-before-completion,
                          code-simplification
-iv-review-build-and-pr ─► playwright-cli, browser-testing-with-devtools,
+iv-review-build-and-pr ─► quick-fix, playwright-cli,
+                         browser-testing-with-devtools,
                          code-review-and-quality, security-and-hardening,
                          test-driven-development, web-design-guidelines,
                          git-workflow-and-versioning,
@@ -165,7 +183,7 @@ Three skills are not invoked by a station directly but by a skill a station alre
 | `interview-me` | `constraint-driven-development` |
 | `shipping-and-launch` | `git-workflow-and-versioning`, `observability-and-instrumentation`, `using-agent-skills` |
 
-**Shipped set: 46 skills = 10 pipeline + 33 first-order + 3 second-order.**
+**Shipped set: 47 skills = 11 pipeline + 33 first-order + 3 second-order.**
 
 ---
 
@@ -175,7 +193,7 @@ Three homes, three purposes — never mixed:
 
 1. `runs/.../research-papers/` — **per-run** research papers and experiment findings.
 2. `docs/issues/<id>-presentation-<slug>.html` — **per-issue** visual HTML explanation & showcase artifacts (produced by the ad-hoc `present-pr` skill; legacy names `<id>-showcase-*.html` and `<id>-explained.html` remain recognized).
-3. `docs/issues/<id>-noticed-but-not-touching.md` — **per-issue** NOTICED-BUT-NOT-TOUCHING candidate ledger (any station appends an `open` row; only Station VI resolves rows; never pruned).
+3. `docs/issues/<id>-noticed-but-not-touching.md` — **per-issue** NOTICED-BUT-NOT-TOUCHING candidate ledger (any numbered station appends an `open` row; only Station VI resolves rows; never pruned). **The `quick-fix` lane is the one exception:** it closes the issue without ever running Station VI, so a row written there could never be resolved. The lane names what it noticed in one line of its chat report and writes nothing — a lane that leaves a file behind is a lane that skipped a step.
 4. `.freebuff/`, `%TEMP%` — **transient scratch / preview only**. Never the canonical home of anything.
 
 ---

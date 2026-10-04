@@ -2,7 +2,7 @@
 /**
  * pipeline-closure.js — which skills does the issue-to-PR pipeline actually need?
  *
- * Walks the 10 station skills (pipeline-triage, i-*, create-issue, ii-* … present-pr)
+ * Walks the 11 station skills (pipeline-triage, i-*, create-issue, ii-* … quick-fix, present-pr)
  * and follows every skill reference transitively. A reference is a BACKTICKED token
  * that names a real skill folder — the same convention validate-lib.js
  * phantomSkillRefs uses, inverted. Matching by name rather than by kebab shape is
@@ -27,7 +27,7 @@ const SKILLS = process.env.AGENTS_SKILLS_ROOT || path.join(ROOT, 'skills');
 const STATIONS = [
   'pipeline-triage', 'i-pick-issue', 'create-issue', 'ii-plan-issue',
   'iii-build-plan', 'iiib-iterate-after-build', 'iv-review-build-and-pr',
-  'v-babysit-pr-and-merge', 'vi-close-pipeline', 'present-pr',
+  'v-babysit-pr-and-merge', 'vi-close-pipeline', 'quick-fix', 'present-pr',
 ];
 
 const args = process.argv.slice(2);

@@ -1,0 +1,278 @@
+{
+  "evals": [
+    {
+      "expected_output": "All 7 gate boxes pass as one-liners, folder state, the one-line fix, verification result, then hand back to i-pick-issue. No CodeRabbit status line, no PR link.",
+      "files": [],
+      "id": 1,
+      "prompt": "The install command in our README says --instal but it should be --install. One file, one word. Push it to main, I need it live now.",
+      "static_assertions": [
+        {
+          "id": "gate-runs-before-any-edit",
+          "type": "regex",
+          "pattern": "before touching a file",
+          "must_match": true,
+          "why": "the 7-box gate must be evaluated before a single file is edited, or the lane silently accepts work that should have been routed out"
+        },
+        {
+          "id": "all-seven-boxes-present",
+          "type": "regex",
+          "pattern": "at most \\*\\*2 files\\*\\*",
+          "must_match": true,
+          "why": "the size box is the lane's primary bound and must be stated"
+        },
+        {
+          "id": "pushes-to-base-branch",
+          "type": "regex",
+          "pattern": "git push origin <base>",
+          "must_match": true,
+          "why": "the whole point of the lane: a direct push to the base branch, no feature branch"
+        },
+        {
+          "id": "reports-next-station",
+          "type": "regex",
+          "pattern": "i-pick-issue",
+          "must_match": true,
+          "why": "after the lane the next item starts from Station I, not from another station"
+        }
+      ]
+    },
+    {
+      "expected_output": "One line naming the failed gate box and the escape station ii-plan-issue. No push, no commit.",
+      "files": [],
+      "id": 2,
+      "prompt": "While you were in there, also swap the auth provider to the new one and add the missing rate-limit header. It's all small stuff, let's just do it quick.",
+      "static_assertions": [
+        {
+          "id": "failed-gate-routes-out",
+          "type": "regex",
+          "pattern": "Any box fails → say which one in one line and route out",
+          "why": "a failed gate must route out rather than ship; the lane either runs fully or does not run"
+        },
+        {
+          "id": "no-partial-lane",
+          "type": "regex",
+          "pattern": "There is no partial lane",
+          "why": "a gate that can be partially satisfied becomes a way to push unreviewed work; the all-or-nothing wording must stay"
+        },
+        {
+          "id": "routes-contract-change-to-plan",
+          "type": "regex",
+          "pattern": "\\| 3, 4 — new behavior or contract surface \\| `ii-plan-issue`",
+          "must_match": true,
+          "why": "an auth provider change is exactly the box 4 contract-surface case and must route to planning"
+        },
+        {
+          "id": "gate-is-not-overridable",
+          "type": "regex",
+          "pattern": "no override|no operator override",
+          "must_match": true,
+          "why": "the user asking for speed must not be able to talk the lane past a failed box"
+        }
+      ]
+    },
+    {
+      "expected_output": "The push is refused. Report the rejection and route to pipeline-triage. No PR opened as a substitute.",
+      "files": [],
+      "id": 3,
+      "prompt": "Just landed the doc typo fix but git push to main said remote rejected — main is protected. What now?",
+      "static_assertions": [
+        {
+          "id": "protected-base-routes-to-triage",
+          "type": "regex",
+          "pattern": "rejected.*route to `pipeline-triage`|route to `pipeline-triage`",
+          "must_match": true,
+          "why": "branch protection is the operator's deliberate choice; the lane reports it and routes out rather than opening a PR as a silent substitute"
+        },
+        {
+          "id": "never-opens-a-pr",
+          "type": "regex",
+          "pattern": "never opens a PR|does not open a PR|never creates a branch and never opens a PR",
+          "must_match": true,
+          "why": "the lane must not silently degrade into the full pipeline it exists to skip"
+        }
+      ]
+    },
+    {
+      "expected_output": "Verification could not run. Say so plainly, still commit and push, and disclose the unverified check in the issue comment. Never report it as a pass.",
+      "files": [],
+      "id": 4,
+      "prompt": "The lint command doesn't exist in this repo and there's no test file for the file I fixed. Just commit it to main.",
+      "static_assertions": [
+        {
+          "id": "unverified-is-disclosed",
+          "type": "regex",
+          "pattern": "never reported as a pass|never presents it as a pass|is not a pass",
+          "must_match": true,
+          "why": "box 6 fails when no verification command exists; the honest outcome must never be reported as a pass"
+        },
+        {
+          "id": "verification-must-be-disclosed-in-issue",
+          "type": "regex",
+          "pattern": "disclosed in the issue comment",
+          "must_match": true,
+          "why": "with no PR, the issue comment is the only durable record and must carry what was and was not verified"
+        }
+      ]
+    },
+    {
+      "expected_output": "The fix turned out to need a third file and a new code path. Stop before pushing, report the finding, route to ii-plan-issue.",
+      "files": [],
+      "id": 5,
+      "prompt": "You were fixing a typo in the config validator but now you see the same bug in four other validators. Fix them all.",
+      "static_assertions": [
+        {
+          "id": "mid-lane-discovery-stops",
+          "type": "regex",
+          "pattern": "do not push",
+          "must_match": true,
+          "why": "a fix that outgrows the gate mid-lane must stop before pushing, which is the lane's most likely real-world failure mode"
+        },
+        {
+          "id": "mid-lane-routes-to-plan",
+          "type": "regex",
+          "pattern": "stop mid-lane",
+          "must_match": true,
+          "why": "the symptom-is-not-the-bug case is explicitly a stop-and-route, not a push anyway"
+        }
+      ]
+    },
+    {
+      "expected_output": "The gate box that fails is named, verification failed on a real defect, so no push happens and the failure routes to iiib-iterate-after-build.",
+      "files": [],
+      "id": 6,
+      "prompt": "Quick fix for the broken import — but the tests for that module fail now. Push it to main anyway.",
+      "static_assertions": [
+        {
+          "id": "failed-test-blocks-push",
+          "type": "regex",
+          "pattern": "Route the failure to `iiib-iterate-after-build`",
+          "must_match": true,
+          "why": "a test that ran and failed is a real defect; it blocks the push and becomes a correction item, unlike an unverified gate"
+        }
+      ]
+    },
+    {
+      "expected_output": "The issue carries the quick-fix label. The gate is re-run anyway; box 3 fails, so it routes out and the label is removed.",
+      "files": [],
+      "id": 7,
+      "prompt": "Issue #42 is labeled quick-fix and looks tiny — 'add the missing null guard to the parser'. Just take the label and push it to main.",
+      "static_assertions": [
+        {
+          "id": "label-is-never-box-8",
+          "type": "regex",
+          "pattern": "\\*\\*The `quick-fix` label is never box 8\\.\\*\\*",
+          "must_match": true,
+          "why": "the label is the most likely bypass: an intake guess must never substitute for the gate at the divert point"
+        },
+        {
+          "id": "labeled-issue-still-runs-gate",
+          "type": "regex",
+          "pattern": "may never run \\*because\\*\\s*of the label",
+          "must_match": true,
+          "why": "states the operative rule: the lane may run alongside the label, never because of it"
+        }
+      ]
+    },
+    {
+      "expected_output": "After the successful push the issue is closed and the quick-fix label is removed, leaving no lane residue.",
+      "files": [],
+      "id": 8,
+      "prompt": "The typo fix passed, you're on main and pushed. Now close issue #42.",
+      "static_assertions": [
+        {
+          "id": "label-removed-via-issue-edit",
+          "type": "regex",
+          "pattern": "gh issue edit <number> --remove-label \"quick-fix\"",
+          "must_match": true,
+          "why": "label removal must use gh issue edit — gh issue close has no --remove-label flag and rejects the combination with 'unknown flag'"
+        },
+        {
+          "id": "close-flag-combination-forbidden",
+          "type": "not_regex",
+          "pattern": "gh issue close <number> --remove-label",
+          "why": "the documented primary path was a command that does not exist; gh issue close supports only --comment, --duplicate-of, and --reason"
+        },
+        {
+          "id": "no-label-residue-rule",
+          "type": "regex",
+          "pattern": "Leave no label residue",
+          "must_match": true,
+          "why": "the lifecycle rule must hold at the lane's own exit as well as at every divert point that disproves it"
+        }
+      ]
+    },
+    {
+      "expected_output": "The lane's own gated files are staged on main from the Station IV squash handoff. That is an accepted tree state, so proceed with size and boxes 3-4 only.",
+      "files": [],
+      "id": 9,
+      "prompt": "Station IV handed off: I'm on main and the two fixed files are staged but not committed, from the squash merge. Run the quick fix from here.",
+      "static_assertions": [
+        {
+          "id": "handoff-tree-state-is-accepted",
+          "type": "regex",
+          "pattern": "\\*\\*Station IV handoff\\*\\*",
+          "must_match": true,
+          "why": "the lane must name the staged-on-base handoff as an accepted tree state; this is the exact defect that broke the post-proof-gate divert"
+        },
+        {
+          "id": "foreign-dirt-still-routes-out",
+          "type": "regex",
+          "pattern": "foreign dirt → route to `pipeline-triage`",
+          "must_match": true,
+          "why": "accepting the handoff must not weaken the foreign-dirt stop rule; only the lane's own gated files are tolerated"
+        }
+      ]
+    },
+    {
+      "expected_output": "The carried verdict is read, not re-derived. Only box 1 and boxes 3-4 against the lane's own diff are re-checked.",
+      "files": [],
+      "id": 10,
+      "prompt": "Station I already ran all 7 boxes and handed me the verdict saying they all pass. Just tell me what to re-check.",
+      "static_assertions": [
+        {
+          "id": "verdict-not-re-derived",
+          "type": "regex",
+          "pattern": "\\*\\*Do not re-derive it\\.\\*\\*",
+          "must_match": true,
+          "why": "adopted proposal: the divert's verdict must be carried, not recomputed, or the duplicate read the lane exists to remove remains"
+        },
+        {
+          "id": "size-always-rechecked",
+          "type": "regex",
+          "pattern": "\\*\\*Box 1 \\(size\\)\\*\\* — always",
+          "must_match": true,
+          "why": "size is the one box that can drift after the divert, so it is never carried"
+        },
+        {
+          "id": "direct-entry-runs-full-gate",
+          "type": "regex",
+          "pattern": "run all 7 boxes yourself",
+          "must_match": true,
+          "why": "with no divert verdict there is nothing to carry, so the shortcut must not silently become the default path"
+        }
+      ]
+    },
+    {
+      "expected_output": "The lane writes no ledger. Out-of-scope items are named one line in the chat report and left untouched.",
+      "files": [],
+      "id": 11,
+      "prompt": "While fixing the typo I also spotted a real bug in the adjacent validator. What do you do with it?",
+      "static_assertions": [
+        {
+          "id": "no-ledger-write",
+          "type": "regex",
+          "pattern": "does \\*\\*not\\*\\* write the `NOTICED-BUT-NOT-TOUCHING` ledger",
+          "must_match": true,
+          "why": "the operator's decision: the lane closes the issue and never runs Station VI, so a ledger row written here would stay open forever"
+        },
+        {
+          "id": "still-never-fixes-it",
+          "type": "regex",
+          "pattern": "never fix it, never log it",
+          "must_match": true,
+          "why": "dropping the ledger must not become a licence to fix the adjacent bug; scope discipline is the point"
+        }
+      ]
+    }
+  ]
+}

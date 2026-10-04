@@ -48,7 +48,7 @@ conversation.
    - Single issue:
      `gh issue create --title "..." --body-file <file> --label ready-for-agent`
      (add `needs-triage` alongside only when the idea is genuinely unshaped even
-     after research).
+     after research; add `quick-fix` when the Quick-fix screening below says so).
    - Split: publish every issue first, capture each `#number`, then wire them
      together so they are visibly one family, not orphans:
      - Put `Part of #<first-issue>` at the top of every later sibling's body —
@@ -73,13 +73,42 @@ conversation.
      contains nothing else.
    - **Skip the request for a genuinely trivial issue.** A docs/typo/comment-only
      change with no behavior change gets nothing back from phases and test
-     cases: publish, report, and move on.
+     cases: publish, report, and move on. An issue carrying `quick-fix` always
+     qualifies — that label and this skip are the same judgment, so a labelled
+     issue never burns a CodeRabbit plan round it will not use.
    - **If no reply lands, retry once.** A plan normally arrives within about five
      minutes. If the issue still shows no `coderabbitai` comment, post the prompt
      again with the mention spelled exactly `@coderabbitai` in lowercase (a
      capitalized mention was observed to return no plan at all), and say in the
      closeout that a retry was sent.
 8. **Closeout in chat:** You MUST report to the user in clean, everyday Hebrew following the Output Contract below. Never make the user wait before creation.
+
+## Quick-fix screening
+
+Intake is the cheapest place in the whole pipeline to notice trivial work: the idea
+is still one sentence, so "typo" and "new auth provider" are still visibly different
+sizes. Screen every idea, and when it reads as trivial add the `quick-fix` label
+alongside `ready-for-agent` (create it on first use:
+`gh label create "quick-fix" --color 1D76DB`).
+
+**The label is a signal, not a shortcut.** It tells Station I where to look first; it
+does not grant the lane. `quick-fix` still runs its own hard 7-box gate at the
+divert point, and a failed gate sends the work to the full pipeline with the label
+removed. Sizing an idea wrong at intake is a recoverable mistake; a label that
+bypasses the gate would not be.
+
+Label the idea when it reads as: a typo, a stale comment, a broken link, a wrong
+constant, a missing doc line, or a single obvious correction in at most a couple of
+files — with no behavior change and no new test implied.
+
+Do **not** label it because the operator called it "quick", because it is small on
+its own, or because most of the work is already done. Open questions, a split, or
+anything implying a behavior change all mean no label. A split is never labelled:
+its parts are separate issues and each gets screened on its own.
+
+The intake issue's final acceptance criterion is still a runnable verification
+command, exactly as for any other issue — the lane verifies before it pushes, and a
+`quick-fix` issue with no runnable command fails gate box 6 and routes to planning.
 
 ## Intake template
 
