@@ -182,11 +182,22 @@ const KNOWN_PACKAGES = new Set([
   'class-variance-authority', 'next-themes', 'date-fns', 'react-day-picker',
 ]);
 
+/**
+ * Naming-convention vocabulary: tokens that are backticked in prose as the NAME
+ * of a convention rather than as a skill reference. `kebab-case` in a sentence
+ * about file naming is not a skill that failed to resolve.
+ */
+const NAMING_CONVENTIONS = new Set([
+  'kebab-case', 'camel-case', 'snake-case', 'pascal-case', 'dot-case',
+  'lower-case', 'upper-case',
+]);
+
 function isNonSkillVocabulary(token) {
   if (ARIA_ATTRS.has(token)) return true;
   if (DATA_STATE_ATTRS.has(token)) return true;
   if (CSS_PROPERTIES.has(token)) return true;
   if (KNOWN_PACKAGES.has(token)) return true;
+  if (NAMING_CONVENTIONS.has(token)) return true;
 
   const parts = token.split('-');
   if (parts.length < 2) return false;
@@ -213,6 +224,28 @@ function ownFileBasenames(skillDir) {
   };
   walk(skillDir, 0);
   return names;
+}
+
+/**
+ * True when the skill folder is a symlink / junction rather than a real directory.
+ *
+ * That is the signature of a VENDOR-MANAGED skill: the canonical home links the
+ * pack in instead of copying it, because the pack's own tool owns the upgrade
+ * path (e.g. `cua-driver skills update` overwrites the pack wholesale). Editing
+ * the content through the link is not durable, so authoring rules that assume the
+ * operator can restructure the skill would be unfalsifiable — they could pass
+ * locally and be silently reverted on the next update.
+ *
+ * lstat, not stat: stat() follows the link and reports the TARGET as a plain
+ * directory, which is exactly the signal that must not be trusted here.
+ */
+function isVendorManaged(skillDir) {
+  try {
+    const st = fs.lstatSync(skillDir);
+    return st.isSymbolicLink();
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -323,8 +356,20 @@ function validateSkill(skillDir, opts) {
   }
 
   // body-length (spec progressive-disclosure guidance)
+  //
+  // A vendor-managed skill is a LINK into a pack the operator does not author
+  // (e.g. skills/cua-driver -> ~/.cua-driver/skills/cua-driver). Editing it is
+  // pointless: the next `skills update` overwrites the file. So an oversized
+  // vendor body is reported as `warn`, never `fail` — the finding stays visible
+  // in the report without blocking a fix the operator cannot make. Locally
+  // authored skills keep the hard fail, so this cannot become a blanket escape.
+  const vendorManaged = isVendorManaged(skillDir);
   if (lines.length > 500) {
-    add('fail', 'body-length', `body has ${lines.length} lines (spec guidance <= 500); split optional content into on-demand files`);
+    if (vendorManaged) {
+      add('warn', 'body-length', `body has ${lines.length} lines (spec guidance <= 500); vendor-managed link, not locally editable — not enforced`);
+    } else {
+      add('fail', 'body-length', `body has ${lines.length} lines (spec guidance <= 500); split optional content into on-demand files`);
+    }
   } else {
     add('pass', 'body-length', `body ${lines.length} lines`);
   }
@@ -420,4 +465,4 @@ function validateDocs(docsRoot, opts) {
 
 function runOn(dir, skillsRoot) { return validateSkill(dir, { skillsRoot }); }
 
-module.exports = { validateSkill, validateDocs, findDocFiles, runOn, parseFrontmatter, kebabCandidates, phantomSkillRefs, isNonSkillVocabulary, DEFAULT_SKILLS_ROOT };
+module.exports = { validateSkill, validateDocs, findDocFiles, runOn, parseFrontmatter, kebabCandidates, phantomSkillRefs, isNonSkillVocabulary, isVendorManaged, DEFAULT_SKILLS_ROOT };

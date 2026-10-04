@@ -16,6 +16,7 @@ const path = require('path');
 
 const {
   validateSkill, phantomSkillRefs, isNonSkillVocabulary, parseFrontmatter,
+  isVendorManaged,
 } = require('./validate-lib.js');
 
 /** A throwaway skills root with one real skill and one real agent persona. */
@@ -156,6 +157,48 @@ test('the default skills root follows the script, not a hardcoded path', () => {
     assert.strictEqual(DEFAULT_SKILLS_ROOT, process.env.SKILLS_ROOT,
       'an explicit SKILLS_ROOT must take precedence over the fallback');
   }
+});
+
+test('a naming convention backticked in prose is not a phantom skill ref', () => {
+  // `kebab-case` names a convention, not a skill. Exempted so vendor docs that
+  // discuss naming shapes do not report a phantom.
+  assert.strictEqual(isNonSkillVocabulary('kebab-case'), true);
+  assert.strictEqual(isNonSkillVocabulary('snake-case'), true);
+  // A genuine near-miss must still be a candidate.
+  assert.strictEqual(isNonSkillVocabulary('kebab-case-skill'), false);
+  assert.strictEqual(isNonSkillVocabulary('kebabcased'), false);
+});
+
+test('a vendor-managed link downgrades body-length to warn, a real dir still fails', () => {
+  const fx = makeFixtureRoot();
+  try {
+    const big = '---\nname: big\ndescription: d\n---\n\n' + 'line\n'.repeat(600);
+
+    // Real directory (locally authored): the hard fail must stand.
+    const realDir = path.join(fx.base, 'big-real');
+    fs.mkdirSync(realDir, { recursive: true });
+    fs.writeFileSync(path.join(realDir, 'SKILL.md'), big);
+    assert.strictEqual(finding(validateSkill(realDir, { skillsRoot: fx.skillsRoot }), 'body-length').severity, 'fail');
+
+    // Symlinked into a vendor pack: warn, never fail — the operator cannot edit it.
+    const target = path.join(fx.base, 'vendor-pack');
+    fs.mkdirSync(target, { recursive: true });
+    fs.writeFileSync(path.join(target, 'SKILL.md'), big);
+    const link = path.join(fx.base, 'big-vendor');
+    fs.symlinkSync(target, link, 'junction');
+    const viaLink = finding(validateSkill(link, { skillsRoot: fx.skillsRoot }), 'body-length');
+    assert.strictEqual(viaLink.severity, 'warn', 'a vendor link must not fail body-length');
+    assert.match(viaLink.detail, /vendor-managed/);
+  } finally { fx.cleanup(); }
+});
+
+test('isVendorManaged distinguishes a link from a real directory', () => {
+  const fx = makeFixtureRoot();
+  try {
+    const real = path.join(fx.skillsRoot, 'real-skill');
+    assert.strictEqual(isVendorManaged(real), false);
+    assert.strictEqual(isVendorManaged(path.join(fx.base, 'does-not-exist')), false);
+  } finally { fx.cleanup(); }
 });
 
 test('a block scalar keeps indented key-shaped lines as text', () => {
