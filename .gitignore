@@ -3,3 +3,18 @@
 .playwright-cli/
 desktop.ini
 icon_*.ico
+
+# Language artifacts — this repo tracks Python scripts under skills/ (e.g.
+# skills/skill-creator/scripts/, skills/skill-refinement-loop/scripts/), so
+# importing one compiles its siblings into __pycache__/ and shows up as
+# untracked dirt in `git status --porcelain` — the Clean Exit Gate check.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Node artifacts — parity/future-proofing; nothing generates these yet.
+node_modules/
