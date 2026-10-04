@@ -18,4 +18,3 @@ venv/
 
 # Node artifacts — parity/future-proofing; nothing generates these yet.
 node_modules/
-.scratch/
