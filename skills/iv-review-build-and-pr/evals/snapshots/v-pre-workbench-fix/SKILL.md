@@ -1,6 +1,6 @@
 ---
 name: iv-review-build-and-pr
-description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then ECC language/framework reviewers, applies fixes, executes full post-review verification (browser or test suite), pushes branch, and opens GitHub PR with @coderabbitai summary.
+description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then language/framework reviewers, applies fixes, executes full post-review verification (browser or test suite), pushes branch, and opens GitHub PR with @coderabbitai summary.
 ---
 
 # Station IV: Review, Verify & PR (`iv-review-build-and-pr`)
@@ -87,7 +87,7 @@ Feed the OCR file list + Rule Groups + OCR finds into each reviewer below (no fi
    - Deploy whenever the diff touches catch/except blocks, fallback defaults, async paths, or logging. Hunt swallowed errors, empty catch blocks, dangerous fallbacks (`.catch(() => [])`), lost stack traces, and missing error propagation.
 5. **Test Engineering Audit (`test-driven-development`):**
    - Verify that test assertions test real domain behavior and edge cases, not hollow mocks.
-   - Map each changed behavior to the test that covers it; rate uncovered paths by impact (critical / important / nice-to-have). (Absorbed from ECC `pr-test-analyzer`.)
+   - Map each changed behavior to the test that covers it; rate uncovered paths by impact (critical / important / nice-to-have).
 6. **Docs Drift (`doc-updater`, diff-triggered):**
    - Deploy when the diff touches `*.md` files, docstrings, or README/docs adjacent to changed behavior. Verify that documentation touched by the diff still matches the code — no stale examples, no outdated API references. Persona from `~/.agents/agents/`; not found on disk → skip and record the skip (אין להמציא).
 

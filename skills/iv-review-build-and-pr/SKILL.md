@@ -1,6 +1,6 @@
 ---
 name: iv-review-build-and-pr
-description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then ECC language/framework reviewers, applies fixes, executes the post-review Browser Gate (UI, fast-first, playwright-cli only — see Step 0.1 tool allowlist; DevTools MCP for profiling only) or targeted test gate (backend), pushes branch, and opens GitHub PR with @coderabbitai summary.
+description: Station IV (Review, Verify & Ship) — Universal shipping flow. Runs OCR delegation (deterministic file scope + rules, host-agent review, no LLM key), then stack-matched language/framework reviewers, applies fixes, executes the post-review Browser Gate (UI, fast-first, playwright-cli only — see Step 0.1 tool allowlist; DevTools MCP for profiling only) or targeted test gate (backend), pushes branch, and opens GitHub PR with @coderabbitai summary.
 ---
 
 # Station IV: Review, Verify & PR (`iv-review-build-and-pr`)
@@ -64,13 +64,13 @@ Only the tools listed above may run in this gate. No other browser automation to
 
 #### Step 0.2: Quick-Fix Lane Divert (after the proof gate, before any review work)
 
-Last chance to skip the review machinery, and the most valuable one — Steps 1 and 1B (OCR plus every ECC reviewer) plus the CodeRabbit round are the bulk of the cost. Step 0 has already proved the build works, so the gate below runs against known-good code.
+Last chance to skip the review machinery, and the most valuable one — Steps 1 and 1B (OCR plus every reviewer) plus the CodeRabbit round are the bulk of the cost. Step 0 has already proved the build works, so the gate below runs against known-good code.
 
 **The label precondition comes first.** Read the current labels of the linked issue
 (`gh issue view <number> --json labels`). If no issue is linked, or the issue lacks the `quick-fix` label,
 skip the gate entirely — continue into Step 1 normally, with no gate text and no lane offer.
 
-Read `git diff --name-only origin/<base>...HEAD`. If the **entire** change passes the **7-box gate** in `quick-fix`, offer the operator the lane in one line (push straight to `main`, no PR, no ECC reviewers, no CodeRabbit). **Yes** → hand off to `quick-fix`, passing your 7-box verdict with the handoff so the lane re-checks only size and its own diff instead of re-reading the issue; **no, or any box fails** → continue into Step 1 normally, and remove the label (`gh issue edit <number> --remove-label "quick-fix"`) — this diff has already disproved the lane.
+Read `git diff --name-only origin/<base>...HEAD`. If the **entire** change passes the **7-box gate** in `quick-fix`, offer the operator the lane in one line (push straight to `main`, no PR, no reviewers, no CodeRabbit). **Yes** → hand off to `quick-fix`, passing your 7-box verdict with the handoff so the lane re-checks only size and its own diff instead of re-reading the issue; **no, or any box fails** → continue into Step 1 normally, and remove the label (`gh issue edit <number> --remove-label "quick-fix"`) — this diff has already disproved the lane.
 
 One mechanical difference from the earlier divert points: the work is already committed on a feature branch, while `quick-fix` works on the base branch. Before handing off, return to base carrying the change:
 
@@ -111,7 +111,7 @@ Feed the OCR file list + Rule Groups + OCR finds into each reviewer below (no fi
    - Deploy whenever the diff touches catch/except blocks, fallback defaults, async paths, or logging. Hunt swallowed errors, empty catch blocks, dangerous fallbacks (`.catch(() => [])`), lost stack traces, and missing error propagation.
 5. **Test Engineering Audit (`test-driven-development`):**
    - Verify that test assertions test real domain behavior and edge cases, not hollow mocks.
-   - Map each changed behavior to the test that covers it; rate uncovered paths by impact (critical / important / nice-to-have). (Absorbed from ECC `pr-test-analyzer`.)
+   - Map each changed behavior to the test that covers it; rate uncovered paths by impact (critical / important / nice-to-have).
 6. **Docs Drift (`doc-updater`, diff-triggered):**
    - Deploy when the diff touches `*.md` files, docstrings, or README/docs adjacent to changed behavior. Verify that documentation touched by the diff still matches the code — no stale examples, no outdated API references. Persona from `~/.agents/agents/`; not found on disk → skip and record the skip (do not invent).
 

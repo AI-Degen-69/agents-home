@@ -124,8 +124,8 @@ routing, no deploy. It never escalates itself into a full workbench run.
 
 - **The worked-on skill is the star.** Title opens with a Hebrew word:
   `סקיל: <name>`, plus group tag when it belongs to one (numbered Pipeline
-  stations `i`–`vii`, the system skills `pipeline-triage` / `create-issue`, or
-  `ecc-*` → ECC). Line below opens with
+  stations `i`–`vii`, or the system skills `pipeline-triage` / `create-issue`).
+  Line below opens with
   `נתיב:` + full path; if Junction show `→` target and always work on the
   original. Workbench machinery gets one compact line each.
   Never enumerate steps or check-ids in the headline of the reply.
@@ -145,7 +145,7 @@ Bidi rule (חובה — תיקון כיווניות): כל שורה מתחילה
 אף פעם לא בתחילת שורה.
 
 ```markdown
-# סקיל: ⁦`<skill-name>`⁩ [(קבוצה — Pipeline / ECC, רק אם שייך)]
+# סקיל: ⁦`<skill-name>`⁩ [(קבוצה — Pipeline, רק אם שייך)]
 
 נתיב: ⁦`<full path>`⁩ [→ ⁦`<target>`⁩ אם Junction — לעבוד תמיד על המקור]
 

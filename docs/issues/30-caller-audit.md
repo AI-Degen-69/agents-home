@@ -40,7 +40,7 @@ Every one of the 49 is a string *inside a file*. None is a command that runs `gr
 
 There is no `package.json`, no npm scripts, no `.github/workflows`, no Makefile, no CI config
 of any kind in this repository. `scripts/` contains four maintenance tools
-(`sync-harness-skills.ps1`, `sync-coderabbit.ps1`, `ecc-drift.ps1`, `pipeline-closure.js`) and
+(`sync-harness-skills.ps1`, `sync-coderabbit.ps1`, `pipeline-closure.js`) and
 two bash proof scripts (`lane-precondition-test.sh`, `remote-branch-ownership-test.sh`); none
 of them invokes `grade.js`.
 

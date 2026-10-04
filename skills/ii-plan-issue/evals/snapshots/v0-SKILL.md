@@ -1,11 +1,11 @@
 ---
 name: ii-plan-issue
-description: Station II (Define & Plan) — Universal planning flow. Reads GitHub issue, performs ECC Right-Sizing, auto-detects stack, runs spec-driven-development, locks CONSTRAINTS.md, maps interfaces, generates tasks/plan.md, and recommends iii-build-plan auto.
+description: Station II (Define & Plan) — Universal planning flow. Reads GitHub issue, performs Right-Sizing, auto-detects stack, runs spec-driven-development, locks CONSTRAINTS.md, maps interfaces, generates tasks/plan.md, and recommends iii-build-plan auto.
 ---
 
 # Station II: Plan Issue (`ii-plan-issue`)
 
-This skill implements **Station II (Define & Plan)** of the 8-station pipeline. It works across **any project, language, or repository**, bridging GitHub issues to an airtight, executable specification and task plan by combining the rigorous discipline of **Addy Osmani's `agent-skills`** with the right-sizing intelligence of **ECC's `orch-pipeline`**.
+This skill implements **Station II (Define & Plan)** of the 8-station pipeline. It works across **any project, language, or repository**, bridging GitHub issues to an airtight, executable specification and task plan by combining the rigorous discipline of **Addy Osmani's `agent-skills`** with a right-sizing step that classifies the work before planning.
 
 ## Pipeline Position
 - **Station:** Station II of VII
@@ -33,7 +33,7 @@ This skill implements **Station II (Define & Plan)** of the 8-station pipeline. 
 
 Once an issue is selected, execute the following protocol strictly in order:
 
-### Step 0: Environment Auto-Detection & Size Classification (ECC Right-Sizing)
+### Step 0: Environment Auto-Detection & Size Classification (Right-Sizing)
 1. **Auto-Detect Project Stack:**
    - Detect project language, runtime, and frameworks (Python, Node/TypeScript, Go, Rust, Java, etc.).
    - Detect test runners and test frameworks (`pytest`, `npm test` / `vitest` / `jest`, `cargo test`, `go test`, etc.).

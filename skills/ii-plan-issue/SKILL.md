@@ -5,7 +5,7 @@ description: Station II (Define & Plan) of the 6-station pipeline (I–VI). Use 
 
 # Station II: Plan Issue (`ii-plan-issue`)
 
-This skill implements **Station II (Define & Plan)** of the 6-station pipeline (I–VI). It works across **any project, language, or repository**, bridging a GitHub issue to an airtight, executable specification and task plan (discipline from Addy Osmani's agent-skills collection, right-sizing from ECC's orchestrator approach).
+This skill implements **Station II (Define & Plan)** of the 6-station pipeline (I–VI). It works across **any project, language, or repository**, bridging a GitHub issue to an airtight, executable specification and task plan (discipline from Addy Osmani's agent-skills collection).
 
 **Prime directive:** the issue being planned is the star of the show. Planning machinery (skills, steps, contracts) is scaffolding — it lives in `tasks/plan.md`, never as the headline of the reply.
 
@@ -38,7 +38,7 @@ Stop the issue-dependent steps. Say in plain language exactly what failed, and a
 
 ## 2. Step-by-Step Planning Protocol (strict order)
 
-### Step 0: Environment Auto-Detection & Size Classification (ECC Right-Sizing)
+### Step 0: Environment Auto-Detection & Size Classification (Right-Sizing)
 1. **Auto-detect stack:** language, runtime, frameworks, and the test runner (`pytest`, `vitest`/`jest`, `cargo test`, `go test`, ...).
 2. **Size tier** — state the tier plus a one-line rationale in the output:
    - **Tiny** — docs/typo/comment-level change; no code behavior change; zero ambiguity.

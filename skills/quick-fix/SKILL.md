@@ -1,6 +1,6 @@
 ---
 name: quick-fix
-description: Quick-fix lane — the fast path for trivial work. Use when a task is a typo, a one-line correction, a broken link, a wrong constant, a stale comment, a missing doc line, or any change to at most 2 files that adds no behavior and needs no new tests. Verifies, commits, and pushes straight to the base branch — no branch, no PR, no ECC reviewers, no CodeRabbit. Any failed checklist criterion sends the work back to the normal pipeline instead.
+description: Quick-fix lane — the fast path for trivial work. Use when a task is a typo, a one-line correction, a broken link, a wrong constant, a stale comment, a missing doc line, or any change to at most 2 files that adds no behavior and needs no new tests. Verifies, commits, and pushes straight to the base branch — no branch, no PR, no reviewers, no CodeRabbit. Any failed checklist criterion sends the work back to the normal pipeline instead.
 ---
 
 # Quick Fix (`quick-fix`)

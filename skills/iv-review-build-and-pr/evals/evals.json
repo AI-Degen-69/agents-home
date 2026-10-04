@@ -5,7 +5,7 @@
     {
       "id": "review-verify-ship-flow",
       "prompt": "/iv-review-build-and-pr (build for issue 17 is committed locally on the feature branch)",
-      "expected_output": "OCR delegation review runs first (file scope + rules, host-agent thinking), dynamic ECC reviewers plus the Spec axis run over the diff, findings are merged into one deduplicated list and fixed with local commits, the full verification gate (browser or test suite) passes, then the branch is pushed and a PR is opened with @coderabbitai summary.",
+      "expected_output": "OCR delegation review runs first (file scope + rules, host-agent thinking), dynamic stack-matched reviewers plus the Spec axis run over the diff, findings are merged into one deduplicated list and fixed with local commits, the full verification gate (browser or test suite) passes, then the branch is pushed and a PR is opened with @coderabbitai summary.",
       "mode_coverage": ["full-flow"],
       "files": [],
       "static_assertions": [

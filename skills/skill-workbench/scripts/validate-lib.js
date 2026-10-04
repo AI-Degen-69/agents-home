@@ -95,9 +95,6 @@ const NON_SKILL_TOKENS = new Set([
   'ready-for-agent', 'needs-triage', 'stuck-in-a-loop',
   // CSS / design tokens & HTTP directives
   'text-primary', 'bg-surface', 'border-default', 'view-transition-name', 'nav-forward', 'nav-back',
-  // ECC install statuses / targets
-  'managed-home', 'managed-project', 'hermes-home', 'opencode-home', 'claude-home',
-  'antigravity-project', 'legacy-antigravity-layout', 'repo-version-mismatch', 'ecc-universal',
   // subagent / reviewer role names (dispatched via the Agent tool, not the skills dir)
   'code-reviewer', 'security-reviewer', 'python-reviewer', 'fastapi-reviewer', 'django-reviewer',
   'typescript-reviewer', 'react-reviewer', 'vue-reviewer', 'rust-reviewer', 'go-reviewer',
@@ -234,7 +231,7 @@ function phantomSkillRefs(text, skillDir, skillsRoot) {
     'needs-answers', 'blocked-by',
     // skills embedded in another SKILL.md by design (no folder of their own)
     'open-code-review-delegate',
-    // ECC skills whose logic was absorbed into another skill's body (mentioned as provenance)
+    // external provenance citations (mentioned in prose, not local skills)
     'pr-test-analyzer',
   ]);
   return candidates.filter((t) => {

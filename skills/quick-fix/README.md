@@ -4,7 +4,7 @@
 
 The fast path for trivial work: a typo, a one-line correction, a broken link, a
 wrong constant, a stale comment. Verifies, commits, and pushes **straight to the
-base branch** — no feature branch, no PR, no ECC reviewers, no CodeRabbit wait.
+base branch** — no feature branch, no PR, no reviewers, no CodeRabbit wait.
 
 > Agent contract: [`SKILL.md`](./SKILL.md) (source of truth).
 
@@ -34,7 +34,7 @@ lane; the checklist is what stops that.
 
 ## What it skips
 
-Station II planning · Station III TDD · Station IIIB · Station IV review, OCR, ECC
+Station II planning · Station III TDD · Station IIIB · Station IV review, OCR,
 reviewers, browser gate · Station V CodeRabbit babysitting · Station VI closeout.
 
 ## What it never does

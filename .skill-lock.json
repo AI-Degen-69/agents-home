@@ -351,166 +351,112 @@
       "updatedAt": "2026-09-22T00:00:00.000Z"
     },
     "code-reviewer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/code-reviewer.md",
       "installedAt": "2026-09-22T12:00:00.000Z",
       "updatedAt": "2026-09-22T12:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "python-reviewer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/python-reviewer.md",
       "installedAt": "2026-09-22T12:00:00.000Z",
       "updatedAt": "2026-09-22T12:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "go-reviewer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/go-reviewer.md",
       "installedAt": "2026-09-22T12:00:00.000Z",
       "updatedAt": "2026-09-22T12:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "rust-reviewer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/rust-reviewer.md",
       "installedAt": "2026-09-22T12:00:00.000Z",
       "updatedAt": "2026-09-22T12:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "database-reviewer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/database-reviewer.md",
       "installedAt": "2026-09-22T12:00:00.000Z",
       "updatedAt": "2026-09-22T12:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "security-reviewer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/security-reviewer.md",
       "installedAt": "2026-09-22T12:00:00.000Z",
       "updatedAt": "2026-09-22T12:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "typescript-reviewer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/typescript-reviewer.md",
       "installedAt": "2026-09-22T12:00:00.000Z",
       "updatedAt": "2026-09-22T12:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "react-reviewer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/react-reviewer.md",
       "installedAt": "2026-09-22T12:00:00.000Z",
       "updatedAt": "2026-09-22T12:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "silent-failure-hunter": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/silent-failure-hunter.md",
       "installedAt": "2026-09-22T12:00:00.000Z",
       "updatedAt": "2026-09-22T12:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "build-error-resolver": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/build-error-resolver.md",
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "react-build-resolver": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/react-build-resolver.md",
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "go-build-resolver": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/go-build-resolver.md",
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "rust-build-resolver": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/rust-build-resolver.md",
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "tdd-guide": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/tdd-guide.md",
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "refactor-cleaner": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/refactor-cleaner.md",
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "type-design-analyzer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/type-design-analyzer.md",
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "code-explorer": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/code-explorer.md",
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "doc-updater": {
-      "source": "affaan-m/ECC",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/affaan-m/ECC.git",
       "skillPath": "agents/doc-updater.md",
       "installedAt": "2026-09-22T15:00:00.000Z",
       "updatedAt": "2026-09-22T15:00:00.000Z",
-      "kind": "ecc-agent"
+      "kind": "agent"
     },
     "better-auth-best-practices": {
       "source": "local",
@@ -544,20 +490,6 @@
       "source": "local",
       "sourceType": "local",
       "skillPath": "skills/cua-driver/SKILL.md",
-      "installedAt": "2026-09-22T07:03:18.000Z",
-      "updatedAt": "2026-09-22T07:03:18.000Z"
-    },
-    "ecc-antigravity": {
-      "source": "local",
-      "sourceType": "local",
-      "skillPath": "skills/ecc-antigravity/SKILL.md",
-      "installedAt": "2026-09-22T07:03:18.000Z",
-      "updatedAt": "2026-09-22T07:03:18.000Z"
-    },
-    "ecc-maintain": {
-      "source": "local",
-      "sourceType": "local",
-      "skillPath": "skills/ecc-maintain/SKILL.md",
       "installedAt": "2026-09-22T07:03:18.000Z",
       "updatedAt": "2026-09-22T07:03:18.000Z"
     },
@@ -877,7 +809,6 @@
     "kimi-code-cli",
     "opencode",
     "warp",
-    "zed",
-    "hermes-agent"
+    "zed"
   ]
 }
