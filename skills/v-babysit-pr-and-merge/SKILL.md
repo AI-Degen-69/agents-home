@@ -40,7 +40,7 @@ Multiple open PRs and no specific number → follow `references/multi-pr-pipelin
 | **Step 4** | Apply accepted fixes (Type A suggestions / Type B intent), run targeted tests, self-heal, one batch commit, reply to and resolve every thread | `references/triage-and-apply.md` |
 | **Step 5** | GitHub CI is the merge gate; post `@coderabbitai resolve` to close the review loop, then squash-merge, or deploy a `<stack>-build-resolver` persona on failure | `references/merge-and-reset.md` |
 | **Step 5a** | Close the issue — verify GitHub auto-closed it via `Closes #<id>`, or close manually if it missed | `references/merge-and-reset.md` |
-| **Step 5b** | Return the local checkout to a clean, fast-forwarded base and delete the merged branch | `references/merge-and-reset.md` |
+| **Step 5b** | Return the local checkout to a clean, fast-forwarded base and delete the merged branch **locally and on the remote** (`git push origin --delete`, after the `MERGED` guard) | `references/merge-and-reset.md` |
 
 **Round exit condition:** zero unresolved threads carrying a REJECT, and zero threads
 resolved without an inline reply. Then CI, then merge, then reset — always, merge or escalate.
