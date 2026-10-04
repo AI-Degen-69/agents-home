@@ -4,7 +4,10 @@ Locked by Station II (`ii-plan-issue`). Station III must respect every line.
 
 - **Zero regressions:** `node skills/skill-workbench/scripts/validate.js --all` must stay at
   **0 fail, 0 warn** (measured baseline at plan time: `Validated 91 skill(s): 0 fail, 0 warn`).
-  The `vi-close-pipeline` and `v-babysit-pr-and-merge` skill scores must not drop.
+  The two in-scope skills must stay at their measured baseline —
+  `score.js skills/vi-close-pipeline` → **overall 100/100**,
+  `score.js skills/v-babysit-pr-and-merge` → **overall 100/100**. A drop is a defect, not a
+  rounding difference.
 - **New behavior requires a test:** the issue's first acceptance criterion says "verified by test".
   A new `scripts/remote-branch-ownership-test.sh` is therefore **required**, not optional — it is
   the only criterion that cannot be discharged by `grep`.
