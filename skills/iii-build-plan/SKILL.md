@@ -57,7 +57,7 @@ sense **before any task is implemented**. Once the first task is committed local
 build as planned — a half-built plan shipped straight to `main` is not a quick fix.
 
 The **label precondition** comes first: read the current labels of the issue named in the plan
-header (`gh issue view <number> --json labels`). If no issue is linked, or the issue is unlabeled,
+header (`gh issue view <number> --json labels`). If no issue is linked, or the issue does not carry the `quick-fix` label,
 skip the gate entirely — continue into Phase 2 and build as planned, with no gate text and no lane
 offer.
 

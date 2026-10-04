@@ -55,7 +55,8 @@ Station II must not rely on a label status carried forward from Station I.
 
 Three outcomes:
 
-1. **Unlabeled, any tier** → continue to Step 0A. Run no gate, print no gate text, offer no lane.
+1. **Not `quick-fix`-labeled, any tier** (whether or not it carries other labels such as
+   `ready-for-agent`) → continue to Step 0A. Run no gate, print no gate text, offer no lane.
 2. **Labeled but not Tiny** → remove the label
    (`gh issue edit <number> --remove-label "quick-fix"`) and continue to Step 0A. Right-sizing
    here is the **authority** the label only guessed at: the label was wrong, and a stale one

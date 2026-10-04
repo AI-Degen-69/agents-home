@@ -67,7 +67,7 @@ Only the tools listed above may run in this gate. No other browser automation to
 Last chance to skip the review machinery, and the most valuable one — Steps 1 and 1B (OCR plus every ECC reviewer) plus the CodeRabbit round are the bulk of the cost. Step 0 has already proved the build works, so the gate below runs against known-good code.
 
 **The label precondition comes first.** Read the current labels of the linked issue
-(`gh issue view <number> --json labels`). If no issue is linked, or the issue is unlabeled,
+(`gh issue view <number> --json labels`). If no issue is linked, or the issue lacks the `quick-fix` label,
 skip the gate entirely — continue into Step 1 normally, with no gate text and no lane offer.
 
 Read `git diff --name-only origin/<base>...HEAD`. If the **entire** change passes the **7-box gate** in `quick-fix`, offer the operator the lane in one line (push straight to `main`, no PR, no ECC reviewers, no CodeRabbit). **Yes** → hand off to `quick-fix`, passing your 7-box verdict with the handoff so the lane re-checks only size and its own diff instead of re-reading the issue; **no, or any box fails** → continue into Step 1 normally, and remove the label (`gh issue edit <number> --remove-label "quick-fix"`) — this diff has already disproved the lane.
