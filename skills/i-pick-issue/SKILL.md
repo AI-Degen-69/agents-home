@@ -121,7 +121,7 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
 
 ---
 
-<!-- local-only:begin -->
+<!-- local-only:i-pick-issue:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-<!-- local-only:end -->
+<!-- local-only:i-pick-issue:output-template-end -->

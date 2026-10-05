@@ -53,8 +53,8 @@ Respect `CONSTRAINTS.md` (no skipped tests, no new external dependencies without
 
 Build the walkthrough from the live product: real screen names, at most 3 steps, every step is where -> what to do -> what to see. Prefer visual proof. Nothing visual -> say so in one line plus how it was checked automatically.
 
-<!-- local-only:begin -->
+<!-- local-only:iiib-iterate-after-build:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-<!-- local-only:end -->
+<!-- local-only:iiib-iterate-after-build:output-template-end -->
 

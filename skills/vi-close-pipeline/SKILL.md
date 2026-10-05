@@ -163,8 +163,8 @@ Build the walkthrough in the report from the live product, not from memory:
 
 ---
 
-<!-- local-only:begin -->
+<!-- local-only:vi-close-pipeline:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-<!-- local-only:end -->
+<!-- local-only:vi-close-pipeline:output-template-end -->
 

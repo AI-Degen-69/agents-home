@@ -140,8 +140,8 @@ last item is a runnable verification command.
 
 ---
 
-<!-- local-only:begin -->
+<!-- local-only:create-issue:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-<!-- local-only:end -->
+<!-- local-only:create-issue:output-template-end -->
 

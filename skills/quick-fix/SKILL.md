@@ -140,7 +140,7 @@ Report per `references/output-template.md`, then hand back to `i-pick-issue` for
 7. **Scope discipline — never fix it, never log it.** Anything noticed but out of scope is left untouched and named in one line of the chat report, nothing more. The lane deliberately does **not** write the `NOTICED-BUT-NOT-TOUCHING` ledger at `docs/issues/<id>-noticed-but-not-touching.md`: it closes the issue and never runs Station VI, the only station that resolves those rows, so a row written here would stay `open` forever. A lane that leaves a file behind is a lane that skipped a step.
 8. **Leave no label residue.** `quick-fix` comes off the issue when the lane closes it, and comes off at any divert point that disproves it.
 
-<!-- local-only:begin -->
+<!-- local-only:quick-fix:output-template-begin -->
 The chat output template for this skill is `references/output-template.md`.
 Read it before writing your report.
-<!-- local-only:end -->
+<!-- local-only:quick-fix:output-template-end -->

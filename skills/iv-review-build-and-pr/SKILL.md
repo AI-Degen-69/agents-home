@@ -251,9 +251,7 @@ gh api repos/:owner/:repo/issues/<pr_number>/comments --jq '[.[] | select(.user.
 
 List review findings per reviewer (name + what was found + fixed or not). A reviewer with nothing found is not listed. The What-now section carries the PR hyperlink and the CodeRabbit trigger status line. The summary is 3 quick lines, not a journey.
 
-<!-- local-only:begin -->
-
+<!-- local-only:iv-review-build-and-pr:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-
-<!-- local-only:end -->
+<!-- local-only:iv-review-build-and-pr:output-template-end -->

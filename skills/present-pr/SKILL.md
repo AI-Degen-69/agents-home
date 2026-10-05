@@ -162,7 +162,7 @@ Build the walkthrough in the report from the live product, not from the presenta
 
 ---
 
-<!-- local-only:begin -->
+<!-- local-only:present-pr:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-<!-- local-only:end -->
+<!-- local-only:present-pr:output-template-end -->

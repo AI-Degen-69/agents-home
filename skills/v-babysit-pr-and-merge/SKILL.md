@@ -130,10 +130,10 @@ Pick the highest signal: 🔴 > 🟡 > 🟢. All three clean = 🟢 (skip, conti
 
 Two reports in Hebrew from the template. The closing What-now states the build is live with a `/present-pr` option, then the repo-state choice: clean skips to `/i-pick-issue`, otherwise run `/vi-close-pipeline` with the reason. PR and issue links are hyperlinks. The summary is 3 quick lines.
 
-<!-- local-only:begin -->
+<!-- local-only:v-babysit-pr-and-merge:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-<!-- local-only:end -->
+<!-- local-only:v-babysit-pr-and-merge:output-template-end -->
 
 
 **Timeout-merge rule:** when `IN_PROGRESS_STUCK` or `RATE_LIMITED`, the `CodeRabbit` check may stay `PENDING` forever. Do NOT wait for it. Merge gate = agent fallback review clean (or its nits triaged) + `gh pr checks` green (excluding the stuck `CodeRabbit` context). State this explicitly in the `CodeRabbit review status` line so the operator knows the merge was NOT on a completed bot review.

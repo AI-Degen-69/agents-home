@@ -153,8 +153,8 @@ Propose **at most one** concrete improvement to the issue's approach — an arch
 
 ---
 
-<!-- local-only:begin -->
+<!-- local-only:ii-plan-issue:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-<!-- local-only:end -->
+<!-- local-only:ii-plan-issue:output-template-end -->
 

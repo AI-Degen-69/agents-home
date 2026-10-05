@@ -76,10 +76,10 @@ After the status line, always list every changed file by category with a one-lin
 
 Report order: title, then folder state, then GitHub checks, then what was asked, then what was found. Issues and PRs are hyperlinks. The station name stays in English in the title. A `---` separator line comes before the What-now section.
 
-<!-- local-only:begin -->
+<!-- local-only:pipeline-triage:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-<!-- local-only:end -->
+<!-- local-only:pipeline-triage:output-template-end -->
 
 ---
 
