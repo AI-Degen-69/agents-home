@@ -122,7 +122,7 @@ Before applying fixes, run the Spec axis in full:
 1. Load the linked GitHub issue (`gh issue view <n> --comments`) and the plan (`tasks/plan.md`).
 2. Compare the diff against them and report, with the spec line quoted for every finding:
    - **Missing** — requirements the issue/plan asked for that are absent or partial.
-    - **Added-not-asked** — behavior in the diff that nothing requested (scope creep; the NOTICED-BUT-NOT-TOUCHING leftovers of Station III belong here — flag, don't silently keep). Review findings that are out of scope become `open` rows in `docs/issues/<id>-noticed-but-not-touching.md`; only Station VI (`vi-close-pipeline`) resolves them.
+   - **Added-not-asked** — behavior in the diff that nothing requested (scope creep; the NOTICED-BUT-NOT-TOUCHING leftovers of Station III belong here — flag, don't silently keep). Review findings that are out of scope become `open` rows in `docs/issues/<id>-noticed-but-not-touching.md`; only Station VI (`vi-close-pipeline`) resolves them.
    - **Implemented-wrong** — requirements that look implemented but behave differently than specified.
 3. Spec-axis findings join the fix list (Step 2) with severity from operator impact. Spec axis runs **separately** from the quality axes — never merged or re-ranked into them: "follows every standard but implements the wrong thing" is not the same finding as "implements correctly but breaks standards".
 
@@ -150,11 +150,13 @@ Before applying fixes, run the Spec axis in full:
 ### Step 4: Git Synchronization & Push (`git-workflow-and-versioning`)
 
 - Confirm active on a dedicated feature branch (never push directly to `master`/`main`). A direct push to the base branch happens in exactly one place: the Step 0.2 quick-fix divert, which routes through `quick-fix` and never reaches these steps.
+
 - Fetch and merge latest base branch:
 
   ```bash
   git fetch origin <base> && git merge origin/<base> --no-edit
   ```
+
 - Push branch to remote:
 
   ```bash
@@ -195,7 +197,7 @@ gh pr comment <pr_number> --body "@coderabbitai rate limit"   # Free: declines �
 **Two exits from this step — take exactly one:**
 
 - **Allowance available (or the probe was skipped/unavailable)** → post the trigger and run the
-  60-second acknowledgement wait below, unchanged.
+  10-second acknowledgement wait below, unchanged.
 - **Zero allowance reported** (probe answers with a window, e.g. "next review in N minutes") →
   **do not post the trigger and do not run the acknowledgement wait.** Report the rate-limited
   status with the reported minutes as the handoff line, and stop. A trigger posted here would be
@@ -207,29 +209,29 @@ Immediately post the review trigger comment (**post exactly once** — pick ONE 
 gh pr comment <pr_number> --body "@coderabbitai review"
 ```
 
-Fresh-run one-liner alternative (post + 15s wait + poll in one — use INSTEAD of the snippet above):
+Fresh-run one-liner alternative (post + 10s wait + poll in one — use INSTEAD of the snippet above):
 
 ```powershell
-gh pr comment <pr_number> --body "@coderabbitai review" 2>&1 | Select-Object -Last 1; Start-Sleep -Seconds 60; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
+gh pr comment <pr_number> --body "@coderabbitai review" 2>&1 | Select-Object -Last 1; Start-Sleep -Seconds 10; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
 ```
 
-**Wait for the trigger acknowledgement (MANDATORY before handoff):** Do not conclude the station on a blind post. Post the trigger, wait **60s**, then read CodeRabbit's reply to the trigger comment once, then classify it:
+**Wait for the trigger acknowledgement (MANDATORY before handoff):** Do not conclude the station on a blind post. Post the trigger, wait **10s**, then read CodeRabbit's reply to the trigger comment once, then classify it:
 
 - `Review triggered.` ("Action performed" reply) — review started. Proceed to handoff.
 - **Summary-only review** — an acknowledgement with a high-level summary and **no inline findings**. This is the expected shape on a **private repo on the Free plan**, where PR reviews are summarization-only. It is **not** a pass and **not** a quality signal: hand off stating plainly that CodeRabbit produced no findings here and that verification rests on the local gates (OCR delegation, type-matched reviewers, Spec axis, targeted tests). Never imply a bot review approved the code. Public repos and paid tiers do produce inline findings, so read the reply rather than assuming this shape.
 - Rate-limit reply (`## Review limit reached` / `rate limited by coderabbit.ai` / `Next included review available in N minutes`) — review NOT started. Record the reported minutes and carry them into the handoff report so the operator (and Station V) know the quota window.
 - Any other refusal/skip notice (e.g. "does not re-review already reviewed commits", or the Free-plan "upgrade to CodeRabbit Essentials" notice on a chat-gated command) — record verbatim; it may mean incremental review found nothing new, which is itself a signal Station V must read (not a silent pass). An upgrade refusal is a plan gate, not a quota reading.
-- No reply within ~60s — report `trigger acknowledgement not received` honestly; do not claim the review started.
-- **Ack polling (PowerShell, 60s wait, matches the real rate-limit header):** only when the trigger was already posted via the snippet above — do NOT re-post:
+- No reply within ~10s — report `trigger acknowledgement not received` honestly; do not claim the review started.
+- **Ack polling (PowerShell, 10s wait, matches the real rate-limit header):** only when the trigger was already posted via the snippet above — do NOT re-post:
 
 ```powershell
-Start-Sleep -Seconds 60; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
+Start-Sleep -Seconds 10; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
 ```
 
-- **Ack polling (bash fallback, same 60s wait, same markers):**
+- **Ack polling (bash fallback, same 10s wait, same markers):**
 
 ```bash
-sleep 60; gh pr view <pr_number> --comments 2>&1 | grep -iE "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | tail -6
+sleep 10; gh pr view <pr_number> --comments 2>&1 | grep -iE "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | tail -6
 ```
 
 **Comment links (mandatory whenever the ack is anything other than `Review triggered.`):** post direct jump links in the handoff report so the operator can reach the exchange in one click — both the trigger comment and CodeRabbit's reply. Pull the `html_url` of each comment via the API:
@@ -250,7 +252,8 @@ gh api repos/:owner/:repo/issues/<pr_number>/comments --jq '[.[] | select(.user.
 List review findings per reviewer (name + what was found + fixed or not). A reviewer with nothing found is not listed. The What-now section carries the PR hyperlink and the CodeRabbit trigger status line. The summary is 3 quick lines, not a journey.
 
 <!-- local-only:begin -->
+
 The chat output template for this station is `references/output-template.md`.
 Read it before writing your first report.
-<!-- local-only:end -->
 
+<!-- local-only:end -->

@@ -1,10 +1,8 @@
-# TODO — Issue #31
+# TODO — Silent improvement: self-improve-loop delivery gate
 
-Branch: i31/show-the-7-box-quick-fix-gate-only-for-quick-fix-c | Issue: #31
+Branch: main (silent, issue-less work) | no issue
 
-- [x] T1 Station I §1a: label precondition + Next Station  (i-pick-issue/SKILL.md)
-- [x] T2 Stations II/III/IV: label precondition + Next Station lines
-- [x] T3 quick-fix handoff wording, AGENTS.md, workflow doc, README, create-issue ref
-- [x] T4 contradiction grep + all five graders green (>= 109/109)
-
-Baseline before edits: 109/109 static assertions passing (22/19/15/26/27).
+- [x] T1 Lock guardrails (`CONSTRAINTS.md`)
+- [ ] T2 Commit the staged SKILL.md rewrite (8-step cycle + Step 8 gate)
+- [ ] T3 Commit the delivery gate (verify-delivered-prs.js + test), green on commit
+- [x] T4 Housekeeping: .gitignore for throwaway files + DESCRIPTION.md disposition (leave out)

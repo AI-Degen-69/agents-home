@@ -1,40 +1,27 @@
-# CONSTRAINTS — Issue #31
+# CONSTRAINTS — Silent improvement: self-improve-loop delivery gate
 
-Branch: i31/show-the-7-box-quick-fix-gate-only-for-quick-fix-c | Issue: #31
+Branch: main (silent, issue-less work) | no issue
 
 ## Stack (auto-detected)
-- Documentation-contract repo (agent skills in markdown).
-- Verification = per-skill static graders, `node`, zero dependencies.
+- Node.js scripts (gate + test), hermetic `gh`/`git` stubs in tests.
+- No runtime deps; `node --test` is the verification runner.
+- This is a skill-contract + tooling change inside `~/.agents/skills/self-improve-loop`.
 
 ## Zero regressions
-- All five affected graders must stay green: `i-pick-issue`, `ii-plan-issue`,
-  `iii-build-plan`, `iv-review-build-and-pr`, `quick-fix`.
-- Pre-change baseline recorded: **109/109 static assertions passing**
-  (22 + 19 + 15 + 26 + 27). Post-change must be >= 109 passing, 0 failing.
-- Run **without `--id`** (known numeric-ID filter defect selects zero cases).
-- Correct invocation (CodeRabbit's plan omitted the required flags, so its
-  command crashes with ERR_INVALID_ARG_TYPE):
-  - `node skills/<skill>/scripts/grade.js audit --skill skills/<skill>/SKILL.md`
-  - `node skills/<skill>/scripts/grade.js case --evals skills/<skill>/evals/evals.json --skill skills/<skill>/SKILL.md`
-- quick-fix case `labeled-issue-still-runs-gate` and case
-  `direct-entry-runs-full-gate` must keep passing.
+- The delivery gate test suite must stay green: `node --test skills/self-improve-loop/evals/verify-delivered-prs.test.js` → 15/15 pass, 0 fail.
+- The gate script must be runnable as documented: `node skills/self-improve-loop/scripts/verify-delivered-prs.js --manifest loop-delivery.json`.
+- No existing skill contract outside `self-improve-loop` may be touched by this work.
 
 ## Hard boundaries
-1. **The 7 boxes are frozen.** Boxes 1-7, their thresholds, their failure
-   routes, "The `quick-fix` label is never box 8", and the literal phrase
-   "run all 7 boxes yourself" must not change.
-2. **Direct `/quick-fix` invocation is unchanged** - it runs all 7 boxes
-   whether or not a label is present.
-3. **Ordering unchanged.** Station II still owns the first write; Station IV's
-   proof gate still precedes the divert; label removal on failure is preserved
-   at every station-specific trigger.
-4. **Anti-cheat** - never skip, disable, or delete an assertion to make a run pass.
-   Never edit `skills/*/evals/snapshots/**` or recorded iteration results.
-5. **No scope expansion** - do not "fix" the three known unrelated defects
-   (box-6 routing conflict, quick-fix eval case 4 expectation, grader `--id` bug).
-   Do not change Station I Discovery, selection, execution-mode gate, or
-   `i-pick-issue/references/output-template.md`.
-6. **No new dependencies.** Markdown only; no runtime code changes.
+1. **Step 8 is mandatory.** The loop may not report a run finished, may not start the next iteration, and may not record an iteration as delivered without a green exit from the gate.
+2. **The manifest records intent, not observation.** Never edit `loop-delivery.json` to match a wrong remote state — that is the exact defect the gate exists to catch.
+3. **PR title rule is frozen.** Step 5 must open PRs with `[IMPROVE] <scope>: <summary>`. Never `@coderabbitai` in the title. Review is requested by comment, not by title.
+4. **Review wait is bounded.** Step 6 caps at 10 minutes; on timeout, note it, skip the remaining review-response steps, and continue to Step 7. Never wait indefinitely.
+5. **Cleanup is guarded.** Before `git stash`/`git clean`, run `git status --porcelain` and stop on anything the loop did not create — that is user work. Remove only the loop's throwaway artifacts (keep `SHARED_TASK_NOTES.md`).
+6. **Throwaway files stay out of commits.** `loop-delivery.json` and `SHARED_TASK_NOTES.md` are the loop's runtime working files. They must be gitignored; a committed manifest would be stale the moment the remote moves.
+7. **Anti-cheat** — never skip, disable, or delete an assertion to make a run pass. Never edit test snapshots or recorded results to hide a failure.
+8. **No scope expansion.** Do not fold unrelated improvements into this commit. This work is the 8-step cycle + the delivery gate + the two throwaway-file ignores.
 
 ## Terminology
-Use the phrase **"label precondition"** consistently across every edited file.
+- **Delivery gate** = Step 8 of the self-improve-loop: re-read every created PR from the remote and compare it field by field against `loop-delivery.json`.
+- **Throwaway files** = `loop-delivery.json`, `SHARED_TASK_NOTES.md` — the loop's own runtime working files, kept out of commits.

@@ -1,85 +1,55 @@
-Branch: i31/show-the-7-box-quick-fix-gate-only-for-quick-fix-c | Issue: #31
+Branch: main (silent, issue-less work — no GitHub issue) | no issue
 
-# Plan — Issue #31: show the 7-box gate only for quick-fix candidates
+# Plan — Silent improvement: self-improve-loop delivery gate (Step 8)
 
 ## Right-sizing (Step 0)
-- **Tier: Standard.** 10 markdown contract files across 5 skills, 3 shared docs and the
-  canonical `AGENTS.md`; one coherent architectural decision. No runtime code changes.
-- **Task type: Docs** (contract prose) with a behavioral change to *when* the gate evaluates.
-- Not Tiny, so Step 0C's quick-fix divert does not apply. The 7-box verdict at Station I
-  already failed this issue (boxes 1-4) and the full pipeline was chosen.
+- **Tier: Standard.** One skill file (`SKILL.md`) plus two new supporting files (gate script + test) — a single coherent capability extension, not a docs-only change.
+- **Task type: Code** (new Node scripts) + **Docs** (the skill contract).
+- Not Tiny, so Step 0C's quick-fix divert does not apply. The gate lives or dies on its tests.
 
-## Step 0A — CodeRabbit intake (adopted / rejected / unverified)
-- **Adopted:** its task grouping (3 phases), the exact per-file change list, the design
-  choice that Stations II-IV stay label-only (no explicit-request trigger), the rule that
-  direct `/quick-fix` keeps the full gate, and the Phase 3 contradiction grep list.
-- **Rejected:** its grader invocation `node skills/<skill>/scripts/grade.js audit`
-  and `... case` — both crash with `ERR_INVALID_ARG_TYPE` because `--skill` (and
-  `--evals` for `case`) are required. Verified by running them: real exit code 1.
-  Corrected commands recorded in `CONSTRAINTS.md`.
-- **Rejected:** editing `skills/README.md` to replace a phrase "no label prerequisite" —
-  **no such string exists in the repo** (grep returns nothing). README only needs the
-  lane/intake rows reworded to state the label precondition, not a phrase swap.
-- **Rejected:** changing `skills/quick-fix/references/output-template.md` — it contains no
-  gate/divert source description at all, so the conditional clarification it allows is moot.
-- **Unverified / out of scope:** its claim that `skills/create-issue/SKILL.md:95` is fine to
-  leave. That line says the label "still runs its own hard 7-box gate at the divert point",
-  which stays true for a labeled issue — no contradiction. Left unchanged.
-- **Verified line numbers (spot-checked against live files):** i-pick-issue §1a at 46-57 and
-  Next Station at 22; ii-plan-issue Step 0C at 50-66 and Next Station at 15; iii-build-plan
-  §1c at 53-67 and Next Station at 13; iv-review-build-and-pr Step 0.2 at 65-80 and Next
-  Station at 14. All accurate.
+## Step 0A — CodeRabbit intake
+No issue, no comments, no CodeRabbit plan — nothing to adopt, reject, or mark unverified. The diff was created by the operator directly (the diff shows the rewrite), so this is operator-authored, not intake-sourced.
 
 ## Resolved answers (no operator question needed)
-- Unlabeled + no explicit request => no gate run, no gate output, no lane offer; go
-  straight to the execution-mode gate. Taken from the issue's stated acceptance criteria.
+- The existing diff already defines the intent: 7-step → 8-step cycle, Steps 5/6/7 rewritten, Step 8 is the new mandatory delivery gate, `verify-delivered-prs.js` + `verify-delivered-prs.test.js` are the gate implementation, `SHARED_TASK_NOTES.md` and `loop-delivery.json` are the loop's own throwaway files to keep out of commits.
+- `loop-delivery.json` and `SHARED_TASK_NOTES.md` must be gitignored — the diff already says so, and the repo's `.gitignore` should reflect it. **Open check:** does the repo already ignore them? If not, add the ignore before the commit, because the loop writes them at runtime and a committed manifest would be stale the moment the remote moves.
 
 ## Task decomposition
 Depends-on graph: T1 -> T2 -> T3 -> T4.
 
-- **T1** — Add the label precondition to Station I §1a + Next Station. [Docs] XS.
-  Files: `skills/i-pick-issue/SKILL.md`. Remove the three label-independent sentences; require
-  label or explicit request; state the silent unlabeled path; keep all-pass, operator choice,
-  verdict handoff, failure label removal. Depends on: none.
-  Verify: `node skills/i-pick-issue/scripts/grade.js case --evals skills/i-pick-issue/evals/evals.json --skill skills/i-pick-issue/SKILL.md`.
+- **T1** — Lock the guardrails (`CONSTRAINTS.md`). [Docs] S.
+  - Write `CONSTRAINTS.md` capturing: the delivery gate is mandatory and blocks the loop; the 8-step cycle; the two throwaway files (`loop-delivery.json`, `SHARED_TASK_NOTES.md`) must stay out of commits; Step 5 PR title must never be `@coderabbitai`; Step 6 review wait is bounded (10 min cap); Step 7 cleanup is guarded (stop on foreign dirt); the gate never edits the manifest to pass.
+  - Depends on: none.
+  - Verify: file exists and is consistent with `skills/self-improve-loop/SKILL.md`.
 
-- **T2** — Add the label precondition to Stations II, III, IV. [Docs] S.
-  Files: `skills/ii-plan-issue/SKILL.md`, `skills/iii-build-plan/SKILL.md`,
-  `skills/iv-review-build-and-pr/SKILL.md` (+ each Next Station line).
-  Require label AND (Tiny / fresh-plan / whole-diff) as today; unlabeled issues pass silently;
-  Station II also removes the label on a box failure. Depends on: T1 (establishes the shared term).
-  Verify: the three graders' `case` runs.
+- **T2** — Commit the staged rewrite as one atomic commit. [Docs] M.
+  - Files: `skills/self-improve-loop/SKILL.md` (the staged diff).
+  - Depends on: T1 (CONSTRAINTS.md in place before the commit records the intent).
+  - Verify: `git show HEAD:skills/self-improve-loop/SKILL.md` matches the staged content; the 8-step cycle is readable; Step 8 mutuals Step 7.
 
-- **T3** — Align handoff + shared contracts. [Docs] S.
-  Files: `skills/quick-fix/SKILL.md` (divert-handoff wording only), `AGENTS.md`,
-  `docs/issue-to-pr-skill-workflow.md`, `skills/README.md`,
-  `skills/create-issue/references/issue-tracker.md`.
-  Preserve verbatim: "run all 7 boxes yourself", "The `quick-fix` label is never box 8", the
-  carry-over rule (boxes 2/5/6/7, recount 1, re-check 3-4), the ledger exemption at
-  docs:196. Depends on: T1, T2.
-  Verify: graders for i-pick-issue, ii-plan-issue, iii-build-plan, iv-review-build-and-pr, quick-fix.
+- **T3** — Add the delivery gate to the repo. [Code] M.
+  - Files: `skills/self-improve-loop/scripts/verify-delivered-prs.js`, `skills/self-improve-loop/evals/verify-delivered-prs.test.js`.
+  - These are already on disk (untracked) and already pass (`node --test` → 15/15 green). The task is to commit them as part of this capability, not to re-create them.
+  - Depends on: T2 (same commit family — the skill points at these files, so the skill and the gate must land together).
+  - Verify: `node --test skills/self-improve-loop/evals/verify-delivered-prs.test.js` green after the commit (the test is hermetic — stubs `gh`/`git`, no network).
 
-- **T4** — Consistency sweep + full grader run. [Docs] XS.
-  Grep `regardless of its label`, `unlabeled`, `every candidate`, `no label prerequisite`,
-  `7-box` outside snapshots; confirm zero contradictions remain. Run all five graders and
-  require >= 109 passing, 0 failing. Depends on: T3.
-  Verify: grep output reviewed by hand + grader exit codes.
+- **T4** — Finish the loop's housekeeping. [Docs] XS.
+  - Confirm `.gitignore` covers `loop-delivery.json` and `SHARED_TASK_NOTES.md`; add if missing.
+  - Confirm `skills/research/DESCRIPTION.md` is intentionally untracked (looks like a metadata addition; flag it, do not guess).
+  - Depends on: T3.
+  - Verify: `git status --short` shows no throwaway file staged or tracked; `DESCRIPTION.md` disposition recorded in the report.
 
 ## Checkpoints
-- After T2: three station graders still green.
-- After T4: full five-grader run green, contradiction grep clean.
+- After T2: the staged SKILL.md is committed and the 8-step cycle is the live contract.
+- After T3: the gate test suite is committed and green.
+- After T4: no throwaway files left in the tree.
 
 ## Sub-issues
-Skipped: Standard work, but the tracker ceremony buys nothing here — this is a single
-coherent prose change with a linear T1->T4 order and no independent parallelism.
+Skipped — silent work, no issue number, no tracker ceremony.
 
-## Execution record (Station III)
-- **T1–T4 complete.** Baseline 109/109 → final 109/109, no regression, no assertion touched.
-- All five graders ran with `--skill`/`--evals`; every `case` and `audit` exit code 0.
-- Rejected CodeRabbit's grader commands (missing `--skill`/`--evals` → ERR_INVALID_ARG_TYPE, real
-  exit 1) and its README "no label prerequisite" phrase (no such string in the repo).
-- Pre-existing audit warns, NOT introduced here: `ii-plan-issue` 159 lines and
-  `iv-review-build-and-pr` 256 lines both exceed the >150 warn threshold; they were already
-  153 and 252 on `main`. Out of scope per CONSTRAINTS.md (no scope expansion).
-- `gh issue list --label quick-fix --state open` → empty, confirming no currently-open issue
-  would trigger a station gate under the new text.
+## Execution record (Station II → III handoff)
+- **T1 complete.** `CONSTRAINTS.md` written: mandatory delivery gate, 8-step cycle, throwaway-file ignore, frozen PR-title rule, bounded review wait, guarded cleanup, anti-cheat, no scope expansion.
+- **T2 ready.** Staged SKILL.md rewrite is on disk; the 8-step cycle (`1. Explore → 2. Rank Candidates → 3. Branch & Plan → 4. TDD & Verify → 5. Push PR → 6. CodeRabbit Review & Fix → 7. Bridge → 8. Verify Delivery`) is the live contract. Waiting on commit.
+- **T3 ready.** Gate implementation is on disk and green: `skills/self-improve-loop/scripts/verify-delivered-prs.js` + `skills/self-improve-loop/evals/verify-delivered-prs.test.js` (15/15 hermetic tests pass). Waiting on commit.
+- **T4 complete.** `.gitignore` covers `loop-delivery.json`, `SHARED_TASK_NOTES.md`, and `skills/*/DESCRIPTION.md`. `skills/research/DESCRIPTION.md` is intentionally untracked metadata — disposition: leave it out, do not guess, do not commit.
+- **Dirty tree now:** `.gitignore`, `CONSTRAINTS.md`, `skills/self-improve-loop/SKILL.md`, `tasks/plan.md`, `tasks/todo.md` modified; `skills/self-improve-loop/evals/` + `scripts/` still untracked (the gate). Nothing foreign — all of it belongs to this silent improvement.

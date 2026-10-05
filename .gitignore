@@ -1,3 +1,12 @@
+# Loop throwaway files — the self-improve-loop writes these at runtime;
+# committing them would record stale intent the moment the remote moves.
+loop-delivery.json
+SHARED_TASK_NOTES.md
+
+# Skill housekeeping metadata — non-canonical descriptions for linked skills,
+# kept out of the canonical tree by policy (see skills/README.md).
+skills/*/DESCRIPTION.md
+
 # Harness transient state and OS junk — never canonical (per docs/issue-to-pr-skill-workflow.md artifact homes)
 .freebuff/
 .playwright-cli/
