@@ -1,27 +1,24 @@
-# CONSTRAINTS — Silent improvement: self-improve-loop delivery gate
+# CONSTRAINTS — Issue #37: align agent skills with CodeRabbit configuration
 
-Branch: main (silent, issue-less work) | no issue
+Branch: i37/align-agent-skills-with-coderabbit-configuration | Issue: #37
+
+Supersedes: the silent self-improve-loop scope previously recorded here (preserved in git history on `main`). This branch re-scopes both files to #37.
 
 ## Stack (auto-detected)
-- Node.js scripts (gate + test), hermetic `gh`/`git` stubs in tests.
-- No runtime deps; `node --test` is the verification runner.
-- This is a skill-contract + tooling change inside `~/.agents/skills/self-improve-loop`.
+- Docs/YAML-only change: Markdown skill contracts (`SKILL.md`, `references/`, `README.md`), eval JSON, one YAML restore. No runtime language, no test runner for product code.
+- Verification runners: `node skills/create-issue/scripts/grade.js`, `node skills/skill-workbench/scripts/validate.js --all`, `Select-String` sweeps, `gh label list`, `Test-Path ./.coderabbit.yaml`.
 
 ## Zero regressions
-- The delivery gate test suite must stay green: `node --test skills/self-improve-loop/evals/verify-delivered-prs.test.js` → 15/15 pass, 0 fail.
-- The gate script must be runnable as documented: `node skills/self-improve-loop/scripts/verify-delivered-prs.js --manifest loop-delivery.json`.
-- No existing skill contract outside `self-improve-loop` may be touched by this work.
+- `grade.js case` for `create-issue` and for `iv-review-build-and-pr` must stay green after the edits.
+- `validate.js --all` must stay green.
+- Restored `.coderabbit.yaml` must be byte-identical to `git show ccebf8e:.coderabbit.yaml` (compare hashes, never retype).
+- No existing skill behavior outside the #37 file list may change; Station IV behavior is wording-only.
 
 ## Hard boundaries
-1. **Step 8 is mandatory.** The loop may not report a run finished, may not start the next iteration, and may not record an iteration as delivered without a green exit from the gate.
-2. **The manifest records intent, not observation.** Never edit `loop-delivery.json` to match a wrong remote state — that is the exact defect the gate exists to catch.
-3. **PR title rule is frozen.** Step 5 must open PRs with `[IMPROVE] <scope>: <summary>`. Never `@coderabbitai` in the title. Review is requested by comment, not by title.
-4. **Review wait is bounded.** Step 6 caps at 10 minutes; on timeout, note it, skip the remaining review-response steps, and continue to Step 7. Never wait indefinitely.
-5. **Cleanup is guarded.** Before `git stash`/`git clean`, run `git status --porcelain` and stop on anything the loop did not create — that is user work. Remove only the loop's throwaway artifacts (keep `SHARED_TASK_NOTES.md`).
-6. **Throwaway files stay out of commits.** `loop-delivery.json` and `SHARED_TASK_NOTES.md` are the loop's runtime working files. They must be gitignored; a committed manifest would be stale the moment the remote moves.
-7. **Anti-cheat** — never skip, disable, or delete an assertion to make a run pass. Never edit test snapshots or recorded results to hide a failure.
-8. **No scope expansion.** Do not fold unrelated improvements into this commit. This work is the 8-step cycle + the delivery gate + the two throwaway-file ignores.
-
-## Terminology
-- **Delivery gate** = Step 8 of the self-improve-loop: re-read every created PR from the remote and compare it field by field against `loop-delivery.json`.
-- **Throwaway files** = `loop-delivery.json`, `SHARED_TASK_NOTES.md` — the loop's own runtime working files, kept out of commits.
+1. **Canonical prompt is frozen.** `skills/create-issue/references/coderabbit-plan-prompt.md` is unchanged; its text is not copied anywhere else.
+2. **History is not rewritten.** `evals/snapshots/**` and `evals/iteration-*` are records, never edited.
+3. **No new CodeRabbit features.** No `auto_review`, `request_changes_workflow`, or Essentials+/Team+ gated settings; no reliance on automatic linking, planning, labeling, or review.
+4. **Labels are existing-only.** Never run `gh label create`; never invent a label; a missing wanted label is skipped and named in the closeout.
+5. **Out of scope:** `skills/ii-plan-issue/**`, `wayfinding-operations.md`, `skills/quick-fix/**`, `scripts/sync-coderabbit.ps1`, `CONSTRAINTS.md` beyond this re-scope, `tasks/**` beyond the #37 plan.
+6. **Anti-cheat** — never skip, disable, or weaken a grader assertion to make a run pass. Never edit snapshots or recorded results to hide a failure.
+7. **No scope expansion.** Docs alignment + config restore only. Anything noticed but unrelated becomes a future issue, never a side edit.
