@@ -3,7 +3,8 @@
 > Full station map: [`docs/issue-to-pr-skill-workflow.md`](../../docs/issue-to-pr-skill-workflow.md).
 
 Turn one raw operator idea into one researched, publishable GitHub issue
-labeled `ready-for-agent` — without a draft-approval pause.
+with a `[TAG] short plain-English summary` title and only relevant existing
+labels — without a draft-approval pause.
 
 > Agent contract: [`SKILL.md`](./SKILL.md) (source of truth).
 > Tracker template + conventions: [`references/issue-tracker.md`](./references/issue-tracker.md).
@@ -29,9 +30,9 @@ labeled `ready-for-agent` — without a draft-approval pause.
 
 1. Reads `references/issue-tracker.md` — template + `gh` conventions.
 2. Researches the repo first — every issue cites real paths with line numbers.
-3. Ambiguity goes to **Open questions** in the body + `needs-answers` label — never blocks publication.
-4. Publishes immediately (`gh issue create ... --label ready-for-agent`).
-5. Posts the CodeRabbit plan prompt as its own comment (body only, skipped for trivial docs-only issues, retried once on silence).
+3. Ambiguity goes to **Open questions** in the body (plus `needs-answers` only when that label exists) — never blocks publication.
+4. Publishes immediately with a tagged title and only relevant existing labels (`gh label list` first; no label at all when nothing fits).
+5. Posts the CodeRabbit plan prompt as its own comment (body only, skipped only for genuinely trivial work, retried once on silence; refusals are quoted, not retried).
 6. Reports back in everyday Hebrew per the output contract in `SKILL.md`.
 
 ## Files in this folder
@@ -46,8 +47,8 @@ labeled `ready-for-agent` — without a draft-approval pause.
 
 ## Quality bar
 
-An issue is `ready-for-agent` when a fresh agent with only the issue + repo
-access can start work without asking the operator anything: real file paths,
+An issue is ready for an agent when a fresh agent with only the issue + repo
+access can start work without asking the operator anything: a `[TAG]` title, real file paths,
 an explicit out-of-scope line, and acceptance criteria ending in a runnable
 verification command.
 
@@ -55,6 +56,6 @@ verification command.
 
 ```bash
 /create-issue Retry failed uploads three times before giving up
-# → researches deploy code, publishes issue #N labeled ready-for-agent,
+# → researches deploy code, publishes issue #N with a tagged title and relevant labels,
 #   posts the plan request, reports back in Hebrew with link + next step (/i-pick-issue)
 ```

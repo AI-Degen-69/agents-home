@@ -5,13 +5,16 @@
     {
       "id": "raw-idea-to-published-issue",
       "prompt": "/create-issue I want the deploy script to retry failed uploads three times before giving up.",
-      "expected_output": "Agent scans the repo for the relevant deploy script and related files, drafts the issue from the template with a concrete problem statement, publishes it with gh labeled ready-for-agent, posts the CodeRabbit plan request as its own comment, and reports the issue number in everyday Hebrew.",
+      "expected_output": "Agent scans the repo for the relevant deploy script and related files, drafts the issue from the template with a concrete problem statement and a [TAG] title, runs gh label list and publishes it with gh using only relevant existing labels, posts the CodeRabbit plan request as its own comment, and reports the issue number in everyday Hebrew.",
       "mode_coverage": ["numbered"],
       "files": [],
       "static_assertions": [
         { "id": "research-before-draft", "type": "regex", "pattern": "real paths with line\\s+numbers", "must_match": true, "why": "an issue written without repo research is not ready-for-agent" },
         { "id": "publish-immediately", "type": "regex", "pattern": "(Publish immediately|No waiting for approval)", "must_match": true, "why": "publication must not stall on a draft-approval pause" },
-        { "id": "publish-with-label", "type": "regex", "pattern": "gh issue create[\\s\\S]{0,90}--label ready-for-agent", "must_match": true, "why": "the ready-for-agent label is the intake quality bar downstream stations read" },
+        { "id": "list-labels-before-publish", "type": "regex", "pattern": "gh label list[\\s\\S]{0,200}gh issue create", "must_match": true, "why": "labels are chosen from existing labels, never invented or forced" },
+        { "id": "tagged-title", "type": "regex", "pattern": "\\[TAG\\] short plain-English summary", "must_match": true, "why": "issue titles share the CodeRabbit TAG vocabulary" },
+        { "id": "no-label-create", "type": "not_regex", "pattern": "gh label create", "must_match": true, "why": "the skill must never create labels" },
+        { "id": "no-blanket-plan-skip", "type": "not_regex", "pattern": "always qualifies", "must_match": true, "why": "quick-fix issues get a plan request unless genuinely trivial" },
         { "id": "coderabbit-request-posted", "type": "regex", "pattern": "post the canonical `@coderabbitai plan` prompt", "must_match": true, "why": "the plan request is what primes Station II while the operator is still in Station I" },
         { "id": "coderabbit-body-not-file", "type": "regex", "pattern": "Post the prompt body, never the file", "must_match": true, "why": "passing the reference doc as-is would publish a wrapper and bury the mention in a code block" },
         { "id": "coderabbit-skip-trivial", "type": "regex", "pattern": "Skip the request for a genuinely trivial issue", "must_match": true, "why": "a docs/typo-only issue gets nothing back from phases and test cases" },
@@ -20,7 +23,7 @@
       ],
       "live_assertions": [
         "The repo is scanned and real file paths with line numbers are cited before the draft is written",
-        "The issue is published with the ready-for-agent label via gh",
+        "The issue is published with a [TAG] title and only relevant existing labels via gh",
         "The CodeRabbit plan request is posted as its own issue comment, starting with the lowercase mention",
         "The issue number and URL are reported back to the operator in everyday Hebrew"
       ]
@@ -28,7 +31,7 @@
     {
       "id": "unclear-idea-needs-answers",
       "prompt": "/create-issue Make the search better somehow.",
-      "expected_output": "The idea cannot be drafted concretely, so the agent drafts with an explicit Open questions body section and the needs-answers label — never blocking publication on open questions.",
+      "expected_output": "The idea cannot be drafted concretely, so the agent drafts with an explicit Open questions body section — never blocking publication on open questions.",
       "mode_coverage": ["numbered"],
       "files": [],
       "static_assertions": [
@@ -39,7 +42,7 @@
       ],
       "live_assertions": [
         "Ambiguity is surfaced instead of silently guessed",
-        "The published issue carries the needs-answers label and an Open questions body section",
+        "The published issue carries an Open questions body section",
         "Publication is not blocked on unresolved questions",
         "No fictional file paths or invented requirements appear in the draft"
       ]
@@ -55,7 +58,7 @@
         { "id": "skip-keeps-publishing", "type": "regex", "pattern": "publish, report, and move on", "must_match": true, "why": "the skip applies to the plan request only — the issue is still published and reported" }
       ],
       "live_assertions": [
-        "The README typo issue is published with the ready-for-agent label",
+        "The README typo issue is published normally",
         "No @coderabbitai comment is posted on the trivial issue",
         "The closeout report still names the created issue"
       ]
@@ -72,7 +75,7 @@
       ],
       "live_assertions": [
         "No gh issue create command is run",
-        "No ready-for-agent issue is published from a casual remark",
+        "No issue is published from a casual remark",
         "No @coderabbitai comment is posted",
         "The agent does not silently convert conversation into a tracked issue"
       ]

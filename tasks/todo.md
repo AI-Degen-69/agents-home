@@ -1,8 +1,8 @@
-# TODO — Silent improvement: self-improve-loop delivery gate
+# TODO — Issue #37: align agent skills with CodeRabbit configuration
 
-Branch: main (silent, issue-less work) | no issue
+Branch: i37/align-agent-skills-with-coderabbit-configuration | Issue: #37
 
-- [x] T1 Lock guardrails (`CONSTRAINTS.md`)
-- [ ] T2 Commit the staged SKILL.md rewrite (8-step cycle + Step 8 gate)
-- [ ] T3 Commit the delivery gate (verify-delivered-prs.js + test), green on commit
-- [x] T4 Housekeeping: .gitignore for throwaway files + DESCRIPTION.md disposition (leave out)
+- [x] T1 Restore `.coderabbit.yaml` + Station IV wording (verify: byte-identical restore, title placeholder grep)
+- [x] T2 Rewrite `create-issue` core rules (verify: create-issue grader green)
+- [x] T3 Dependent descriptions + evals (verify: both graders green, no forced-label strings)
+- [x] T4 Conflict sweep + full verification (verify: graders, validate.js, acceptance command)
