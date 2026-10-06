@@ -59,7 +59,7 @@ conversation.
    (e.g. `gh issue create --title "[FIX] ..." --body-file <file> --label ready-for-agent`).
    Use `ready-for-agent`, `needs-answers`, `needs-triage`, and `quick-fix` only when
    they exist and fit the issue; when no label fits, publish with no label at all.
-   Never run `gh label create`, never invent a label, and never wait for CodeRabbit
+   Never create a missing label, never invent a label, and never wait for CodeRabbit
    to add labels — a missing wanted label is skipped and named in the closeout.
    Keep any `quick-fix` the screening below selected (when the label exists), and keep
    it on an issue that already carries it; the 7-box gate rules and label removal on
@@ -76,10 +76,9 @@ conversation.
        where `<blocker-db-id>` is the blocker's numeric database id
        (`gh api repos/<owner>/<repo>/issues/<n> --jq .id`), not the `#number`.
 7. **Post CodeRabbit plan prompt — after publishing.** CodeRabbit does not plan
-   issues by itself; the agent must post the request. Only after the issue (or,
-   for a split, every sibling, fully linked per step 6) is published, post the
-   canonical `@coderabbitai plan` prompt stored in
-   `references/coderabbit-plan-prompt.md` to request an implementation plan.
+   issues by itself; the agent must post the canonical `@coderabbitai plan` prompt stored in
+   `references/coderabbit-plan-prompt.md`. Post it only after the issue is published — or,
+   for a split, after every sibling is published and fully linked per step 6.
    This primes CodeRabbit while the operator/agent is in Station I.
    - **Post the prompt body, never the file.** The reference file is a doc: a
      heading, a note, and the prompt wrapped in a ```` ```text ```` fence. Passing
@@ -89,9 +88,9 @@ conversation.
      inline with `--body`. The posted comment starts with the exact lowercase
      mention `@coderabbitai plan`, contains the prompt body, and contains nothing
      else — no file path, no wrapper text.
-   - **Skip the request only for a genuinely trivial issue.** A typo-only,
-     comment-only, or trivial docs change with no behavior change gets nothing back
-     from phases and test cases: publish, report, and move on. Any other issue —
+   - **Skip the request for a genuinely trivial issue — and only for such an issue.** A typo-only,
+     comment-only, or trivial docs change with no behavior change (the docs/typo/comment-only
+     class) gets nothing back from phases and test cases: publish, report, and move on. Any other issue —
      including one carrying `quick-fix` — still gets the plan request.
    - **If no reply lands, retry once.** A plan normally arrives within about five
      minutes. If the issue still shows no `coderabbitai` comment, post the prompt
