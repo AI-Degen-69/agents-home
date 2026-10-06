@@ -88,7 +88,7 @@ A merge on GitHub does NOT move the local checkout: the terminal keeps showing t
    # reported here as a failure and strand the session on a healthy repo.
    git ls-remote --heads origin | awk -v ref='refs/heads/<branch-name>' '$2 == ref'   # -> empty
    ```
-   Output note: `Local reset: on <base>, clean, merged branch <branch-name> deleted locally and on the remote (deleted / already gone).`
+   Output note: fold into the condensed 1–2 line merge summary (`#<id> Closed | #<n> Merged (<sha>) | Branch: <branch-name> → <base>, clean, synced`) — never a per-command git-ops block.
 
 **Failure handling:** if `git pull --ff-only` fails (diverged local base), or the tree cannot be safely cleaned, stop and escalate — never force-reset the operator's checkout.
 

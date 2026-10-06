@@ -32,8 +32,9 @@ with an honest one-line CodeRabbit ack status. The only station that pushes.
 2. **OCR delegation review**, then language/framework specialist
    reviewers (plus the Spec axis: diff vs issue + `tasks/plan.md`).
    Fixes applied as local commits; clean reviewers get one line.
-3. **Final verification gate**, then push + open the PR (CodeRabbit writes the
-   title from `auto_title_placeholder`; the body is unchanged), post
+3. **Final verification gate**, then push + open the PR (title is exactly
+   `@coderabbitai` — CodeRabbit's global dashboard configuration generates the
+   final title; the body is unchanged), post
    `@coderabbitai summary` + the review trigger, with comment links whenever
    the ack is anything but `Review triggered.` — including a summary-only
    review, which is the expected shape on a private Free repo and is never

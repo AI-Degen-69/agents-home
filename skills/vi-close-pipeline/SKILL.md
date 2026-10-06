@@ -151,17 +151,7 @@ presentation file is **not** a clean exit — it ends blocked, and the report sa
 
 ---
 
-## 9. Final verification walkthrough (mandatory input to the report)
-
-Build the walkthrough in the report from the live product, not from memory:
-
-1. Name the real screen / tab / button the operator opens — never the presentation file.
-2. Write at most 5 steps. Every step is: where → what to do → what to see.
-3. Use `→` arrows between screens and give a direct link when one exists.
-4. Say exactly what to look at (text, state, count) so the operator knows it worked.
-5. Prefer visual proof. Backend-only with nothing to see → say so in one line plus how it was checked automatically.
-
----
+**Manual verification:** owned by Station V — after a successful merge it guides the operator through seeing the change live. This station does not repeat the walkthrough; its report stays a short closeout.
 
 <!-- local-only:vi-close-pipeline:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.

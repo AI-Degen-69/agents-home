@@ -151,8 +151,8 @@ Example tone:
 Build the walkthrough in the report from the live product, not from the presentation file:
 
 1. Name the real screen / tab / button the operator opens in the running app.
-2. Write at most 5 steps. Every step is: where → what to do → what to see.
-3. Use `→` arrows between screens and give a direct link when one exists.
+2. Use as many short steps as it takes for clarity — no step cap. Every step is one quick action: where → what to do → what to see.
+3. Use `→` arrows between screens and give a direct link when one exists. Plain words, no jargon.
 4. Say exactly what to look at (text, state, count) so the operator knows it worked.
 5. Prefer visual proof. Backend-only with nothing to see → say so in one line plus how it was checked automatically.
 

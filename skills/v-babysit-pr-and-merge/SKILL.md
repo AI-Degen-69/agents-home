@@ -110,7 +110,7 @@ digraph babysit_pr_and_merge {
 - **No auto-fix on partial rejections:** Never run `@coderabbitai auto-fix` when any comments were rejected. Apply fixes locally and test.
 - **Never commit red:** If a suggestion breaks a test, `git checkout <file>`, reply with the failure log, resolve as REJECT, and re-run the targeted tests.
 - **Repo conventions win:** Always observe repo-specific PR templates and review rules.
-- **Post-merge local reset is mandatory:** After every merge (or abandoned-PR escalation), return the checkout to base: confirm `MERGED` via `gh pr view`, switch to base, `git pull --ff-only`, force-delete the local branch (`-D` only after remote confirms `MERGED` — squash merges are never `-d`-deletable), then delete it **on the remote** with `git push origin --delete` (never remote-first; `--delete-branch` on the merge is best-effort and this repository's `deleteBranchOnMerge` is `false`), then `git fetch --prune`. Report the remote delete as deleted / already gone / declined — never a silent no-op. Never reset a dirty tree without committing/stashing first; escalate on ambiguity.
+- **Post-merge local reset is mandatory:** After every merge (or abandoned-PR escalation), return the checkout to base: confirm `MERGED` via `gh pr view`, switch to base, `git pull --ff-only`, force-delete the local branch (`-D` only after remote confirms `MERGED` — squash merges are never `-d`-deletable), then delete it **on the remote** with `git push origin --delete` (never remote-first; `--delete-branch` on the merge is best-effort and this repository's `deleteBranchOnMerge` is `false`), then `git fetch --prune`. Fold the remote-delete outcome (deleted / already gone / declined) into the condensed 1–2 line merge summary — never a silent no-op, never a verbose git-ops block. Never reset a dirty tree without committing/stashing first; escalate on ambiguity.
 
 ---
 
@@ -129,6 +129,9 @@ Pick the highest signal: 🔴 > 🟡 > 🟢. All three clean = 🟢 (skip, conti
 ## Report rules (mandatory)
 
 Two reports in Hebrew from the template. The closing What-now states the build is live with a `/present-pr` option, then the repo-state choice: clean skips to `/i-pick-issue`, otherwise run `/vi-close-pipeline` with the reason. PR and issue links are hyperlinks. The summary is 3 quick lines.
+
+- **Condensed merge summary (no verbose git-ops block):** the CI gate, squash-merge SHA, issue-close, local reset, and remote-delete outcomes collapse into 1–2 status rows (`#<id> Closed | #<n> Merged (<sha>) | Branch: <branch> → <base>, clean, synced`). Never narrate each git command with its output — that detail stays in the transcript, not the report.
+- **Manual verification walkthrough lives here:** after a successful merge, guide the operator through seeing the change with their own eyes — as many short steps as it takes for clarity, no step cap, each step one quick action in the shape where → what to do → what to see, with `→` arrows and a direct link when one exists. Plain words, no jargon. Name the real screen / tab / button, never the presentation file. Backend-only with nothing to see → one line saying so plus how it was checked automatically. (Moved here from Station VI: verification belongs at merge-time, right after the work lands.)
 
 <!-- local-only:v-babysit-pr-and-merge:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.

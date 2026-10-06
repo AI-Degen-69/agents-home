@@ -94,7 +94,7 @@ has already disproved the lane.
 
 ## Final check walkthrough (mandatory input to the report)
 
-Build the walkthrough from the live product: real screen names, at most 3 steps, every step is where -> what to do -> what to see. Prefer visual proof. Nothing visual -> say so in one line plus how it was checked automatically.
+Pre-IV verification gate — after the build, guide the operator through seeing the change with their own eyes so they can catch anything to iterate on via `/iiib-iterate-after-build` before advancing to Station IV. Build the walkthrough from the live product: name the real screen / tab / button, use as many short steps as it takes for clarity — no step cap — each step one quick action in the shape where → what to do → what to see, with `→` arrows and a direct link when one exists. Plain words, no jargon. Say exactly what to look at (text, state, count). Prefer visual proof. Backend-only with nothing to see → one line saying so plus how it was checked automatically.
 
 <!-- local-only:iii-build-plan:output-template-begin -->
 The chat output template for this station is `references/output-template.md`.
