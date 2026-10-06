@@ -10,7 +10,7 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
   `gh issue view <number> --json number,title,body,labels,comments --jq '{number, title, body, labels: [.labels[].name], comments: [.comments[].body]}'`
 - **List issues**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] | {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'` with appropriate `--label` and `--state` filters.
 - **Comment on an issue**: `gh issue comment <number> --body "..."`
-- **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`. If the label does not exist, the command fails — create it first with `gh label create "<name>" --color 0E8A16` (one label per name; check with `gh label list`).
+- **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`. Use only labels that exist — check with `gh label list` first. If a wanted label does not exist, skip it and name it in the closeout; never create or invent labels.
 - **Close**: `gh issue close <number> --comment "..."`
 - **Partial split failure**: if a split-publish fails midway (some siblings published, some not), do not leave orphans. Publish the remaining siblings, then wire the whole family together (headers, cross-references, dependency edges) once every number is captured. If publishing cannot be completed, post a cross-reference comment on each already-published sibling listing which parts are still missing.
 - **First sibling in a split**: there is no self-reference. The first-published sibling gets only the `Related: #<a>, #<b>` line; the `Part of #<n>` header goes on every *later* sibling pointing at the first.
@@ -51,18 +51,20 @@ The final acceptance criterion must be a runnable verification command — that 
 
 ### Labels
 
+Use only labels that exist in the repo (check with `gh label list`). Each convention below applies only when the named label exists and fits — never force a label, and publish with no label at all when nothing fits.
+
 - New capture that still needs shaping: `idea` + `needs-triage`.
-- Shaped and fully specified so an agent can pick it up AFK: swap to `ready-for-agent`.
-- Published but still genuinely unshaped even after research: pair `ready-for-agent` with `needs-triage` (the publish-time exception to the `idea` + `needs-triage` pair above — it says "an agent may start, but expect churn").
-- Has documented Open questions (body section) awaiting resolution from code at planning time: pair `ready-for-agent` with `needs-answers` (create with `gh label create "needs-answers" --color FBCA04` on first use).
+- Shaped and fully specified so an agent can pick it up AFK: `ready-for-agent`.
+- Published but still genuinely unshaped even after research: `ready-for-agent` with `needs-triage` (the publish-time exception to the `idea` + `needs-triage` pair above — it says "an agent may start, but expect churn").
+- Has a documented **Open questions** body section awaiting resolution from code at planning time: `ready-for-agent` with `needs-answers` when that label exists.
 - Requires operator hands or operator decisions, not agent work: `ready-for-human`.
-- Reads as a trivial correction (typo, stale comment, broken link, wrong constant, ≤2 files, no behavior change, no new test implied): pair `ready-for-agent` with `quick-fix` (create with `gh label create "quick-fix" --color 1D76DB` on first use). It is a **screening signal for Station I, never a bypass of the gate** — see `create-issue/SKILL.md` → Quick-fix screening. Station I runs the same 7-box gate at its divert point when the label is present (the label is a precondition for evaluation, never a bypass); when the gate fails, the diverting station removes the label so a stale one cannot mislead a later session.
+- Reads as a trivial correction (typo, stale comment, broken link, wrong constant, ≤2 files, no behavior change, no new test implied): `quick-fix` when that label exists. It is a **screening signal for Station I, never a bypass of the gate** — see `create-issue/SKILL.md` → Quick-fix screening. Station I runs the same 7-box gate at its divert point when the label is present (the label is a precondition for evaluation, never a bypass); when the gate fails, the diverting station removes the label so a stale one cannot mislead a later session.
 - Bot accounts submitting external PRs are triaged like any other `NONE`-association author, but weight `author` and prior behavior when accepting.
 
 ### Intake flow
 
 1. Operator throws a raw idea in chat.
-2. Agent scans the repo for relevant files and drafts the issue from the template (unclear points become **Open questions** in the body with the `needs-answers` label — Station II resolves them from code before planning).
+2. Agent scans the repo for relevant files and drafts the issue from the template (unclear points become **Open questions** in the body — Station II resolves them from code before planning — adding the `needs-answers` label only when it exists).
 3. Agent publishes immediately with `gh issue create` (no draft approval pause).
 4. Later pickup: "work on #42" → `gh issue view 42 --comments` and go.
 
