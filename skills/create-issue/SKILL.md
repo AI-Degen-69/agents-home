@@ -56,7 +56,7 @@ conversation.
    pausing to show the draft or waiting for user confirmation. Before publishing,
    run `gh label list` with a limit large enough to show all labels, then pass
    usually one to three relevant existing labels with `--label` to `gh issue create`
-   (e.g. `gh issue create --title "[FIX] ..." --body-file <file> --label ready-for-agent`).
+   (e.g. `gh issue create --title "[FIX] ..." --body-file <file> --label <existing-label>`).
    Use `ready-for-agent`, `needs-answers`, `needs-triage`, and `quick-fix` only when
    they exist and fit the issue; when no label fits, publish with no label at all.
    Never create a missing label, never invent a label, and never wait for CodeRabbit
