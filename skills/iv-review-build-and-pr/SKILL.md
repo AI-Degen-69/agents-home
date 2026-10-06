@@ -167,10 +167,13 @@ Before applying fixes, run the Spec axis in full:
 
 **CodeRabbit writes the PR title — you do not.** Use exactly `@coderabbitai`
 as the PR title. Do NOT generate the actual PR title yourself. Do NOT add tags
-such as `[FIX]`, `[ADD]`, `[IMPROVE]`, etc. yourself. CodeRabbit's global
-configuration (managed through the CodeRabbit dashboard, not through
-repository YAML files) detects `@coderabbitai` and generates the final PR
-title according to the global title instructions. Conventional-Commits types
+such as `[FIX]`, `[ADD]`, `[IMPROVE]`, etc. yourself. CodeRabbit's effective
+configuration (`reviews.auto_title_placeholder` plus
+`reviews.auto_title_instructions`) detects `@coderabbitai` and generates the
+final PR title according to the title instructions. In this home the source of
+both keys is the root `.coderabbit.yaml`; other repositories may set them
+elsewhere (central configuration, repository UI, or organization UI).
+Conventional-Commits types
 (`feat:`, `fix:`) belong to commit messages only — never write one into a PR
 title. See `config/coderabbit/README.md` for the full command playbook.
 
@@ -178,10 +181,11 @@ title. See `config/coderabbit/README.md` for the full command playbook.
 gh pr create --title "@coderabbitai" --body "## Summary`n...`n`nCloses #<issue>`n`n@coderabbitai summary"
 ```
 
-There is no repository-level `.coderabbit.yaml` precondition for the title
-handover — title generation is owned by the global dashboard configuration.
-Never fall back to a hand-written title. If CodeRabbit does not replace the
-placeholder title, say so in the handoff instead of inventing a title.
+The root `.coderabbit.yaml` in this home sets both title keys, so the handover
+works here with no other precondition — title generation is owned by the
+effective configuration, not by any single layer. Never fall back to a
+hand-written title. If CodeRabbit does not replace the placeholder title, say
+so in the handoff instead of inventing a title.
 
 **Allowance pre-check (plan-gated — know what it costs before you spend it):**
 `@coderabbitai rate limit` reports the remaining review allowance and when the next review frees
