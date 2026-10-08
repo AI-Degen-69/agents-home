@@ -1,0 +1,13 @@
+{
+  "summary": {
+    "skill": "skills/create-issue/SKILL.md",
+    "graded_at": "2026-10-06T21:37:09.199Z",
+    "cases": 0,
+    "static_assertions": 0,
+    "static_passed": 0,
+    "static_failed": 0,
+    "static_pass_rate": 0,
+    "live_assertions": "excluded from rate (not-run)"
+  },
+  "graded": []
+}

@@ -31,7 +31,7 @@ const AGENTS_DIR = path.resolve(GLOBAL_SKILLS_DIR, '..', 'agents');
 const NON_SKILL_TOKENS = new Set([
   'html_url', 'step-play', 'hero-demo', 'pr-test-analyzer',
   // Label and API field names, not skill references.
-  'needs-answers', 'needs-triage', 'ready-for-agent', 'ready-for-human', 'blocked-by',
+  'needs-answers', 'ready-for-agent', 'ready-for-human', 'blocked-by',
   'start_line',
 ]);
 

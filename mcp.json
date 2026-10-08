@@ -16,6 +16,13 @@
     },
     "Figma": {
       "url": "https://mcp.figma.com/mcp"
+    },
+    "polymarket-docs": {
+      "args": [
+        "C:/Users/Tiger/.gemini/config/sidecars/polymarket_docs_mcp.py"
+      ],
+      "command": "python",
+      "disabled": false
     }
   }
 }

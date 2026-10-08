@@ -4,7 +4,8 @@
 
 Turn one raw operator idea into one researched, publishable GitHub issue
 with a `[TAG] short plain-English summary` title and only relevant existing
-labels — without a draft-approval pause.
+labels — without a draft-approval pause. The PR title stays `@coderabbitai`
+until CodeRabbit writes the final title.
 
 > Agent contract: [`SKILL.md`](./SKILL.md) (source of truth).
 > Tracker template + conventions: [`references/issue-tracker.md`](./references/issue-tracker.md).
@@ -30,7 +31,7 @@ labels — without a draft-approval pause.
 
 1. Reads `references/issue-tracker.md` — template + `gh` conventions.
 2. Researches the repo first — every issue cites real paths with line numbers.
-3. Ambiguity goes to **Open questions** in the body (plus `needs-answers` only when that label exists) — never blocks publication.
+3. Ambiguity goes to **Open questions** in the body — that is how unclear intent is resolved, not by a prerequisite label. Add `needs-answers` only when the issue has open questions and that label exists; never block publication for it.
 4. Publishes immediately with a tagged title and only relevant existing labels (`gh label list` first; no label at all when nothing fits).
 5. Posts the CodeRabbit plan prompt as its own comment (body only, skipped only for genuinely trivial work, retried once on silence; refusals are quoted, not retried).
 6. Reports back in everyday Hebrew per the output contract in `SKILL.md`.

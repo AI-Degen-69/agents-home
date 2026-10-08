@@ -15,6 +15,7 @@
         { "id": "tagged-title", "type": "regex", "pattern": "\\[TAG\\] short plain-English summary", "must_match": true, "why": "issue titles share the CodeRabbit TAG vocabulary" },
         { "id": "no-label-create", "type": "not_regex", "pattern": "gh label create", "must_match": true, "why": "the skill must never create labels" },
         { "id": "no-blanket-plan-skip", "type": "not_regex", "pattern": "always qualifies", "must_match": true, "why": "quick-fix issues get a plan request unless genuinely trivial" },
+        { "id": "no-needs-label-as-precondition", "type": "not_regex", "pattern": "needs-triage", "must_match": true, "why": "the intake does not use a needs label as a precondition; unclear intent is resolved in the issue body" },
         { "id": "coderabbit-request-posted", "type": "regex", "pattern": "post the canonical `@coderabbitai plan` prompt", "must_match": true, "why": "the plan request is what primes Station II while the operator is still in Station I" },
         { "id": "coderabbit-body-not-file", "type": "regex", "pattern": "Post the prompt body, never the file", "must_match": true, "why": "passing the reference doc as-is would publish a wrapper and bury the mention in a code block" },
         { "id": "coderabbit-skip-trivial", "type": "regex", "pattern": "Skip the request for a genuinely trivial issue", "must_match": true, "why": "a docs/typo-only issue gets nothing back from phases and test cases" },
@@ -37,7 +38,7 @@
       "static_assertions": [
         { "id": "ambiguity-captured-not-guessed", "type": "regex", "pattern": "do NOT stop to interrogate", "must_match": true, "why": "unclear points become body questions instead of a blocking interview" },
         { "id": "open-questions-section", "type": "regex", "pattern": "\\*\\*Open questions\\*\\*", "must_match": true, "why": "the body section is the durable record Station II resolves from code" },
-        { "id": "needs-answers-label", "type": "regex", "pattern": "needs-answers", "must_match": true, "why": "the label is how the open questions survive until planning time" },
+        { "id": "needs-answers-label", "type": "regex", "pattern": "needs-answers", "must_match": true, "why": "the label is used only when the issue has open questions and that label exists" },
         { "id": "never-block-publication", "type": "regex", "pattern": "(Never guess intent silently|never block publication|no draft approval pause)", "must_match": true, "why": "open questions must not halt the publish step" }
       ],
       "live_assertions": [

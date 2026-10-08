@@ -53,18 +53,16 @@ The final acceptance criterion must be a runnable verification command — that 
 
 Use only labels that exist in the repo (check with `gh label list`). Each convention below applies only when the named label exists and fits — never force a label, and publish with no label at all when nothing fits.
 
-- New capture that still needs shaping: `idea` + `needs-triage`.
 - Shaped and fully specified so an agent can pick it up AFK: `ready-for-agent`.
-- Published but still genuinely unshaped even after research: `ready-for-agent` with `needs-triage` (the publish-time exception to the `idea` + `needs-triage` pair above — it says "an agent may start, but expect churn").
 - Has a documented **Open questions** body section awaiting resolution from code at planning time: `ready-for-agent` with `needs-answers` when that label exists.
 - Requires operator hands or operator decisions, not agent work: `ready-for-human`.
-- Reads as a trivial correction (typo, stale comment, broken link, wrong constant, ≤2 files, no behavior change, no new test implied): `quick-fix` when that label exists. It is a **screening signal for Station I, never a bypass of the gate** — see `create-issue/SKILL.md` → Quick-fix screening. Station I runs the same 7-box gate at its divert point when the label is present (the label is a precondition for evaluation, never a bypass); when the gate fails, the diverting station removes the label so a stale one cannot mislead a later session.
+- Reads as a trivial correction (typo, stale comment, broken link, wrong constant, ≤2 files, no behavior change, no new test implied): `quick-fix` when that label exists. It is a **screening signal for Station I, never a bypass of the gate** — see `create-issue/SKILL.md` → Quick-fix screening. Station I runs the same 7-box gate at its divert point when the label is present (the label is a precondition for the divert point's evaluation, never a bypass); when the gate fails, the diverting station removes the label so a stale one cannot mislead a later session.
 - Bot accounts submitting external PRs are triaged like any other `NONE`-association author, but weight `author` and prior behavior when accepting.
 
 ### Intake flow
 
 1. Operator throws a raw idea in chat.
-2. Agent scans the repo for relevant files and drafts the issue from the template (unclear points become **Open questions** in the body — Station II resolves them from code before planning — adding the `needs-answers` label only when it exists).
+2. Agent scans the repo for relevant files and drafts the issue from the template (unclear points become **Open questions** in the body — Station II resolves them from code before planning — adding the `needs-answers` label only when the issue has open questions and that label exists).
 3. Agent publishes immediately with `gh issue create` (no draft approval pause).
 4. Later pickup: "work on #42" → `gh issue view 42 --comments` and go.
 
