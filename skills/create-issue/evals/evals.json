@@ -19,7 +19,6 @@
         { "id": "coderabbit-request-posted", "type": "regex", "pattern": "post the canonical `@coderabbitai plan` prompt", "must_match": true, "why": "the plan request is what primes Station II while the operator is still in Station I" },
         { "id": "coderabbit-body-not-file", "type": "regex", "pattern": "Post the prompt body, never the file", "must_match": true, "why": "passing the reference doc as-is would publish a wrapper and bury the mention in a code block" },
         { "id": "coderabbit-skip-trivial", "type": "regex", "pattern": "Skip the request for a genuinely trivial issue", "must_match": true, "why": "a docs/typo-only issue gets nothing back from phases and test cases" },
-        { "id": "coderabbit-retry-once", "type": "regex", "pattern": "retry once[\\s\\S]{0,220}lowercase", "must_match": true, "why": "a capitalized mention returns no plan; the retry is the recovery path" },
         { "id": "hebrew-report-contract", "type": "regex", "pattern": "חובת דיווח בעברית", "must_match": true, "why": "the closeout report is a hard contract of this skill" }
       ],
       "live_assertions": [

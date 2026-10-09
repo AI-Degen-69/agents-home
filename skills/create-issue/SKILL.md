@@ -108,11 +108,8 @@ silently. Ambiguity is resolved by the issue body, not by a prerequisite label.
      comment-only, or trivial docs change with no behavior change (the docs/typo/comment-only class)
      gets nothing back from phases and test cases: publish, report, and move on. Any other issue —
      including one carrying `quick-fix` — still gets the plan request.
-   - **If no reply lands, retry once.** A plan normally arrives within about five minutes. If the issue
-     still shows no `coderabbitai` comment, post the prompt again with the mention spelled exactly
-     `@coderabbitai` in lowercase (a capitalized mention was observed to return no plan at all), and
-     say in the closeout that a retry was sent. A refusal or upgrade notice counts as a reply: do not
-     retry it — quote it in the closeout instead.
+   - **No wait, no retry.** Post the comment and move straight to the closeout — do not wait for a
+     plan to land and do not repost the prompt.
 8. **Closeout in chat:** You MUST report to the user in clean, everyday Hebrew following the Output Contract below. Never make the user wait before creation.
 
 ## Quick-fix screening
