@@ -29,7 +29,7 @@ Run these read-only checks before deciding anything. Never change files in this 
 1. Run `git status --short --branch` to see staged, unstaged, and untracked changes.
 2. Run `git log --oneline -8` and `git stash list` to see recent commits and stashed work.
 3. Run `git branch --show-current` plus `git rev-list --left-right --count HEAD...@{upstream}` when an upstream exists to see ahead and behind counts.
-4. Run `gh pr status` and `gh pr view --comments` when a PR exists for the branch to see open state and review comments. Search the comments for a `coderabbit` review and for an `@coderabbitai review` comment from you. When neither exists, no `coderabbit` review has run yet.
+4. Run `gh pr status` and `gh pr view --comments` when a PR exists for the branch to see open state and review comments. Search the comments for a `coderabbit` review and for an `@coderabbitai review` comment from any author. When neither exists, no `coderabbit` review has run yet.
 5. Look for `tasks/plan.md` and `tasks/todo.md` with an incomplete checklist. When found, read the issue number from those files and check the issue state with `gh issue view <num>`. When the issue is closed, check how it closed: a merged PR means the work landed, any other close reason means it did not.
 
 ## Unknown-origin dirt — stop rule (BEFORE the routing table)

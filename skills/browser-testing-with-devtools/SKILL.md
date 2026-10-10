@@ -91,6 +91,15 @@ Browser verification feels slow when each check becomes its own MCP round-trip (
 
 **Alternative tool:** the `playwright-cli` skill (official Microsoft agent CLI, installed at `~/.agents/skills/playwright-cli`) drives the browser through plain CLI commands instead of MCP round-trips — compact accessibility-tree snapshots, deterministic element refs, `eval` for batched checks. Prefer it for verification gates; keep chrome-devtools-mcp for performance traces and deep DevTools inspection.
 
+### Time-box: finish in time or move on
+
+Every browser run gets a strict wall-clock budget — no extensions, no retries past it:
+
+- **Whole run: 5 minutes** from the first browser tool call. Preview-server boot is excluded but capped separately at 120s — server not up by then means the gate is `unverified`, not retried.
+- **Single tool call: 90 seconds.** A call that hasn't returned by then is abandoned and counts as one failure toward the fail-twice rule.
+- **Under 60 seconds remaining: no new checks.** Skip straight to reporting — do not start anything that cannot finish.
+- **On expiry: stop immediately.** No further browser calls, no substitution, no retry. Mark every unrun check `unverified` with reason "time-box expired", report it, and move on. An expired budget is never a defect, never a reason to loop, and never blocks the turn — it is disclosed, not re-attempted.
+
 ## Driving playwright-cli from the Terminal
 
 `playwright-cli open <url>` / `goto <url>` to navigate, then `run-code` against the current page.

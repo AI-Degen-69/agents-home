@@ -56,12 +56,12 @@
  "expected_output": "Two short sections: start a coderabbit review, then route to v-babysit-pr-and-merge.",
       "files": [],
       "id": 4,
-      "prompt": "My open PR has green checks but no coderabbit review and no review comment from me yet. What is the next step?",
+      "prompt": "My open PR has green checks but no coderabbit review and no review comment from anyone yet. What is the next step?",
       "static_assertions": [
         {
           "id": "coderabbit-trigger-row",
           "type": "regex",
-          "pattern": "no `coderabbit` review and no `@coderabbitai review` comment from you.*v-babysit-pr-and-merge",
+          "pattern": "no `@coderabbitai review` comment.*from any author.*v-babysit-pr-and-merge",
           "must_match": true,
           "why": "an untriggered review starts the review then routes to Station V"
         },
