@@ -24,7 +24,7 @@
     {
       "id": "auto-mode-full-execution",
       "prompt": "Run /iii-build-plan auto on a tasks/plan.md with one UI task and one backend task.",
-      "expected_output": "All tasks executed sequentially with domain routing (UI to frontend-ui-engineering, backend to TDD), final report in Hebrew grouped by change type, ending with next step /iv-review-build-and-pr.",
+ "expected_output": "All tasks executed sequentially with domain routing (UI to frontend-ui-engineering, backend to TDD), final report grouped by change type, ending with next step /iv-review-build-and-pr.",
       "mode_coverage": ["auto"],
       "files": [],
       "static_assertions": [
@@ -33,14 +33,14 @@
         { "id": "tdd-routing", "type": "regex", "pattern": "test-driven-development", "must_match": true, "why": "code/backend tasks must route to TDD" },
         { "id": "code-simplification", "type": "regex", "pattern": "code-simplification", "must_match": true, "why": "every task gets simplification pass before commit" },
         { "id": "next-station-iv", "type": "regex", "pattern": "iv-review-build-and-pr", "must_match": true, "why": "build must hand off to Station IV" },
-        { "id": "hebrew-report", "type": "regex", "pattern": "chat output template for this station is\\s+`references/output-template\\.md`", "must_match": true, "why": "the Hebrew output contract is extracted to references/output-template.md; SKILL.md must carry the pointer that loads it" },
+ { "id": "report", "type": "regex", "pattern": "chat output template for this station is\\s+`references/output-template\\.md`", "must_match": true, "why": "the output contract is extracted to references/output-template.md; SKILL.md must carry the pointer that loads it" },
         { "id": "noticed-not-touching", "type": "regex", "pattern": "NOTICED-BUT-NOT-TOUCHING", "must_match": true, "why": "out-of-scope findings must be captured, never silently fixed" }
       ],
       "live_assertions": [
         "All open tasks in tasks/plan.md are executed sequentially",
         "UI task routes to frontend-ui-engineering",
         "Backend task routes to test-driven-development",
-        "Final report is in Hebrew with change groups",
+ "Final report with change groups",
         "Final report points to /iv-review-build-and-pr as the next step"
       ]
     },

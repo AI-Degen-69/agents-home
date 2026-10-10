@@ -46,7 +46,7 @@ with an honest one-line CodeRabbit ack status. The only station that pushes.
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | Agent contract (gates, review protocol, push + PR, Hebrew output contract). |
+| `SKILL.md` | Agent contract (gates, review protocol, push + PR, output contract). |
 | `references/ocr-delegation.md` | OCR delegation procedure, embedded from the upstream `open-code-review-delegate` skill (flags, file scope, host-agent review, gotchas). |
 | `evals/` | Eval set + pre-workbench snapshot. |
 

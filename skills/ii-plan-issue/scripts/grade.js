@@ -124,7 +124,7 @@ function corpus(skillPath) {
 }
 
 function extractTemplate(text) {
-  // The Hebrew report template = first fenced ```markdown block.
+ // The report template = first fenced ```markdown block.
   const m = text.match(/```markdown\r?\n([\s\S]*?)\r?\n```/);
   if (!m) return null;
   return m[1];

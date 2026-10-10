@@ -42,7 +42,7 @@ to build.
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | Agent contract (planning protocol, CodeRabbit step 0A, Hebrew output contract). |
+| `SKILL.md` | Agent contract (planning protocol, CodeRabbit step 0A, output contract). |
 | `references/issue-tracker.md` | Pointer to the canonical tracker doc (sub-issue `blocked-by` wayfinding). |
 | `scripts/grade.js` | Deterministic grader (`audit` / `case`, zero dependencies). |
 | `evals/` | Eval set (`evals.json`), test plan (`intake.md`), snapshots + `iteration-1/` results. |

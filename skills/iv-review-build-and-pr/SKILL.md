@@ -29,6 +29,8 @@ This skill implements **Station IV (Review, Verify & Ship)** of the 6-station pi
 
 **No review runs on unproven code.** Before Step 1, prove the build actually works. This station is the **single owner of browser-based verification** in the whole pipeline — no other station runs browser checks. This ownership applies whenever any UI change ships, regardless of which station built it.
 
+**Scope — pipeline only.** The Step 0 and Step 3 gates run solely inside an explicit Station IV invocation (`/iv-review-build-and-pr`) on a feature branch headed for a PR. They are never run during interactive chat turns, prototyping, or quick-build iterations, and never over an explicit opt-out ("just build", "no browser check", "don't stall on browsing" — skip the browser entirely and say so in the report). No other station, and no ordinary turn, launches browser sessions on this skill's authority.
+
 1. **For Frontend / Web / UI changes — Browser Gate (fast-first, `playwright-cli` only):** start the project's preview server, then verify in this order with the **`playwright-cli`** skill (headless by default, compact snapshots, no MCP round-trips). Reach for `browser-testing-with-devtools` (chrome-devtools-mcp) **only** when the gate needs performance traces or profiling — never for routine render/DOM checks:
    - **API/HTTP smoke (no browser):** every key page and endpoint the change touches answers 200 with sane content (`curl` or equivalent).
    - **Programmatic DOM checks — one batched call (no screenshot):** `playwright-cli open <url>`, then a single `playwright-cli eval "<one function>"` that performs all DOM/layout checks and returns one small JSON verdict (required elements exist, table rows/columns render, layout has no overflow). Never one call per check.

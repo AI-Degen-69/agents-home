@@ -41,7 +41,7 @@ atomic local commits, and simplification — no push, no PR here.
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | Agent contract (execution protocol, routing, commit discipline, Hebrew output contract). |
+| `SKILL.md` | Agent contract (execution protocol, routing, commit discipline, output contract). |
 | `references/routing.md` | Domain-tag → specialist-skill routing matrix. |
 | `evals/evals.json` | Eval set for the station. |
 

@@ -5,7 +5,7 @@
     {
       "id": "discovery-backlog-map",
       "prompt": "Run /i-pick-issue with no arguments on a repo that has several open issues.",
-      "expected_output": "Hebrew backlog map: every open issue listed with number, title, labels and one-line summary, grouped by domain/risk/dependency, a concrete recommended execution order with one single highlighted issue to start. The recommended issue is selected by default and the run proceeds with it unless the operator overrides.",
+ "expected_output": "backlog map: every open issue listed with number, title, labels and one-line summary, grouped by domain/risk/dependency, a concrete recommended execution order with one single highlighted issue to start. The recommended issue is selected by default and the run proceeds with it unless the operator overrides.",
       "mode_coverage": ["discovery"],
       "files": [],
       "static_assertions": [
@@ -15,7 +15,7 @@
         { "id": "gh-issue-list-command", "type": "regex", "pattern": "gh issue list --state open", "must_match": true, "why": "Discovery must prescribe the canonical gh command to fetch the backlog" },
         { "id": "group-by-domain", "type": "regex", "pattern": "(group|categori)[a-z]* .*(domain|risk|component|dependency)", "must_match": true, "why": "issues must be grouped logically, not listed flat" },
         { "id": "no-false-selection-claim", "type": "not_regex", "pattern": "nothing is selected until the operator answers", "must_match": true, "why": "the old halt rule is gone — the recommended issue is selected by default, so the old rule text must not remain" },
-        { "id": "recommendation-is-default", "type": "regex", "pattern": "references/output-template\\.md", "must_match": true, "why": "the Discovery recommendation header lives in the Hebrew output template — SKILL.md must point at it, and the recommended issue is selected by default unless the operator overrides" },
+ { "id": "recommendation-is-default", "type": "regex", "pattern": "references/output-template\\.md", "must_match": true, "why": "the Discovery recommendation header lives in the output template — SKILL.md must point at it, and the recommended issue is selected by default unless the operator overrides" },
         { "id": "no-catchall-trigger", "type": "not_regex", "pattern": "whenever the user (mentions|talks|says anything)", "must_match": true, "why": "a catch-all trigger would fire the skill on unrelated conversation" }
       ],
       "live_assertions": [
@@ -26,7 +26,7 @@
         "The recommendation screen does not duplicate itself as a separate 'pick a number' menu",
         "The run proceeds with the recommended issue unless the operator overrides",
         "No planning, building or PR actions are taken before the operator confirms or overrides",
-        "The output follows the Discovery Hebrew report template"
+ "The output follows the Discovery report template"
       ]
     },
     {
@@ -51,7 +51,7 @@
     {
       "id": "orchestration-station-handoff",
       "prompt": "Run /i-pick-issue 42 after the operator confirmed issue 42 and chose full orchestration mode.",
-      "expected_output": "Issue 42 details read and claimed, session scope locked, then sequential hand-off through stations II (plan), III (build), IIIB (iterate), IV (review and PR), V (babysit and merge), VI (close pipeline), with a concise Hebrew status report per completed station and the next station named.",
+ "expected_output": "Issue 42 details read and claimed, session scope locked, then sequential hand-off through stations II (plan), III (build), IIIB (iterate), IV (review and PR), V (babysit and merge), VI (close pipeline), with a concise status report per completed station and the next station named.",
       "mode_coverage": ["orchestration"],
       "files": [],
       "static_assertions": [
@@ -68,7 +68,7 @@
         "Station I does not claim the issue itself; it delegates the first write to Station II",
         "Station II planning hand-off produces tasks/plan.md before building starts",
         "Stations run in order III then IV then V then VI with no station skipped",
-        "Each completed station is reported concisely in Hebrew with the next station named",
+ "Each completed station is reported concisely with the next station named",
         "No station output contract is broken or silently skipped"
       ]
     },

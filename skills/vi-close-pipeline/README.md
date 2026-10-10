@@ -44,14 +44,14 @@ spotless.
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | Agent contract (gates, discovery, preservation, dead code, exit gate, Hebrew output contract). |
+| `SKILL.md` | Agent contract (gates, discovery, preservation, dead code, exit gate, output contract). |
 | `scripts/grade.js` | Deterministic grader (`audit` / `case`, zero dependencies). |
 | `evals/` | Eval set (`evals.json`), test plan (`intake.md`), snapshots + `iteration-1/` results. |
 
 ## Quality bar
 
 The repo carries only live knowledge; the folder sits on a clean synced
-base branch; the Hebrew report names the PR, the issue, what was cleaned
+base branch; the report names the PR, the issue, what was cleaned
 vs kept — see the report template in `SKILL.md`.
 
 ## Example

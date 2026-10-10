@@ -1,6 +1,6 @@
 ---
 name: ii-plan-issue
-description: Station II (Define & Plan) of the 6-station pipeline (I–VI). Use when a GitHub issue needs to become an executable plan — fetches the issue via gh, right-sizes it, locks CONSTRAINTS.md, maps interfaces, writes tasks/plan.md, and hands off to /iii-build-plan auto. Reports in Hebrew, issue-first.
+description: Station II (Define & Plan) of the 6-station pipeline (I–VI). Use when a GitHub issue needs to become an executable plan — fetches the issue via gh, right-sizes it, locks CONSTRAINTS.md, maps interfaces, writes tasks/plan.md, and hands off to /iii-build-plan auto. Reports issue-first.
 ---
 
 # Station II: Plan Issue (`ii-plan-issue`)
@@ -139,7 +139,7 @@ Propose **at most one** concrete improvement to the issue's approach — an arch
    - **Simplification / edge-case hardening** → adopt-by-default: folded into `tasks/plan.md` after the evidence check passes.
    - **Scope expansion** (new behavior the issue never asked for) → **opt-in only**: presented as a question, enters the plan solely on explicit operator approval.
 3. **Rejection is recorded** in `tasks/plan.md` with its reason, so the same proposal does not resurface next session.
-4. Present the proposal in the report in one plain-Hebrew sentence so the operator can reject before build.
+4. Present the proposal in the report in one sentence so the operator can reject before build.
 
 ### Step 6: Task Decomposition (`planning-and-task-breakdown`)
 1. **Dependency graph first:** before ordering anything, map which task unblocks which — a task depends on another when it needs that task's output (interface, file, data). Write the graph into `tasks/plan.md` as a `Depends on:` field per task.

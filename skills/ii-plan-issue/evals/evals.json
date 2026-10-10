@@ -78,21 +78,21 @@
         {
           "id": "report-type-branches",
           "type": "regex",
-          "pattern": "גודל Small/Standard",
+          "pattern": "Small/Standard",
           "must_match": true,
           "why": "the shipped template carries the right-sizing tier in the GitHub line"
         },
         {
           "id": "report-bullet-requirements",
           "type": "regex",
-          "pattern": "➕ \\[מקום \\+ מה חדש",
+          "pattern": "➕ \\[place \\+ what's new",
           "must_match": true,
           "why": "the what-will-be-built block is an add/change/fix bullet list"
         },
         {
           "id": "report-verification-section",
           "type": "regex",
-          "pattern": "(אימות מוגדר|verification method|verification command)",
+          "pattern": "(verification method|verification command)",
           "must_match": true,
           "why": "user: verification is defined per task in the plan file — not as a prose guardrail section in chat"
         },
@@ -106,14 +106,14 @@
         {
           "id": "proposal-evidence-based",
           "type": "regex",
-          "pattern": "(Ground it in evidence|No evidence.{0,12}no proposal|מבוססת ראיות)",
+          "pattern": "(Ground it in evidence|No evidence.{0,12}no proposal)",
           "must_match": true,
           "why": "user: improvement proposals must cite issue text or code location — no proposals in the air"
         },
         {
           "id": "proposal-adopt-by-default",
           "type": "regex",
-          "pattern": "(accepted|adopt.{0,30}default|מאומצת כברירת מחדל)",
+          "pattern": "(accepted|adopt.{0,30}default)",
           "must_match": true,
           "why": "user: the proposal is accepted by default and dropped only on explicit operator rejection"
         },
@@ -134,14 +134,14 @@
       "live_assertions": [
         "Size tier stated is Tiny/Trivial with rationale",
         "No SPEC.md created for a Trivial task; spec embedded in plan",
-        "Report opens with the issue title and what it demands, in everyday Hebrew",
+ "Report opens with the issue title and what it demands",
         "Report does not enumerate planning machinery (skill lists) ahead of the issue content"
       ]
     },
     {
       "id": "negative-unrelated-request",
       "prompt": "\"Find and fix the flaky login test\" (no station invocation)",
-      "expected_output": "The agent just fixes the bug normally. The station-II skill must not trigger: no Hebrew station report, no CONSTRAINTS.md/plan.md ceremony, no issue claiming.",
+ "expected_output": "The agent just fixes the bug normally. The station-II skill must not trigger: no station report, no CONSTRAINTS.md/plan.md ceremony, no issue claiming.",
       "mode_coverage": [
         "negative"
       ],
@@ -162,7 +162,7 @@
         }
       ],
       "live_assertions": [
-        "No station report (Hebrew template) is produced",
+ "No station report is produced",
         "No CONSTRAINTS.md / tasks/plan.md artifacts are created",
         "No gh issue claim is attempted"
       ]
@@ -185,7 +185,7 @@
         {
           "id": "no-fabrication-rule",
           "type": "regex",
-          "pattern": "(never fabricate|do not fabricate|אין להמציא|Never fabricate)",
+          "pattern": "(never fabricate|do not fabricate|Never fabricate)",
           "must_match": true,
           "why": "fabricating issue content from a failed fetch is the worst-case outcome and must be forbidden explicitly"
         }

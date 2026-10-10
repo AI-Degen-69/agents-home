@@ -114,6 +114,10 @@ From 24 failure memories:
 - Time wasted on false completion → redirect → rework
 - Violates: "Honesty is a core value. If you lie, you'll be replaced."
 
+## Scope: commands, never browser sessions
+
+"Verification command" above means a deterministic local command: test runner, linter, typechecker, or build. This skill never requires launching a browser session (CDP connection, DevTools MCP, Playwright, DOM scraping, screenshots) — browser audits belong exclusively to the pipeline station that orders them (Station IIIB fix loop, Station IV gates), or to an explicit operator request. An explicit opt-out ("just build", "no browser check") is honored immediately: run the build/tests only, report browser verification as skipped, and move on.
+
 ## When To Apply
 
 **ALWAYS before:**

@@ -95,7 +95,7 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
 ### Step 2: Station II — Plan (`ii-plan-issue <number>`)
 
 - Hand off to `ii-plan-issue` to perform scope right-sizing (Trivial/Small/Standard/Large), auto-detect stack, lock `CONSTRAINTS.md`, specify interfaces, and write `tasks/plan.md`.
-- Report plan summary in plain Hebrew to the user.
+- Report plan summary to the user.
 
 ### Step 3: Station III — Build (`iii-build-plan auto`)
 

@@ -5,7 +5,7 @@
     {
       "id": "raw-idea-to-published-issue",
       "prompt": "/create-issue I want the deploy script to retry failed uploads three times before giving up.",
-      "expected_output": "Agent scans the repo for the relevant deploy script and related files, drafts the issue from the template with a concrete problem statement and a [TAG] title, runs gh label list and publishes it with gh using only relevant existing labels, posts the CodeRabbit plan request as its own comment, and reports the issue number in everyday Hebrew.",
+ "expected_output": "Agent scans the repo for the relevant deploy script and related files, drafts the issue from the template with a concrete problem statement and a [TAG] title, runs gh label list and publishes it with gh using only relevant existing labels, posts the CodeRabbit plan request as its own comment, and reports the issue number.",
       "mode_coverage": ["numbered"],
       "files": [],
       "static_assertions": [
@@ -19,13 +19,13 @@
         { "id": "coderabbit-request-posted", "type": "regex", "pattern": "post the canonical `@coderabbitai plan` prompt", "must_match": true, "why": "the plan request is what primes Station II while the operator is still in Station I" },
         { "id": "coderabbit-body-not-file", "type": "regex", "pattern": "Post the prompt body, never the file", "must_match": true, "why": "passing the reference doc as-is would publish a wrapper and bury the mention in a code block" },
         { "id": "coderabbit-skip-trivial", "type": "regex", "pattern": "Skip the request for a genuinely trivial issue", "must_match": true, "why": "a docs/typo-only issue gets nothing back from phases and test cases" },
-        { "id": "hebrew-report-contract", "type": "regex", "pattern": "חובת דיווח בעברית", "must_match": true, "why": "the closeout report is a hard contract of this skill" }
+ { "id": "report-contract", "type": "regex", "pattern": "Chat Output Contract", "must_match": true, "why": "the closeout report is a hard contract of this skill" }
       ],
       "live_assertions": [
         "The repo is scanned and real file paths with line numbers are cited before the draft is written",
         "The issue is published with a [TAG] title and only relevant existing labels via gh",
         "The CodeRabbit plan request is posted as its own issue comment, starting with the lowercase mention",
-        "The issue number and URL are reported back to the operator in everyday Hebrew"
+ "The issue number and URL are reported back to the operator"
       ]
     },
     {

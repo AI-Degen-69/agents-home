@@ -136,7 +136,7 @@ function corpus(skillPath) {
 }
 
 function extractTemplate(text) {
-  // The Hebrew report template = first fenced ```markdown block.
+ // The report template = first fenced ```markdown block.
   const m = text.match(/```markdown\r?\n([\s\S]*?)\r?\n```/);
   if (!m) return null;
   return m[1];
@@ -144,7 +144,7 @@ function extractTemplate(text) {
 
 /** Same as extractTemplate, but falls back to the referenced template file.
  *
- *  The Hebrew output contract was extracted out of SKILL.md into
+ * The output contract was extracted out of SKILL.md into
  *  references/output-template.md (local-only; the sync strips the pointer block).
  *  A grader that only scans SKILL.md would then find no template at all and
  *  report every max_template_lines assertion as a failure that no amount of

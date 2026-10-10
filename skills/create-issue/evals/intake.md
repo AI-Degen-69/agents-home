@@ -14,7 +14,7 @@ Intake branch of the issue→PR pipeline: one raw operator idea becomes one rese
 2. Open questions land in the issue body (`needs-answers` only when that label exists) — publication is never blocked.
 3. Splits are wired as one family (`Part of #` / `Related:` / native dependency edges).
 4. The CodeRabbit plan request is posted as its own comment, body only, skipped only for genuinely trivial work — no wait, no retry.
-5. Closeout is everyday Hebrew per the output contract.
+5. Closeout is per the output contract.
 
 ## Success definition (measurable)
 
@@ -24,10 +24,10 @@ Intake branch of the issue→PR pipeline: one raw operator idea becomes one rese
 | Outcome | Prescribes posting the CodeRabbit prompt body, not the reference file | Yes (regex) |
 | Outcome | Skips the plan request for docs/typo-only issues | Yes (regex) |
 | Style | Ambiguity goes to `Open questions`, never to a blocking interview | Yes (regex) |
-| Style | Closeout follows the Hebrew contract | Yes (regex) |
+| Style | Closeout follows the contract | Yes (regex) |
 | Negative | No catch-all trigger wording that would convert remarks into issues | Yes (not_regex) |
 
-Behavioral (live-run, needs a real repo + `gh`): research quality, the actual publish, the actual comment, the actual Hebrew report — recorded as `not-run`.
+Behavioral (live-run, needs a real repo + `gh`): research quality, the actual publish, the actual comment, the actual report — recorded as `not-run`.
 
 ## Loop config
 

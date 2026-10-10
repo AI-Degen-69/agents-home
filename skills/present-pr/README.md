@@ -42,7 +42,7 @@ page twice. Optional — never mandatory, never on the pipeline path.
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | Agent contract (visual rules, build + verify, Hebrew output contract). |
+| `SKILL.md` | Agent contract (visual rules, build + verify, output contract). |
 | `references/component-kit.md` | Copy-paste kit: base shells, `initCanvas()`, six snippets. |
 | `references/visual-pickers.md` | Centerpiece-family pickers. |
 | `evals/` | Eval set + pre-split snapshot. |
@@ -58,5 +58,5 @@ presentation file".
 ```bash
 /present-pr 42
 # → builds the page for #42, saves <id>-presentation-<title>.html,
-#   opens it in the browser, reports value + try-it-yourself in plain Hebrew
+# opens it in the browser, reports value + try-it-yourself 
 ```

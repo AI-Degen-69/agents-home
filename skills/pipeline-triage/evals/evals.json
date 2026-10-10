@@ -1,7 +1,7 @@
 {
   "evals": [
     {
-      "expected_output": "Two short Hebrew sections routing to i-pick-issue.",
+ "expected_output": "Two short sections routing to i-pick-issue.",
       "files": [],
       "id": 1,
       "prompt": "The repo is on main, synced with remote, clean tree, no open PR. What is the next step?",
@@ -16,7 +16,7 @@
       ]
     },
     {
-      "expected_output": "Two short Hebrew sections routing to v-babysit-pr-and-merge.",
+ "expected_output": "Two short sections routing to v-babysit-pr-and-merge.",
       "files": [],
       "id": 2,
       "prompt": "My feature branch has an open PR with failing checks and requested changes. What is the next step?",
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "expected_output": "Two short Hebrew sections routing to iii-build-plan.",
+ "expected_output": "Two short sections routing to iii-build-plan.",
       "files": [],
       "id": 3,
       "prompt": "The tree is dirty with a few uncommitted edits for one small clear fix and there is no PR. What is the next step?",
@@ -53,7 +53,7 @@
       ]
     },
     {
-      "expected_output": "Two short Hebrew sections: start a coderabbit review, then route to v-babysit-pr-and-merge.",
+ "expected_output": "Two short sections: start a coderabbit review, then route to v-babysit-pr-and-merge.",
       "files": [],
       "id": 4,
       "prompt": "My open PR has green checks but no coderabbit review and no review comment from me yet. What is the next step?",
@@ -75,7 +75,7 @@
       ]
     },
     {
-      "expected_output": "Two short Hebrew sections routing to ii-plan-issue.",
+ "expected_output": "Two short sections routing to ii-plan-issue.",
       "files": [],
       "id": 5,
       "prompt": "The tree is dirty with half-finished changes for a large vague refactor and there is no PR. What is the next step?",
@@ -97,7 +97,7 @@
       ]
     },
     {
-      "expected_output": "Two short Hebrew sections routing to iv-review-build-and-pr.",
+ "expected_output": "Two short sections routing to iv-review-build-and-pr.",
       "files": [],
       "id": 6,
       "prompt": "Clean tree on a feature branch, two commits not pushed yet, no PR exists. What is the next step?",
@@ -119,7 +119,7 @@
       ]
     },
     {
-      "expected_output": "Two short Hebrew sections routing to vi-close-pipeline.",
+ "expected_output": "Two short sections routing to vi-close-pipeline.",
       "files": [],
       "id": 7,
       "prompt": "My branch was already merged and the leftover branch still exists. What is the next step?",
@@ -134,7 +134,7 @@
       ]
     },
     {
-      "expected_output": "Two short Hebrew sections routing to iii-build-plan to resume the unfinished work.",
+ "expected_output": "Two short sections routing to iii-build-plan to resume the unfinished work.",
       "files": [],
       "id": 8,
       "prompt": "There is a `tasks/plan.md` whose checklist is not fully checked, the linked issue number is written in the file, and that issue is still open. What is the next step?",
@@ -149,7 +149,7 @@
       ]
     },
     {
-      "expected_output": "One short Hebrew section naming the foreign files as unknown-origin, quoting each changed path, and asking whose work they are. It does NOT route to II or III, and it does not stash, commit, discard, or branch away the changes.",
+ "expected_output": "One short section naming the foreign files as unknown-origin, quoting each changed path, and asking whose work they are. It does NOT route to II or III, and it does not stash, commit, discard, or branch away the changes.",
       "files": [],
       "id": 9,
       "prompt": "The tree has uncommitted changes I did not make and cannot explain - some files are unrelated to anything I am working on. What is the next step?",

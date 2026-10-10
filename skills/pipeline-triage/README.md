@@ -32,13 +32,13 @@ guides only, changes nothing.
 3. First matching routing-table row wins — exactly one station, one
    handoff at most. Never runs two routers on the same request.
 4. Safety: stops before push/merge/discard/reset; destructive steps need
-   explicit approval. Answers in Hebrew, status + decision only.
+ explicit approval. Answers status + decision only.
 
 ## Files in this folder
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | Agent contract (checks, 14-row routing table, safety rules, Hebrew output shape). |
+| `SKILL.md` | Agent contract (checks, 14-row routing table, safety rules, output shape). |
 | `evals/evals.json` | Eval set for the gate. |
 
 ## Quality bar

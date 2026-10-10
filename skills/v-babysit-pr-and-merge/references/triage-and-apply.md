@@ -120,12 +120,12 @@ Trigger this step when CodeRabbit reached its review limit, asks to wait 1 hour,
    - Launch the dedicated subagent with clean context:
      `invoke_subagent(TypeName="code-reviewer", Role="Code Reviewer", Prompt="Perform multi-axis review of PR <pr-number> diff across correctness, readability, architecture, security, and performance. List concrete actionable findings.")`
    - Review across five axes: correctness/logic bugs, edge cases, performance/limits, security/safety, and test coverage.
-2. **Findings in chat** (Hebrew, never a code block — real `##` heading, one bold Hebrew sentence with the file in backticks, short free quote body with the fix):
-   ## 🎯 נכונות פונקציונלית | 🟡 מינורי | ⚡ תיקון זריז
-   **ללכוד ב־`scripts/filter_loop.py` את הזנב ואת האופסט מאותו מצב של הקובץ.**
-   > - שורה שנוספת בזמן הקריאה נאבדת בשקט; לקחת אופסט לפני הקריאה כדי שהטווחים יחפפו.
-   - Vocab (match `docs.coderabbit.ai/change-stack/findings`) — Category: 🎯 נכונות פונקציונלית, 🔒 אבטחה ופרטיות, 🗄️ שלמות מידע ואינטגרציה, ⚡ ביצועים וסקייל, 🩺 יציבות וזמינות, 📐 תחזוקה ואיכות קוד. Severity: 🔴 קריטי, 🟠 מייגור, 🟡 מינורי, ⚪ טריוויאלי. Effort: ⚡ תיקון זריז, 🏗️ מאמץ כבד, 🪙 תיקון זול ערך, 🚫 לא משתלם.
-3. **Decide per finding:** critical/major block merge; minor when cheap; trivial/low-value only when touching that code, else declined with reason; poor tradeoffs declined; drop lows unless clearly useful. End chat with a single הבא line naming `vi-close-pipeline <id>` — no test counts, no process narration; the agent pushes and merges itself.
+2. **Findings in chat** (never a code block — real `##` heading, one bold sentence with the file in backticks, short free quote body with the fix):
+   ## 🎯 Functional correctness | 🟡 Minor | ⚡ Quick fix
+   **Catch the tail and the offset from the same file state in `scripts/filter_loop.py`.**
+   > - A line added mid-read is silently lost; take the offset before reading so the ranges overlap.
+   - Vocab (match `docs.coderabbit.ai/change-stack/findings`) — Category: 🎯 Functional correctness, 🔒 Security & privacy, 🗄️ Data integrity & integration, ⚡ Performance & scale, 🩺 Stability & availability, 📐 Maintenance & code quality. Severity: 🔴 Critical, 🟠 Major, 🟡 Minor, ⚪ Trivial. Effort: ⚡ Quick fix, 🏗️ Heavy lift, 🪙 Cheap high-value fix, 🚫 Not worth it.
+3. **Decide per finding:** critical/major block merge; minor when cheap; trivial/low-value only when touching that code, else declined with reason; poor tradeoffs declined; drop lows unless clearly useful. End chat with a single Next line naming `vi-close-pipeline <id>` — no test counts, no process narration; the agent pushes and merges itself.
 4. **Document & Triage:**
    - Note any real issues found as **ACCEPT** items and apply fixes immediately via Step 4.
    - Post a concise review comment to the PR — pick the honest reason, never a generic one. Variants: timeout (PR #244 case), rate-limit, and reuse (Station IV coverage + delta check, no fresh review):

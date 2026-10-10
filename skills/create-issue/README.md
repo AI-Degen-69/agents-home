@@ -34,13 +34,13 @@ until CodeRabbit writes the final title.
 3. Ambiguity goes to **Open questions** in the body — that is how unclear intent is resolved, not by a prerequisite label. Add `needs-answers` only when the issue has open questions and that label exists; never block publication for it.
 4. Publishes immediately with a tagged title and only relevant existing labels (`gh label list` first; no label at all when nothing fits).
 5. Posts the CodeRabbit plan prompt as its own comment (body only, skipped only for genuinely trivial work; no wait, no retry).
-6. Reports back in everyday Hebrew per the output contract in `SKILL.md`.
+6. Reports back per the output contract in `SKILL.md`.
 
 ## Files in this folder
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | Agent contract (workflow, quality bar, Hebrew output contract). |
+| `SKILL.md` | Agent contract (workflow, quality bar, output contract). |
 | `references/issue-tracker.md` | Intake template + `gh` command conventions (single source of truth for the body). |
 | `references/coderabbit-plan-prompt.md` | The canonical `@coderabbitai plan` prompt (body only — never post the file as-is). |
 | `scripts/grade.js` | Deterministic grader (`audit` / `case`, zero dependencies). |
@@ -58,5 +58,5 @@ verification command.
 ```bash
 /create-issue Retry failed uploads three times before giving up
 # → researches deploy code, publishes issue #N with a tagged title and relevant labels,
-#   posts the plan request, reports back in Hebrew with link + next step (/i-pick-issue)
+# posts the plan request, reports back with link + next step (/i-pick-issue)
 ```

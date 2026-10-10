@@ -5,7 +5,7 @@
     {
       "id": "merged-pr-full-closeout",
       "prompt": "/vi-close-pipeline 294 (PR merged, issue closed by the merge)",
-      "expected_output": "Agent confirms the PR is MERGED, closes the issue only via the documented missing-Closes path, then sweeps stale artifacts through signal-based discovery and the two-gate obsolescence test, never deleting live knowledge, handling dead code only with zero-reference proof plus targeted tests, and finishes with the mandatory Clean Exit Gate - reporting everything in the Hebrew contract template.",
+ "expected_output": "Agent confirms the PR is MERGED, closes the issue only via the documented missing-Closes path, then sweeps stale artifacts through signal-based discovery and the two-gate obsolescence test, never deleting live knowledge, handling dead code only with zero-reference proof plus targeted tests, and finishes with the mandatory Clean Exit Gate - reporting everything in the contract template.",
       "mode_coverage": [
         "numbered"
       ],
@@ -68,18 +68,18 @@
           "why": "the pipeline is not closed until every exit check passes"
         },
         {
-          "id": "hebrew-report-contract",
+ "id": "report-contract",
           "type": "regex",
           "pattern": "Close Pipeline — Station VI: \\[#<id>",
           "must_match": true,
-          "why": "the Hebrew report contract is the shipped Station VI closeout template"
+ "why": "the report contract is the shipped Station VI closeout template"
         }
       ],
       "live_assertions": [
         "The PR is confirmed MERGED before any action",
         "Stale artifacts are pruned only when both obsolescence gates pass",
         "The repo ends on the base branch, pushed, synced, and spotless",
-        "The Hebrew closeout report names the PR, the issue, every deletion, and the exit-gate state"
+ "The closeout report names the PR, the issue, every deletion, and the exit-gate state"
       ]
     },
     {

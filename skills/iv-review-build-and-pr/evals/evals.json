@@ -76,7 +76,7 @@
         { "id": "rate-limit-classification", "type": "regex", "pattern": "Rate-limit reply", "must_match": true, "why": "rate-limit replies must be classified as a distinct status" },
         { "id": "comment-links-mandatory", "type": "regex", "pattern": "Comment links.*mandatory", "must_match": true, "why": "jump links to trigger and reply comments are required" },
         { "id": "handoff-to-v", "type": "regex", "pattern": "v-babysit-pr-and-merge", "must_match": true, "why": "handoff must go to Station V" },
-        { "id": "hebrew-report", "type": "regex", "pattern": "chat output template for this station is\\s+`references/output-template\\.md`", "must_match": true, "why": "the Hebrew output contract is extracted to references/output-template.md; SKILL.md must carry the pointer that loads it" }
+ { "id": "report", "type": "regex", "pattern": "chat output template for this station is\\s+`references/output-template\\.md`", "must_match": true, "why": "the output contract is extracted to references/output-template.md; SKILL.md must carry the pointer that loads it" }
       ],
       "live_assertions": [
         "The trigger status is classified correctly based on CodeRabbit's reply",

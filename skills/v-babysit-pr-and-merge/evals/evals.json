@@ -5,27 +5,27 @@
     {
       "id": "condensed-triage-list",
       "prompt": "Babysit PR #128: CodeRabbit posted 3 inline comments (one real nil-pointer bug, one wrong constant suggestion, one cosmetic nit). Triage them and report.",
-      "expected_output": "Hebrew Report 1: one concise line per comment with ACCEPT/REJECT and a one-phrase reason, most critical first, no full quotes of bot text. Inline ACCEPT/REJECT replies still posted per thread on GitHub.",
+ "expected_output": "Report 1: one concise line per comment with ACCEPT/REJECT and a one-phrase reason, most critical first, no full quotes of bot text. Inline ACCEPT/REJECT replies still posted per thread on GitHub.",
       "files": [],
       "static_assertions": [
         {
           "id": "one-line-per-comment",
           "type": "regex",
-          "pattern": "ACCEPT — \\[מקום \\+ מה תוקן\\]",
+          "pattern": "ACCEPT — \\[location \\+ fix\\]",
           "must_match": true,
           "why": "each triaged comment is one condensed ACCEPT line, not a quoted block"
         },
         {
           "id": "no-full-quotes",
           "type": "regex",
-          "pattern": "מה תוקן מההערות",
+          "pattern": "what was fixed from the comments",
           "must_match": true,
           "why": "the report summarizes what was fixed instead of dumping raw comment text"
         },
         {
           "id": "critical-first",
           "type": "regex",
-          "pattern": "🔍 טריאז׳ הערות",
+          "pattern": "🔍 Findings triage",
           "must_match": true,
           "why": "triage has its own section, so ACCEPT/REJECT verdicts are grouped and scannable"
         },
@@ -85,7 +85,7 @@
     {
       "id": "final-summary-after-merge",
       "prompt": "Work on PR #130 is done and merged. Give me the final summary.",
-      "expected_output": "Hebrew Report 2: PR title and number as a link with MERGED status, back-to-base note, fixes ordered critical to minor, and vi-close-pipeline as the next step.",
+ "expected_output": "Report 2: PR title and number as a link with MERGED status, back-to-base note, fixes ordered critical to minor, and vi-close-pipeline as the next step.",
       "files": [],
       "static_assertions": [
         {
@@ -98,14 +98,14 @@
         {
           "id": "back-to-base",
           "type": "regex",
-          "pattern": "ענף: `main` \\| נקי \\| מסונכרן",
+          "pattern": "branch: `main` \\| clean \\| synced",
           "must_match": true,
           "why": "the closing report proves the checkout is back on a clean synced base"
         },
         {
           "id": "impact-order",
           "type": "regex",
-          "pattern": "🔍 טריאז׳ הערות",
+          "pattern": "🔍 Findings triage",
           "must_match": true,
           "why": "triage verdicts are grouped so the operator reads impact, not arrival order"
         },
@@ -119,14 +119,14 @@
         {
           "id": "no-raw-comment-text",
           "type": "regex",
-          "pattern": "מה תוקן מההערות",
+          "pattern": "what was fixed from the comments",
           "must_match": true,
           "why": "never dump raw CodeRabbit text; the report carries the resolved summary"
         }
       ],
       "live_assertions": [
         "The PR is confirmed MERGED before the summary is written",
-        "The Hebrew summary names the PR and the next station"
+ "The summary names the PR and the next station"
       ]
     },
     {

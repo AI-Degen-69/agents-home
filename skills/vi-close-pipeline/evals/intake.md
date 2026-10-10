@@ -16,7 +16,7 @@ Final station of the issue→PR pipeline: post-merge closeout. Verifies the PR i
 4. Presentations and research are kept as permanent record, even when closed.
 5. Dead code is the single approved code-change exception, with mechanical proof plus tests.
 6. Foreign dirt is listed, never bundled into the prune commit.
-7. Closeout follows the Hebrew contract, including the exit-gate state.
+7. Closeout follows the contract, including the exit-gate state.
 
 ## Success definition (measurable)
 
@@ -28,9 +28,9 @@ Final station of the issue→PR pipeline: post-merge closeout. Verifies the PR i
 | Outcome | Dead code requires zero-reference proof plus tests | Yes (regex) |
 | Outcome | Foreign dirt is committed separately, never bundled | Yes (regex) |
 | Outcome | Ends with the Clean Exit Gate checks | Yes (regex) |
-| Style | Closeout follows the Hebrew contract | Yes (regex) |
+| Style | Closeout follows the contract | Yes (regex) |
 
-Behavioral (live-run, needs a real merged PR + `gh`): merge verification, the actual prune, the actual exit gate, the actual Hebrew report — recorded as `not-run`.
+Behavioral (live-run, needs a real merged PR + `gh`): merge verification, the actual prune, the actual exit gate, the actual report — recorded as `not-run`.
 
 ## Loop config
 

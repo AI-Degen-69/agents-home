@@ -70,7 +70,7 @@ Pick exactly one row. First matching row wins.
 
 ## Output format
 
-Answer in Hebrew in the chat only. Always use this exact markdown shape with headings, bold, and emojis. Two sections only, short. No approval line. No explanation of what the station does.
+Answer in the chat only. Always use this exact markdown shape with headings, bold, and emojis. Two sections only, short. No approval line. No explanation of what the station does.
 
 After the status line, always list every changed file by category with a one-line classification of what it is (which issue/PR it belongs to, or "unknown origin"). Omit a category only when its count is 0. Also list each stash with its number, age, branch, and a one-line classification of its contents.
 

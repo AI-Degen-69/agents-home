@@ -33,13 +33,13 @@ pick and execution mode, then orchestrates Stations II through VI.
 3. **Orchestrates the chain** — hands off to II (plan), III (build),
    IIIB (feedback loop as needed), IV (review + PR), V (babysit + merge),
    VI (closeout).
-4. Reports in Hebrew per the output contract in `SKILL.md`.
+4. Reports per the output contract in `SKILL.md`.
 
 ## Files in this folder
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | Agent contract (Discovery, mode gate, orchestration steps, Hebrew output contract). |
+| `SKILL.md` | Agent contract (Discovery, mode gate, orchestration steps, output contract). |
 | `evals/evals.json` | Eval set for the station. |
 
 ## Quality bar

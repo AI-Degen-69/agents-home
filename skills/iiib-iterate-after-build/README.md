@@ -41,7 +41,7 @@ routes it to the right specialist, fixes locally — no push, no PR.
 
 | Path | What it is |
 |---|---|
-| `SKILL.md` | Agent contract (classification, fix loop, guardrails, Hebrew output contract). |
+| `SKILL.md` | Agent contract (classification, fix loop, guardrails, output contract). |
 | `references/routing.md` | Correction-type → specialist-skill matrix. |
 | `references/click-path-audit.md` | Dead-button diagnosis checklist. |
 | `evals/evals.json` | Eval set for the station. |
