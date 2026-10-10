@@ -398,7 +398,7 @@ For JavaScript/TypeScript testing patterns illustrating these principles — Jes
 After completing any implementation:
 
 - [ ] Every new behavior has a corresponding test
-- [ ] The focused tests for touched modules pass; the full suite is deferred to CI (merge gate) and never run locally during building
+- [ ] Unless testing is opted out, the focused tests for touched modules pass. When testing is opted out, report tests as deferred to CI. The full suite is deferred to CI (merge gate) and never run locally during building.
 - [ ] Bug fixes include a reproduction test that failed before the fix
 - [ ] Test names describe the behavior being verified
 - [ ] No tests were skipped or disabled
