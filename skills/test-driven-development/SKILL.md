@@ -31,7 +31,16 @@ The TDD cycle is universal; the commands are not. Before writing the first test,
 - **Existing conventions** — where tests live, how files are named, what patterns neighboring tests follow
 - **Documented commands** — README, CONTRIBUTING, and CI workflows show the commands that actually gate merges
 
-Run the repository's focused-test command during the loop and its full-suite command before completion. Never assume a default like `npm test` — a Gradle, Cargo, or pytest project has its own equivalent.
+Run the repository's focused-test command during the loop. Never assume a default like `npm test` — a Gradle, Cargo, or pytest project has its own equivalent.
+
+### Test fast-lane while building
+
+Local test runs are the slowest part of a build turn (a full `pytest` sweep runs 30–90s; a RED–GREEN–REFACTOR loop re-invokes it 5+ times per change). Budget them strictly:
+
+- **Focused only during the loop.** Run only the single test file / single test for the touched module — never the full suite, never a multi-file selection. One command, one module.
+- **Max 3 invocations per item:** RED, GREEN, one post-refactor confirmation. Never re-run without an intervening code change (a green run stays green until code moves).
+- **Full suite is CI's job, never a local step.** Do not run the repository's full-suite command locally during building, before completion, or after a bug fix — CI runs it on push as the merge gate. Report "full suite deferred to CI" and move on.
+- **Honor opt-outs immediately:** "just build", "no tests", "skip tests" — write the code (and the tests), run zero test commands, report tests as deferred to CI.
 
 The examples below use TypeScript for illustration; the workflow is identical in any language once you've discovered the project's own tooling.
 
@@ -91,7 +100,7 @@ With tests green, improve the code without changing behavior:
 - Remove duplication
 - Optimize if necessary
 
-Run tests after every refactor step to confirm nothing broke.
+Run the focused test file once after refactoring to confirm nothing broke — not after every micro-step.
 
 ## The Prove-It Pattern (Bug Fixes)
 
@@ -113,7 +122,7 @@ Bug report arrives
   Test PASSES (proving the fix works)
        │
        ▼
-  Run full test suite (no regressions)
+  Push; full suite in CI (never local)
 ```
 
 **Example:**
@@ -389,7 +398,7 @@ For JavaScript/TypeScript testing patterns illustrating these principles — Jes
 After completing any implementation:
 
 - [ ] Every new behavior has a corresponding test
-- [ ] The full suite passes, run with the repository's own test command (`npm test`, `./gradlew test`, `pytest`, `go test ./...`, ...)
+- [ ] The focused tests for touched modules pass; the full suite is deferred to CI (merge gate) and never run locally during building
 - [ ] Bug fixes include a reproduction test that failed before the fix
 - [ ] Test names describe the behavior being verified
 - [ ] No tests were skipped or disabled
