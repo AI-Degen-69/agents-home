@@ -117,6 +117,13 @@ Only after all consumers have migrated:
 5. Celebrate — removing code is an achievement
 ```
 
+**The zero-reference proof (run before deleting anything):**
+- Grep the artifact's filename across the whole repo — callers, docs, CI configs, cron definitions, pipeline skills. Only external references count; self-references inside the file itself prove nothing.
+- Check the artifact's own inputs still exist. A sync script whose canonical source file is already gone is dead today — it would just error out — so delete it rather than preserving it for a source that no longer exists.
+- After deletion, sweep the governance docs (AGENTS.md, CONSTRAINTS.md, README) for dangling references to the removed thing; a doc naming a file that no longer exists is the same dead weight, and removing it belongs in the same change.
+
+Record the recovery handle (the commit before deletion, or `git show <sha>:<path>`) in the closeout so the removal stays one command from reversible.
+
 ## Migration Patterns
 
 ### Strangler Pattern

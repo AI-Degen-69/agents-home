@@ -246,9 +246,37 @@ Restore file-by-file, never `stash pop` the whole entry: the entry usually carri
 
 When the working tree holds a change you did not make, do not bundle it silently and do not silently drop it either. State in one or two plain sentences what it does to the running system and where it lands, then ask whether it belongs in this push. "I'll include everything in the tree" hides a stranger's edit inside your commit; discarding it loses work someone may still need. Report any file you deliberately left untracked or uncommitted so the operator knows it is still there.
 
-Automate this with git hooks:
+**Stage by explicit path when the tree is mixed.** With pre-existing modifications or untracked files present, `git add -A` / `git commit -a` sweeps them into your commit. Stage only the paths your change owns, then confirm the staged set is exactly your change:
 
-```json
+```bash
+git status --porcelain       # everything dirty, before staging
+git add path/a path/b        # explicit paths only
+git diff --cached --stat     # the staged set must be exactly your change
+```
+
+Name in the closeout which files were deliberately left unstaged or untracked.
+
+### Restoring a bad restore: scope the pathspec to the damage
+
+`git checkout HEAD -- <path>` restores every tracked file under that path from HEAD — it is not "undo my last mistake", it is "revert this whole tree to the last commit". Running it to undo a deletion of `evals/` will also silently revert every uncommitted skill edit sitting in the same tree, and you will not notice until the sync check reports hash mismatches you thought you had fixed.
+
+Before any `checkout`/`reset` used as a rollback, name exactly what broke:
+
+```bash
+git status --short                  # know what is dirty FIRST
+git checkout HEAD -- skills/foo/evals/   # the specific dir that broke
+git status --short                  # confirm only the intended lines changed
+```
+
+If a broad restore already reverted unrelated work, recover by re-running the operation that produced it (re-sync, re-apply the patch) rather than hand-reconstructing it — then re-run the project gate to confirm green.
+
+### Deleting from a mirrored pack fails the mirror gate
+
+A public pack that is synced from a canonical source is verified by comparing **file lists, not just content** — the gate walks canonical and fails on any file missing from the pack, even one you deleted deliberately for being stale or non-portable. Deleting mirrored files (eval snapshots, historical baselines, retired notes) turns the gate red with "missing file in target" errors, and the generated site catalog cascades the drift into version-check failures.
+
+When the goal is "this mirrored content should not be published", fix it at the **canonical source** and re-sync, or change the gate/ignore policy — never by deleting from the pack. A green pack is the deliverable; the canonical tree is where that gets decided.
+
+Automate this with git hooks:
 // package.json (using lint-staged + husky)
 {
   "lint-staged": {

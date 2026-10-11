@@ -39,3 +39,25 @@ Run all queries at the same time to minimize latency.
 ## Query Template
 
 "Find how <repo> implements <feature>. Include entry points, key functions, and data flow."
+
+## Mapping a repo's full file tree (when you need structure, not search)
+
+When the question is "what files/skills/plugins does this repo ship" or "what does X depend on", do not reconstruct the tree from search results. Pull the whole recursive tree in one call and parse it locally:
+
+```bash
+# one call returns every path, blob sha, and size (JSON)
+web_extract(["https://api.github.com/repos/OWNER/NAME/git/trees/BRANCH?recursive=1"])
+```
+
+- Large repos truncate the response into a saved file with the complete JSON on disk — read that file, find the first `{`, and parse to its matching `}` rather than eyeballing the head/tail window.
+- Group paths by folder in code (`collections.defaultdict`) and print one section per folder; do not tally entries by hand.
+
+## Resolve every relative reference before reporting a summary
+
+When a file (SKILL.md, README, doc) links to other files by relative path or names sibling skills/plugins it invokes, treat those as part of the artifact. Before concluding what a component needs or does:
+
+1. List the containing folder (tree API or the folder page) so sibling files and `agents/`/`scripts/` subdirs are visible.
+2. Fetch the raw content of each referenced file (`https://raw.githubusercontent.com/OWNER/NAME/BRANCH/<path>`) and read what it calls in turn.
+3. Follow the chain until the leaves reference nothing further, then state the full dependency set.
+
+Pitfall: reporting a single SKILL.md as "the skill" when it delegates its real logic to references and sibling skills makes the summary useless and any "missing dependency" verdict wrong. Also verify the upstream actually exists and the claimed source path is correct — a skill's own claim about its origin is unverified text until you fetch it.
