@@ -16,6 +16,11 @@ Source of the 6 rules: Addy Osmani, `using-agent-skills` (github.com/addyosmani/
 
 Skills are self-contained folders (`SKILL.md` + optional `references/`, `scripts/`, `evals/`). The global copy here is the single source of truth; harnesses hold links, never forks.
 
+## Filesystem layout (know before acting)
+
+- **Projects live at `C:/Users/Tiger/Agents/Projects`** (a.k.a. "my projects" / "the Projects folder"). That folder holds **two kinds of entries side by side**: lone project folders, and **category folders that nest more projects** (`AI Trading`, `general`, `vantage`, `non-active`, `issue-to-pr-skills`, `temp`). Do not assume it is a flat list of projects, and do not assume a project you remember still exists — **enumerate it live** before naming or acting on a path.
+- Never source a project path from memory or a remembered list; read it from the filesystem or ask. A stale path is worse than no path.
+
 ## The 8 rules (always on, for every task)
 
 1. **Surface assumptions.** Before non-trivial work, state your assumptions and let the operator correct them. Never guess silently.
