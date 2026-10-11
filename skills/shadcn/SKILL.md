@@ -9,6 +9,28 @@ allowed-tools: Bash(npx shadcn@latest *), Bash(pnpm dlx shadcn@latest *), Bash(b
 
 A framework for building ui, components and design systems. Components are added as source code to the user's project via the CLI.
 
+## Check the stack before applying anything (vanilla / legacy projects)
+
+This skill assumes a shadcn project: React plus a `components.json` at the
+root. When the user asks to "use shadcn" or "use the shadcn MCP", check the
+project first (`package.json` for React, `components.json` at the root). On a
+**vanilla HTML/CSS/JS** project — no React, no `components.json` — the CLI
+cannot be initialized and components cannot be added. Do NOT run
+`npx shadcn init` to convert the project. Instead, **use this skill as the
+pattern playbook** and map its components to vanilla equivalents, reusing the
+project's existing modal/pill/token styles:
+
+| shadcn pattern | Vanilla equivalent |
+|---|---|
+| `Command` inside `Dialog` (palette) | overlay + text input + filterable list, `role="dialog"` `aria-modal`, a global Cmd/Ctrl+K listener, Escape closes, focus restored to the opener |
+| `sonner` / `toast` | one `showToast(msg, {tone})` helper plus a fixed corner container; `role="status"`, `role="alert"` for errors, auto-dismiss, stack with gap |
+| `Popover` (detail-on-click) | absolutely-positioned panel toggled beside the trigger; anchor it OUTSIDE scroll containers so its own scrollport does not clip it |
+| `Badge` | the project's existing pill/badge classes — never new raw colors |
+| Semantic colors (`bg-primary`…) | the project's CSS custom properties (`--green-ok`, `--red-alert`, …) |
+
+Tell the user plainly when the project is not a shadcn project and what you
+are doing instead — propose the vanilla mapping, don't silently skip the CLI.
+
 > **IMPORTANT:** Run all CLI commands using the project's package runner: `npx shadcn@latest`, `pnpm dlx shadcn@latest`, or `bunx --bun shadcn@latest` — based on the project's `packageManager`. Examples below use `npx shadcn@latest` but substitute the correct runner for the project.
 
 ## Current Project Context

@@ -59,6 +59,8 @@ Also fires when user says "explain this visually", "show me what was done", "wal
 6. **Screen first in the actual application / project.** Verification and "try it yourself" start from what the person can see and press in the real running project/app (UI screen, page, dashboard tab, button). Never direct the user to test inside the generated HTML presentation file itself. A terminal command is only a fallback when the change has nothing to see or press in the project. Never test runners.
 7. **No filler.** If a block repeats what the centerpiece already says, delete it. No empty boxes.
 8. **Standalone file.** One HTML file, inline CSS + vanilla JS, no outside files, no CDN, no npm. Works on phone and desktop, respects reduced-motion. Canvas via shared `initCanvas()` helper (DPR-aware). SVG hand-built inline.
+9. **Decode every domain label against the source before it reaches the page.** Config/preset/mode names are the single most common trap in these pages: a name like "conservative", "aggressive" or "tight" means the opposite of what a non-engineer assumes once you know the underlying number, and a reader who is corrected stops trusting the whole page. Before writing any label, read the code that defines the value, find out what direction it acts in, and state the axis in plain words next to the name ("sits further back from the market, so it fills slowly"). When a page shows a quantity per item, order the items along that quantity and say which end is which. Never let a label carry the explanation by itself.
+10. **When a label or direction is corrected, fix every surface that repeats it.** A page shows the same comparison in several places — the live figure (row/sort order, highlight, readout), the table or list, and the caption. Patch all of them in one edit, or the page ends up self-contradicting (chart ordered one way, table the other) and the operator has to point at the second half themselves. Re-run the static checks and re-`git add` after the fix.
 
 Anti-slop check (from html-explainer):
 - No emoji as icons for every header.
@@ -76,6 +78,8 @@ Read what applies (use whatever tracker and tools the project uses):
 3. The ticket: the problem statement, requirements, what was wanted.
 4. The merged change: what was done and its final state.
 5. The project plan: the plan notes or task list, if the project keeps one.
+
+For every name, preset, mode or threshold the page will mention, open the file that defines it and write down the plain-word meaning and the direction it acts in. A demo or table built from copied preset values without this read will be wrong in a way the reader spots immediately — a domain name read backwards is the one error a customer-simple page cannot survive, because the page's whole claim is that it is the clear version.
 
 Write down in plain words (for yourself, not the page):
 - What was the problem for the person?
@@ -141,7 +145,8 @@ Example tone:
 
 - **Verify before reveal — statically, no browser:** the file parses as complete HTML (doctype, closing tags), all inline JS is syntactically valid, no external resources referenced. Static checks only — this station owns no browser-based verification (that is Station IV's exclusive domain).
 - **Reveal — fire-and-forget:** launch the file with the OS's one-shot open command (e.g. `start <file.html>` on Windows / `open <file.html>` on macOS) so it loads in the operator's default browser. The agent must NOT drive, navigate, or control the browser afterwards — the launch process ends the agent's involvement. Optionally also reveal the file in the OS file manager (`explorer /select,<path>` or equivalent).
-- **Headless env:** skip the reveal, keep the static checks and state the path in the report.
+- Headless env: skip the reveal, keep the static checks and state the path in the report.
+- **A correction pass is expected, not a failure.** When the operator pushes back on a label, a direction, or an explanation, treat it as a content defect rather than a style argument: fix the page (every surface — figure, table, caption), rerun the static checks, re-`git add`, relaunch it. In the same reply, answer the question on its merits with the file-and-line evidence you actually read — explain why the domain name points where it does before restating the corrected wording, and name any real cost of the design the reader's intuition was reacting to (e.g. a wide setting that fills so slowly it can buy nothing — the reader's instinct often senses a genuine trade-off). Offering a documentation follow-up for the misread term belongs in that reply: the next reader will trip on it too. When the follow-up is approved, land the explanation in the project's own domain docs, not only in the presentation page.
 - If the page has a live-behavior risk the operator must see working, note it in one line for the operator to check by eye — do not automate it here.
 
 ---

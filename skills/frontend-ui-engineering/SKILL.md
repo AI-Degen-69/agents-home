@@ -296,6 +296,25 @@ function useToggleTask() {
 
 For detailed accessibility requirements and testing tools, see `../../references/accessibility-checklist.md`.
 
+## Verifying a Vanilla-JS Change Without a Browser
+
+Hand-written JS with no framework and no build step has no component test runner,
+and `require()`-ing the app file throws at parse time. Use the two recipes in
+`references/vanilla-js-verification.md`:
+
+- **Smoke-test a render function** — slice the target function plus its real
+  helpers out of the app file by string marker and run them in a `vm` context
+  with a stub DOM. Never stub the whole world to load the file; keep the project's
+  own helpers so the test proves the code, not your mock. Write the scratch as
+  `.cjs` when the project is ESM, and delete it before committing.
+- **Prove a served change is live** — launch through the project's own venv, grep
+  the server source for route decorators instead of guessing paths, then fetch
+  the static asset the page loads and confirm the new symbol is in the *served*
+  bytes.
+
+After building UI, verification is positive-evidence based: a rendered DOM sample
+or a served-asset grep, never "it looks fine" or a syntax check alone.
+
 ## Common Rationalizations
 
 | Rationalization | Reality |
@@ -326,3 +345,6 @@ After building UI:
 - [ ] Loading, error, and empty states all handled
 - [ ] Follows the project's design system (spacing, colors, typography)
 - [ ] No accessibility warnings in dev tools or axe-core
+- [ ] A no-build vanilla-JS change has a rendered-DOM sample or served-asset grep
+      as its evidence (see `references/vanilla-js-verification.md`), not a syntax
+      check alone

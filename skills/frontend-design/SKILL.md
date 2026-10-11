@@ -38,6 +38,32 @@ When writing the code, be careful of structuring your CSS selector specificities
 
 Try to do a lot of this planning and iteration in your thinking, and only show ideas to the user when you have higher confidence it'll delight them.
 
+## Auditing an existing UI (reshape work)
+
+When reshaping an existing interface rather than building new, the code is the
+source of truth — **never the design doc.** A DESIGN.md or style guide in the
+repo is a snapshot that drifts the moment the CSS grows past it; treating it as
+authoritative produces a report full of "the code violates the spec" findings
+that the owner does not care about. Ask which to trust when the repo has both,
+and default to reading the CSS/JS.
+
+Static audit moves that find real drift (grep-able, no server needed):
+- **Hardcoded colors outside the token block** — `grep -oE '#[0-9a-fA-F]{6}' *.css`;
+  hundreds of raw hexes means the token system is decoration, not enforcement.
+- **Off-scale font sizes** — extract every `font-size: Npx` and check against the
+  declared scale; the stragglers (8px, 30px, 38px) are the drift.
+- **A second stylesheet is a second design system** — check for a parallel
+  `prototype.css`/`legacy.css` with its own palette; it will silently diverge.
+- **Looping animations vs. the motion policy** — `grep -nE 'animation:|infinite'`.
+- **Banned constructs that snuck in** — gradients, glow, categorical color where
+  color is supposed to mean state.
+
+If the server is down (a live screenshot is impossible), say so and deliver the
+static pass; do not stall the audit waiting for a running app. Lead with what
+is genuinely good (existing tokens, loading/stale states, focus handling) before
+the drift list, rank findings by effort-vs-visibility, and let the owner decide
+what is a violation versus a spec that should be updated.
+
 ## Restraint and self-critique
 
 Spend your boldness in one place. Let the signature element be the one memorable thing, keep everything around it quiet and disciplined, and cut any decoration that does not serve the brief. Not taking a risk can be a risk itself! Build to a quality floor without announcing it: responsive down to mobile, visible keyboard focus, reduced motion respected. Critique your own work as you build, taking screenshots if your environment supports it – a picture is worth 1000 tokens. Consider Chanel's advice: before leaving the house, take a look in the mirror and remove one accessory. Human creators have memory and always try to do something new, so if you have a space to quickly jot down notes about what you've tried, it can help you in future passes.
