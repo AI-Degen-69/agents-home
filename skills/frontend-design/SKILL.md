@@ -48,8 +48,8 @@ that the owner does not care about. Ask which to trust when the repo has both,
 and default to reading the CSS/JS.
 
 Static audit moves that find real drift (grep-able, no server needed):
-- **Hardcoded colors outside the token block** — `grep -oE '#[0-9a-fA-F]{6}' *.css`;
-  hundreds of raw hexes means the token system is decoration, not enforcement.
+- **Raw color count (quick check)** — `grep -RInE --exclude-dir=.git --include='*.css' '#[0-9a-fA-F]{6}' .`;
+  inspect matches and exclude custom-property token declarations before treating raw hexes as drift.
 - **Off-scale font sizes** — extract every `font-size: Npx` and check against the
   declared scale; the stragglers (8px, 30px, 38px) are the drift.
 - **A second stylesheet is a second design system** — check for a parallel

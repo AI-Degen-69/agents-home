@@ -74,6 +74,7 @@ almost nothing: a new test required, no runnable verification command, or an und
 Those are boxes 5, 6, and 7 — failing them is not a near miss.
 
 ### Step 0A: Resolve Open Questions from Code & Consult CodeRabbit Plan
+0. **Handle stale plans before intake:** Before writing intake notes, inspect the existing `tasks/plan.md` header (`Branch: ... | Issue: #...`). If it names another issue that is already merged or closed, replace the plan wholesale for the new issue. Reconciling a finished issue's tasks into a new plan produces a contradictory document. If the write guard refuses the overwrite, clear the file through the terminal first and write fresh.
 1. **Check for CodeRabbit Plan in comments:** Look at the discussion comments fetched via `gh issue view <number> --comments`. If a plan comment from `coderabbitai` exists:
    - **Read it once, not twice:** the comment carries the plan twice — a rendered copy first, then a byte-identical echo inside an HTML comment (`<!-- <rawResChunk><planningResult> … -->`). Ignore the echo; it only doubles context cost.
    - **Map CodeRabbit's layout to ours:** it keeps its own template (Summary / Design Choices / Implementation Steps with Phases+Tasks / Ticket Summary / Codebase Summary / File-Level Change Summary / Notes for follow-up agents). Mine those sections; do not wait for our section names to appear.
@@ -152,8 +153,7 @@ Propose **at most one** concrete improvement to the issue's approach — an arch
 4. **Atomic vertical slices, 5–10 minutes each.** Every task defines: Task ID, size (XS–XL), domain tag, target files, concise description of what is built, assigned helper skill, `Depends on:` (task IDs), and explicit verification method (browser check or automated test).
 5. **Checkpoints every 2–3 tasks:** the plan declares checkpoint stops that show what works so far. In Mode A (`/iii-build-plan auto`) a checkpoint is a one-line progress report, not a full approval pause.
 6. **Map tasks to sub-issues** (Standard/Large work): one sub-issue per task with native `blocked-by` dependency edges (see `references/issue-tracker.md` → Wayfinding operations), so the tracker mirrors the plan and survives the session. Tiny/Small work skips this ceremony.
-7. **Never overwrite the plan:** if `tasks/plan.md` already exists for this issue (resumed work, or a previous session), reconcile — keep completed `[x]` marks, append new tasks, note changed assumptions at the bottom. Overwriting erases session memory.
-   - **Exception — stale plan from a different, finished issue:** if the existing plan header names another issue (check its `Branch: ... | Issue: #...` line, not the filename) and that issue is already merged/closed, replace it wholesale for the new issue. Reconciling a finished issue's tasks into a new plan produces a contradictory document. If the write guard refuses the overwrite, clear the file through the terminal first and write fresh.
+7. **Never overwrite the plan:** if `tasks/plan.md` already exists for this issue (resumed work, or a previous session), reconcile — keep completed `[x]` marks, append new tasks, note changed assumptions at the bottom. Overwriting erases session memory (stale plans from a different, finished issue were already replaced at the start of Step 0A).
 8. Save the structured plan to `tasks/plan.md` and the checklist to `tasks/todo.md`. Write `todo.md` for the NEW issue at the same time — a leftover checklist full of completed `[x]` marks from the previous issue misreads as this issue's progress at Station III.
 
 ---

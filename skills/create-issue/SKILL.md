@@ -39,7 +39,9 @@ Do not add workflows that depend on plan-gated CodeRabbit features merely becaus
    actually runs in this repo — confirm the test runner and the file layout first
    (e.g. frontend work in a Python repo is tested through `tests/js/*.cjs` harnesses
    run by `pytest`, not by a standalone JS test command). A verification command that
-   fails or does not exist turns a ready-for-agent issue into a blocked one.
+   cannot run or references missing files turns a ready-for-agent issue into a blocked
+   one. A command that runs but reports the expected pre-fix test failure remains valid;
+   it must pass after the implementation is complete.
 3. **Capture open questions in the issue.** If the operator's intent is
 ambiguous, do NOT stop to interrogate: write each unclear point into the
 issue under **Open questions** (what is unclear + why it matters + the

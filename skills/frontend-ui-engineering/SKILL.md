@@ -312,8 +312,9 @@ and `require()`-ing the app file throws at parse time. Use the two recipes in
   the static asset the page loads and confirm the new symbol is in the *served*
   bytes.
 
-After building UI, verification is positive-evidence based: a rendered DOM sample
-or a served-asset grep, never "it looks fine" or a syntax check alone.
+After building UI, verification is positive-evidence based: rendered DOM output
+or an interaction result for behavior, with a served-asset grep confirming delivery only,
+never "it looks fine" or a syntax check alone.
 
 ## Common Rationalizations
 
@@ -345,6 +346,6 @@ After building UI:
 - [ ] Loading, error, and empty states all handled
 - [ ] Follows the project's design system (spacing, colors, typography)
 - [ ] No accessibility warnings in dev tools or axe-core
-- [ ] A no-build vanilla-JS change has a rendered-DOM sample or served-asset grep
-      as its evidence (see `references/vanilla-js-verification.md`), not a syntax
-      check alone
+- [ ] A no-build vanilla-JS change has a rendered-DOM sample or interaction
+      result for behavior, and a served-asset grep for delivery (see
+      `references/vanilla-js-verification.md`), not a syntax check alone

@@ -237,10 +237,10 @@ If `git status` shows a file you edited as clean, or `git diff` comes back empty
 git stash list                              # any wip-* entry is suspect
 git stash show -p stash@{0}                 # confirm it is your change
 git checkout stash@{0} -- path/to/file      # restore just that file
-git stash drop stash@{0}                    # once the content is back on disk
+git stash drop stash@{0}                    # ONLY after all needed edits from this stash are restored/saved
 ```
 
-Restore file-by-file, never `stash pop` the whole entry: the entry usually carries other in-flight work that must stay out of this commit.
+Restore file-by-file, never `stash pop` the whole entry: the entry usually carries other in-flight work that must stay out of this commit. Drop the stash only after confirming no needed edits remain in it.
 
 ### Foreign dirt: explain it, then let the operator decide
 
