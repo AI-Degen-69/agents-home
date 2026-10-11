@@ -160,6 +160,10 @@ Before applying fixes, run the Spec axis in full:
   git fetch origin <base> && git merge origin/<base> --no-edit
   ```
 
+- **Merge conflicts — additive appends must keep BOTH sides.** When a parallel stream appended code/tests to the same file end you did, git interleaves the two blocks. `git checkout --ours/--theirs` picks ONE whole side and silently drops the other stream's work (including your own just-built tests if you pick theirs) — never resolve a conflict that way without first reading what each side contains. Take the incoming file, then re-apply your own additions on top; keep every independent block. For shared per-task artifacts that legitimately collide (`tasks/plan.md`, `tasks/todo.md`), keep the side belonging to the issue this branch builds and say so in the merge commit.
+
+- **MANDATORY — re-verify the MERGE RESULT before push.** Merging the base branch changes the code under test: another stream's change to a shared file can break your behavior even though both sides passed alone. The Step 0/3 gates ran on your branch *before* the merge and do not cover the merged tree. After a clean merge, re-run the same gate on the merged state — targeted test suites for touched modules, and the Browser Gate for any UI change — and push only when that post-merge run is green. A genuine post-merge failure blocks the push; fix it on the branch (a cross-stream interaction is a real defect, not a tooling problem) and re-gate before pushing.
+
 - Push branch to remote:
 
   ```bash

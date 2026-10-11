@@ -34,7 +34,14 @@ Do not add workflows that depend on plan-gated CodeRabbit features merely becaus
    "Raw idea intake → Intake template".
 2. **Research before drafting.** Scan the repo for relevant files (search for
    symbols, render sites, config) so Relevant files names real paths with line
-   numbers. An issue written without research is not ready-for-agent.
+   numbers. An issue written without research is not ready-for-agent. Verify the
+   verification command too: the final acceptance criterion must be a command that
+   actually runs in this repo — confirm the test runner and the file layout first
+   (e.g. frontend work in a Python repo is tested through `tests/js/*.cjs` harnesses
+   run by `pytest`, not by a standalone JS test command). A verification command that
+   cannot run or references missing files turns a ready-for-agent issue into a blocked
+   one. A command that runs but reports the expected pre-fix test failure remains valid;
+   it must pass after the implementation is complete.
 3. **Capture open questions in the issue.** If the operator's intent is
 ambiguous, do NOT stop to interrogate: write each unclear point into the
 issue under **Open questions** (what is unclear + why it matters + the
@@ -90,6 +97,13 @@ silently. Ambiguity is resolved by the issue body, not by a prerequisite label.
        `gh api --method POST repos/<owner>/<repo>/issues/<child>/dependencies/blocked_by -F issue_id=<blocker-db-id>`
        where `<blocker-db-id>` is the blocker's numeric database id
        (`gh api repos/<owner>/<repo>/issues/<n> --jq .id`), not the `#number`.
+   - **Split bodies: write the family header AFTER the first sibling's number is known.**
+     A `Part of #` line cannot be written before publish (the number does not exist
+     yet), so publish the first sibling without a self-reference, capture its number,
+     then include `Part of #<first>` on every later body at drafting time. The first
+     sibling carries only `Related: #<a>, #<b>` at the end of its body — never a
+     `Part of` line pointing at itself. Forgetting the header leaves siblings looking
+     like orphaned one-off tickets.
 7. **Post CodeRabbit plan prompt — after publishing.** CodeRabbit does not plan
    issues by itself on the current plan; the agent must post the canonical
    `@coderabbitai plan` prompt stored in `references/coderabbit-plan-prompt.md` as its

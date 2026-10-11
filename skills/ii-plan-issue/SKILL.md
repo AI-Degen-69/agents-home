@@ -74,6 +74,7 @@ almost nothing: a new test required, no runnable verification command, or an und
 Those are boxes 5, 6, and 7 — failing them is not a near miss.
 
 ### Step 0A: Resolve Open Questions from Code & Consult CodeRabbit Plan
+0. **Handle stale plans before intake:** Before writing intake notes, inspect the existing `tasks/plan.md` header (`Branch: ... | Issue: #...`). If it names another issue that is already merged or closed, replace the plan wholesale for the new issue. Reconciling a finished issue's tasks into a new plan produces a contradictory document. If the write guard refuses the overwrite, clear the file through the terminal first and write fresh.
 1. **Check for CodeRabbit Plan in comments:** Look at the discussion comments fetched via `gh issue view <number> --comments`. If a plan comment from `coderabbitai` exists:
    - **Read it once, not twice:** the comment carries the plan twice — a rendered copy first, then a byte-identical echo inside an HTML comment (`<!-- <rawResChunk><planningResult> … -->`). Ignore the echo; it only doubles context cost.
    - **Map CodeRabbit's layout to ours:** it keeps its own template (Summary / Design Choices / Implementation Steps with Phases+Tasks / Ticket Summary / Codebase Summary / File-Level Change Summary / Notes for follow-up agents). Mine those sections; do not wait for our section names to appear.
@@ -83,6 +84,10 @@ Those are boxes 5, 6, and 7 — failing them is not a near miss.
    - **Enforce simplicity (Rule 4):** its suggestions are non-binding. It usually over-splits — merge its task list into 3–4 atomic tasks and drop invented abstractions or new files nothing requires.
    - **Verify, don't assume (Rule 6):** spot-check every file path, symbol, and line number it cites against the live codebase before adopting any of it.
    - **Cost the intake once:** record a three-line note in `tasks/plan.md` — what was adopted from its plan, what was rejected and why, and what stayed `[UNVERIFIED]` — so Stations III–V never re-read that comment.
+   - **Budget the fetch:** a CodeRabbit plan comment routinely runs to tens of thousands of characters and overflows the terminal capture window (full text auto-saved to a file, shown truncated). When that happens, page or search the saved file rather than re-running `gh issue view` — re-fetching pays the whole cost again.
+   - **Record every `[UNVERIFIED]` with its resolution as you verify it:** when you resolve one against live code during Step 0A, write the answer into the plan intake note immediately (e.g. `renderServiceHeader` not in `module.exports` → the harness must drive state through the click handler). An unresolved list is useless to Station III; a resolved one stops it re-deriving the same answers.
+   - **Reject a CodeRabbit guard whose branch cannot fire on this host** rather than adopting it because it looks defensive. The plan is input, not authority — a condition that is always true or always false in practice adds untested code paths and tests that cannot fail.
+   - **Never leave a removed symbol's name in a new comment.** A comment that says "replaces the old #foo" puts the literal string `#foo` back into the file, so any later guard that asserts the old name is absent (`assert "foo" not in html`) fails on your own annotation. Describe the replacement by role ("replaces the two separate buttons"), not by the identifiers being removed.
 
 2. **Resolve Open Questions (needs-answers flag):** If the issue carries the `needs-answers` label or an **Open questions** section:
    - For each open question, first try to resolve it **from the code** (and CodeRabbit's codebase analysis) — read the relevant paths, check how similar cases are handled in the repo.
@@ -148,8 +153,8 @@ Propose **at most one** concrete improvement to the issue's approach — an arch
 4. **Atomic vertical slices, 5–10 minutes each.** Every task defines: Task ID, size (XS–XL), domain tag, target files, concise description of what is built, assigned helper skill, `Depends on:` (task IDs), and explicit verification method (browser check or automated test).
 5. **Checkpoints every 2–3 tasks:** the plan declares checkpoint stops that show what works so far. In Mode A (`/iii-build-plan auto`) a checkpoint is a one-line progress report, not a full approval pause.
 6. **Map tasks to sub-issues** (Standard/Large work): one sub-issue per task with native `blocked-by` dependency edges (see `references/issue-tracker.md` → Wayfinding operations), so the tracker mirrors the plan and survives the session. Tiny/Small work skips this ceremony.
-7. **Never overwrite the plan:** if `tasks/plan.md` already exists for this issue (resumed work, or a previous session), reconcile — keep completed `[x]` marks, append new tasks, note changed assumptions at the bottom. Overwriting erases session memory.
-8. Save the structured plan to `tasks/plan.md` and the checklist to `tasks/todo.md`.
+7. **Never overwrite the plan:** if `tasks/plan.md` already exists for this issue (resumed work, or a previous session), reconcile — keep completed `[x]` marks, append new tasks, note changed assumptions at the bottom. Overwriting erases session memory (stale plans from a different, finished issue were already replaced at the start of Step 0A).
+8. Save the structured plan to `tasks/plan.md` and the checklist to `tasks/todo.md`. Write `todo.md` for the NEW issue at the same time — a leftover checklist full of completed `[x]` marks from the previous issue misreads as this issue's progress at Station III.
 
 ---
 

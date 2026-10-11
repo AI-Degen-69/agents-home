@@ -229,6 +229,23 @@ npm run lint
 npx tsc --noEmit
 ```
 
+### An edit that vanished was stashed, not lost
+
+If `git status` shows a file you edited as clean, or `git diff` comes back empty on a change you know you wrote, check `git stash list` before rewriting it. An interrupted or wrapped operation can hold your work in a stash, and redoing the edit by hand produces a second, subtly different version.
+
+```bash
+git stash list                              # any wip-* entry is suspect
+git stash show -p stash@{0}                 # confirm it is your change
+git checkout stash@{0} -- path/to/file      # restore just that file
+git stash drop stash@{0}                    # ONLY after all needed edits from this stash are restored/saved
+```
+
+Restore file-by-file, never `stash pop` the whole entry: the entry usually carries other in-flight work that must stay out of this commit. Drop the stash only after confirming no needed edits remain in it.
+
+### Foreign dirt: explain it, then let the operator decide
+
+When the working tree holds a change you did not make, do not bundle it silently and do not silently drop it either. State in one or two plain sentences what it does to the running system and where it lands, then ask whether it belongs in this push. "I'll include everything in the tree" hides a stranger's edit inside your commit; discarding it loses work someone may still need. Report any file you deliberately left untracked or uncommitted so the operator knows it is still there.
+
 Automate this with git hooks:
 
 ```json
