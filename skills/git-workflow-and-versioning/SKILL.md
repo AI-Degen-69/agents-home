@@ -276,6 +276,21 @@ A public pack that is synced from a canonical source is verified by comparing **
 
 When the goal is "this mirrored content should not be published", fix it at the **canonical source** and re-sync, or change the gate/ignore policy — never by deleting from the pack. A green pack is the deliverable; the canonical tree is where that gets decided.
 
+### A push rejected as non-fast-forward means the remote moved under you
+
+A rejected `git push` (`! [rejected] ... non-fast-forward`, "fetch first") means the remote branch advanced — most often a squash-merge that landed on the default branch after you branched. Reconcile with rebase, not force:
+
+```bash
+git fetch origin
+git log --oneline origin/<branch> -n 3   # what moved on the remote
+git log --oneline -n 3                    # your local commits on top of the old base
+git pull --rebase origin <branch>         # replay your commit(s) onto the new head
+<run the project gate + tests>            # the rebased tree is a NEW tree
+git push origin <branch>
+```
+
+Re-run the gate and tests on the **rebased** state before pushing — a green gate from before the rebase proves nothing about the tree you are about to publish. Force-push only to paper over divergence when you are certain no one else depends on the remote head; otherwise the rebase is the honest, reviewable fix.
+
 Automate this with git hooks:
 // package.json (using lint-staged + husky)
 {

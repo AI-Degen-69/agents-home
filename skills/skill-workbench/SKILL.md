@@ -23,6 +23,10 @@ Claude Code / Hermes, SymbolicLink for Gemini CLI / Antigravity).
 - `references/reporting-contract.md` — canonical progress-then-final-summary
   reporting contract, shared with `skill-refinement-loop`. Read before fixing
   findings or reporting on a batch of work.
+- `references/harness-link-repair.md` — diagnosing a canonical skill that will
+  not load in a harness (orphan/duplicate-name junctions that shadow it) and
+  repairing the link. Read when a skill is missing from a harness root or
+  `skill_view` returns "not found".
 - `scripts/validate.js` — zero-dependency validator (single skill or `--all`,
   `--json` for machine use). Exit 0 = clean, 1 = findings, 2 = usage error.
 - `scripts/score.js` — zero-dependency scorer: 0–100 per metric + overall, for
@@ -113,6 +117,25 @@ type per `skills/README.md` (Junction vs SymbolicLink). Check only; print the
 exact commands. Run them only on explicit operator approval. Step D is a hard
 gate: no «סיכום סופי» before Step D is done (links verified) or explicitly
 deferred by the operator, and the summary must state the deploy state.
+
+**A skill that will not load is a registration problem first, a skill problem
+second.** When a canonical skill is absent from the harness's skill list or
+`skill_view` returns "not found", check the harness skills root before suspecting
+the skill itself: a duplicate-name entry (a clean `foo` plus an orphan
+`foo.rollback-broken` pointing at the same canonical folder) collides on
+registration, the harness refuses to load either, and the skill silently
+vanishes from the slash commands with no error anywhere — while the canonical
+`SKILL.md` stays perfectly intact. Enumerate the harness root against the
+canonical root, unlink the orphan as a link, and verify by loading. Exact
+commands in `references/harness-link-repair.md`.
+
+There are three causes, in check order: a same-root orphan twin, the same name
+in two harness roots, and the harness's own per-skill activation toggle. The
+first two leave a name-level trace on disk; the third leaves **none** — every
+registry file reads healthy while the slash command returns "No matches", and
+the fix is the in-app toggle, not a file edit. Restart the app after any
+disk-side repair: a running session caches its command table and will not see
+the fix.
 
 ### 3. Validate-only
 

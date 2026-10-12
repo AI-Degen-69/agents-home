@@ -18,6 +18,18 @@ done
 
 A long body (>~5 KB) is a real review; a short body whose `limited` flag is true is a rate-limit notice, not a review.
 
+## Confirm a re-pinged review landed
+
+`@coderabbitai review` returns only a short "Action performed" ack; the review itself posts minutes later and `--json reviews` may stay empty. Poll both signals before calling it reviewed:
+
+```bash
+gh pr checks $n | grep -i coderabbit     # "Review completed"
+gh api repos/OWNER/REPO/issues/$n/comments \
+  --jq '.[]|select(.user.login=="coderabbitai[bot]")|{len:(.body|length)}'   # multi-KB body = real review
+```
+
+Zero inline review comments plus a "No actionable comments" body is a clean review — mergeable. Re-ping only after the head is final: CodeRabbit is incremental and skips commits it already reviewed, so a ping sent before a rebase covers stale commits.
+
 ## Rebase a stacked sibling onto a just-merged PR
 
 Loop branches are cut from the same base `main`, so the second PR conflicts with the first once the first is merged — almost always in a file both touched (e.g. both added an import and deleted a local helper). Resolve by keeping **both** new shared-module imports and dropping **both** local helper copies:
@@ -38,6 +50,17 @@ When the conflict is "each side added a different `import {…} from './<shared>
 - A `--force-with-lease` that moves the head changes `headSha`. Update that PR's `headSha` in `loop-delivery.json` (patch the entry; never rewrite an earlier entry to match a later reality) and re-run the gate before merging.
 - After merging, re-running the gate reports `state` FAIL on the merged PRs — expected, because the gate asserts `OPEN`. Confirm the only FAILs are `state`; any other FAIL means investigate before proceeding.
 
-## An unreviewed PR left open still needs prep
+## Close out a run whose last PR was left open
 
-It usually now conflicts with merged `main` (it shared edited files with a merged sibling). When its review finally lands: address findings, rebase onto `main` the same way, re-run the project gate, update the manifest, then merge.
+A PR skipped for a rate limit still blocks the run's cleanup: the working files stay until it is terminal. Sequence:
+
+1. `git fetch origin main`; rebase the branch onto it, resolving shared-file conflicts by keeping both shared-module imports and dropping both local helper copies.
+2. **Establish the clean baseline before trusting the branch's gate result.** Run the project gate (`npm run check`) on the current `origin/main` *first*. Failures that reproduce on clean `main` are pre-existing drift (e.g. a mirror that has not been re-synced since the canonical folder changed): note them, exclude them, and never fix them inside the loop iteration. Then re-run the gate on the rebased branch and confirm the only failures are the branch's own — a green branch plus known red drift is a truthful report; a green claim over standing red is not.
+3. **When the gate reddens only after your content change, follow the gate's own printed instruction.** In a mirrored content repo, copying in new content moves the content hash and the next gate stage fails "content hash is stale / folder vs site mismatch" even though the mirror now passes. That stage is the repo's declared follow-up (bump the version with the `version-sync` script, `+1.0` for a skill/content change, then re-sync the site), not an error you introduced. Run the bump + re-sync, re-run the full gate, and commit the version/label/hash bumps with the content change — do not revert the fix to force a green.
+4. `git push --force-with-lease`; update that PR's `headSha` in `loop-delivery.json`.
+5. `@coderabbitai review` — only now, so it covers the final head — and wait for the review to land (see above).
+6. Merge with `gh pr merge $n --squash --delete-branch`. Re-run the Step 8 gate (expect only the merged/rebased deltas), then delete `SHARED_TASK_NOTES.md` and `loop-delivery.json`.
+
+## A push rejected as non-fast-forward after a local sync commit
+
+If you committed a local sync/mirror fix while `origin/main` advanced (typically the loop's own squash-merge landing), the push is rejected. Rebase the local commit onto the fetched `origin/main` (`git pull --rebase origin main`), re-run the project gate on the rebased state, then push — do not force-push a shared `main`. Re-verify the gate after the rebase, because the rebase can surface conflicts the pre-rebase green run never saw.

@@ -47,6 +47,7 @@ Skip any step = lying, not verifying
 | Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
 | Regression test works | Red-green cycle verified | Test passes once |
 | Agent completed | VCS diff shows changes | Agent reports "success" |
+| "Nothing exists" / "all clean" / "nothing left" | A discovery search (`search_files` target='files') over the real root, with the searched boundary named in the report | A recalled or hardcoded list of locations; a few folders checked and the rest assumed |
 | Requirements met | Line-by-line checklist | Tests passing |
 
 ## Red Flags - STOP
@@ -55,6 +56,9 @@ Skip any step = lying, not verifying
 - Expressing satisfaction before verification ("Great!", "Perfect!", "Done!", etc.)
 - About to commit/push/PR without verification
 - Trusting agent success reports
+- Reporting a negative ("none exist", "all clean") from a scope you did not actually search — or never searched at all because the location list came from memory, a stale note, or a deleted script
+- Inventing the coverage of a check ("every repo it ever ran in") you never established
+- Treating an interrupted, errored, or partial search as evidence of absence
 - Relying on partial verification
 - Thinking "just this once"
 - Tired and wanting work over
@@ -99,11 +103,17 @@ Skip any step = lying, not verifying
 ❌ "Tests pass, phase complete"
 ```
 
-**Agent delegation:**
+**Universal negatives — the scope must be discovered, not recalled:**
 ```
-✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
-❌ Trust agent report
+✅ [Run search_files (target='files') over the real root] [See: the actual set of locations]
+   "No leftovers in <named root>; I searched <path>, not a remembered list"
+❌ "Every repo the loop ran against is clean"  ← recalled list, never searched
 ```
+A negative claim is only as strong as the search behind it. Enumerate the scope with a
+live discovery command before claiming anything is absent, clean, or complete — a
+remembered project list is a hypothesis, not a filesystem. When the search cannot
+cover everything, say exactly what was searched and what was not. A failed or
+interrupted search proves nothing at all.
 
 ## Why This Matters
 

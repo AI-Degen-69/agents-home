@@ -33,6 +33,9 @@ This skill implements **Station IV (Review, Verify & Ship)** of the 6-station pi
 
 1. **For Frontend / Web / UI changes — Browser Gate (fast-first, `playwright-cli` only):** start the project's preview server, then verify in this order with the **`playwright-cli`** skill (headless by default, compact snapshots, no MCP round-trips). Reach for `browser-testing-with-devtools` (chrome-devtools-mcp) **only** when the gate needs performance traces or profiling — never for routine render/DOM checks:
    - **API/HTTP smoke (no browser):** every key page and endpoint the change touches answers 200 with sane content (`curl` or equivalent).
+   - **Discover the dev-server port from the app's Vite/server config before starting it** — do not assume `5173`. A `vite.config.*` with an explicit `server.port` (e.g. `8080`) overrides the default; probing the default port first burns the wall-clock budget on a `curl 000`. Grep the config for `port`/`host` and health-check the real port. Boot the server as a background process, then poll it (bounded loop of `curl` with short sleeps) until `200` before any browser call — never a blind `sleep`.
+   - **To exercise a locale/direction toggle, set the app's persisted language key via storage, then reload** — do not click through the language switcher. Find the `localStorage` key (grep the i18n provider for the `STORAGE_KEY`/`setItem`), `playwright-cli localstorage-set <key> he`, `goto` the URL again, then verify. One reloaded `eval` then asserts the flip (e.g. gradient `to left`, `dir=rtl`) — text/element checks per page.
+   - **Filter console/network noise before judging errors.** Dev servers attach external services (HMR/live-reload on another port, React DevTools hints, framework future-flag warnings) that are unrelated to the change. Grep the `playwright-cli console`/`requests` output for app-level failures and drop known non-app lines (connection-refused to the live-reload port, dev warnings); a red count driven only by those is not a product failure. Also dismiss a route's own `404` console entry when it comes from probing a wrong path — fix the path, don't count it as a defect.
    - **Programmatic DOM checks — one batched call (no screenshot):** `playwright-cli open <url>`, then a single `playwright-cli eval "<one function>"` that performs all DOM/layout checks and returns one small JSON verdict (required elements exist, table rows/columns render, layout has no overflow). Never one call per check.
    - **Console + network — one call each:** `playwright-cli console` → zero uncaught errors; `playwright-cli requests` → zero failed network requests (pull both once after the page settles — do not eyeball a screenshot for this).
    - **Screenshot — once, last:** a single `playwright-cli screenshot` as final visual proof, only after everything above is green, then `playwright-cli close`. Never per-iteration.
@@ -135,6 +138,7 @@ Before applying fixes, run the Spec axis in full:
 - For any actionable findings (nits, type errors, edge-case risks):
   - Apply minimal, clean fixes directly to the local codebase.
   - Create a clean fix commit: `fix(review): address review feedback`.
+- **A regression test that locks the fixed behavior is a shippable improvement, not scope creep.** When the change is verifiable (a direction/locale flip, an invariant the bug violated) and the repo can render the surface, add a focused spec alongside the fix and commit it under its own `test(...)` message. A passing new test that encodes the acceptance criterion strengthens the gate; leave a purely speculative refactor (e.g. extracting a shared helper across call sites) **unfolded** when the plan marks it optional — Simplicity First wins unless the operator adopts it.
 
 ### Step 3: Final Post-Review Verification Gate (MANDATORY)
 
@@ -146,8 +150,10 @@ Before applying fixes, run the Spec axis in full:
 
 1. **For Frontend / Web / UI Changes — re-run the Step 0 Browser Gate (fast-first) on the fixed code:** same order, same bar — zero uncaught console errors, zero failed network requests.
 2. **For Backend / API / Logic Changes:**
-   - Run targeted test suites matching modified files (e.g. `pytest tests/test_<module>.py`) to confirm zero regressions in touched modules. Avoid running full repository test sweeps locally; GitHub CI runs the full regression suite on push as the merge gate.
-   - If review fixes in Step 2 modified logic, run targeted tests for those modified files. If Step 2 applied no logic changes, Step 0's proof already stands.
+  - Run targeted test suites matching modified files (e.g. `pytest tests/test_<module>.py`) to confirm zero regressions in touched modules. Avoid running full repository test sweeps locally; GitHub CI runs the full regression suite on push as the merge gate.
+  - **Compare failures against the base before calling them regressions.** If the suite shows failures, establish the base's failure count (run the same suite against `origin/<base>` — a throwaway worktree with its own `pnpm install`, since `node_modules` is not shared) and prove the failing set is identical. Equal counts = pre-existing, not a new regression; do not block the push, and disclose the baseline in the PR body's `## Verification` section. A genuinely larger failing set on the branch is a real regression and blocks the push. Add the new spec for the fix to the same run so its pass is counted with the touched modules.
+  - If review fixes in Step 2 modified logic, run targeted tests for those modified files. If Step 2 applied no logic changes, Step 0's proof already stands.
+3. **Clean up gate-scaffolding before the final push.** Remove the throwaway base worktree (`git worktree remove --force <path>`, then `git worktree prune`; a remove that reports "not a working tree" just means prune already cleared it) and delete browser-session artifacts the gate created (e.g. `.playwright-cli/`). These are your own litter — they must not ride along in `git status` when the branch is pushed. A `gh pr create` warning about uncommitted changes refers to any residual tree state, not just the diff.
 3. **Only when verification is green may the agent push** — where "green" means *proved or honestly unverified*: every check either passed, or ended `unverified` under the Step 0.1 abort rule and is disclosed in the PR body's `## Verification` section. **A genuine failure** (a check that ran and failed) blocks the push and returns to `iiib-iterate-after-build`. An unverified gate does not: there is no defect to fix, so blocking would stall the pipeline on broken tooling. Record the trigger status honestly — never present an unverified item as passed.
 
 ### Step 4: Git Synchronization & Push (`git-workflow-and-versioning`)
@@ -233,6 +239,7 @@ gh pr comment <pr_number> --body "@coderabbitai review" 2>&1 | Select-Object -La
 - **Summary-only review** — an acknowledgement with a high-level summary and **no inline findings**. This is the expected shape on a **private repo on the Free plan**, where PR reviews are summarization-only. It is **not** a pass and **not** a quality signal: hand off stating plainly that CodeRabbit produced no findings here and that verification rests on the local gates (OCR delegation, type-matched reviewers, Spec axis, targeted tests). Never imply a bot review approved the code. Public repos and paid tiers do produce inline findings, so read the reply rather than assuming this shape.
 - Rate-limit reply (`## Review limit reached` / `rate limited by coderabbit.ai` / `Next included review available in N minutes`) — review NOT started. Record the reported minutes and carry them into the handoff report so the operator (and Station V) know the quota window.
 - Any other refusal/skip notice (e.g. "does not re-review already reviewed commits", or the Free-plan "upgrade to CodeRabbit Essentials" notice on a chat-gated command) — record verbatim; it may mean incremental review found nothing new, which is itself a signal Station V must read (not a silent pass). An upgrade refusal is a plan gate, not a quota reading.
+- **`## Review skipped` / "Auto reviews are disabled on this repository"** — a repo-configuration notice, not a refusal. The manual `@coderabbitai review` trigger still runs as an incremental review; look for the separate `Action performed` → `Review triggered.` comment and classify that as *review started*, noting the skipped-auto-review config verbatim. See the bot-login / two-comment rules under Comment links below.
 - No reply within ~10s — report `trigger acknowledgement not received` honestly; do not claim the review started.
 - **Ack polling (PowerShell, 10s wait, matches the real rate-limit header):** only when the trigger was already posted via the snippet above — do NOT re-post:
 
@@ -250,10 +257,25 @@ sleep 10; gh pr view <pr_number> --comments 2>&1 | grep -iE "Action performed|Re
 
 ```bash
 gh api repos/:owner/:repo/issues/<pr_number>/comments --jq '.[] | select(.body | contains("@coderabbitai review")) | {trigger: .html_url}'
-gh api repos/:owner/:repo/issues/<pr_number>/comments --jq '[.[] | select(.user.login == "coderabbitai")] | last | {reply: .html_url, body: .body[0:300]}'
+gh api repos/:owner/:repo/issues/<pr_number>/comments --jq '[.[] | select(.user.login | test("coderabbitai"))] | last | {reply: .html_url, body: .body[0:300]}'
 ```
 
-  Report shape: `Trigger: <html_url>` / `CodeRabbit reply: <html_url>` (e.g. `https://github.com/<owner>/<repo>/pull/<n>#issuecomment-<id>`). For the no-reply case, post the trigger-comment link alone.
+**The bot's GitHub login is `coderabbitai[bot]`, not `coderabbitai`.** Match with
+`.user.login | test("coderabbitai")` (a substring test), never `.user.login == "coderabbitai"` —
+an exact-match filter silently returns `null` and the reply is treated as "not received".
+
+**Read CodeRabbit's reply by content, not by a single jq/`Select-String` grab.** One trigger
+typically produces **two** bot comments: (1) a run-status comment that may open with a
+`## Review skipped` / "Auto reviews are disabled" block, and (2) the action reply whose body
+carries `Action performed` → `Review triggered.`. The `Review skipped` banner is a **repo
+configuration notice** (auto-reviews off; Org-UI profile), NOT a refusal, NOT a pass, and NOT a
+rate-limit — the explicit `@coderabbitai review` trigger still runs as an incremental review.
+Classify from the full reply: locate the `Action performed` line and treat `Review triggered.`
+as *review started*; record any `Review skipped` banner verbatim in the handoff as a config note
+(facts), then quote the found line as the status. If neither line is present, classify as the
+literal fallback (`other reply (quoted)` / `no acknowledgement`). When an exact-grab `jq`/grep
+returns empty but commenters are visible, re-pull every bot comment and scan its body before
+concluding the acknowledgement is missing.
 
 **Handoff:** Conclude Station IV and recommend `v-babysit-pr-and-merge`. The handoff report MUST state the trigger status in one line, choosing exactly one of: *review started* / *rate limited (N minutes)* / **summary-only review — no findings expected on a private Free repo; verification rests on the local gates** / *other reply (quoted)* / *no acknowledgement*. Station V reads this line to classify the review, so it must never present a summary-only review as a pass.
 
