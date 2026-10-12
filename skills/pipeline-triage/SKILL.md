@@ -28,7 +28,7 @@ Run these read-only checks before deciding anything. Never change files in this 
 
 1. Run `git status --short --branch` to see staged, unstaged, and untracked changes.
 2. Run `git log --oneline -8` and `git stash list` to see recent commits and stashed work.
-3. Run `git branch --show-current` plus `git rev-list --left-right --count HEAD...@{upstream}` when an upstream exists to see ahead and behind counts.
+3. Run `git branch --show-current` plus `git rev-list --left-right --count HEAD...@{upstream}` when an upstream exists to see ahead and behind counts. Also check against the **base branch**, not just upstream: `git rev-list --left-right --count HEAD...origin/<base>` — an upstream in sync proves nothing when the base branch has moved ahead.
 4. Run `gh pr status` and `gh pr view --comments` when a PR exists for the branch to see open state and review comments. Search the comments for a `coderabbit` review and for an `@coderabbitai review` comment from any author. When neither exists, no `coderabbit` review has run yet.
 5. Look for `tasks/plan.md` and `tasks/todo.md` with an incomplete checklist. When found, read the issue number from those files and check the issue state with `gh issue view <num>`. When the issue is closed, check how it closed: a merged PR means the work landed, any other close reason means it did not.
 
@@ -48,6 +48,36 @@ knows where it came from. So classify origin **first**:
 
 Only a human can attribute foreign dirt. This station guides — it never absorbs
 another stream's changes into the current issue.
+
+### How to attribute dirt (method, not guessing)
+
+Attribution is mechanical when the tree is on a feature branch — do it before
+declaring anything unknown-origin:
+
+1. `git diff --stat <base>...HEAD` (three dots) — shows what the **branch itself**
+   carries versus the base branch. Compare against the uncommitted `git diff`:
+   files matching branch commits belong to the branch's issue.
+2. Read the `#<issue>` header of `tasks/plan.md` / `tasks/todo.md` — it names the
+   branch's issue, which is the attribution target for branch-matching files.
+3. Read the content of files that match **neither** the branch commits nor the
+   plan — a handoff doc or a new script often names its own origin issue in its
+   first lines (read it before calling it unknown).
+4. Files matching nothing after those three passes are unknown-origin → stop rule.
+
+## "Branch off / pick an issue" gate
+
+The operator asking to start new issue work ("branch off", "pick an issue") does
+**not** clear the current branch. A feature branch with unpushed commits is row 2
+work that lands on top of, or is silently abandoned by, the new branch. Before
+branching:
+
+1. Report the branch's unpushed work (commit count vs base, no PR → row 2) as the
+   first thing in the triage output — the new-issue request presupposes it is done.
+2. Never `git checkout -b` from a dirty tree. Foreign dirt that cannot be
+   attributed carries over to the new branch and pollutes the next issue's diff.
+3. Route both streams in one report: current branch → `iv-review-build-and-pr`
+   (or park), foreign dirt → ask. Only after the operator resolves both does
+   `i-pick-issue` start on a clean base-branch checkout.
 
 ## Routing table
 

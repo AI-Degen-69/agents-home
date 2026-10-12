@@ -95,7 +95,9 @@ Each hypothesis must be **falsifiable**: state the prediction it makes.
 
 If you cannot state the prediction, the hypothesis is a vibe: discard or sharpen it.
 
-**Show the ranked list to the user before testing.** They often have domain knowledge that re-ranks instantly ("we just deployed a change to #3"), or know hypotheses they've already ruled out. Cheap checkpoint, big time saver. Don't block on it; proceed with your ranking if the user is AFK.
+**When every fix breeds a new bug, treat the churn itself as the signal.** A chain of correct-looking fixes each followed by a fresh failure means the surface bugs share one structural cause — a shared mutable state, a missing lock, or a wiring seam — and patching the newest symptom only relocates it. List the recent fixes together and ask what they have in common before generating hypotheses about the newest one; the first plausible hypothesis for the latest symptom is usually another symptom.
+
+**Show the ranked list to the user before testing.** They often have domain knowledge that re-ranks instantly ("we just deployed a change to #3"), or know hypotheses they have already ruled out. Cheap checkpoint, big time saver. Don't block on it; proceed with your ranking if the user is AFK.
 
 ## Phase 4: Instrument
 
@@ -112,6 +114,8 @@ Tool preference:
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
 
 ## Phase 5: Fix + regression test
+
+**A green suite never closes a wiring or concurrency defect.** Unit tests exercise one unit against mocked neighbours, so two components that each pass alone can still be wired to the same stateful callable from two threads. When the symptom is behavioural — work done twice, races, drift between two reads of the same book — the red-capable check is a runtime probe that COUNTS the behaviour (actions per cycle, duplicated log lines, defer/contention messages), not a test that passes because each half is correct in isolation. Say which kind of evidence closes the bug before claiming it does.
 
 Write the regression test **before the fix**, but only if there is a **correct seam** for it.
 

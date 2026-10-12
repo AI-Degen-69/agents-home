@@ -48,6 +48,7 @@ issue under **Open questions** (what is unclear + why it matters + the
 default assumption the next station should work with). Ask the operator only
 when the idea cannot be drafted at all without an answer. Never guess intent
 silently. Ambiguity is resolved by the issue body, not by a prerequisite label.
+When drafting the issue body, synthesize the problem, objectives, and acceptance criteria into a comprehensive specification; avoid writing brief placeholder summaries when detailed problem descriptions and design guidelines are provided by the operator.
 4. **Decide single vs split.** If the idea is one coherent change, draft it as
    a single issue (below). If it is really several separable work items — e.g.
    different files, different owners, or one part clearly blocks another — split

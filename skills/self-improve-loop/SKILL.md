@@ -21,14 +21,14 @@ The loop runs on a chain of vendored skills; a folder that exists on disk is not
 ### Step 1: Execute Codebase Improvement Exploration
 - Run the exploration step from the upstream `skills/engineering/improve-codebase-architecture` skill if it is installed locally (source: https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture). **Installing that skill alone yields a stub** — it is declared `disable-model-invocation: true` and offloads its logic to `grilling`, `domain-modeling`, `codebase-design`, and its own `HTML-REPORT.md` + `agents/openai.yaml`. To get the full chain, clone the repo once and copy four folders:
   ```bash
-  git clone --depth 1 https://github.com/mattpocock/skills /tmp/matt-skills
-  cp -r /tmp/matt-skills/skills/engineering/improve-codebase-architecture ~/.agents/skills/
-  cp -r /tmp/matt-skills/skills/engineering/codebase-design         ~/.agents/skills/
-  cp -r /tmp/matt-skills/skills/productivity/grilling               ~/.agents/skills/
-  cp -r /tmp/matt-skills/skills/engineering/domain-modeling         ~/.agents/skills/
+  git clone --depth 1 https://github.com/mattpocock/skills "$TMPDIR/matt-skills"
+  cp -r "$TMPDIR/matt-skills/skills/engineering/improve-codebase-architecture" ~/.agents/skills/
+  cp -r "$TMPDIR/matt-skills/skills/engineering/codebase-design" ~/.agents/skills/
+  cp -r "$TMPDIR/matt-skills/skills/productivity/grilling" ~/.agents/skills/
+  cp -r "$TMPDIR/matt-skills/skills/engineering/domain-modeling" ~/.agents/skills/
   ```
   The dependency graph bottoms out at `grilling` and `domain-modeling` (both leaves). **Vendor the full chain by default** — the operator treats a half-installed dependency as a stub, not a partial win, and expects the complete self-contained set. Offer `codebase-design/` alone only when they explicitly ask for vocabulary-only. The four folders are already vendored in `~/.agents/skills/` on this machine — check there before re-cloning.
-- **Vendor upstream conventions verbatim.** Copy each folder as-is: keep its frontmatter exactly, including `disable-model-invocation` — preserve the upstream invocation behavior, don't normalize it — and don't add fields the source doesn't use (e.g. `related_skills`); link companions inline the way the source does.
+- **Vendor upstream conventions verbatim.** Copy each folder as-is: keep its frontmatter exactly, including `disable-model-invocation: true` — preserve the upstream invocation behavior, don't normalize it — and don't add fields the source doesn't use (e.g. `related_skills`); link companions inline the way the source does.
 - **Durable operator conventions belong in `~/.agents/AGENTS.md`, not only in memory.** That file is the shared contract every harness syncs and reads (Freebuff, OpenCode, Gemini CLI, future ones); profile memory is profile-scoped and invisible to the other harnesses. When the operator asks for a rule that "others should know", write it there and commit it to the agents-home repo. Keep memory for state (what is installed, what is running); put conventions in the contract.
 - **If the clone produces no directory in the terminal tool, run the identical command through `execute_code`'s `terminal()`** — it executes on a separate path that reaches the network when the direct terminal call does not. Clone to a native Windows path (the Hermes scratch dir), not a bare `/tmp`.
 - Inspect git commit history (`git log --oneline -n 30`) and codebase hot spots across all top-level directories.
@@ -85,7 +85,7 @@ When a decision is destructive (deleting the loop's working files, closing a PR,
   - Run standard linting tools (e.g., `ruff check .`, `eslint`, `cargo clippy`).
   - Ensure zero test assertions were deleted or weakened.
   - **Attribute failures before fixing: re-run the same gate on the clean base.** When the project gate fails on files the change never touched, check out the default branch (or the PR's base commit) and run the identical command. Failures that reproduce on the clean base are pre-existing drift — report them and leave them; only failures unique to the branch belong to this iteration. Never fix unrelated drift inside a loop iteration, and never report green while known failures stand.
-  - **In a mirrored content repo, fixing a mirror mismatch surfaces the version gate next.** When a repo publishes a mirror of a canonical folder and runs a content-hash check (folder vs `version.json`/site hash), copying in new content moves the hash and the next gate stage fails with "content hash is stale" even though the mirror now passes. That stage is not an error you introduced — it is the repo's declared follow-up step: bump the version (`version-sync` style script, +1.0 for a skill/content change) then re-sync the site, and re-run the full gate. Follow the gate's own printed instruction instead of reverting the fix or forcing a green.
+  - **In a mirrored content repo, fixing a mirror mismatch surfaces the version gate next.** When a repo publishes a mirror of a canonical folder and runs a content-hash check (folder vs `version.json`/site hash), copying in new content moves the hash and the next gate stage fails with "content hash is stale" even though the mirror now passes. That stage is not an error you introduced — it is the repo's declared follow-up step: bump the version (`+1.0` for a skill/content change) then re-sync the site, and re-run the full gate. Follow the gate's own printed instruction instead of reverting the fix or forcing a green.
 
 ### Step 5: Push Branch & Open GitHub PR
 - Create conventional commit: `<type>(<scope>): <summary>`.
@@ -148,4 +148,4 @@ The gate checks, per PR: number, exact title, head branch, head SHA prefix, body
 - **Never** edit `loop-delivery.json` to make the gate pass. Editing the expectation to match a wrong reality is the exact defect this gate exists to catch; the manifest records intent, not observation.
 - If the gate itself cannot run (no `gh` auth, offline), say so explicitly and mark the iterations *unverified* in `SHARED_TASK_NOTES.md`. Never report "delivered" from an unrun gate.
 
-Tests for the gate live in `evals/verify-delivered-prs.test.js` (`node --test evals/verify-delivered-prs.test.js`). They plant each failure mode and assert a non-zero exit, because a gate that cannot fail is the defect it is meant to prevent.
+Tests for the gate live in `evals/verify-delivered-prs.test.js` (`node --test evals/verify-delivered-prs.test.js`). They plant each failure mode and assert a non-zero exit, because a gate that cannot fail is the defect it is meant to prevent. Skill-level eval cases (basic run, gate failure, rate-limit notice, negative trigger) live in `evals/evals.json`.

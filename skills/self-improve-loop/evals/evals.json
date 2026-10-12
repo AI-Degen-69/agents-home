@@ -1,0 +1,79 @@
+{
+  "skill_name": "self-improve-loop",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Static assertions are regex contracts over SKILL.md; live assertions need a real repo + gh run and are recorded as not-run (excluded from pass-rate denominators).",
+  "evals": [
+    {
+      "id": "basic-loop-run",
+      "prompt": "/self-improve-loop improve this codebase",
+      "expected_output": "The agent runs the Step 0 vendored-chain check first (all five checks pass, or the missing link is reported as the blocker before any code change), explores the repo (git history, hot spots, shallow modules), ranks candidates with Strength badges into SHARED_TASK_NOTES.md, grills the top candidate through the internal frontier gate, opens a bounded branch with machine-decidable acceptance criteria, implements test-first, pushes branch + checkpoint tag, opens a [IMPROVE] PR without a bot mention in the title, records intent in loop-delivery.json, and finishes with the Step 8 delivery gate against the remote.",
+      "mode_coverage": ["numbered"],
+      "files": [],
+      "static_assertions": [
+        { "id": "chain-check-first", "type": "regex", "pattern": "Step 0: Verify the Vendored Chain", "must_match": true, "why": "the loop refuses to start on a half-installed chain" },
+        { "id": "delivery-gate-mandatory", "type": "regex", "pattern": "Verify Delivery Against the Remote", "must_match": true, "why": "a created PR is a claim until the remote confirms it" },
+        { "id": "gate-never-skipped", "type": "regex", "pattern": "gate — never skip", "must_match": true, "why": "the gate blocks every further iteration" },
+        { "id": "bounded-acceptance-criteria", "type": "regex", "pattern": "Machine-decidable acceptance criteria", "must_match": true, "why": "every iteration carries criteria a machine can decide" },
+        { "id": "test-first", "type": "regex", "pattern": "Write Test First", "must_match": true, "why": "implementation follows the RED/GREEN discipline" },
+        { "id": "conventional-pr-title", "type": "regex", "pattern": "\\[IMPROVE\\]", "must_match": true, "why": "the PR is identifiable in a list by its conventional subject" },
+        { "id": "no-bot-mention-in-title", "type": "regex", "pattern": "Never put a bot mention in the title", "must_match": true, "why": "a clobbered title destroys the PR's identity in a list view" }
+      ],
+      "live_assertions": [
+        "The Step 0 chain check runs before any code change and its result is reported",
+        "Candidates are ranked with a Strength badge and written to SHARED_TASK_NOTES.md",
+        "The branch, commit, and tag follow the loop's naming convention",
+        "loop-delivery.json records the PR's intent before Step 6"
+      ]
+    },
+    {
+      "id": "gate-failure-stops-the-loop",
+      "prompt": "/self-improve-loop run the loop — the Step 8 delivery gate just reported a FAIL on the PR title.",
+      "expected_output": "The agent stops: does not record the iteration as delivered, does not start the next iteration, fixes the cause on the remote (restores the clobbered field with gh pr edit, re-pushes a moved head, or re-opens a closed PR), and re-runs the gate until it exits 0. It never edits loop-delivery.json to make the gate pass.",
+      "mode_coverage": ["numbered", "edge"],
+      "files": [],
+      "static_assertions": [
+        { "id": "gate-nonzero-stops", "type": "regex", "pattern": "Exit non-zero", "must_match": true, "why": "a non-zero gate exit is a hard stop, not a warning" },
+        { "id": "no-next-iteration-while-red", "type": "regex", "pattern": "do not start the next iteration", "must_match": true, "why": "the loop halts until the remote matches intent" },
+        { "id": "never-edit-manifest-to-pass", "type": "regex", "pattern": "to make the gate pass", "must_match": true, "why": "the manifest records intent, not observation" },
+        { "id": "merged-pr-state-fail-is-expected", "type": "regex", "pattern": "merged PR fails the", "must_match": true, "why": "a state FAIL on a merged PR is the gate working, not a defect" }
+      ],
+      "live_assertions": [
+        "The iteration is not recorded as delivered while the gate is red",
+        "The cause is fixed on the remote, not by editing loop-delivery.json",
+        "The gate is re-run until it exits 0 before the loop continues"
+      ]
+    },
+    {
+      "id": "rate-limited-review-is-not-a-review",
+      "prompt": "/self-improve-loop — CodeRabbit answered my second PR with a review-limit notice instead of a review.",
+      "expected_output": "The agent recognizes the rate-limit notice as NOT a review: does not treat the PR as reviewed, does not wait out the hour, marks the PR unverified in SHARED_TASK_NOTES.md, skips the review-response steps, and continues. When asked to merge, it leaves unreviewed PRs open.",
+      "mode_coverage": ["edge"],
+      "files": [],
+      "static_assertions": [
+        { "id": "rate-limit-detection", "type": "regex", "pattern": "Review limit reached", "must_match": true, "why": "the notice is distinguished from a real review by its content" },
+        { "id": "notice-is-not-a-review", "type": "regex", "pattern": "That notice is NOT a review", "must_match": true, "why": "presence of the bot comment must not be read as reviewed" },
+        { "id": "merge-policy-leaves-unreviewed-open", "type": "regex", "pattern": "leave unreviewed", "must_match": true, "why": "only reviewed-and-clean PRs are merged" }
+      ],
+      "live_assertions": [
+        "The rate-limit notice is distinguished from a real review by the bot comment's content",
+        "The PR is marked unverified and the loop continues without waiting",
+        "Unreviewed PRs are left open when merge is requested"
+      ]
+    },
+    {
+      "id": "negative-casual-remark",
+      "prompt": "The tests are kind of slow, maybe worth looking at sometime. (casual remark, not a loop request)",
+      "expected_output": "The skill must not trigger: no branch, no TDD cycle, no PR, no loop-delivery.json, no SHARED_TASK_NOTES.md. The agent treats it as conversation, not a loop request.",
+      "mode_coverage": ["negative"],
+      "files": [],
+      "static_assertions": [
+        { "id": "description-scoped-to-loop-request", "type": "regex", "pattern": "run the improvement loop", "must_match": true, "why": "the trigger names the loop explicitly so casual remarks do not fire it" },
+        { "id": "description-names-self-improve", "type": "regex", "pattern": "self improve", "must_match": true, "why": "the primary trigger phrase is the operator's own words" }
+      ],
+      "live_assertions": [
+        "No git branch, commit, tag, or PR is created from a casual remark",
+        "No loop-delivery.json or SHARED_TASK_NOTES.md is created",
+        "At most the agent acknowledges the remark or asks whether a loop run is wanted"
+      ]
+    }
+  ]
+}

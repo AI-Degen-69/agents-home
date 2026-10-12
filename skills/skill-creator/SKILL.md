@@ -160,6 +160,8 @@ Save test cases to `evals/evals.json`. Don't write assertions yet — just the p
 
 See `references/schemas.md` for the full schema (including the `assertions` field, which you'll add later).
 
+**Match the house format of the skills root you are writing into.** The minimal shape above is the starting point; skills already in `~/.agents/skills/` carry a richer local convention — copy the structure of an existing `evals/evals.json` there (e.g. `create-issue`, `self-improve-loop`) instead of the bare example: cases use a string `id`, `mode_coverage` (`numbered` / `edge` / `negative`), `static_assertions` (regex contracts over the skill's own SKILL.md with `must_match` + `why`), and `live_assertions` (recorded not-run when they need a real environment). Every case must carry a `prompt` — the workbench's `eval-readiness` metric scores 50 + 50 × (cases with a prompt) / (total cases), so a prompts-only file still scores 100.
+
 ## Running and evaluating test cases
 
 This section is one continuous sequence — don't stop partway through. Do NOT use `/skill-test` or any other testing skill.
