@@ -77,8 +77,11 @@ if ($Name) {
     }
     $skills = $Name
 } else {
+    # Ghost X (ghostex-*) and Ponytail (ponytail*) ship through their own plugin installs —
+    # never link them from the canonical root, or the harness sees each skill twice.
     $skills = Get-ChildItem $canonicalRoot -Directory |
         Where-Object { Test-Path (Join-Path $_.FullName 'SKILL.md') } |
+        Where-Object { $_.Name -notlike 'ghostex-*' -and $_.Name -notlike 'ponytail*' } |
         Select-Object -ExpandProperty Name
 }
 
