@@ -93,6 +93,7 @@ Dead or zombie code tied to the merged work (unused modules, superseded APIs, or
    - `chore: prune closed-issue artifacts (#<id>)` for deletions/relocations/staged keepers.
    - `refactor: remove dead code from #<id>` if Section 6 fired.
    - If foreign dirt exists (files you did not touch), commit ONLY your files and list the foreign paths in the report — never bundle strangers.
+   - **Re-verify the checkout in the same command as the commit**, not minutes earlier: `git branch --show-current` + `git status --porcelain`. A concurrent actor (another agent session on the same clone) can switch the checkout to a feature branch between your gate checks and your commit, and the push then lands on their branch. If that already happened, recover with `references/concurrent-git-state-recovery.md`.
 
 ---
 
@@ -102,7 +103,10 @@ Station VI is the single end-to-end owner of NOTICED-BUT-NOT-TOUCHING candidates
 
 1. **Ledger:** `docs/issues/<id>-noticed-but-not-touching.md` — one Markdown table with columns `ID (N1, N2, …) | candidate (one line) | discovering station | evidence (path:line) | status | resolution`. Allowed statuses only: `open`, `published`, `duplicate`, `dismissed`. Each resolution is an issue reference (`#N`) or a dismissal reason. Absent ledger means zero candidates; a station creates the ledger only when recording its first candidate.
 2. **Disposition:** read the ledger and present each `open` row to the operator — one decision per row: publish, dismiss with a reason, or confirm a duplicate. Before offering publish, search existing issues with the tracker list command; on a probable duplicate propose `duplicate #N` for confirmation. On a publish decision invoke `create-issue` with the candidate plus provenance (`Found during #<id>`) and record the returned issue number. Merged PR, clean tree, and automation never replace operator approval; `defer` is not a resolution — undecided stays `open`.
-3. **Commit:** commit the ledger update alone (`chore: record noticed-but-not-touching disposition (#<id>)`); the Clean Exit Gate push sends it.
+
+   **Presenting rows so the operator can decide.** Ledger prose is written for engineers; the disposition ask is for the operator. Distill each `open` row to **one plain sentence plus one tiny numeric example** (the cents/shares the row itself cites) — never the dense ledger paragraph. State the error's **direction**: conservative (overstates cost, cannot hide a loss) vs unsafe (shows a loss as good, hides real damage). Verify that framing against the code before presenting — a booked floor that guarantees a lower bound is conservative, and an undirected defect framing invites a rejection you cannot answer. Keep each disposition question to one line plus its example; a dense multi-row technical form times out, leaves every row `open`, and blocks the gate. When the ask times out or the operator asks "what does this mean", re-present in the distilled form; do not repeat the dense one.
+3. **Answering challenges with code, not the ledger.** Expect the operator to reject a row from domain knowledge ("a LIMIT order fills at my price — the price cannot move") or to ask what a route is. Trace the code before answering — call sites of the recording function, fallback constants, venue-response behavior — and answer with the proof (call site + line), not a ledger paraphrase. A "which routes" question gets a small table: route → trigger → what it records. If the trace shows the row's severity was overstated, say so plainly and offer the corrected disposition.
+4. **Commit:** commit the ledger update alone (`chore: record noticed-but-not-touching disposition (#<id>)`); the Clean Exit Gate push sends it.
 
 ---
 
@@ -136,6 +140,7 @@ that make closeout **incomplete** rather than merely delayed:
 4. **API failure** — `gh` unauthenticated, rate-limited, or the tracker unreachable, so an
    issue-close or PR-merge state could not be confirmed.
 5. **Unresolved `open` rows** in the NOTICED-BUT-NOT-TOUCHING ledger awaiting operator disposition.
+6. **The checkout itself belongs to another actor** — HEAD sits on a feature branch carrying that actor's in-flight work (the branch was switched mid-session). Leave HEAD on their branch: moving to the base branch makes their next commit land on the wrong branch. Report blocked, name their branch as owner, and recover your own commit per `references/concurrent-git-state-recovery.md`.
 
 When closeout ends blocked: keep every permanent-knowledge and uncommitted file intact,
 do **not** force-push, do **not** force-delete branches, and do **not** close an issue whose

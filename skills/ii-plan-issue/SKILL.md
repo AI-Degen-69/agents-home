@@ -83,6 +83,7 @@ Those are boxes 5, 6, and 7 — failing them is not a near miss.
    - **Borrow test cases:** note the exact test assertions and regression test files it specified for use in Step 3 (`CONSTRAINTS.md`) and Step 6 (`tasks/plan.md`).
    - **Enforce simplicity (Rule 4):** its suggestions are non-binding. It usually over-splits — merge its task list into 3–4 atomic tasks and drop invented abstractions or new files nothing requires.
    - **Verify, don't assume (Rule 6):** spot-check every file path, symbol, and line number it cites against the live codebase before adopting any of it.
+   - **A stale plan can claim missing infrastructure that exists in broken form.** When the plan says "the harness/test does not support X" or "no test covers Y", open the file before adopting the claim — the reality may be a dead implementation (a setter that never reaches its target, a parameter accepted and ignored), which changes the task from "add" to "repair" and changes the task's size.
    - **Cost the intake once:** record a three-line note in `tasks/plan.md` — what was adopted from its plan, what was rejected and why, and what stayed `[UNVERIFIED]` — so Stations III–V never re-read that comment.
    - **Budget the fetch:** a CodeRabbit plan comment routinely runs to tens of thousands of characters and overflows the terminal capture window (full text auto-saved to a file, shown truncated). When that happens, page or search the saved file rather than re-running `gh issue view` — re-fetching pays the whole cost again.
    - **Record every `[UNVERIFIED]` with its resolution as you verify it:** when you resolve one against live code during Step 0A, write the answer into the plan intake note immediately (e.g. `renderServiceHeader` not in `module.exports` → the harness must drive state through the click handler). An unresolved list is useless to Station III; a resolved one stops it re-deriving the same answers.
@@ -145,6 +146,7 @@ Propose **at most one** concrete improvement to the issue's approach — an arch
    - **Scope expansion** (new behavior the issue never asked for) → **opt-in only**: presented as a question, enters the plan solely on explicit operator approval.
 3. **Rejection is recorded** in `tasks/plan.md` with its reason, so the same proposal does not resurface next session.
 4. Present the proposal in the report in one sentence so the operator can reject before build.
+5. **Make an opt-in question self-contained.** State inside the question itself what each option concretely costs — which files move, backend vs. frontend, the review surface, what the issue's own scope boundary says. A question stripped to two labels bounces back as "explain what you mean" and costs a round trip; when it bounces, explain the dilemma in chat first, then re-ask with the costs spelled out.
 
 ### Step 6: Task Decomposition (`planning-and-task-breakdown`)
 1. **Dependency graph first:** before ordering anything, map which task unblocks which — a task depends on another when it needs that task's output (interface, file, data). Write the graph into `tasks/plan.md` as a `Depends on:` field per task.
