@@ -201,3 +201,5 @@ After instrumenting a feature, confirm:
 - [ ] An induced failure in staging was located via telemetry alone, without reading the source
 
 For the at-a-glance version of this list, including the pre-launch instrumentation gate, see `../../references/observability-checklist.md`.
+
+When a metric is being *specified* rather than emitted — its formula, end-to-end range, which direction is bad, and its traffic-light bands — see `references/metric-semantics-and-bands.md`. Band thresholds follow the same rule as alert thresholds in step 6: justified by a real constant or measured data, never by a guess.

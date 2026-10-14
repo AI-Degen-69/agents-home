@@ -124,6 +124,37 @@ Only after all consumers have migrated:
 
 Record the recovery handle (the commit before deletion, or `git show <sha>:<path>`) in the closeout so the removal stays one command from reversible.
 
+### Removing one branch of a shared function: migrate the test blast radius
+
+Deprecating a whole system has an obvious consumer list. Removing a single code
+path inside a shared pure function does not — the function's own unit tests pass
+while integration tests that used the old path as a *fixture* silently break.
+Map the blast radius before deleting the branch:
+
+- **Grep the whole test tree for the function AND for the inputs the removed path
+  consumed**, not just the function's own test file. Integration tests reach the
+  old behavior indirectly — they feed it the old-shape input to set up a scenario
+  — and fail on a shard you did not run locally.
+- **Categorize every failure before fixing any** into three buckets:
+  1. *Mechanical fixture swap* — same asserted outcome, only the input shape
+     changed. Batch these with a scoped find/replace keyed on the token/price the
+     new rule expects.
+  2. *Assertion-sensitive* — the outcome *magnitude* changed because the new path
+     produces a different amount (a partial result became a full one). Update the
+     expected number, keep the test's intent.
+  3. *Removed-capability rewrite* — the test's whole premise is a capability the
+     removed path was the only producer of. Rewrite it to assert the new contract
+     or delete it; never re-point it at the new path and pretend it still covers
+     the old behaviour.
+- **A capability that disappears is a consequence to surface, not paper over.**
+  When one branch was the only source of some granularity (partial results,
+  incremental accumulation), say so explicitly and get a decision before rewriting
+  the tests that depended on it — those tests are evidence the capability was
+  load-bearing, and silently converting them hides a behaviour change from review.
+- **Run the focused file, then the full suite.** A shared-function change fans out
+  further than the module you edited; only the full suite proves the blast radius
+  is closed. Fix fallout rather than weakening assertions.
+
 ## Migration Patterns
 
 ### Strangler Pattern
