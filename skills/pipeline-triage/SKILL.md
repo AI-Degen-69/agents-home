@@ -32,6 +32,8 @@ Run these read-only checks before deciding anything. Never change files in this 
 4. Run `gh pr status` and `gh pr view --comments` when a PR exists for the branch to see open state and review comments. Search the comments for a `coderabbit` review and for an `@coderabbitai review` comment from any author. When neither exists, no `coderabbit` review has run yet.
 5. Look for `tasks/plan.md` and `tasks/todo.md` with an incomplete checklist. When found, read the issue number from those files and check the issue state with `gh issue view <num>`. When the issue is closed, check how it closed: a merged PR means the work landed, any other close reason means it did not.
 
+**Trust command output only after it agrees with disk.** Output-injecting hooks can interleave banners or fragments into command results, producing phantom paths — a `git status` line naming a file a direct `search_files` (target='files') listing of the same directory cannot find, or a corrupted status line. When output disagrees with disk, re-run the command with its output routed through a plain passthrough pipe before classifying anything. Never stop the pipeline or declare unknown-origin dirt on a path you cannot see on disk.
+
 ## Unknown-origin dirt — stop rule (BEFORE the routing table)
 
 Dirt you cannot attribute to the work in front of you is **never routed by size**.
@@ -81,7 +83,7 @@ branching:
 
 ## Routing table
 
-Pick exactly one row. First matching row wins.
+Pick exactly one row. First matching row wins. **The PR rows (3–6) apply to a PR whose head is THIS branch** — check the PR's `headRefName` against `git branch --show-current` before applying them. An open PR on a different branch is context to report, not a blocker: when the tree is a clean linked worktree on its own branch, the operator may choose to start the next issue there instead of babysitting the other branch's PR. Report both streams and let the operator pick.
 
 1. Clean tree, on master, synced with remote, no open PR -> work is done. Route to `i-pick-issue` (Station I) to pick the next issue.
 2. Clean tree, on a feature branch, commits unpushed, no PR yet -> needs review and shipping. Route to `iv-review-build-and-pr` — unless the operator just reported corrections on a fresh build, then route to `iiib-iterate-after-build` first.

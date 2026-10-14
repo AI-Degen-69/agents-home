@@ -77,9 +77,30 @@ Once the operator picks an issue, STOP and present exactly two options:
 
 Do NOT infer the mode from how the request was phrased, and do NOT start Station II until the operator has explicitly chosen a mode.
 
+### 1c. Parallel-Safe Pick (other sessions hold worktrees)
+
+When the operator asks what to start alongside active sessions — or `git worktree list` shows
+branches in flight — rank candidates by file disjointness, not preference alone:
+
+1. **Inventory the active footprint:** `git worktree list`, then the file set each in-flight
+   issue touches (from the issue bodies' **Scope** and **Relevant files** sections:
+   `gh issue view <n> --json body`).
+2. **Pull the same file set for every open candidate:**
+   `gh issue list --repo <repo> --state open --json number,title,labels` plus
+   `gh issue view <n> --repo <repo> --json body` per candidate.
+3. **Keep only candidates whose files intersect nothing in flight.** Present a compact matrix
+   (issue → files → clean/conflict per active session) with exactly one recommendation.
+4. **Flag mutual exclusivity among the clean candidates:** two issues sharing a file cannot run
+   simultaneously even when each is clean against current work — name the shared file.
+5. **State the exclusions and why in one line** — an issue that dies on a shared file is as
+   useful to the operator as one that passes.
+
+Base the verdict on the issue bodies' own file lists, never on guessed module boundaries; an
+issue whose Relevant files you did not read is an unknown, not a pass.
+
 ---
 
-## 2. Orchestration Mode — After Issue and Mode Are Confirmed
+## 2. Orchestration Mode — After Issue and Mode are Confirmed
 
 Only after the operator selected an issue (step 4) AND an execution mode (step 1b), orchestrate the pipeline stations. In step-by-step mode, insert a mandatory approval halt after every station; in full orchestration mode, run sequentially with per-station reports:
 
@@ -91,6 +112,7 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
   never lands on a dirty checkout. Claiming twice races the two stations; claiming
   early marks work started over a tree that may hold someone else's changes.
 - Apply `context-engineering` principles to lock session scope before opening files.
+- **Preparation is not free of writes.** Creating worktrees, cutting branches, writing task files, or launching external harness CLIs are all writes — never do them "to be ready" before the operator approves execution. When the operator asks to delegate missions, the deliverable is the mission statements (the issues, with why each fits); the dispatch happens only after an explicit go-ahead. "Just give me the issues" means stop at the issue list.
 
 ### Step 2: Station II — Plan (`ii-plan-issue <number>`)
 
