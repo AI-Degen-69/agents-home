@@ -54,7 +54,7 @@ The final acceptance criterion must be a runnable verification command — that 
 Use only labels that exist in the repo (check with `gh label list`). Each convention below applies only when the named label exists and fits — never force a label, and publish with no label at all when nothing fits.
 
 - Shaped and fully specified so an agent can pick it up AFK: `ready-for-agent`.
-- Has a documented **Open questions** body section awaiting resolution from code at planning time: `ready-for-agent` with `needs-answers` when that label exists.
+- Has a documented **Open questions** body section awaiting resolution from code at planning time: `ready-for-agent` with `needs-answers` when that label exists. Remove the label in the same edit that settles the questions in the body — see `create-issue/SKILL.md` → Maintaining published issues.
 - Requires operator hands or operator decisions, not agent work: `ready-for-human`.
 - Reads as a trivial correction (typo, stale comment, broken link, wrong constant, ≤2 files, no behavior change, no new test implied): `quick-fix` when that label exists. It is a **screening signal for Station I, never a bypass of the gate** — see `create-issue/SKILL.md` → Quick-fix screening. Station I runs the same 7-box gate at its divert point when the label is present (the label is a precondition for the divert point's evaluation, never a bypass); when the gate fails, the diverting station removes the label so a stale one cannot mislead a later session.
 - Bot accounts submitting external PRs are triaged like any other `NONE`-association author, but weight `author` and prior behavior when accepting.

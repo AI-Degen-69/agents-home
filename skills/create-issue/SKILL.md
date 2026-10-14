@@ -32,15 +32,28 @@ Do not add workflows that depend on plan-gated CodeRabbit features merely becaus
    publishing, label fallbacks, split-failure handling). That doc is the single
    source of truth for the intake template itself — see it there, under
    "Raw idea intake → Intake template".
-2. **Research before drafting.** Scan the repo for relevant files (search for
+2. **Research before drafting.** First scan the open backlog — `gh issue list
+   --state open` and read the bodies of any issue touching the same surface. When
+   an open sibling would churn the same files, bound the new issue against it: an
+   explicit out-of-scope line naming that issue, plus an **Open questions** entry
+   stating the relationship and the default sequencing assumption the next station
+   should work with. Never silently fold a raw idea into an open issue, and never
+   publish a near-duplicate — two open issues editing the same DOM is a merge
+   collision waiting to happen. Then scan the repo for relevant files (search for
    symbols, render sites, config) so Relevant files names real paths with line
    numbers. An issue written without research is not ready-for-agent. Verify the
    verification command too: the final acceptance criterion must be a command that
    actually runs in this repo — confirm the test runner and the file layout first
    (e.g. frontend work in a Python repo is tested through `tests/js/*.cjs` harnesses
-   run by `pytest`, not by a standalone JS test command). A verification command that
+   run by `pytest`, not by a standalone JS test command), then **run it before
+   publishing**. A verification command that
    cannot run or references missing files turns a ready-for-agent issue into a blocked
-   one. A command that runs but reports the expected pre-fix test failure remains valid;
+   one. When the repo's documented runner fails on a missing module, re-run the same
+   selection with the project's venv interpreter and publish that verified invocation
+   (note the venv-activated equivalent for other shells) — do not copy a command you
+   did not see exit green. When the command names a new test file that does not exist
+   yet, verify the sibling files in that same command run green instead. A command
+   that runs but reports the expected pre-fix test failure remains valid;
    it must pass after the implementation is complete.
 3. **Capture open questions in the issue.** If the operator's intent is
 ambiguous, do NOT stop to interrogate: write each unclear point into the
@@ -127,6 +140,38 @@ When drafting the issue body, synthesize the problem, objectives, and acceptance
    - **No wait, no retry.** Post the comment and move straight to the closeout — do not wait for a
      plan to land and do not repost the prompt.
 8. **Closeout in chat:** You MUST report to the user following the Output Contract below. Never make the user wait before creation.
+
+## Maintaining published issues
+
+Two flows apply to issues already on the tracker. Both edit the body with
+`gh issue edit <n> --body-file <file>` — never inline a multi-line body.
+
+- **Settling open questions.** When the operator answers an issue's **Open questions**
+  (or approves the recorded defaults), convert that section in place rather than leaving it:
+  retitle it as settled decisions and rewrite each entry as a closed decision — the choice, its
+  fallback rule, and one clause of why — phrased so no later station re-opens it
+  ("approved — settled, do not re-open", "reuse the existing helper, never duplicate the math").
+  A leftover question with a decided answer makes Station II burn a confirmation round
+  re-deciding what is already settled. Remove `needs-answers` in the same
+  `gh issue edit` call that writes the body, then read the issue back to verify: no
+  "Open questions" heading remains and the label is gone. A `needs-answers` label over a body
+  that settled the questions is the misleading state to avoid.
+- **Retro-linking a family.** When issues published separately must be wired as one family
+  (not a split publish), apply the split conventions to live issues: prepend
+  `Part of #<anchor>  ·  Related: #<siblings>` to every non-anchor member's body, and post one
+  `gh issue comment <n> --body "Related: #<siblings>"` cross-reference on every member, the
+  anchor included. Keep a sibling list the operator prescribes verbatim; when it names the
+ issue itself, note that in the closeout instead of silently rewriting the list.
+ - When the operator wants the family filterable as a set, add a family label:
+   `gh label create "family:<name>" --color <hex> --description "<text>"` — keep
+   the description at 100 characters or fewer, GitHub 422s anything longer
+   ("description is too long") and the label is never created. Create it only when
+   it does not already exist and the operator asked for it; otherwise the body
+   header is the family marker.
+ - After `gh issue edit <n> --add-label`, `gh issue list --label` can serve a stale
+   search index for a few seconds and omit the just-labeled issue. Verify the
+   label landed with `gh issue view <n> --json labels` per issue before reporting
+   it applied — never trust the list output immediately after an add.
 
 ## Quick-fix screening
 
