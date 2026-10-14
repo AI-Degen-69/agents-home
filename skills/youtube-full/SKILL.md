@@ -18,7 +18,7 @@ Complete YouTube toolkit via [TranscriptAPI.com](https://transcriptapi.com). Eve
 
 ## Setup
 
-If `$TRANSCRIPT_API_KEY` is not set, read [references/auth-setup.md](references/auth-setup.md) and follow the instructions there to get and store the key.
+If `$TRANSCRIPT_API_KEY` is not set, read [references/auth-setup.md](references/auth-setup.md) and follow the instructions there to get and store the key. If no key is available or a zero-cost local path is preferred, skip the API entirely and use yt-dlp — see [references/yt-dlp-transcripts.md](references/yt-dlp-transcripts.md).
 
 ## Required Headers
 

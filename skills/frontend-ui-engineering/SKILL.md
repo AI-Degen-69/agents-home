@@ -296,6 +296,32 @@ function useToggleTask() {
 
 For detailed accessibility requirements and testing tools, see `../../references/accessibility-checklist.md`.
 
+## Data-Bound UI Integration
+
+When integrating live telemetry data into a static HTML page (e.g., a dashboard), follow this pattern to keep the page read-only and decoupled from backend changes:
+
+1. **Serve static HTML via a dedicated route** (e.g., `/analysis-v2`) that loads a copy of the design files (HTML/CSS) from `static/`. Do not modify existing production pages unless required.
+2. **Annotate the HTML with data-bind attributes** indicating the JSON path to the value (e.g., `data-bind="trade_analytics.mean_return_pct"`). Use `data-fmt` for formatting (pct, usd, cents, x, pctmul, etc.) and `data-sign` to force a sign (+/-) when appropriate.
+3. **Write a client-side JavaScript file** (e.g., `analysis_v2.js`) that:
+   - Fetches the JSON payload from `/api/kpi` (or with `?run_id=`).
+   - Parses the payload and resolves dotted paths.
+   - Applies formatting and sign based on attributes.
+   - Updates the DOM by setting `textContent` or `innerHTML` on matched elements.
+   - Handles special derived values (e.g., progress bars, computed verdicts) via a `derived()` helper.
+   - Paints charts by generating SVG paths from series data (histograms, lines, bands) and injecting them into `.chart-area` containers.
+   - Updates badge classes based on verdict bands from the payload or computed gates.
+4. **Keep the page read-only**: The JS should never make backend calls that modify state; it only reads from `/api/kpi`.
+5. **Verify via smoke-test**: Use a headless Node harness that stubs the DOM, loads the JS, feeds a sample payload, and asserts that the expected text/attributes are painted.
+6. **Empty mock content**: Remove hardcoded mock numbers and SVG paths from the HTML so that the design does not accidentally display stale values if JS fails.
+
+Pitfalls:
+- **Do not bind to `required_observations` directly if the payload omits it**; provide a fallback (e.g., 120) in the JS.
+- **Format percentages correctly**: The payload may contain fractions (0.6) or percentages (-6.76). Use separate formatters (`pct` for percentages already multiplied by 100, `pctmul` for fractions).
+- **Negative depths**: When rendering a loss depth (e.g., `negative_depth_usd`), ensure the displayed value is negative (multiply by -1).
+- **Empty payloads**: On zero data, the page should display "unmeasured" or blanks, not fabricate numbers or claim a winning edge.
+- **Chart series**: When painting histograms, use the bin data from the payload (e.g., `position_returns`, `pair_costs`) and scale appropriately.
+- **Avoid duplicate work**: Let the existing JS toggle IIFE (e.g., for confidence tables) handle UI updates after you set data attributes; only paint what JS cannot.
+
 ## Verifying a Vanilla-JS Change Without a Browser
 
 Hand-written JS with no framework and no build step has no component test runner,

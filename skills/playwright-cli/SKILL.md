@@ -259,6 +259,26 @@ For structured output wrapping every reply as JSON, pass --json
 playwright-cli list --json
 ```
 
+## Flipping a `<select>` and reading the result in one call
+
+When a caller caps tool calls (e.g. a verification gate with a hard call budget), switching a
+dropdown and reading the re-rendered output can share a single `eval` — renderers bound to the
+`change` event run synchronously, so no wait between firing and reading:
+
+```bash
+playwright-cli --raw eval "(() => {
+  const sel = document.getElementById('metric-select');
+  const fire = v => { sel.value = v; sel.dispatchEvent(new Event('change', {bubbles:true})); };
+  fire('outcome_prob');
+  const c = document.getElementById('chart-container');
+  return JSON.stringify({ bars: c.querySelectorAll('rect').length });
+})()"
+```
+
+Confirm the value you fire is a real `option` first — a typo'd value leaves the default view
+rendered and the check passes on unchanged output. For interactive use (no call budget), the
+`select` command above is the straightforward path.
+
 ## Open parameters
 ```bash
 # Use specific browser when creating session
