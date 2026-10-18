@@ -210,8 +210,10 @@ transplanting a broken commit re-lands its defect on a base that has moved on.
 `--abort` only undoes a pick that is mid-conflict. A pick that applied cleanly with
 `--no-commit` leaves its changes staged, and `--abort` exits silently having done
 nothing — the next dry-run then tests on top of the first pick's leftovers. Undo a
-successful `--no-commit` pick with `git reset --hard`, and confirm the tree is clean
-before the next trial.
+successful `--no-commit` pick with `git reset --hard` only if the index and worktree
+were clean before the pick. Prefer running such dry-runs in a disposable worktree so
+pre-existing edits cannot be discarded. Confirm the tree is clean before the next
+trial.
 
 ## The Save Point Pattern
 

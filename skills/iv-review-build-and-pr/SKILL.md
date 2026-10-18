@@ -198,6 +198,8 @@ title. See `config/coderabbit/README.md` for the full command playbook.
 gh pr create --title "@coderabbitai" --body "## Summary`n...`n`nCloses #<issue>`n`n@coderabbitai summary"
 ```
 
+**After creating the PR, verify the title was replaced:** run `gh pr view <pr_number> --json title` and if the title is still exactly `@coderabbitai`, note in the handoff that CodeRabbit did not replace the placeholder (this may happen if the `.coderabbit.yaml` is missing or misconfigured).
+
 The root `.coderabbit.yaml` in this home sets both title keys, so the handover
 works here with no other precondition — title generation is owned by the
 effective configuration, not by any single layer. Never fall back to a

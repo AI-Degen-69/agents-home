@@ -33,6 +33,7 @@ Then establish value-for-money per candidate.
    recommend a model from training knowledge or web search unless the operator
    confirms it exists on their harnesses at a stated price.
 2. **Harness fit:** each task runs in a specific harness. A model is eligible only where it is actually installed and switchable — note the harness per assignment.
+2b. **Confidentiality before routing:** if the repository or task is private/confidential, do not route to models whose data policy trains on prompts/completions (e.g. CL-4 Muse Spark Contributor on Cline). Route to no-train or open-weight models only; verify the model's data policy exists and is acceptable before selection.
 3. **Capability evidence:** use benchmark figures only from sources read in
    this session (or prior verified session notes); vendor-reported numbers
    are labeled as such. No invented scores. Where no data exists, say so and
