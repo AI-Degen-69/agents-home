@@ -80,9 +80,11 @@ Then establish value-for-money per candidate.
 
 ## Step 1: Forensic triage (evidence, not names)
 
-Index every surface, then read actual contents — never judge by branch names,
-PR titles, or issue labels:
-
+Collect the repository surfaces in one pass:
+```bash
+node scripts/repo-triage.js
+```
+Or inspect manually:
 1. `git branch -a -vv`, `git worktree list --verbose`, `git stash list`,
    `git status --porcelain -uall`, `gh pr list --state open/closed`,
    `gh issue list --state open`.
@@ -244,28 +246,5 @@ inherits every fix.
 
 ## Anti-patterns (learned)
 
-- Starting work in a pre-existing worktree/branch without a freshness check.
-- Mixing ledger rows, environment caveats, and tree state into one prose
-  report the operator cannot verify or locate.
-- Treating a skill's silence as permission (skills don't fetch, don't check
-  branch freshness, don't guard remotes).
-- Guard text without an independent tripwire — every guard pairs with a
-  command the operator can run in 30 seconds.
-- Pricing without capability — routing cheapest-first from `models.md` alone
-  misassigns analysis/review tasks where capability, not price, carries the
-  weight. Pair `references/models.md` (price) with `references/capability.md`
-  (grade + task-class matrix), and never let a
-  `[unverified]` model ship the final step of an irreversible task.
-- Ignoring hard caps — quota-gated models (e.g. 1 session/day, weekly caps)
-  must gate worthiness before price is considered; capability.md encodes the
-  ceiling per model, and a routing that ignores it spends the day's reserve on
-  a non-worthy task. Always read the per-harness reset window stated under
-  that harness in models.md before assigning quota-bound work.
-- Taking vendor "beats the frontier" at face value. A model card's "beats
-  GPT-X on X bench" claim, without an independent cross-model yardstick (AA
-  Intelligence Index) or cited pass@1 numbers, is marketing signal — routing
-  from it grades models above their independently-verified tier.
-- Hiding score conflicts. When a model's reported numbers diverge across
-  sources (e.g. a 47.7 partner figure vs a 23 GA-page figure), do not silently
-  pick one — record both, pick the authoritative source, and flag the conflict;
-  a silently mis-graded tier corrupts the whole task-class matrix above it.
+Full list of operational pitfalls and prevention rules: see [`references/anti-patterns.md`](references/anti-patterns.md).
+Key rules: verify branch divergence with `git rev-list --count` before starting, pair `models.md` with `capability.md` (never route cheapest-first blindly), and never let an `[unverified]` model ship an irreversible final step.

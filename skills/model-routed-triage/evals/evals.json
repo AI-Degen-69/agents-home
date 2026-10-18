@@ -1,1 +1,47 @@
-{"evals": [{"assertions": ["The output opens with Hebrew-first audit tables, not prose", "Every issue/PR reference renders as a markdown hyperlink", "Steps 0-3 produce no printed sections; only audit tables and the routing table appear", "The routing table columns are Task, Harness / Model / Effort, Suggested Skill, Prompt in that order", "Every task carries an ID (T1, T2, ...) used consistently", "Every prompt sits inside its own fenced code block with no skill invocation first line", "Every task row carries a structured Your-setup block with Directory, Branch, and fenced verify commands", "No rejected model, non-fitting station, or failed alternative is mentioned anywhere"], "expected_output": "Hebrew-first audit tables with hyperlinked issue refs, followed by one routing table with T-prefixed tasks, combined Harness/Model/Effort cells, fenced prompts without skill invocations, and structured setup blocks. Zero exposition of economics, sequencing, or skill-fit reasoning.", "files": [], "id": "routing-table-shape", "prompt": "Triage this repo state and route the top job: main is clean at origin/main; branch i588/remove-profit-take-metrics is fully merged; branch i594/rewards-purge is 21 behind with a focused purge diff; issue #594 is open; one stash holds obsolete plan artifacts."}, {"assertions": ["The chosen models appear only in the table's Harness/Model/Effort cells, never in a price discussion", "No per-token API prices appear; all pricing matches the economics file", "The output states expected spend for the job", "Worthy-of-reserve calls name their reason"], "expected_output": "Silent economics: model choices with effort levels and a spend line, no price tables or value-math exposition.", "files": [], "id": "silent-economics", "prompt": "Route a backend refactor with red/green tests (locked plan) plus a subtle PnL-invariant review, using the economics file."}, {"assertions": ["Every limitation line in the output carries an owner addressed as 'you' or a named issue plus a when", "At least one Class 1 item is fixed in place with a one-line fix note, not reported as failure", "At least one Class 2 item carries a paste-ready verify command plus expected output", "No external review round is cited as covering a skipped station step", "The output ends with branch name plus file paths readable via git show from main"], "expected_output": "Classified limitation handling with owners, whens, and operator commands; no silent accepts; no substitute coverage claims.", "files": [], "id": "limitation-disposition", "prompt": "A build reports: one env failure fixable by unsetting a variable, one absent reference fixture, one skipped local reviewer covered by 'the external review runs anyway'."}], "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes.", "skill_name": "model-routed-triage"}
+{
+  "skill_name": "model-routed-triage",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes.",
+  "evals": [
+    {
+      "id": "routing-table-shape",
+      "prompt": "Triage this repo state and route the top job: main is clean at origin/main; branch i588/remove-profit-take-metrics is fully merged; branch i594/rewards-purge is 21 behind with a focused purge diff; issue #594 is open; one stash holds obsolete plan artifacts.",
+      "expected_output": "Hebrew-first audit tables with hyperlinked issue refs, followed by one routing table with T-prefixed tasks, combined Harness/Model/Effort cells, Objective column, fenced prompts in dedicated task cards without skill invocations, and structured setup blocks. Zero exposition of economics, sequencing, or skill-fit reasoning.",
+      "files": [],
+      "assertions": [
+        "The output opens with Hebrew-first audit tables, not prose",
+        "Every issue/PR reference renders as a markdown hyperlink",
+        "Steps 0-3 produce no printed sections; only audit tables and the routing table appear",
+        "The routing table columns are Task, Harness / Model / Effort, Suggested Skill, Objective in that order",
+        "Every task carries an ID (T1, T2, ...) used consistently",
+        "Every prompt sits inside its own fenced code block in dedicated task cards with no skill invocation first line",
+        "Every task row carries a structured Your-setup block with Directory, Branch, and fenced verify commands",
+        "No rejected model, non-fitting station, or failed alternative is mentioned anywhere"
+      ]
+    },
+    {
+      "id": "silent-economics",
+      "prompt": "Route a backend refactor with red/green tests (locked plan) plus a subtle PnL-invariant review, using the economics file.",
+      "expected_output": "Silent economics: model choices with effort levels and a spend line, no price tables or value-math exposition.",
+      "files": [],
+      "assertions": [
+        "The chosen models appear only in the table's Harness/Model/Effort cells, never in a price discussion",
+        "No per-token API prices appear; all pricing matches the economics file",
+        "The output states expected spend for the job",
+        "Worthy-of-reserve calls name their reason"
+      ]
+    },
+    {
+      "id": "limitation-disposition",
+      "prompt": "A build reports: one env failure fixable by unsetting a variable, one absent reference fixture, one skipped local reviewer covered by 'the external review runs anyway'.",
+      "expected_output": "Classified limitation handling with owners, whens, and operator commands; no silent accepts; no substitute coverage claims.",
+      "files": [],
+      "assertions": [
+        "Every limitation line in the output carries an owner addressed as 'you' or a named issue plus a when",
+        "At least one Class 1 item is fixed in place with a one-line fix note, not reported as failure",
+        "At least one Class 2 item carries a paste-ready verify command plus expected output",
+        "No external review round is cited as covering a skipped station step",
+        "The output ends with branch name plus file paths readable via git show from main"
+      ]
+    }
+  ]
+}

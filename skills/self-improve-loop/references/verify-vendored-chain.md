@@ -2,6 +2,11 @@
 
 The loop runs on a chain of vendored skills. A folder that exists on disk is not yet one the harness can invoke — run all five checks, read-only, and report any missing link as the blocker before starting Step 1.
 
+Run the automated check in one step:
+```bash
+node scripts/verify-vendored-chain.js
+```
+
 ## 1. Enumerate each vendored skill's folder
 For each of `improve-codebase-architecture`, `codebase-design`, `grilling`, `domain-modeling`, plus the loop's own folder, list its contents (`search_files target='files'` or a directory listing). The chain is intact only when every `SKILL.md` and every declared companion is present:
 
@@ -9,7 +14,7 @@ For each of `improve-codebase-architecture`, `codebase-design`, `grilling`, `dom
 - `codebase-design` → `DEEPENING.md` + `DESIGN-IT-TWICE.md` + `agents/openai.yaml`
 - `domain-modeling` → `GLOSSARY-FORMAT.md` + `ADR-FORMAT.md` + `agents/openai.yaml`
 - `grilling` → `agents/openai.yaml`
-- `self-improve-loop` → `references/merging-stacked-prs.md` + `scripts/verify-delivered-prs.js` + `evals/verify-delivered-prs.test.js`
+- `self-improve-loop` → `references/merging-stacked-prs.md` + `references/verify-vendored-chain.md` + `scripts/verify-delivered-prs.js` + `scripts/verify-vendored-chain.js` + `evals/verify-delivered-prs.test.js`
 
 ## 2. Resolve the cross-references inside each SKILL.md
 A companion named in prose is a promise — grep each SKILL.md for its linked filenames and confirm every target exists. A dangling `[X.md](X.md)` is a broken chain link even when the folder looks populated.

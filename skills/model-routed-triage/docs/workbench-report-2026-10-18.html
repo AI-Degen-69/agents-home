@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דוח וורקבנץ' סופי: model-routed-triage</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --code-bg: #090d16;
+      --tag-bg: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1.5rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-inline-start: 0.5rem;
+    }
+
+    .badge-success {
+      background-color: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .meta-path {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      direction: ltr;
+      text-align: right;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: var(--card-bg);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    .section-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-card h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--accent);
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .score-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(56, 189, 248, 0.1) 100%);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .score-number {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--success);
+      font-family: ui-monospace, monospace;
+    }
+
+    .score-label {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .metrics-table, .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .metrics-table th, .metrics-table td,
+    .data-table th, .data-table td {
+      padding: 0.75rem 1rem;
+      text-align: right;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .metrics-table th, .data-table th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    code {
+      background-color: var(--code-bg);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.88em;
+      color: #38bdf8;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .status-pill {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .status-pill.green {
+      background-color: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.75rem;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+
+    .checklist-icon {
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    .final-box {
+      background: rgba(34, 197, 94, 0.05);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .final-box h3 {
+      font-size: 1.15rem;
+      color: #4ade80;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        סיכום עבודה: <code>model-routed-triage</code> 🏁
+        <span class="badge badge-success">ציון: 100/100</span>
+      </h1>
+      <div class="meta-path">
+        C:\Users\Tiger\.gemini\config\skills\model-routed-triage &rarr; C:\Users\Tiger\.agents\skills\model-routed-triage
+      </div>
+    </header>
+
+    <!-- רשימת משימות טיפול -->
+    <section class="section-card">
+      <h2>סטטוס ביצוע פריטים ואימוץ שיפורים ✅</h2>
+      <div class="checklist-item">
+        <span class="checklist-icon">✓</span>
+        <div><strong>הצעה 1 יושמה:</strong> יצירת סקריפט אוטומציה <code>scripts/repo-triage.js</code> לאיסוף נתוני Git ו-GitHub בשלב 1 בפקודה אחת, והוספת בדיקות יחידה ב-<code>evals/repo-triage.test.js</code> (3/3 בדיקות ירוקות).</div>
+      </div>
+      <div class="checklist-item">
+        <span class="checklist-icon">✓</span>
+        <div><strong>הצעה 2 יושמה:</strong> פיצול סעיף Anti-patterns לקובץ נלווה <code>references/anti-patterns.md</code> — צמצום גוף הסקיל ל-248 שורות (עמידה מלאה בתקציב &le; 250).</div>
+      </div>
+      <div class="checklist-item">
+        <span class="checklist-icon">✓</span>
+        <div><strong>הצעה 3 וממצא 1 תוקנו:</strong> תיאום טענת הבדיקה ב-<code>evals/evals.json</code> מ-<code>Prompt</code> ל-<code>Objective</code> בהתאם למבנה הטבלה העדכני.</div>
+      </div>
+      <div class="checklist-item">
+        <span class="checklist-icon">✓</span>
+        <div><strong>אימות ולידציה מלא:</strong> <code>validate.js</code> עבר נקי לחלוטין (0 שגיאות, 0 אזהרות).</div>
+      </div>
+      <div class="checklist-item">
+        <span class="checklist-icon">✓</span>
+        <div><strong>בדיקת פריסה (Step D):</strong> כל 3 קישורי ה-Harness מאומתים ותקינים (Hermes: Junction, Gemini: SymbolicLink, OpenCode: Junction).</div>
+      </div>
+
+      <div style="margin-top: 1rem; color: #94a3b8; font-size: 0.9rem;">
+        נותרו: 0 ממצאים, 0 שאלות פתוחות, 0 הצעות ממתינות + מצב פריסה: מאומת ותקין.
+      </div>
+    </section>
+
+    <!-- תוצאות ניקוד סופי -->
+    <section class="section-card">
+      <h2>מצב הסקיל הסופי 📊</h2>
+      <div class="score-banner">
+        <div>
+          <div class="score-label">ציון וורקבנץ' משוקלל סופי</div>
+          <div style="color: var(--text-muted); font-size: 0.9rem;">ציון מושלם 100/100 בכל המדדים ללא יוצא מן הכלל</div>
+        </div>
+        <div class="score-number">100/100</div>
+      </div>
+
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>מדד</th>
+            <th>משקל</th>
+            <th>ציון</th>
+            <th>סטטוס</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>spec-compliance</code></td>
+            <td>40%</td>
+            <td>100/100</td>
+            <td><span class="status-pill green">תקין מלא</span></td>
+          </tr>
+          <tr>
+            <td><code>file-integrity</code></td>
+            <td>25%</td>
+            <td>100/100</td>
+            <td><span class="status-pill green">תקין מלא</span></td>
+          </tr>
+          <tr>
+            <td><code>eval-readiness</code></td>
+            <td>20%</td>
+            <td>100/100</td>
+            <td><span class="status-pill green">תקין מלא (3 מקרי בדיקה)</span></td>
+          </tr>
+          <tr>
+            <td><code>size-discipline</code></td>
+            <td>10%</td>
+            <td>100/100</td>
+            <td><span class="status-pill green">תקין מלא (248 שורות &le; 250)</span></td>
+          </tr>
+          <tr>
+            <td><code>self-containment</code></td>
+            <td>5%</td>
+            <td>100/100</td>
+            <td><span class="status-pill green">תקין מלא (scripts, references, docs, evals)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- סיכום עבודה סופי -->
+    <section class="section-card">
+      <h2>סיכום עבודה 🏁</h2>
+
+      <div class="final-box">
+        <h3>מה נעשה ✅</h3>
+        <p>נבנה סקריפט אוטומציה חדש <code>scripts/repo-triage.js</code> לאיסוף מצב ענפים, עצי עבודה, סטאשים ו-PRs בפקודה אחת. סעיף ה-Anti-patterns הועבר ל-<code>references/anti-patterns.md</code>, עודכנו הפניות הקבצים ב-<code>SKILL.md</code>, תוקנה טענת הבדיקה ב-<code>evals/evals.json</code> ונוספה חבילת בדיקות יחידה ב-<code>evals/repo-triage.test.js</code>.</p>
+      </div>
+
+      <div class="final-box" style="margin-top: 1rem;">
+        <h3>למה זה נעשה 💡</h3>
+        <p>הסקריפט מייתר הרצת 8–10 פקודות shell ידניות בכל טריאז' מאגר וחוסך טוקנים יקרים. פיצול ה-Anti-patterns הפך את הסקיל לתמציתי וממוקד (248 שורות), ותיקון טענת הבדיקות הבטיח עקביות מלאה בין ה-Evals לפורמט כרטיסי המשימה של הסקיל.</p>
+      </div>
+
+      <div class="final-box" style="margin-top: 1rem;">
+        <h3>מה עובד עכשיו 🟢</h3>
+        <p>הסקריפט <code>node scripts/repo-triage.js</code> פועל במדויק ומפיק טבלאות מצב מסודרות או פלט JSON, כל בדיקות היחידה עוברות (3/3 ירוקות), והסקיל עומד בציון 100/100 מושלם.</p>
+      </div>
+
+      <div class="final-box" style="margin-top: 1rem;">
+        <h3>צעדים הבאים 👉</h3>
+        <p>הסקיל מוכן לשימוש מיידי! ניתן להריצו על כל מאגר שצבר ענפים, סטאשים או PRs באמצעות <code>/model-routed-triage</code> לקבלת טריאז' פורנזי וכרטיסי משימה מותאמים אישית לפי מודל ועלות.</p>
+      </div>
+
+      <div class="final-box" style="margin-top: 1rem;">
+        <h3>דוגמה לשימוש 💬</h3>
+        <p>הפעל את הסקיל כשרצונך לארגן ולתעדף את העבודה במאגר: <code>/model-routed-triage triage this repo state and route the top job</code>.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

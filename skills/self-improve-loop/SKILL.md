@@ -16,7 +16,11 @@ A continuous improvement cycle executing across the current repository, gated on
 ## The Improvement Cycle
 
 ### Step 0: Verify the Vendored Chain (read-only pre-flight — before Step 1)
-The loop runs on a chain of vendored skills; a folder that exists on disk is not yet one the harness can invoke. Before the first iteration — or whenever asked to confirm the loop is ready — run the read-only chain check in `references/verify-vendored-chain.md` (enumerate companions → resolve cross-references → confirm harness-root links → confirm loadability → exercise the gate). All five must pass; report any missing link as the blocker rather than starting Step 1 on a half-installed chain.
+The loop runs on a chain of vendored skills; a folder that exists on disk is not yet one the harness can invoke. Before the first iteration — or whenever asked to confirm the loop is ready — run the automated pre-flight check:
+```bash
+node scripts/verify-vendored-chain.js
+```
+This executes the read-only chain checks detailed in `references/verify-vendored-chain.md` (enumerate companions → resolve cross-references → confirm harness-root links → confirm loadability → exercise the gate). All five must pass; report any missing link as the blocker rather than starting Step 1 on a half-installed chain.
 
 ### Step 1: Execute Codebase Improvement Exploration
 - Run the exploration step from the upstream `skills/engineering/improve-codebase-architecture` skill if it is installed locally (source: https://github.com/mattpocock/skills/tree/main/skills/engineering/improve-codebase-architecture). **Installing that skill alone yields a stub** — it is declared `disable-model-invocation: true` and offloads its logic to `grilling`, `domain-modeling`, `codebase-design`, and its own `HTML-REPORT.md` + `agents/openai.yaml`. To get the full chain, clone the repo once and copy four folders:
@@ -136,7 +140,9 @@ A loop that trusts its own notes will happily report a PR as delivered after som
 Read every created PR back from GitHub and compare it field by field against `loop-delivery.json`:
 
 ```bash
-node <this-skill-dir>/scripts/verify-delivered-prs.js --manifest loop-delivery.json
+node scripts/verify-delivered-prs.js --manifest loop-delivery.json
+# Or specify full path:
+# node ~/.agents/skills/self-improve-loop/scripts/verify-delivered-prs.js --manifest loop-delivery.json
 ```
 
 The gate checks, per PR: number, exact title, head branch, head SHA prefix, body non-empty, body names its branch, state is `OPEN`, not a draft, and the checkpoint tag exists on the remote. It prints `PASS`/`FAIL` per check with expected and actual values, and exits non-zero if anything mismatches.
