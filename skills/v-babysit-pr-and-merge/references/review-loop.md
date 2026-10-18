@@ -76,6 +76,8 @@ If no PR exists: **do not create it yourself — delegate to `iv-review-build-an
     - **Usage-limit / status comments** — e.g. `## Review limit reached`, `rate limited by coderabbit.ai`, `Next included review available in N minutes`, `Review skipped: ...`. These carry **no review content**. Action: do NOT wait for the quota — skip immediately to the manual review fallback (Step 2B, agent fallback review).
    - **Actual review content** — a summary review, actionable inline comments, findings, or information relevant to the diff. These are the working output. Action: proceed to Step 2 extraction and triage on them.
    - Never treat a usage-limit comment as a completed review, and never treat a summary-only comment as the end of review comments still being posted. A green check can still mean `Review skipped` — read the text, not the color.
+   - **When sources disagree, the API wins.** `gh pr view --comments` renders text that can be stale or phantom — it can show `Review triggered.` / `Action performed` while `gh api repos/:owner/:repo/issues/<pr>/comments` shows the bot actually replied `Action not completed` / `rate limited`. Classify from the API comment bodies, never from the rendered `--comments` text alone.
+   - **A `pass` check status is not proof the review ran.** `gh pr checks` can report the `CodeRabbit` context as `pass` WITH a `Review rate limited` annotation. Read the check annotation AND cross-check the API comments before classifying; a green check with a rate-limit annotation is `RATE_LIMITED`, not a clean pass.
 
 4. **Priority & Fallback Strategy:**
    - **Priority 1**: Let CodeRabbit perform its single review pass.

@@ -155,6 +155,30 @@ Map the blast radius before deleting the branch:
   further than the module you edited; only the full suite proves the blast radius
   is closed. Fix fallout rather than weakening assertions.
 
+### Renaming a field that changes unit or scale
+
+A rename that also rescales a value (dollars → cents, fraction → percent, seconds
+→ milliseconds) breaks a repo-wide grep-and-replace in three places the grep misses,
+because it matched the old NAME, not the old UNIT:
+
+- **Display strings pair the new name with old-unit values.** Cockpit copy, preset
+  descriptions, `.env` examples, and help text carry the field NAME *and* a literal
+  value. A `$0.045` or `= 0.060` sitting under the new `*_cents` field reads as
+  0.06¢, not 6¢ — an operator copies it and misconfigures by 100×. After the rename,
+  grep for the old UNIT PATTERNS (`$0.`, `= 0.0`, a 0–1 fraction) across docs and
+  display code, not just the old field name.
+- **Comments claim config-derivation the code never does.** A comment rewritten to
+  name the new fields can now falsely describe a hardcoded constant as "from config
+  defaults". Either make the code read config, or make the comment describe the
+  hardcoded proxy honestly (e.g. "historical classification boundary; does not track
+  the live value").
+- **An env-var rename that changes scale must not auto-convert.** A `getattr`/alias
+  fallback that copies the old value into the new field mis-scales it (`0.045` dollars
+  becomes `0.045` cents ≈ no limit). Emit a deprecation WARNING naming the new var and
+  its unit, and ignore the old one — a stale `.env` should surface loudly, not silently
+  run on defaults or a mis-scaled value. On an execution/money path, a silent env drop
+  is a footgun; warn, never purge quietly.
+
 ## Migration Patterns
 
 ### Strangler Pattern

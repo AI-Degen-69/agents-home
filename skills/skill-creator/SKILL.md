@@ -307,6 +307,30 @@ This is the heart of the loop. You've run the test cases, the user has reviewed 
 
 This task is pretty important (we are trying to create billions a year in economic value here!) and your thinking time is not the blocker; take your time and really mull things over. I'd suggest writing a draft revision and then looking at it anew and making improvements. Really do your best to get into the head of the user and understand what they want and need.
 
+### Consolidating duplicate skills
+
+When the library ends up with two skills for the same job (e.g. `triage-and-route`
+vs `model-routed-triage`), consolidation is a deletion-plus-keep, not a merge —
+one canonical skill must own each piece of knowledge. Three checks before touching
+anything:
+
+1. **A profile skills dir is usually a symlink, not a leftover.**
+   `AppData/Local/hermes/skills/<name>` is typically a junction *into* the
+   canonical `~/.agents/skills/<name>` (the `sync-harness-skills.ps1` mirror), so
+   deleting it drops the skill from that profile. A bare `find -type f` on a
+   symlinked dir reads empty and tempts a wrong `rm -rf`. Run a junction/`readlink`
+   check first; only `rm -rf` a path confirmed to be a real, unreferenced directory.
+2. **Prove the stale copy is unreferenced before deleting.** Grep the whole
+   `~/.agents` tree for the skill name; if every hit sits inside the skill's own
+   `SKILL.md`/description it is safe. Any hit from another skill, a config, or a
+   README means keep-and-resolve — removing it breaks the dependent.
+3. **One source of truth per datum — delete, don't merge.** If both skills carry a
+   cost table, the canonical skill's file owns it and the per-skill copy is deleted,
+   never merged. Divergent rows (e.g. DeepSeek V4.1 Flash Fast 50 vs 75) smell drift;
+   merging resurrects the conflict. Canonical prices live with the skill that owns them — `model-routed-triage` carries its prices in `references/models.md` (at `AGENTS_HOME/skills/model-routed-triage/references/models.md`),
+   normalized to "hours" (÷5 from legacy freebucks — 105 freebucks/day = 21 hours/day);
+   update that single bundled file, not a root or per-skill shadow copy.
+
 ### The iteration loop
 
 After improving the skill:

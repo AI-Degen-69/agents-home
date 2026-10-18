@@ -47,6 +47,12 @@ knows where it came from. So classify origin **first**:
    `iii-build-plan` on a guess about size, and do NOT stash, discard, commit, or
    branch away from it. Report the foreign paths and ask one question: whose work is this?
 4. **Uncertain** (mixed known/unknown files) → treat as unknown-origin. Ask.
+5. **Dirt that appears mid-session is a live foreign writer.** A tree clean at pre-flight that
+   shows a new modified file between two of your own commands (or a worktree appearing in
+   `git worktree list` mid-command) means another session is editing this checkout right now.
+   Treat it as unknown-origin even when the diff content later traces to a real issue: the
+   writer may still be mid-edit, and absorbing a partial change corrupts both streams. Ask
+   whose work it is and offer to proceed in an isolated worktree.
 
 Only a human can attribute foreign dirt. This station guides — it never absorbs
 another stream's changes into the current issue.
@@ -64,7 +70,7 @@ declaring anything unknown-origin:
 3. Read the content of files that match **neither** the branch commits nor the
    plan — a handoff doc or a new script often names its own origin issue in its
    first lines (read it before calling it unknown).
-4. Files matching nothing after those three passes are unknown-origin → stop rule.
+4. Files matching nothing after those three passes are unknown-origin → stop rule. `stat -c '%y' <file>` against the current clock confirms freshness — modified seconds ago while your commands run means a live writer, not leftover state.
 
 ## "Branch off / pick an issue" gate
 

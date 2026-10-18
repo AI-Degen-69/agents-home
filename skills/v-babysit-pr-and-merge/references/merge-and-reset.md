@@ -16,8 +16,25 @@ Since this habit runs **exactly one focused review round**, once all accepted fi
    ```bash
    gh pr checks <pr-number>
    ```
+1.5. **Check the stack before merging — a branch can carry another change's work.** A branch cut from a feature branch instead of from base drags that branch's commits (and any already-merged ones) into the diff, so the merge lands unrelated work on base. Detect it; never assume the diff is only yours:
+   ```bash
+   git fetch origin
+   git cherry -v origin/main HEAD        # '+' = not upstream, '-' = already landed
+   git log --oneline origin/main..HEAD   # what this PR will actually add
+   ```
+   Every `+` commit must belong to this change. When one does not, replay only yours onto current base and drop the rest (`git rebase --onto origin/main <last-foreign-commit> <branch>`). Verify the foreign work still exists on its own branch (`git branch -a --list`) before dropping it, and never delete a branch you did not create. Then confirm the file list is exactly this change's before committing.
+
+   **`git reset --soft` does not touch the index.** After `reset --soft <base>` the index still holds the old tree, so `git diff --cached` reports *index-vs-base*: your uncommitted work may not be staged at all, and a base chosen several commits back silently stages every intervening commit. Read `git diff --cached --name-status` and confirm the file list is exactly this change's — `git add -A` only after that check.
 2. **Merge Decision:**
    - If CI checks are green and zero unresolved blocking comments remain: merge PR autonomously.
+   - **`mergeState=BLOCKED` right after merging the base branch is usually pending CI, not a policy veto.** Merging base into the feature branch (Step 4) re-runs CI on the new merge commit, so the required checks flip back to `pending` and `gh pr merge` reports "the base branch policy prohibits the merge" while `mergeable=MERGEABLE` / `mergeState=BLOCKED`. That is a CI re-run in flight, not a protection rule — read `gh pr checks`, confirm the required shards are *pending* (not failing), and wait for green. Reserve `--admin` only for the stuck CodeRabbit check (per the timeout-merge rule) — never for failing project CI checks or for checks that are merely still running; failed checks must stay blocking.
+   - **A fully-resolved review can still block: `reviewDecision=CHANGES_REQUESTED` is the review's VERDICT, not its threads.** Replying to and resolving every thread does not clear it — GitHub holds the review-level state until it is dismissed or superseded, so `gh pr merge` refuses with "the base branch policy prohibits the merge" while every thread is closed and CI is green. Diagnose with `gh pr view <pr> --json mergeable,mergeStateStatus,reviewDecision`: `mergeable=MERGEABLE` + `mergeStateStatus=BLOCKED` + `reviewDecision=CHANGES_REQUESTED` is this case, not pending CI. **Post `@coderabbitai resolve` as the first remedy** and allow ~2-3 minutes for it to flip `mergeStateStatus` `BLOCKED` → `CLEAN` on its own: the bot withdraws the verdict once the review loop is closed, and this needs no review id. Only fall back to the manual dismissal API when resolve is declined or stays silent — it needs the `<review_id>` you would otherwise never have to look up. Either way the dismissal carries a written rationale — never re-trigger a second review to clear it (the one-round rule), and never `--admin` past a verdict you have not justified in writing.
+     ```bash
+     gh api -X PUT repos/:owner/:repo/pulls/<pr>/reviews/<review_id>/dismissals \
+       -f message="<why the verdict no longer applies: what was fixed, where, and that the round is complete>" \
+       -f event=DISMISS
+     gh pr view <pr> --json mergeStateStatus,reviewDecision   # -> CLEAN, empty
+     ```
      `--delete-branch` is **best-effort, not the mechanism** — this repository has
      `deleteBranchOnMerge` set to `false`, so a merged head branch regularly survives on the
      server. The authoritative remote delete is step 5b.
@@ -38,6 +55,12 @@ Since this habit runs **exactly one focused review round**, once all accepted fi
    # If OPEN:
    gh issue close <id> --comment "Closed via PR #<pr_number> (merged)."
    ```
+3.5. **After a merge that resolved a conflict, re-grep for what an earlier refactor deleted.** A PR based on pre-refactor code reintroduces deleted machinery when the conflict is resolved by accepting its side, and the review round cannot see it — those lines look like the refactor's own. Before closing the issue, confirm the demolition survived:
+   ```bash
+   git fetch origin
+   git grep -n "<symbols the earlier refactor deleted>" origin/main -- <touched dirs>
+   ```
+   Any hit is a regression: open a follow-up and say so, rather than reporting the merge clean.
 4. **Return the Local Checkout to Base (Step 5b below) — always, merge or escalate.**
 
 ### Step 5b — Post-Merge Local Reset (Fresh Start on Base)

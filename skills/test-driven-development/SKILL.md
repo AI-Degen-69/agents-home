@@ -217,6 +217,17 @@ it('calls db.query with ORDER BY created_at DESC', async () => {
 });
 ```
 
+### Assert on the Invariant, Not the Divergent Label
+
+When two implementations of one contract differ *by design* in a surface label — a
+dry-run mode emits `would_exit` where live emits `exited`, a shadow path tags
+`simulated` where the real path omits it — do not assert on that label. Assert on the
+shared DECISION both paths must produce (the trigger field, the reason code, the
+outcome flag). Asserting on the divergent label pins the exact difference the change
+was scoped to exclude and breaks the moment the labels are re-worded; asserting on the
+decision pins the invariant the change must preserve. The label difference is a
+fill-method/implementation detail; the decision is the contract.
+
 ### DAMP Over DRY in Tests
 
 In production code, DRY (Don't Repeat Yourself) is usually right. In tests, **DAMP (Descriptive And Meaningful Phrases)** is better. A test should read like a specification — each test should tell a complete story without requiring the reader to trace through shared helpers.
