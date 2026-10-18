@@ -47,6 +47,7 @@ Can another engineer (or agent) understand this code without the author explaini
 - Are there dead code artifacts: no-op variables (`_unused`), backwards-compat shims, or `// removed` comments?
 - **Is a new conditional bolted onto an unrelated flow?** That's a design smell, not a nit — push the logic into its own helper, state, or policy instead of tangling an existing path.
 - **Do repeated conditionals on the same shape appear?** They signal a missing model or dispatcher. A "temporary" branch is usually permanent debt.
+- **A unit-changing rename leaves stale magnitudes — check values, not just names.** When a rename also changes the unit (dollars→cents, fraction→percent), the identifier update is clean but adjacent display strings, comments, and docstrings keep the OLD magnitude (e.g. `$0.045` sitting under a field now named `..._cents`). Grep for the old unit's value pattern, not just the old identifier, and update every surface that repeats it (figure, table, caption) in one pass — or the artifact self-contradicts and a reader who is corrected once stops trusting the whole thing.
 
 ### 3. Architecture
 

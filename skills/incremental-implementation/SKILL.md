@@ -140,6 +140,8 @@ Each increment changes one logical thing. Don't mix concerns:
 
 **Good:** Three separate commits — one for each change.
 
+**Note:** For configuration constants that appear in multiple mirrored locations (e.g., config files for different environments), changing the value is one logical thing, even though it requires editing multiple files. Always verify all locations are updated consistently.
+
 ### Rule 2: Keep It Compilable
 
 After each increment, the project must build and existing tests must pass. Don't leave the codebase in a broken state between slices.

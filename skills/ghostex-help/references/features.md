@@ -1043,8 +1043,9 @@ on desktop, web, and mobile: every question at once, with choices you click
 and a note box for each. Nothing is picked for you (the agent may mark the
 option it recommends), every choice question has an Other / none of these
 choice, and you can leave any question blank or click a choice again to clear
-it. Send (or Ctrl+Enter, Cmd+Enter on macOS, from anywhere in the form or
-page) delivers your answers to the agent as a message (when the agent is
+it. A form with more than one question also ends with an optional notes box
+for anything else you want the agent to know. Send (or Ctrl+Enter, Cmd+Enter
+on macOS, from anywhere in the form or page) delivers your answers to the agent as a message (when the agent is
 busy, they wait in the chat's queue and go as soon as it is free), the chat
 shows them as a card, and the form then reads Answered. Questions that need a picture,
 such as choosing between two mockups, come as a page instead, where you can
@@ -1053,14 +1054,15 @@ page works the same way: its card reads Answered once you send, and opening it
 again shows what you sent. On desktop the floating window closes once your answers are
 sent, and stays open with the error if they could not be. Until you send,
 what you picked and typed is kept, in a form and on a page alike, even when
-you close the page or the chat, switch sessions, or restart. While a form or
-question page in the chat is still waiting for your answers, a "❓ 2 · Previous
-question ↑" pill sits next to Scroll to bottom (desktop, web and mobile): each
+you close the page or the chat, switch sessions, or restart. With Settings >
+Chat > Previous question button turned on (it is off by default), a "Previous
+question ↑" button sits next to Scroll to bottom while a form or question page
+in the chat is still waiting for your answers (desktop, web and mobile): each
 click goes to the next older unanswered one, round again after the oldest, and
-briefly outlines it. Question tags the agent writes in its messages, such as Q3,
-are links to the form or page that asked them, answered or not. A question
-stops counting once the agent asks the same tag again in a later form or page,
-or withdraws it. Commands:
+briefly outlines it. A question stops counting once the agent asks the same tag
+again in a later form or page, or withdraws it. Question tags the agent writes
+in its messages, such as Q3, are always links to the form or page that asked
+them, answered or not. Setting: `chatPreviousQuestion`. Commands:
 `ghostex show <file.html>`
 publishes a page and prints the block that shows its card (`--browser` opens it
 in the browser instead of floating), and
@@ -1228,11 +1230,17 @@ the agent.
 When an assistant message
 has tool calls, click its text or the chevron beside it to expand the tools directly
 under that message. Its full text and formatting stay visible when collapsed;
-links and code controls keep their own actions. Verbose mode opens these tools
-by default (`sessionChatVerboseMode`). File writes and code
+links and code controls keep their own actions. Verbose mode, and any chat with
+Simple mode off, opens these tools by default (`sessionChatVerboseMode`,
+`sessionChatSimpleMode`), along with each finished turn's "Worked for" log; close
+one with a click and it stays closed. A tool call the agent described (for
+example "Search for config files") is named by that description in every mode,
+in the reply's own font and a slightly dimmer colour, instead of the tool's name
+and its command; click the row to see the full command and its result. File writes and code
 edits appear outside the tool groups while the agent works. As soon as the agent
 finishes a turn, its tool work folds away under "Worked for Xs" above the final
-reply; click that line to open or close it. When a turn shows
+reply (open by default with Simple mode off or Verbose mode on); click that
+line to open or close it. When a turn shows
 "Worked for", all its file changes are grouped in a collapsed "N files changed"
 section directly below it. Older history loads with completed turns already
 collapsed, so you can scroll through prompts and answers without passing through
@@ -1280,10 +1288,9 @@ More actions > View holds the chat's display modes: Simple, Verbose and Summary.
 Each one is its own switch, and the View row names the ones that are on.
 
 Simple mode (More actions > View, or Settings > Chat) applies to every chat. Tool groups
-without a message above them collapse to a tool-call count, and tool rows hide
-command previews and show the one-line description the agent gave the call
-instead of the tool's name, when it gave one; expand a tool to inspect its full
-input and result. File edits
+without a message above them collapse to a tool-call count, tool rows hide
+command previews, and the work under each reply stays folded until you open it;
+expand a tool to inspect its full input and result. File edits
 collapse under "Edited 1 file" or "Edited X files", counting each path once; expand
 the row to see the usual file and diff cards. The menu and Settings use the same
 toggle (`sessionChatSimpleMode`, on by default). The phone app has Simple mode too,
@@ -1501,11 +1508,37 @@ available". Choose Use to load it into your input, or Dismiss to keep what you
 have; hover over or click its preview icon to read the full text above the icon
 first.
 
-Settings > Accounts saves Claude and Codex logins and marks each one Automatic
-or Manual. Quick launch, the main launcher row, and any session started without
-picking an account use the Account for new sessions rule under each
-provider's New session defaults. The automatic rules only consider Automatic
-accounts: Auto (the default) weighs remaining limit against time to reset and
+Settings > Accounts saves Claude and Codex logins. The left side lists each
+provider's accounts with a usage bar (or a Reconnect button when a login stopped
+working) and the provider's rules; click one to see it on the right: its usage
+bars with reset times (labelled 5h, 7d and Fable), Enabled, Name, Auto-switch (whether Ghostex may move sessions to
+it at a limit, shown as an Auto-switch on or off tag), Show usage in the sidebar,
+and under Advanced the Session badge (up to two letters or numbers on its
+session icons) and its Account number, which you can swap with another
+account's. Changes save as you make them; Sign in again and Remove sit at the
+bottom, and Remove asks first and says how many sessions use the account.
+Turn Enabled off to keep an account you no longer use (for example one whose
+subscription ended) saved but out of use: it shows dimmed with a Disabled tag,
+Ghostex never starts new sessions on it, switches to it at a limit or offers it
+in Switch Account menus, stops reading its usage and sign-in state (so it never
+asks you to reconnect it), and drops its usage from the sidebar. Sessions already
+on it keep running, and the account says how many still use it. Turn Enabled on
+to use it again. This is separate from "Subscription access disabled", which
+Ghostex sets on its own when Claude refuses an account.
+Reconnect is one click: your browser opens on the provider's sign-in page with
+the account's email filled in, Settings shows "Waiting for you to sign in…" (a
+box for a sign-in code appears only if the browser shows one, and the sign-in
+log stays under Details), and the account shows Connected with fresh usage when
+you finish. If the browser signed in to another account, Settings names it and
+offers Try again or adding it as a new account. To add an account, click + next
+to Claude or Codex and choose Sign in with browser; a Claude account needs no
+email (pick it in the browser), while Codex asks for the new account's email
+first. The first account of a provider also asks to share chat history between
+your accounts, which lets a conversation carry on with another account.
+Quick launch, the main launcher row, and any session started without
+picking an account use New sessions start on in each provider's rules (Claude
+rules or Codex rules in the list). The automatic rules only consider accounts
+with Auto-switch on: Auto (the default) weighs remaining limit against time to reset and
 picks the account that can absorb the most usage before any of its limits
 resets, Most limit remaining picks the account with the most limit left, Soonest
 reset the one whose limit resets first, Most used first keeps draining the
@@ -1521,19 +1554,19 @@ says "Uses its own login", and Ghostex never moves its sessions to an account,
 not even at a usage limit. Keep such a profile in `~/.claude-profiles/<name>`
 (or `~/.codex-profiles/<name>`) so Ghostex finds its conversations, then choose
 Install hook for that agent in Settings > Agents. Ghostex's skills live in
-`~/.claude/skills` (or `~/.codex/skills`); link the profile's `skills` folder
-there to use them.
-Each provider on Settings > Accounts also lists its account helper, Claude Swap
-(cswap) or Codex Swap (xswap), with three icon buttons: Update (shown when a
-newer release is out; otherwise a check mark that checks again when clicked),
-Reinstall, and Uninstall, which asks first and keeps saved logins and shared
-conversations. Hover a button to see the installed and latest versions. Ghostex
-runs the update with the tool that installed the helper (uv or pipx for cswap;
-Homebrew, Cargo or the Windows installer for xswap); for a helper installed some
-other way the buttons are off, so update it the way you installed it.
+`~/.agents/skills`, which Codex profiles read on their own; for a Claude
+profile, link its `skills` folder to `~/.claude/skills` to use them.
+Under the account list, Settings > Accounts shows one line per account helper,
+Claude Swap (cswap) and Codex Swap (xswap), with its version and an Update button
+when a newer release is out (otherwise Check for updates). Its ⋯ menu holds
+Reinstall and Uninstall, which asks first and keeps saved logins and shared
+conversations. Ghostex runs the update with the tool that installed the helper
+(uv or pipx for cswap; Homebrew, Cargo or the Windows installer for xswap); for
+a helper installed some other way the buttons are off, so update it the way you
+installed it.
 Before sending a session's first message, use the model menu's Switch Agent CLI
-to change between Claude and Codex. The new agent uses its Account for new
-sessions rule, just like the sidebar agent button, while the terminal and your
+to change between Claude and Codex. The new agent uses its New sessions start
+on rule, just like the sidebar agent button, while the terminal and your
 unsent chat text stay in place.
 Sign-in and usage-limit notices in Claude and Codex chats offer Switch account
 beside Open terminal, so you can choose another account directly from those notices.
@@ -1542,8 +1575,20 @@ computer, its chat shows a card naming the account with Switch account, Sign in 
 that account (it runs `ghostex account-login claude --account N` in the session's
 terminal and starts Claude again when the sign-in finishes) and Try again. A message
 you sent waits in the chat and goes out on its own once Claude is up. Waking a
-session on such an account moves it to an account that works first, unless Continue
-automatically is off or you stopped automatic recovery for that session.
+session on such an account moves it to an account that works first, unless the
+provider's rules say Do nothing at a limit or you stopped automatic recovery for
+that session.
+The same works from the command line, for you or an agent: `ghostex accounts`
+lists every Claude and Codex account with its state (ready, limit reached, needs
+sign-in), its usage per window with reset times, the default for new sessions
+and the sessions on it; `ghostex agents switch-account <session> --account
+<number or email>` moves a session to another account and resumes its
+conversation there, also when it could not start, and refuses an account that
+needs signing in (and a session in the middle of a turn, unless `--force` ends
+that turn and sends "." afterwards so it carries on); `ghostex agents reload <session>` stops a stuck session's
+agent and starts it again on the same conversation, losing what its current turn
+was doing. An orchestrator uses them when a thread can't start or gets stuck,
+and tells you what it did.
 In the chat's More actions menu, and in the ⋯ menu of the bar under a Claude or
 Codex terminal view, click Switch Account to open its submenu of saved accounts
 with their usage; hovering over it does not open it. Open submenus stay open when you move the
@@ -1569,19 +1614,19 @@ A manual switch waits for your next
 message without sending anything. An automatic switch sends a "." to continue
 the interrupted work once the new account is ready. Configured recovery after
 errors can also continue work on the same account.
-Whether a session keeps going at a limit comes from Continue automatically and
-When the account runs out under the provider's New session defaults in Settings >
-Accounts. Both start on: Continue automatically is on and When the account runs
-out is Use another account, so a session moves to another account set to
-Automatic when it hits a limit; turn Continue automatically off there to stop
-that. Every Claude and Codex session follows those settings as they are now,
+Whether a session keeps going at a limit comes from When an account hits its
+limit in the provider's rules in Settings > Accounts: Switch accounts (the
+default) moves the session to another account with Auto-switch on, Wait for
+reset picks up on the same account when its usage resets, and Do nothing leaves
+the session stopped. With Switch accounts, Try first picks which account Ghostex
+tries first. Every Claude and Codex session follows those settings as they are now,
 including sessions that are already open, forks, and restored sessions, so a
 change there applies everywhere at once. To make one session behave differently,
 open More actions > Switch Account and click Customize under Keep going at a
 limit; Use session defaults returns it to the Settings values.
 A sleeping session whose account is already at its limit wakes on another
-account that has room. When every account set to Automatic is full, the
-session's chat shows "Weekly limit reached on every account" (or whichever limit
+account that has room. When every account with Auto-switch on is full, the
+session's chat shows "7d limit reached on every account" (or whichever limit
 it hit) with when it continues on its own, and the bell gets one notification;
 both go away once the session switches or resumes.
 Account sign-in terminals open in the active local project's folder and appear
@@ -1590,22 +1635,22 @@ When a newer usage reading cannot be fetched for a Claude account, for example
 while the usage service rate limits checks for an hour at a time, Settings >
 Accounts, the account usage popup, and the chat's Switch account rows show the
 last reading with its age ("Usage is from 3 hours ago") and Ghostex keeps
-retrying on its own. Automatic switching and the Account for new sessions rule
+retrying on its own. Automatic switching and the New sessions start on rule
 skip that account until its usage refreshes. A login problem shows what to do
 instead, such as "The saved login expired. Reconnect this account."
-A newly added account starts with Available for automatic switching on; turn it
-off in the account's editor in Settings > Accounts to keep that account out of
-automatic switching.
+A newly added account starts with Auto-switch on; turn it off on the account in
+Settings > Accounts to keep that account out of automatic switching.
 When Claude says "Your organization has disabled Claude subscription access",
-that account cannot be used any more: Ghostex turns its Available for automatic
-switching off, and the next message you send to a session on it first moves the
-session to the best account set to Automatic, resuming the same conversation.
-With Continue automatically on, Ghostex moves the session by itself and
-continues the message that failed. Turn the option back on, reconnect the
-account, or pick it for a session when its access works again.
+that account cannot be used any more: Ghostex turns its Auto-switch off (the
+account shows "Subscription access disabled"), and the next message you send to
+a session on it first moves the session to the best account with Auto-switch on,
+resuming the same conversation. When the rules say Switch accounts or Wait for
+reset, Ghostex moves the session by itself and continues the message that
+failed. Turn Auto-switch back on, reconnect the account, or pick it for a
+session when its access works again.
 Reconnecting a Codex account works while that account's sessions keep running.
 When Codex still has to stop first, Settings lists the sessions in the way and
-offers Sleep sessions and continue; sleeping keeps them in the sidebar and they
+offers Pause sessions and continue; paused sessions stay in the sidebar and
 resume when you open them.
 
 Hide emails in Settings > Accounts keeps the first and last characters before
@@ -1667,10 +1712,21 @@ Microsoft's download page). New terminals and agents use PowerShell 7 right afte
 it is installed; terminals that are already open keep their shell.
 Keys: `windowsTerminalBackend`, `windowsWslDistribution`.
 
-Terminals are embedded Ghostty surfaces. Font, theme, cursor, padding,
-scrollback, clipboard, and scrolling are Settings > General > Terminal rows and
-are written into a managed Ghostty config; the Ghostty settings actions row
-applies the recommended set or opens the raw config. Command-click opens links;
+Terminals are embedded Ghostty surfaces with their own config file, separate
+from the Ghostty app: Ghostex never reads or changes Ghostty's own config. Font,
+theme, cursor, padding, scrollback, clipboard, and scrolling are Settings >
+General > Terminal rows and are written into Ghostex's terminal config
+(`~/.config/ghostex/ghostty/config.ghostty` on macOS and Linux,
+`%APPDATA%\Ghostex\ghostty\config.ghostty` on Windows). The Ghostty settings
+actions row applies the recommended set, resets the defaults, opens the Ghostty
+app's config or Ghostex's terminal config, and has **Import from Ghostty**, which
+copies your Ghostty fonts (family and fallbacks, size, weight, bold and italic
+families, font features), line height, letter spacing and cursor style into
+Ghostex; it never imports the theme or colors. When you first updated to this
+version, a terminal look Ghostex had been taking from your Ghostty config was
+copied into Ghostex's terminal config once, so nothing changed; the old "Ghostex
+managed terminal settings" section in Ghostty's config was left in place and you
+can delete it. Command-click opens links;
 Cmd+V pastes images as previewable links. On Windows and Linux, Ctrl+V or
 Ctrl+Shift+V pastes from the client computer's clipboard into the focused
 terminal, including a remote terminal. Shift+Insert also pastes, in terminals
@@ -1700,8 +1756,8 @@ scrollback, type `/tui` in Codex, choose Scrollback, then restart the session
 Terminals follow the app theme by default. The Theme page in Settings holds
 Appearance, and its Advanced part holds Chat theme and Terminal theme.
 Terminal theme can override the app with Light, Dark, or System. The palette
-selectors show your existing Ghostty theme names, including separate light and
-dark selections when configured. A single Ghostty theme is used for both appearances
+selectors show the theme set in Ghostex's terminal config, including separate light
+and dark selections when configured. A single theme is used for both appearances
 unless you select a separate light palette. Without a configured theme, the defaults
 are GitHub Light and GitHub Dark. All open terminals refresh automatically when their
 app, system, or terminal theme changes, including idle terminals and terminals in
@@ -1711,11 +1767,20 @@ Terminal background (Settings, Terminal) is Black / white by default: pure black
 behind dark terminals and pure white behind light ones. Choose Follow theme to use
 the theme's background color instead, or Custom color to pick your own for dark mode.
 
-On macOS, Custom shaders (experimental) runs the `custom-shader` files from your
-Ghostty config over Ghostex's terminal panes, in the order the config lists them.
+Terminals are see-through only while the window is: turn on Enable transparency
+(Settings, Theme, Transparency; it starts off on Windows and on in dark mode on
+macOS and Linux). Background opacity (Settings, Terminal) then sets how much of the
+work area's tint terminals keep: 100% matches the rest of the work area, lower
+shows more of your desktop through them. While transparency is off the row offers
+Turn on transparency instead. Background blur in the same place is the window's
+Blur, the same setting as on the Theme page. Ghostty's own `background-opacity`
+and `background-blur` lines in the terminal config do not change Ghostex's panes.
+
+On macOS, Custom shaders (experimental) runs the `custom-shader` files from
+Ghostex's terminal config over its terminal panes, in the order the config lists them.
 Turn on Enable Experimental Features (Settings, Advanced) to see it at the bottom of
 the Terminal section. While it is on, terminals use the background color and
-opacity from your Ghostty config, so Terminal background and its color are greyed
+opacity from Ghostex's terminal config, so Terminal background and its color are greyed
 out. Shader animation follows Ghostty's `custom-shader-animation`. Turn the switch
 off to go back to normal rendering; running sessions keep going. If a shader file
 does not compile, terminals keep their normal look. Windows and Linux are not
@@ -1726,7 +1791,8 @@ project. A folder supplied in the link takes precedence.
 
 Related settings: `terminalFontFamily`, `terminalFontSize`,
 `terminalGhosttyTheme`, `terminalColorScheme`, `terminalGhosttyLightTheme`,
-`terminalBackgroundMode`, `workspaceBackgroundColor`, `terminalCursorStyle`, `terminalPane*PaddingPx`,
+`terminalBackgroundMode`, `workspaceBackgroundColor`, `terminalBackgroundOpacity`,
+`windowGlass`, `windowGlassBlurRadius`, `terminalCursorStyle`, `terminalPane*PaddingPx`,
 `terminalScrollbackLimitMb`, `terminalCopyOnSelect`, `promptEditorBackend`,
 `terminalDevServerDetectionEnabled`, `terminalShadersEnabled`.
 
@@ -1814,7 +1880,11 @@ Quick Access's Action rows are gone, and `ghostex run-action`, `run-command`,
 Actions are kept and come back when you turn it on (`actionsHidden`).
 
 Agents Hub lets you browse and edit agent files in Skills, MDs, Hooks,
-Configs & MCPs, and Agent Sync. In MDs, expand Shared agent markdown to see the
+Configs & MCPs, and Agent Sync. Skills lists each skill once, however many
+agents have it: expand it to see the agents that use it and every folder it is
+in. When the copies in different agents' folders are not the same, the row says
+how many versions there are and lists each version's files. Backup folders
+(names with `.pre-sync-` or ending in `.bak`) are never listed. In MDs, expand Shared agent markdown to see the
 files in your shared agent folder, then select a filename to read or edit it.
 Expand the profile instruction groups the same way. Use Refresh to reload files
 from disk and Save (Cmd+S) to write your edits. Cmd+1 to Cmd+5 switch tabs.
@@ -1833,11 +1903,17 @@ scripts cards. Review and fix all, a row's Fix, or an agent's Review and fix
 opens a plan first:
 one relative symlink per skill in every agent's skills folder, whole-folder links
 converted to per-skill links, the one-line pointer written into each agent's
-instruction file (a file with other content is backed up as
-`<name>.pre-sync-<stamp>.bak` first), and the hooks folder and lock file linked
-into Claude Code and Codex. Nothing is deleted; tidying leftover lock file
-entries is opt-in (the Optional cleanup switch, or the plan's last group). Agents that read `~/.agents/skills` directly (Amp, Cursor,
-OpenCode) get no links. The same scan, plan, and apply run from the CLI:
+instruction file (a file with other content is backed up first), and the hooks
+folder and lock file linked into Claude Code and Codex. Nothing is deleted:
+anything in the way is moved to
+`~/.local/state/ghostex/agent-sync-backups/<stamp>/`, at the same path it had
+under your home folder, so agents never mistake a backup for a skill. Tidying
+leftover lock file entries is opt-in (the Optional cleanup switch, or the plan's
+last group). Agents that read `~/.agents/skills` directly (Codex, Gemini CLI,
+GitHub Copilot, Pi, Amp, Cursor, OpenCode) get no links, and links already in
+their folders are removed so they do not load each skill twice; Claude Code and
+the others get one link per skill. Old `<name>.pre-sync-<stamp>.bak` backup
+folders left inside skills folders are moved to the same backup folder. The same scan, plan, and apply run from the CLI:
 `ghostex agent-sync status`, `ghostex agent-sync plan [--agent <id>]`, and
 `ghostex agent-sync apply --yes [--agent <id>] [--group <group>...]
 [--prune-lock]`; `ghostex agent-sync agents` lists the ids.
@@ -1845,7 +1921,11 @@ OpenCode) get no links. The same scan, plan, and apply run from the CLI:
 Use `ghostex agents --help` to create, message, and close other agent sessions.
 `ghostex agents whoami --json` identifies the caller; `agents types` lists
 configured agent IDs; `agents create <agent-id> --task "<task>"` starts one in
-the caller's project (`--project-id` selects another). `agents list` finds
+the caller's project (`--project-id` selects another). An agent turned off in
+Settings > Agents is not listed, and `agents create`, `create-agent`,
+`run-agent`, `orchestrator create`/`start-thread --agent` and `board start-work
+--agent` refuse it, naming the agents to use instead, unless `--allow-hidden` is
+passed. `agents list` finds
 sessions, and `agents send <session-ref> "<text>"` attaches the sender's identity
 and reply reference automatically. A normal send reaches a busy agent at its
 next input boundary and wakes a sleeping one, so it is right for almost every
@@ -1963,9 +2043,11 @@ version of the Projects features in Cursor and Claude Code.
   and back, and a folded orchestrator keeps its number and colour. Opening a
   orchestrator's chat leaves both as you set them; opening one of its threads
   unfolds the orchestrator so the thread shows. Click a thread to watch it or
-  talk to it directly; answer its questions and approvals there. A thread keeps
-  the name its orchestrator gave it, like the orchestrator keeps its own (Rename in
-  the sidebar still changes it). Pinning the
+  talk to it directly; answer its questions and approvals there. A thread is
+  named after the area it works on and keeps the name its orchestrator gave it,
+  like the orchestrator keeps its own; when its orchestrator starts it on work
+  in another area, the thread renames itself to match. Your own Rename in the
+  sidebar always wins: a thread you renamed keeps your name. Pinning the
   orchestrator takes its threads along. Right-click the orchestrator and choose
   **Sleep Inactive Threads** to put its idle threads to sleep in one go: threads
   that are working, waiting on a question or approval, or running a background
@@ -2675,7 +2757,7 @@ backend: `ghostex team deploy|join|invite|identity|status|ping|leave`. Slack:
   (the pin shows filled while they are pinned) to unpin them. Ghostex remembers
   whether they are pinned. The button itself is only there once you have
   starred an account.
-  Claude meters show the two tightest of the weekly, five-hour, and Fable
+  Claude meters show the two tightest of the 7d, 5h, and Fable
   limits, so the Fable limit is never hidden when it is running out; launcher
   and picker rows and the Accounts figures use the same two numbers. Each
   meter opens that login's live limits, reset times, and extra usage or rate
@@ -2726,11 +2808,15 @@ backend: `ghostex team deploy|join|invite|identity|status|ping|leave`. Slack:
   Use, SpaceO through SpaceO, Embedded Browser Use, Project Board Beads,
   Ghostex Visuals) and
   shows their install status; an installed skill's row shows the command you
-  type to use it, such as `$ghostex-computer-use`. Skills are copied
-  into the global skill folders every agent CLI reads. When the computer is
+  type to use it, such as `$ghostex-computer-use`. Each skill is installed
+  once, in `~/.agents/skills`; agents that do not read that folder (Claude
+  Code, Kiro, Droid, Hermes and others) get a link to it in their own skills
+  folder, so every agent uses the same copy. When the computer is
   online they are downloaded from the Ghostex GitHub repository, so skill fixes
   arrive between releases, and installed skills are refreshed automatically
-  each time Ghostex starts. Offline installs use the copy inside the app.
+  each time Ghostex starts; a copy an older Ghostex left in an agent's own
+  folder is replaced by a link then. Offline installs use the copy inside the
+  app.
   Its Desktop control section installs Fast Computer & Browser Use, Trycua's
   open-source driver (the `trycua/cua` link next to its name opens the project
   on GitHub). Installing it, Ghostex Computer Use or Ghostex Browser Use also
@@ -2750,17 +2836,31 @@ backend: `ghostex team deploy|join|invite|identity|status|ping|leave`. Slack:
   keep your own screen, pointer and focus. Install SpaceO runs its official
   installer, keeps SpaceO running in the background and installs the Ghostex
   SpaceO skill; it does not add SpaceO to your agents' MCP settings. Its row
-  gets the same update, reinstall and uninstall buttons (an update waits for
-  agents using SpaceO to finish; uninstalling ends their SpaceO sessions and
-  keeps the permissions). On a Mac, both tools get an Accessibility row and a
+  gets the same update, reinstall and uninstall buttons: Settings checks
+  SpaceO's latest GitHub release the way it checks Fast Computer & Browser
+  Use's, the update button turns blue when a newer version is out (hover it
+  for the versions; click the check mark to check again), and an update
+  runs SpaceO's official installer, then restarts SpaceO once the agents
+  using it finish. Its Accessibility and Screen Recording permissions carry
+  over an update; if one is still missing afterwards, the update says so.
+  Uninstalling ends agents' SpaceO sessions and keeps the permissions. On a Mac, both tools get an Accessibility row and a
   Screen Recording row that always show Granted, Not granted or Needs restart
   and update on their own while Settings is open. Grant makes the tool itself
   ask macOS for the permission, so it is listed in System Settings (SpaceO as
   "spaceo", Fast Computer & Browser Use as "CuaDriver"), and opens that
   Privacy & Security pane; turn the switch on there and the row turns to
-  Granted. Needs restart means macOS allowed SpaceO after it started: Restart
-  SpaceO (done for you after a Grant) restarts it once the agents using it
-  finish. Ask agents to use $ghostex-spaceo (or /ghostex-spaceo in Claude).
+  Granted. For SpaceO, a small Ghostex tag sits on the right edge of System
+  Settings (its left edge when the right has no room), pointing into its app
+  list: drag its spaceo tile into the list, which adds SpaceO and switches it
+  on. The tag shows Waiting for the drop until macOS has the permission, then
+  opens the other permission's pane (Screen Recording first, then
+  Accessibility). If SpaceO started before a permission, it restarts by
+  itself once no agent is using it (the tag says Restarts when SpaceO is free
+  while one is), then shows SpaceO is ready and closes; the rows' Needs
+  restart has a Restart SpaceO button that waits the same way. Close the tag
+  any time with its x. SpaceO is macOS only: on Windows and Linux its rows
+  are hidden and `ghostex spaceo install-skill` says so. Ask agents
+  to use $ghostex-spaceo (or /ghostex-spaceo in Claude).
   Commands: `ghostex spaceo install-skill`, `spaceo doctor`.
 - Settings > Integrations > Tools lists the tools Ghostex can install for you
   when something you set up needs them: Node.js and npm, uv, Homebrew (Mac),
@@ -2923,17 +3023,19 @@ Related settings: `sidebarTheme`, `darkThemePreset`, `lightThemePreset`,
 
 ## Sending feedback
 
-The chat-bubble button in the sidebar's bottom bar, right of the workspace
-switcher, opens Send Feedback. Write what is broken, confusing or missing and paste
+Send Feedback, in the sidebar's More Options menu right under Join Discord, opens
+the feedback pop-up. Write what is broken, confusing or missing and paste
 screenshots into the text box with Cmd+V (Ctrl+V on Windows and Linux): up to
 five PNG, JPEG or WebP images of 5 MB each; a larger PNG screenshot is scaled
-down to fit. Review then shows the exact GitHub issue, title and description,
+down to fit. Add your GitHub username (optional, "name" or "@name") and the
+issue mentions you with "Reported by @name", so GitHub tells you when it is
+fixed; Ghostex remembers it for your next feedback. Review then shows the exact
+GitHub issue, title and description,
 and you can edit both before Send; Ghostex adds your screenshots and a line with
 the app, its version and your operating system. The issue is public on the
 Ghostex GitHub, and after it is sent Open Issue takes you to it. Cmd+Enter
 (Ctrl+Enter) moves to the next step and Escape closes the pop-up. It works in the
-desktop app and in the web app. The "Collect more data with an agent" switch is
-not available yet.
+desktop app and in the web app.
 
 ## Answering the common questions
 

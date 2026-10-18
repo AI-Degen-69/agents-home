@@ -159,6 +159,8 @@ routing, no deploy. It never escalates itself into a full workbench run.
 - This skill must itself pass its own validator: run
   `node scripts/validate.js <agents-root>/skills/skill-workbench` after any edit.
 
+- **Size discipline:** keep the SKILL.md body under 250 lines for full marks; if exceeded, move detail to references/ or scripts/.
+
 ## Hebrew Chat Output Contract (חובת דיווח בעברית)
 
 Bidi rule (חובה — תיקון כיווניות): כל שורה מתחילה במילה עברית — זה מה

@@ -36,7 +36,7 @@ For every task executed, follow these phases:
 ### Phase 1: Pre-flight & Specialized Skill Routing
 0. **Verify Plan:** Confirm `tasks/plan.md` exists. If missing, halt: "No plan found! Run `/ii-plan-issue` first." Nothing below can run without it.
 1. **Preconditions — verify all three before touching a file:**
-   1. **Right branch.** Run `git branch --show-current`. You must be on the plan's feature branch (`i<number>/<slug>`). On the base branch, or on a branch that is not the plan's, stop and route to `pipeline-triage` — never start a build on the wrong branch.
+   1. **Right branch.** Run `git branch --show-current`. You must be on the plan's feature branch (`i<number>/<slug>`). On the base branch, or on a branch that is not the plan's, stop and route to `pipeline-triage` — never start a build on the wrong branch. When the repo isolates issue work in worktrees, also confirm you are inside the issue's worktree (`git worktree list`), not the main checkout — building in the main checkout edits the operator's live tree and collides with other sessions' writers.
    2. **Dirt has a known origin.** Run `git status --short`. Every changed file must trace to the plan's tasks. Foreign or unattributable dirt → stop and route to `pipeline-triage` for the unknown-origin stop rule. Do not absorb another stream's changes into this build, and do not stash them away silently.
    3. **Resume an unfinished plan.** If `tasks/plan.md` has unchecked `[ ]` items, you are resuming. Take the next task from **`tasks/plan.md`** — the single source of truth for completion state. `tasks/todo.md` is a derived checklist, so read it for reporting but never select the next task from it: Phase 4 marks completion in `tasks/plan.md` only, and selecting from the checklist can replay an already-completed task. Never restart a plan from task 1, and never overwrite `tasks/plan.md` (Station II owns reconciliation).
 2. **Quality Guardrails:** Respect constraints from `CONSTRAINTS.md` (anti-cheat, forbidden edits, zero regressions).
@@ -81,10 +81,46 @@ has already disproved the lane.
   - **After changing renderer output, sweep the sibling suites that render the same component.** "Targeted" means the touched module's tests, but sibling suites pin rendered strings: axis labels, badge wording, bar counts. A UI fix that changes one label fails those suites too, and their failures are the pins of the old (defective) behavior — repin them to the new expected output in the same change, with a comment naming why the old pin was wrong.
   - **Derive fixture assertions from the fixture's actual rows, not the ticket's summary of it.** A ticket saying "fills land around 43%–52%" may describe one scenario while the fixture also fills elsewhere (rescue and single-leg scenarios). Assert `any(...)`/`at-least` unless the fixture is genuinely uniform — an `all(...)` over a range read off a summary red-fails on data the summary never mentioned.
   - **A stub-DOM harness cannot set module-local state through `module.exports`.** When a harness evaluates bundled page JS in a `new Function` scope, the renderer reads `let` bindings private to that scope; assigning `app.someFlag` on the exports object is dead code. Inject the state by appending the assignment to the evaluated source itself (`source += ";currentMetric = 'x';"` before the `new Function` call) so it lands in the same scope the renderer reads.
+- **Deletion tasks: cut at the last reference, not the first.** A flag, field, or function
+  removed at its definition site often has a second consumer deeper in the same function or
+  module. Grep the whole tree for every reference before cutting, or the targeted suite dies
+  with a NameError on a line you never read. For a whole-path removal, enumerate the entry
+  points from the callers' side (`grep -rn <symbol>`) before touching any definition. The
+  grep must cover the edited files themselves, not just callers elsewhere: a surviving
+  reference inside the same function fails at call time, so an import smoke test passes while
+  the suite dies. After cutting, grep each edited file for every removed identifier before
+  running tests. Grep imports by BARE NAME with word boundaries on lines containing the word
+  import (`grep -rnE "\b<name>\b" --include="*.py" | grep -i import`), never by a
+  phrase-shaped pattern like `from X import name`: a phrase only matches when the name sits
+  adjacent to `import`, and a multi-name import (`from X import a, name, b`) hides the
+  deleted module from every phrase grep — the miss surfaces later as an ImportError in a CI
+  shard, not locally. Before Station IV on a module-wide deletion, run the FULL suite
+  locally once: CI shards split the test tree, so the focused subset you ran proves nothing
+  about shards you did not run, and a single missed importer red-fails a shard while every
+  local focused run was green.
+- **A suite that pins behavior through the deleted vehicle is adapted, not deleted.**
+  Deleting a code path must not delete its coverage: when the only way a test exercised
+  generic behavior was through the removed vehicle (a removed-strategy fixture driving
+  generic exit logic), move the test onto the surviving path with the same assertions,
+  renamed to the surviving vocabulary. Deleting the test loses the regression pin; keeping
+  the vehicle keeps the dead code.
+- **Renames: replace the bare identifier, then grep for leftovers.** Renaming a symbol's
+  definition line (`NAME = value`) does not rename its usages, and occurrences inside longer
+  string literals do not match a quoted-literal pattern. Replace the bare identifier
+  everywhere, then grep the file for the old name — including inside composite strings —
+  before running the suite.
+- **Scripted exact-match edit passes for multi-region deletions.** When one task deletes or
+  rewrites many regions across several files, run one scripted pass (a single code-execution
+  block) that applies every old→new replacement with an assertion that each matched exactly
+  once, preserving each file's line endings (read bytes, normalize, replace, write back with
+  the original ending). Sequential `patch` calls to the same file can race; one scripted pass
+  is atomic per file, and the exact-once assertion catches both stale text (zero matches) and
+  ambiguous text (multiple matches) before anything is written.
+- **Red-by-design tests: the red output IS the deliverable.** When the locked contract makes a test deliberately red (a guard that fails until later tasks move the consumers), run it, capture the offender list verbatim — path, line, trimmed source line — into `tasks/plan.md` as the downstream work order, and never widen scope to turn it green; greening belongs to the task that owns the moves. When the task builds a test that scans the repo's own source (a no-drift guard), load `source-scanning-guard-tests` for the scanner-design pitfalls.
 - **Design & UI Tasks:** Ground styles in existing project tokens and components; implement accessible, responsive UI structure.
 - **Official Docs Grounding:** When using modern or external libraries, consult official documentation (`source-driven-development`) to ensure correct API usage.
 - **Build Error Resolution (build resolvers):** If compiler, syntax, or import failures occur, deploy the matching `<stack>-build-resolver` agent persona from `~/.agents/agents/` (`build-error-resolver` generic; `react-build-resolver` / `go-build-resolver` / `rust-build-resolver` when the diff touches React / Go / Rust): minimal diffs only — no architectural edits — get the build green, then resume the task. Persona not found on disk → apply the generic surgical-fix loop and record the skip.
-- **NOTICED-BUT-NOT-TOUCHING:** anything spotted mid-build that is out of scope — a bug in adjacent code, a tempting refactor, a quick win — is never touched. Capture it as a one-line future Issue candidate and surface it in the closing report; the operator decides whether it becomes an Issue. Record each candidate as an `open` row in `docs/issues/<id>-noticed-but-not-touching.md` (`N1… | candidate | discovering station | evidence path:line | open | —`); only Station VI (`vi-close-pipeline`) resolves rows.
+- **NOTICED-BUT-NOT-TOUCHING:** anything spotted mid-build that is out of scope — a bug in adjacent code, a tempting refactor, a quick win — is never touched. Capture it as a one-line future Issue candidate and surface it in the closing report; the operator decides whether it becomes an Issue. Record each candidate as an `open` row in `docs/issues/<id>-noticed-but-not-touching.md` (`N1… | candidate | discovering station | evidence path:line | open | —`); only Station VI (`vi-close-pipeline`) resolves rows. A noticed item that blocks a downstream task's promised end state — a scanner false positive that keeps a guard red, a missing fixture the next task needs — is not a passive row: surface it as a headline operator decision in the closing report, with the recommended fix, because the pipeline cannot reach green until it is resolved.
 - **Feature flags / safe defaults / rollback:** for risky behavior changes, prefer a feature flag or a safe default that keeps the old behavior reachable; keep every task rollback-friendly (atomic commits, no destructive data changes without a path back). `git-workflow-and-versioning` governs commit discipline: atomic commits, ~100-line change sizing, commit-as-save-point.
 - **Observability touchpoint:** when a task changes production-facing behavior (API responses, background jobs, integrations), add — or note in the report as a follow-up — the instrumentation it needs (structured log, metric) per `observability-and-instrumentation`.
 
@@ -96,6 +132,7 @@ has already disproved the lane.
 - Stage the files touched for this specific task.
 - Commit locally: `<type>(<scope>): <summary> (#<issue>)`.
 - Mark the task as `[x]` in `tasks/plan.md`.
+- **Disclose deviations from the locked plan in the station report.** When the build merged two planned tasks into one commit (interleaved regions in one file), skipped a planned edit on purpose, or otherwise diverged from `tasks/plan.md`, name the deviation and its reason in the closing report — Station IV reviews the diff against the plan, and an undisclosed deviation reads as drift.
 - Once all tasks are complete, hand off to **Station IV (`iv-review-build-and-pr`)** for code review, final verification, and PR creation.
 
 ---

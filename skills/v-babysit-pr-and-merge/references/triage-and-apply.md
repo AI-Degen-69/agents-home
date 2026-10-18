@@ -26,7 +26,7 @@ Required fields per comment:
 
 | Field | Purpose |
 | --- | --- |
-| `id` | Comment ID used for the reply endpoint (`.../pulls/comments/<id>/replies`). |
+| `id` | REST comment id — kept for the triage table only. Replies go through the GraphQL thread mutation in Step 2.4. The REST path `repos/:owner/:repo/pulls/<pr>/comments/<id>/replies` also works for review-thread comments in OSS repos when written in full — a 404 on it means the path is malformed (most often the pull number omitted), not that the comment type forbids it. |
 | `path` | Repo-relative file the comment anchors to. |
 | `line` | Last line of the target range (end of the hunk). |
 | `start_line` | First line of the target range; `null` for single-line comments — treat as equal to `line`. |
@@ -79,12 +79,29 @@ The agent must deliberate like a thoughtful senior staff engineer: evaluate each
 For **every** REJECT — auto or judged — you MUST reply with an explicit `REJECT: <reason>` technical rationale through the GitHub API, then resolve the review thread through GraphQL so it cannot block merging:
 
 ```bash
-# 1. Reply with a concrete, one-sentence technical rationale (must include pull request number)
-gh api repos/:owner/:repo/pulls/<pr_number>/comments/<comment_id>/replies \   -f body="REJECT: the domain spec defines this constant as 0.01, so the suggested 0.001 would cause the external API to reject every request."
+# 1. Reply on the THREAD through GraphQL, then resolve it.
+#    GraphQL is canonical: it replies and resolves in one place. The REST
+#    `repos/:owner/:repo/pulls/<pr>/comments/<id>/replies` endpoint works for
+#    review-thread comments too in OSS repos -- but only with the pull number
+#    in the path. A 404 there is a malformed path (the missing `/pulls/<pr>`
+#    segment is the usual cause), never proof the comment type forbids REST;
+#    diagnose the path before switching mechanisms. Use the `PRRT_` thread id
+#    from the Step 2.1 lookup for the GraphQL route.
+#    Multi-line bodies MUST come from a file -- `-f body="..."` dies on embedded
+#    newlines and quotes ("Expected string or block string, but it was
+#    malformed"), and `gh api graphql --input <file>` expects JSON, not raw
+#    GraphQL. Write the body to a file and pass `-F body=@file`.
+gh api graphql \
+  -f query='mutation($t:ID!,$b:String!){addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$t,body:$b}){comment{id}}}' \
+  -f t=<thread_id> -F b=@reply-body.md
 
 # 2. Resolve the thread so it clears from active PR blockers
 gh api graphql -f query='mutation($t:ID!) { resolveReviewThread(input: {threadId: $t}) { thread { isResolved } } }' -F t=<thread_id>
 ```
+
+This GraphQL reply is the canonical mechanism for every verdict in this station
+(Step 3 late rejections and Step 4.4 ACCEPT replies included) -- those steps
+reference this one rather than repeating the endpoint.
 
 Rationale must be specific and falsifiable — name the constant, the exception, the file, or the spec/domain rule. NEVER resolve a thread silently without an inline reply, and never leave a rejected comment open.
 
@@ -186,10 +203,12 @@ Run targeted checks covering the touched code (auto-detect runner — `pytest te
   1. **Surgical Fix Attempt:** Inspect the failure. Often the bot's idea was sound but had a small syntax slip, missing argument, or typo. Make a surgical adjustment to fix the syntax and re-test.
   2. **Revert & Reject (Only if fundamentally flawed):** If the suggestion is fundamentally broken, contradicts the domain spec, or cannot be made green cleanly:
      - Revert only the offending file: `git checkout <file>`
-     - Reply to that comment's thread with the concrete rationale:
+     - Reply to that comment's thread with the concrete rationale, using the
+       canonical GraphQL reply from Step 2.4 (write the body to a file first):
        ```bash
-       gh api repos/:owner/:repo/pulls/comments/<comment_id>/replies \
-         -f body="Reverted: applying this suggestion fails <test_id> — <traceback summary>. Keeping existing verified behavior."
+       gh api graphql \
+         -f query='mutation($t:ID!,$b:String!){addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$t,body:$b}){comment{id}}}' \
+         -f t=<thread_id> -F b=@revert-body.md
        ```
      - Resolve the thread as a **REJECT**:
        ```bash
@@ -215,10 +234,13 @@ git push origin <branch-name>
 Every resolved review thread MUST have an explicit inline reply (`ACCEPT: <summary of fix>` or `REJECT: <reason>`) posted before resolution.
 NEVER run a blind bulk-resolution script that automatically resolves threads across the PR without verifying whether they were addressed. New incremental review comments or re-reviews might have arrived; blindly resolving threads closes unaddressed issues!
 
-1. **Reply inline to EACH addressed comment thread individually:**
+1. **Reply inline to EACH addressed comment thread individually**, using the
+   canonical GraphQL reply from Step 2.4 (write each body to a file first --
+   `-F body=@file`, never an inline multi-line `-f body="..."`):
    ```bash
-   gh api repos/:owner/:repo/pulls/<pr_number>/comments/<comment_id>/replies \
-     -f body="ACCEPT: Fixed in latest commit: <brief summary of fix applied>"
+   gh api graphql \
+     -f query='mutation($t:ID!,$b:String!){addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$t,body:$b}){comment{id}}}' \
+     -f t=<thread_id> -F b=@accept-body.md
    ```
 
 2. **Resolve ONLY the thread IDs that were explicitly triaged and replied to in this round:**

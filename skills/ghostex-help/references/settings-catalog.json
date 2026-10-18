@@ -1023,6 +1023,20 @@
       "agentWritable": true
     },
     {
+      "key": "chatPreviousQuestion",
+      "title": "Previous question button",
+      "subtitle": "Show a Previous question button next to Scroll to bottom while the chat has questions you haven't answered yet. Each click goes to the next older one and briefly outlines it.",
+      "tab": "settings",
+      "tabTitle": "General",
+      "group": "chat",
+      "groupTitle": "Chat",
+      "section": "chat",
+      "sectionTitle": "Chat",
+      "type": "boolean",
+      "default": false,
+      "agentWritable": true
+    },
+    {
       "key": "markedHandovers",
       "title": "Marked handovers in every session",
       "subtitle": "Orchestrators and their threads always start each part of the message they hand back with a marker such as ❓ Needs you, ✅ Done, ⚠️ Read this, 🧪 Untested or 🛑 Blocked, so a quick skim shows what needs you. Turn this on to have every other agent session do the same. Applies to sessions started or resumed after you change it.",
@@ -1322,7 +1336,7 @@
     {
       "key": "ghosttySettingsActions",
       "title": "Ghostty settings actions",
-      "subtitle": "Recommended Ghostty settings, Ghostty config file, Ghostty docs, and Ghostty defaults.",
+      "subtitle": "Recommended terminal settings, Import from Ghostty (fonts and cursor, not the theme), the Ghostty app's config, Ghostex's own terminal config, Ghostty docs, and defaults.",
       "tab": "settings",
       "tabTitle": "General",
       "group": "terminal",
@@ -1332,20 +1346,28 @@
       "type": "ui",
       "options": [
         {
-          "label": "Apply recommended",
-          "value": "applyRecommendedGhosttySettings"
+          "label": "Open Ghostex config",
+          "value": "openGhostexTerminalConfigFile"
         },
         {
           "label": "Open Ghostty config",
           "value": "openGhosttyConfigFile"
         },
         {
-          "label": "Open Ghostty docs",
-          "value": "openGhosttySettingsDocs"
+          "label": "Import from Ghostty",
+          "value": "importGhosttyConfig"
         },
         {
-          "label": "Reset Ghostty defaults",
+          "label": "Apply recommended",
+          "value": "applyRecommendedGhosttySettings"
+        },
+        {
+          "label": "Reset to defaults",
           "value": "resetGhosttySettingsToDefault"
+        },
+        {
+          "label": "Ghostty docs",
+          "value": "openGhosttySettingsDocs"
         }
       ],
       "advanced": true,
@@ -1392,6 +1414,34 @@
       "type": "string",
       "default": "",
       "agentWritable": true
+    },
+    {
+      "key": "terminalBackgroundOpacity",
+      "title": "Background opacity (%)",
+      "subtitle": "How much of the work area's glass tint terminals keep while transparency is on (Settings > Theme > Transparency). 100% matches the rest of the work area; lower shows more of what is behind the window. Off while transparency is off.",
+      "tab": "settings",
+      "tabTitle": "General",
+      "group": "terminal",
+      "groupTitle": "Terminal",
+      "section": "terminal",
+      "sectionTitle": "Terminal",
+      "type": "number",
+      "default": 100,
+      "agentWritable": true
+    },
+    {
+      "key": "terminalBackgroundBlur",
+      "title": "Background blur",
+      "subtitle": "How soft what shows behind the window looks, in points; 0 shows it sharp. It is the window's Blur, the same setting as Settings > Theme > Transparency (`windowGlassBlurRadius`), since a window has one blur. Shown while transparency is on.",
+      "tab": "settings",
+      "tabTitle": "General",
+      "group": "terminal",
+      "groupTitle": "Terminal",
+      "section": "terminal",
+      "sectionTitle": "Terminal",
+      "type": "ui",
+      "agentWritable": false,
+      "availability": "Not shown on Windows while What shows behind the glass is Desktop and windows."
     },
     {
       "key": "terminalBackgroundImage",
@@ -1752,7 +1802,7 @@
     {
       "key": "terminalShadersEnabled",
       "title": "Custom shaders (experimental)",
-      "subtitle": "Apply the shaders from your Ghostty config in order. macOS with Metal only; tested on Apple Silicon. Intel Mac rendering is not yet validated. Windows and Linux are unsupported. Turn off to restore ordinary rendering in the same sessions.",
+      "subtitle": "Apply the shaders from Ghostex's terminal config in order. macOS with Metal only; tested on Apple Silicon. Intel Mac rendering is not yet validated. Windows and Linux are unsupported. Turn off to restore ordinary rendering in the same sessions.",
       "tab": "settings",
       "tabTitle": "General",
       "group": "terminal",
@@ -3023,6 +3073,18 @@
       "agentWritable": false
     },
     {
+      "key": "chatPreviousQuestionUserSet",
+      "title": "chatPreviousQuestionUserSet",
+      "subtitle": "App-managed state saved with the settings; not a user preference.",
+      "tab": "settings",
+      "tabTitle": "General",
+      "section": "internalState",
+      "sectionTitle": "Internal state (not user settings)",
+      "type": "boolean",
+      "default": false,
+      "agentWritable": false
+    },
+    {
       "key": "customSidebarTitlebarLightBackgroundColor",
       "title": "customSidebarTitlebarLightBackgroundColor",
       "subtitle": "App-managed state saved with the settings; not a user preference.",
@@ -3615,7 +3677,7 @@
     {
       "key": "terminalGhosttyLightTheme",
       "title": "Terminal palette in light mode",
-      "subtitle": "Uses your configured Ghostty light theme, or GitHub Light when no theme is configured.",
+      "subtitle": "Uses the light theme set in Ghostex's terminal config, or GitHub Light when none is set.",
       "tab": "theme",
       "tabTitle": "Theme",
       "group": "appearance",
@@ -5575,7 +5637,7 @@
     {
       "key": "terminalGhosttyTheme",
       "title": "Terminal palette in dark mode",
-      "subtitle": "Uses your configured Ghostty dark theme, or GitHub Dark when no theme is configured.",
+      "subtitle": "Uses the dark theme set in Ghostex's terminal config, or GitHub Dark when none is set.",
       "tab": "theme",
       "tabTitle": "Theme",
       "group": "appearance",
@@ -5586,7 +5648,7 @@
       "default": "GitHub Dark",
       "options": [
         {
-          "label": "Use existing Ghostty config",
+          "label": "Use terminal config file",
           "value": "__ghostex_ghostty_theme_unmanaged__"
         },
         {
@@ -8155,7 +8217,7 @@
     {
       "key": "accounts",
       "title": "Accounts, usage stats and automatic continuation",
-      "subtitle": "Current CLI login, Claude cswap, Codex xswap, update, reinstall or uninstall Claude Swap and Codex Swap, sidebar usage strip, status lines, usage limits and resets, account indicators, switching, hide emails, privacy, error recovery and retry settings.",
+      "subtitle": "Current CLI login, Claude cswap, Codex xswap, add account, reconnect, sign in again, enable or disable an account, update, reinstall or uninstall Claude Swap and Codex Swap, show usage in the sidebar, status lines, usage limits and resets (5h, 7d), session badges, account numbers, auto-switch, new sessions start on, when an account hits its limit, hide emails, privacy, error recovery and retry settings.",
       "tab": "accounts",
       "tabTitle": "Accounts",
       "section": "accounts",
@@ -8739,7 +8801,8 @@
       "section": "integrations",
       "sectionTitle": "Integrations",
       "type": "ui",
-      "agentWritable": false
+      "agentWritable": false,
+      "availability": "Only on macOS."
     },
     {
       "key": "spaceoPermissions",
@@ -8750,7 +8813,8 @@
       "section": "integrations",
       "sectionTitle": "Integrations",
       "type": "ui",
-      "agentWritable": false
+      "agentWritable": false,
+      "availability": "Only on macOS."
     },
     {
       "key": "managedTools",

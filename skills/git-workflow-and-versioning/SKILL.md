@@ -170,6 +170,49 @@ Benefits:
 - If one experiment fails, delete the worktree — nothing is lost
 - Changes are isolated until explicitly merged
 
+## Porting Stale Branch Work Onto an Evolved Base
+
+When a branch has sat unmerged while main moved on, cherry-picking or rebasing its
+commits is not a mechanical operation — the branch's premises expire silently.
+
+### Verify deleted symbols' readers against the BASE, before applying
+
+A branch that deletes fields "no code reads" was true when it was written; while it
+sat unmerged, main can grow readers of those same symbols. Grep for every deleted
+symbol's readers on the BASE first, never after applying — a pick that deleted the
+readers makes a post-apply grep circular: it finds nothing because the pick removed
+them, not because they were unused.
+
+### A conflict-free auto-merge can still change behavior
+
+git auto-merges by text context; two versions of a file can interleave into
+something neither side intended — gates deleted on one side, gates added on the
+other, the result admitting a different set than either branch alone.
+Conflict-free is not behavior-preserving. A/B-test the actual runtime behavior on
+both sides (run the command, count or diff the output) before landing.
+
+### Diagnose a broken branch standalone before porting it
+
+When ported work misbehaves, check the branch out in its own worktree and run it on
+its own base first. That separates "the merge mangled it" (fix the port) from "the
+branch was always broken" (fix or re-implement the branch) — two different repairs,
+and guessing wrong wastes the round.
+
+### When the branch is genuinely broken, re-implement fresh — do not port
+
+A branch that crashes, carries half-wired logic (reads a key nothing populates), or
+produces empty/zero results on its own base is not salvageable by transplanting
+commits. Port the *intent* into a new issue and implement against current main;
+transplanting a broken commit re-lands its defect on a base that has moved on.
+
+### `cherry-pick --no-commit` + `--abort` does not undo a successful pick
+
+`--abort` only undoes a pick that is mid-conflict. A pick that applied cleanly with
+`--no-commit` leaves its changes staged, and `--abort` exits silently having done
+nothing — the next dry-run then tests on top of the first pick's leftovers. Undo a
+successful `--no-commit` pick with `git reset --hard`, and confirm the tree is clean
+before the next trial.
+
 ## The Save Point Pattern
 
 ```

@@ -38,7 +38,7 @@ Multiple open PRs and no specific number → follow `references/multi-pr-pipelin
 | **Step 2B** | Agent fallback review when CodeRabbit is rate-limited, skipped, or stuck on `processing`; probe `@coderabbitai configuration` first when a review contradicts the committed config | `references/triage-and-apply.md` |
 | **Step 3** | Late rejections — pointer only, Step 2.4 is the one canonical REJECT flow | `references/triage-and-apply.md` |
 | **Step 4** | Apply accepted fixes (Type A suggestions / Type B intent), run targeted tests, self-heal, one batch commit, reply to and resolve every thread | `references/triage-and-apply.md` |
-| **Step 5** | GitHub CI is the merge gate; post `@coderabbitai resolve` to close the review loop, then squash-merge, or deploy a `<stack>-build-resolver` persona on failure | `references/merge-and-reset.md` |
+| **Step 5** | Check the stack for foreign commits, then GitHub CI is the merge gate; post `@coderabbitai resolve` to close the review loop, then squash-merge — dismissing a stale `CHANGES_REQUESTED` verdict when it is what blocks — or deploy a `<stack>-build-resolver` persona on failure | `references/merge-and-reset.md` |
 | **Step 5a** | Close the issue — verify GitHub auto-closed it via `Closes #<id>`, or close manually if it missed | `references/merge-and-reset.md` |
 | **Step 5b** | Return the local checkout to a clean, fast-forwarded base and delete the merged branch **locally and on the remote** (`git push origin --delete`, after the `MERGED` guard) | `references/merge-and-reset.md` |
 
@@ -111,9 +111,17 @@ digraph babysit_pr_and_merge {
 - **One commit per round:** Batch all accepted fixes into a single commit and push once.
 - **No auto-fix on partial rejections:** Never run `@coderabbitai auto-fix` when any comments were rejected. Apply fixes locally and test.
 - **Never commit red:** If a suggestion breaks a test, `git checkout <file>`, reply with the failure log, resolve as REJECT, and re-run the targeted tests.
+- **Read the CI log before touching code when a shard fails:** `gh pr checks <pr>` gives each job's URL; `gh run view --log-failed --job <job-id>` names the exact failing test and its error — a shard summary ('4 failed') never names the importer or the cause. Fix that test, re-run it locally, and push once with the round's other fixes.
 - **Repo conventions win:** Always observe repo-specific PR templates and review rules.
 - **Post-merge local reset is mandatory:** After every merge (or abandoned-PR escalation), return the checkout to base: confirm `MERGED` via `gh pr view`, switch to base, `git pull --ff-only`, force-delete the local branch (`-D` only after remote confirms `MERGED` — squash merges are never `-d`-deletable), then delete it **on the remote** with `git push origin --delete` (never remote-first; `--delete-branch` on the merge is best-effort and this repository's `deleteBranchOnMerge` is `false`), then `git fetch --prune`. Stash untracked artifacts with `-u` (`git stash push -u -m "pre-reset: ..."`) — a plain `git stash` leaves untracked files in place and the tree stays dirty. Fold the remote-delete outcome (deleted / already gone / declined) into the condensed 1–2 line merge summary — never a silent no-op, never a verbose git-ops block. Never reset a dirty tree without committing/stashing first; escalate on ambiguity.
 - **In a linked worktree the base branch may be held by the primary worktree.** `git switch <base>` then fails with "already used by worktree at ...": switch the worktree to its own branch and fast-forward THAT to `origin/<base>` (`git switch <own-branch> && git pull --ff-only origin <base>`) — same clean, synced end state — and disclose the deviation in the report. Never force the primary worktree's checkout.
+- **Verify a merged base in a throwaway worktree, never in the primary checkout.** The primary repo is routinely on another session's branch holding their uncommitted work — a suite or rehearsal run there tests the wrong code and risks disturbing work you do not own. Create a detached worktree at the merged base, verify, remove it, then re-read the primary checkout's branch and `git status` to prove you left it untouched:
+  ```bash
+  git worktree add --detach .worktrees/<verify-name> origin/main
+  # ... verify ...
+  git worktree remove --force .worktrees/<verify-name>
+  ```
+  A runtime-artefact directory (`runtime/`, `data/`, `reports/`) is normally gitignored, so a fresh worktree starts **without** it — a run that reads it fails or silently finds nothing. Seed or regenerate it before the run, and expect a two-step chain (produce the artefact, then consume it) rather than one command.
 
 ---
 
