@@ -98,7 +98,6 @@ School-style: **S+** (reserve) > **S** (top) > **A** > **B** > **C** > **D**.
 
 | Grade | Meaning | Models earning it |
 |---|---|---|
-| S+ | Reserve | (none yet on OpenCode) |
 | S+ | Reserve | (none — nothing on OpenCode clears Index 50) |
 | S | Top | (none — nothing on OpenCode clears Index 45) |
 | A | Competent | OC-10: MiniMax M3.1 Flash (43); OC-4: GLM-5.3-Flash (42); OC-3: DeepSeek V4.1 Flash (39); OC-6: MiMo-V2.6-Flash (38) |

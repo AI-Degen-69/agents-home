@@ -30,23 +30,25 @@ function parseRelevantFiles(issueBody) {
       continue;
     }
     if (inSection && /^#+\s+/.test(trimmed)) {
+      // A second target heading (Scope <-> Relevant files) continues the
+      // section instead of closing it — both sections feed conflict detection
+      // per skills/i-pick-issue/SKILL.md lines 80-99.
+      if (/^#+\s+(Relevant files|Files touched|Scope)/i.test(trimmed)) {
+        continue;
+      }
       break;
     }
     if (inSection) {
-      // Look for bullet items, markdown backticks, or paths
+      // Prefer the backticked file path over the bullet's first word:
+      // `- Update `src/app.js`` yields src/app.js, not "Update".
+      const backticked = trimmed.match(/`([^`]+)`/);
+      if (backticked && /[/.]/.test(backticked[1])) {
+        files.add(backticked[1]);
+        continue;
+      }
       const match = trimmed.match(/^[-*]\s+`?([^`\s]+)`?/);
-      if (match) {
+      if (match && /[/.]/.test(match[1])) {
         files.add(match[1]);
-      } else {
-        const inlineMatches = trimmed.match(/`([^`]+)`/g);
-        if (inlineMatches) {
-          inlineMatches.forEach(m => {
-            const clean = m.replace(/`/g, '');
-            if (clean.includes('/') || clean.includes('.')) {
-              files.add(clean);
-            }
-          });
-        }
       }
     }
   }

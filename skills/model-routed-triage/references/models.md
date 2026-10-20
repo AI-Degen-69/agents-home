@@ -136,14 +136,14 @@ faster; **close sessions early → unused hours auto-refund**. Higher-tier varia
 | FB-1 | MiMo 2.6 Flash | N/A (base) | 1h | Cheapest capable; AA 38 (A). | Freebuff hours pool |
 | FB-2 | MiMo v2.6 Flash Fast | N/A (Fast) | 2h | Speed variant of MiMo Flash. | Freebuff hours pool |
 | FB-3 | MiMo 2.6 Pro | N/A (Pro) | 5h | Higher-tier MiMo; same AA 38 (A). | Freebuff hours pool |
-| FB-4 | DeepSeek V4.1 Flash | N/A | 3h | Recommended default; AA 39 (S). | Freebuff hours pool; image_0116c1.png |
-| FB-5 | DeepSeek V4.1 Flash Fast | N/A (Fast) | 5h | Speed variant; AA 39 (S). | Freebuff hours pool |
+| FB-4 | DeepSeek V4.1 Flash | N/A | 3h | Recommended default; AA 39 (A). | Freebuff hours pool; image_0116c1.png |
+| FB-5 | DeepSeek V4.1 Flash Fast | N/A (Fast) | 5h | Speed variant; AA 39 (A). | Freebuff hours pool |
 | FB-6 | Muse Spark 1.3 | N/A | 3h | Standard tier (not the free Contributor); AA Intel 48.1 / Coding 75.8 / Agentic 55.5 (S). | Freebuff hours pool |
 | FB-7 | GLM 5.3 Flash | N/A | 4h | Zhipu; AA 42 (A). | Freebuff hours pool |
 | FB-8 | GPT-6 Luna | N/A | 4h | OpenAI; AA 38 (A); weak TB4 13%, slow TTFT. | Freebuff hours pool |
-| FB-9 | Claude Haiku 5.5 | N/A | 6h | 100k-context variant; Anthropic; AA 43 (S); 440M tokens/task — burns hours fast. | Freebuff hours pool; image_084962.png |
-| FB-10 | Gemini 4 Argon | N/A | 20h | Google; AA 53 (S); Promotional · **1 session/day**; $2.00/$10.00 token. | Freebuff hours pool; image_d241b0.png |
-| FB-11 | MiniMax M3.1 Flash | N/A | Free | Same model as OC-10/CL-5; AA-43 API ceiling (free tier unmeasured); indie SWE-Mini 75%, TB 64%; verbose → set effort explicitly if exposed. | Freebuff dropdown; user-reported |
+| FB-9 | Claude Haiku 5.5 | N/A | 6h | 100k-context variant; Anthropic; AA 43 (A band; S-ceiling per verbosity + probe-first on this harness); 440M tokens/task — burns hours fast. | Freebuff hours pool; image_084962.png |
+| FB-10 | Gemini 4 Argon | N/A | 20h | Google; AA 53 (S+); Promotional · **1 session/day**; $2.00/$10.00 token. | Freebuff hours pool; image_d241b0.png |
+| FB-11 | MiniMax M3.1 Flash | N/A | Free | Same model as OC-10/CL-5; AA 43 (A); indie SWE-Mini 75%, TB 64%; verbose → set effort explicitly if exposed. | Freebuff dropdown; user-reported |
 
 Notes: FB-1..FB-10 costs are hours consumed per session from the daily 21h
 (subscriber) / 5h (free) pool (refill 12:00 AM Asia/Jerusalem). FB-11 MiniMax is

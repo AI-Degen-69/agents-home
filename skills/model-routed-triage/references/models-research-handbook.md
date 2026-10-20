@@ -101,12 +101,13 @@ and cite the numbers, not the adjectives.
 - **Score conflict:** record every figure with source + date. GA / canonical
   model page outranks pre-release partner posts and launch blogs. Flag until
   sources converge.
-- **Unconfirmed weights:** when the serving tier's weights are unknown or
+- **Unconfirmed weights — with a B-cap for the no-yardstick case:** when the serving tier's weights are unknown or
   differ from the benchmarked tier (e.g. a Contributor tier with capped
   reasoning and no own benches), the benchmarked numbers serve as an explicit
   ceiling proxy, labeled as proxy. Grade from the ceiling minus only the
-  *measured or vendor-stated* caps (reasoning/effort caps, context caps,
-  verbosity, latency, quota).
+  *measured or vendor-stated* caps — and when there is **no yardstick page at
+  all** for the tier (neither its own nor a same-weights page), street evidence
+  alone caps the grade at **B**, never above, until a yardstick lands.
 - **Unknowns:** state what's unknown and price the risk instead of assuming
   the favorable value.
 - **Anonymous / stealth models:** a model served under a placeholder name with
