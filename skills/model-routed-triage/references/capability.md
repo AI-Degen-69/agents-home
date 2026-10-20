@@ -102,7 +102,7 @@ School-style: **S+** (reserve) > **S** (top) > **A** > **B** > **C** > **D**.
 | S | Top | (none — nothing on OpenCode clears Index 45) |
 | A | Competent | OC-10: MiniMax M3.1 Flash (43); OC-4: GLM-5.3-Flash (42); OC-3: DeepSeek V4.1 Flash (39); OC-6: MiMo-V2.6-Flash (38) |
 | B | Light / probe | OC-9: Nemotron 3.5 Super VL (26); OC-1: Beam (30); OC-2: Big Pickle (no page; indie B-band) |
-| C | Weak fit | OC-7: Nemotron 3 Ultra (GA page 23; 47.7 pre-release conflict); OC-8: Nemotron 3.5 Lightning (13); OC-5: LongCat 2.5 Preview (Go collapse, slow) |
+| C | Weak fit | OC-7: Nemotron 3 Ultra (GA page 23; 47.7 pre-release conflict); OC-8: Nemotron 3.5 Lightning (13); OC-5: LongCat 2.5 Preview (Go collapse, slow); OC-11: Mercury 3 (no AA page; family prior 11–12) |
 | D | Do not route | (none — all OpenCode models now carry at least provisional evidence) |
 
 ### Justification by model
@@ -216,6 +216,61 @@ Source: https://artificialanalysis.ai/models/minimax-m3-1-flash
 indie SWE-Mini 75% confirm competent, not top — 15 pts below the live
 frontier. Verbosity/effort guardrails stand; never the S+ final step.)
 
+**OC-11 — Mercury 3, Inception (C — provisional, probe-only).** Released
+2026-10-19. Diffusion LLM (parallel draft refinement, not autoregressive),
+proprietary, param count undisclosed ("40x Mercury 1" vendor claim). 1M ctx,
+131,072 max output, tool calling + structured outputs, text-only (no image
+input), OpenAI-compatible API (`https://api.inceptionlabs.ai/v1`), effort
+ladder `instant/low/medium/high`, temperature 0.5–1.0. Vendor claims
+1,068 tok/s on NVIDIA Blackwell, 4–8x GPT-6 Luna / Claude Haiku 5.5, and
+"on par or better" with them on quality; launch table ahead on 10 of 12
+benchmarks, Haiku leading long-context recall and one of two coding tests.
+⚠️ **No AA page for Mercury 3** → per the no-evidence fallback it cannot
+exceed C. Independent signals: **Benchable.ai** — 96% operational success,
+instruction following 85% (90th pct), multi-step reasoning 96% accuracy
+(96th-pct speed), programming 91%, **math 80.6% (28th pct)** (not
+AA-calibrated); **Sam Witteveen** self-run — 10/10 on his agentic
+tool-calling suite, 8/8 pro prompts, 4,200-word essay completed without
+truncation, RAG pass (⚠️ video was **sponsored by Inception** → discounted
+evidence). ⚠️ **Strong downward family prior:** AA has measured exactly two
+Inception models — **Mercury 2 = Index 11, Mercury 2.5 = Index 12**, both
+"below average" (price-class median 13) despite 499/781 tok/s; benchlm's Vals
+Index puts Mercury 2.5 at 8.86%. Vendor's own scaling claim ("intelligence 3x
+from Mercury 1 mini to Mercury 3") is arithmetically consistent with ~12,
+**not** with Luna 38 / Haiku 43 → treat "same range as Luna/Haiku" as a
+statement about Inception's private suite, not a calibrated cross-vendor
+index. Verdict: **C — cheap/free fast worker, unproven intelligence.**
+Guardrails: probe on your own three highest-volume task shapes before
+trusting it; never the irreversible final step; re-grade the moment AA
+publishes the page. **Data-policy hard stop:** Inception's ToS trains on
+prompts/outputs by default ("Improve the model for everyone" toggle = OFF
+opt-out) → **never route private/confidential repo content or code**.
+Sources: https://www.inceptionlabs.ai/blog/introducing-mercury-3
+https://docs.inceptionlabs.ai/get-started/models
+https://benchable.ai/models/inception/mercury-3-20261019
+https://artificialanalysis.ai/models/creators/inception
+https://artificialanalysis.ai/models/mercury-2-5
+https://www.youtube.com/watch?v=bEO_QeJU7U0 (sponsored)
+
+> **First-party probe (Oct 21, 2026) — operator's own Inception key.** Measured,
+> not claimed (probe ran through the FreeLLMAPI path on the same Inception
+> account):
+> - **Strict JSON mode + arithmetic**: returned `{"answer": 391, "city":
+>   "Paris"}` — correct; 3.37s wall, but **689 of 701 completion tokens were
+>   reasoning tokens** at `reasoning_effort: medium` → set effort low/none on
+>   cheap tasks or the reasoning tax dominates.
+> - **Tool calling**: valid `tool_calls` payload, correct arguments
+>   (`{"city":"Tel Aviv","unit":"f"}`), **0.51s wall** — clean, no repair loop.
+> - **Streaming speed**: TTFT **0.71s**, decode **~415 tok/s**, 728 completion
+>   tokens in 2.46s wall (~296 tok/s end-to-end) — well below the vendor's
+>   1,068 tok/s figure, which is decode-only on NVIDIA Blackwell and not
+>   reproduced through the router path. Treat "1,068 tok/s" as unverified.
+>
+> Probe verdict: **C, probe-verified** — fast, instruction-strong, clean
+> tool-calling, cheap/free — with the sibling AA prior (11/12) capping how much
+> intelligence to assume. Good for drafts, first passes, latency-bound loops,
+> and cheap parallel sub-agents. Never the final reviewer.
+
 **OC-5 — LongCat 2.5 Preview, Meituan (C).** 1.6T MoE (~48B active), 1M
 ctx; official repo claims TB 2.1 70.8 / SWE-bench Pro 59.5 (vendor-reported).
 Indie board: **46.65/80** (rank #43) — Go 0.9/5 collapse vs Dart/Flutter 4/5,
@@ -242,7 +297,7 @@ for models actually switchable on Cline.
 | S | Top | CL-4: Muse Spark 1.3 Contributor (48.1 proxy) |
 | A | Competent | CL-5: MiniMax M3.1 Flash (43); CL-2: MiMo-V2.6-Flash (38) |
 | B | Light / probe | CL-3: Nemotron 3.5 Super VL (26); CL-1: Solar Mini 4 (24) |
-| C | Weak fit | (none yet on Cline) |
+| C | Weak fit | CL-6: Mercury 3 (no AA page; family prior 11–12) |
 | D | Do not route | (none yet on Cline) |
 
 ### Justification by model
@@ -283,6 +338,16 @@ final step.
 Source: https://artificialanalysis.ai/articles/korean-ai-lab-upstage-releases-solar-mini-4
 (Global re-tier: Index 24 = B band. Long-context text-in strength stands;
 never research/QA, never agentic coding.)
+
+**CL-6 — Mercury 3 (C; same evidence as OC-11).** Same model, same verdict:
+C, probe-only, no AA page, AA family prior 11–12, Benchable + sponsored-video
+street. Free for the operator (own Inception key, 100M free tokens). Verified
+on disk: Cline's native `inception` provider (`~/.cline/data/settings/
+providers.json`, tokenSource manual) plus a `mercury-3` entry under its
+`freellm` router provider. Inherits the OC-11 guardrails: probe before trust;
+never the irreversible final step; never private/confidential repo content
+(trains on prompts by default).
+Source: same as OC-11.
 
 **CL-4 — Muse Spark 1.3 Contributor (S — top free model on Cline).** Meta (MSL),
 1.3 released 2 Sep 2026; multimodal reasoning, text+image+video (+audio/PDF) in /
@@ -331,7 +396,7 @@ pool faster; route the smallest time-slice that clears the grade. No S+ anywhere
 | S | Top | FB-6: Muse Spark 1.3 (48.1); FB-12: DeepSeek V4.1 Flash 1017 (45 ceiling, probe-first) |
 | A | Competent | FB-9: Claude Haiku 5.5 (43, 100k-context variant); FB-11: MiniMax M3.1 Flash (43); FB-7: GLM 5.3 Flash (42); FB-4 / FB-5: DeepSeek V4.1 Flash (39); FB-1 / FB-2 / FB-3: MiMo 2.6 Flash (38); FB-8: GPT-6 Luna (38) |
 | B | Light / probe | (none on Freebuff — A-models cover it: FB-11 free, FB-1 1h) |
-| C | Weak fit | (none on Freebuff) |
+| C | Weak fit | FB-13: Mercury 3 (no AA page; family prior 11–12) |
 | D | Do not route | (none yet on Freebuff) |
 
 ### Justification by model
@@ -428,6 +493,20 @@ Terminal-Bench 4.0 24.2% (weaker on longest agentic suites). Freebuff variants: 
 (Global re-tier: 38 = A floor.)
 Source: https://artificialanalysis.ai/models/mimo-v2-6-flash
 
+**FB-13 — Mercury 3 (C; same evidence as OC-11).** Same model, same verdict:
+C, probe-only, no AA page, AA family prior 11–12, Benchable + sponsored-video
+street. BYOK against the operator's own Inception key → 100M free tokens per
+new key, then $0.20/$0.70 list (50% launch $0.10/$0.35); Freebuff hour-burn
+for BYOK entries unconfirmed. Connection caps (32,768 ctx / 4,096 out) are
+below the model's 1M / 131,072 → raise before long-context work.
+Source: same as OC-11.
+
+## Claude Code
+
+**Not installed on this machine** (Oct 21, 2026) — no Claude Code harness and
+no provider config; the only `claude-code` artefact is a disabled Hermes
+plugin. No models, no grades, nothing to route.
+
 ## Task-class matrix (which grade each kind of work demands)
 
 Required grade is a property of the work class (harness-independent); the
@@ -463,6 +542,16 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 | Research / extraction (no hard guarantees) | S | Freebuff | FB-6 | Muse S; avoid GPT-6 Luna (13% agentic, slow). |
 | Final irreversible verification | S+ | Freebuff | FB-10 | Argon 53 — your only reserve-grade model; 1 session/day, high-value only. |
 
+> **Mercury 3 (OC-11 / CL-6 / FB-13) is graded C** — below every
+> required grade in this matrix, so it earns **no matrix row**. It is a
+> *probe* instrument: run it on a cheap, reversible task (a draft, a first
+> pass, a latency-sensitive loop) and let a graded model decide. It must never
+> take the S/S+/irreversible slot on any harness.
+>
+> **Hermes** holds no Inception entry (provider `nous`, openrouter + gemini
+> fallbacks) and **Claude Code is not installed** → no Mercury 3 routing on
+> either. S/S+ work stays on Freebuff/Cline.
+
 ---
 
 ## Risk flags
@@ -491,6 +580,32 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 - **CL-1 Solar Mini 4 (B, text-only):** 1% agentic coding + 18% knowledge accuracy → long-context text-in reasoning only; never research/QA, never coding.
 - **CL-4 Muse Spark 1.3 Contributor (S, but free-tier caveats):** grade S uses the regular-tier AA indices as the proxy (Intelligence 48.1 / Coding 75.8 / Agentic 55.5) because the free Contributor tier has no own benches; the free tier is capped to low/medium reasoning (max reasoning is Standard-only) and trades data for price, so real free-tier output runs below the cited indices — probe-verify before S-grade work; never the irreversible final step.
 - **No S+ (and no S with verified free-tier benches) on Cline:** CL-4 Muse Contributor is graded S on regular-tier indices (ceiling), but the irreversible final step stays S+ only; cross-check S-grade closeouts with Freebuff FB-10.
+- **Mercury 3 (OC-11 / CL-6 / FB-13) — C, probe-only, five hard flags:**
+  (1) **No AA page** — nothing independent has reproduced the vendor claim;
+  the AA family prior (Mercury 2 = 11, Mercury 2.5 = 12) points well below
+  Luna 38 / Haiku 43, so "beats Luna/Haiku" is a statement about Inception's
+  private suite. (2) **Trains on your prompts by default** — ToS grants a
+  perpetual license to train on User Submissions; opt-out is the platform
+  toggle "Improve the model for everyone" → OFF. **Never send private repo
+  code, secrets, or confidential context.** (3) **Sponsored evidence** — the
+  most detailed third-party write-up (Witteveen) was sponsored by Inception;
+  discount it. (4) **Launch discount is temporary** — $0.10/$0.35 is 50% off
+  the $0.20/$0.70 list, and the operator's free runway is 100M tokens per new
+  key; re-check the rate before any long run. Where the provider is wired:
+  **OpenCode ships a native `inception` provider** (models.dev catalog —
+  model ref `inception/mercury-3`, limits ctx 1,000,000 / output 131,072,
+  effort low/medium/high, tool_call + structured_output) authenticated with the
+  operator's own key (`opencode.db` credential table, integration_id
+  `inception`); the same key is also wired in the FreeLLMAPI router (custom
+  platform `mercury-3`, where `context_window` is NULL) and in Freebuff BYOK
+  (connection declares 32,768 ctx / 4,096 out — raise). Cline has the same
+  native `inception` provider (verified in `~/.cline/data/settings/
+  providers.json`) and also lists `mercury-3` under its `freellm` router
+  provider. **Hermes is not wired to Inception; Claude Code is not
+  installed.** (5) **Vendor speed
+  not reproduced**: measured Oct 21 — TTFT 0.71s, decode ~415 tok/s, ~296
+  tok/s end-to-end, vs the advertised 1,068 tok/s decode-only on NVIDIA
+  Blackwell. Use the measured number for planning, not the headline.
 - **Freebuff is time-billed, not token-billed:** 21h/day (Starter $8/mo) + 60h wallet/mo (replaces unused); refill 12:00 AM Asia/Jerusalem. Higher models burn the pool faster — route the smallest time-slice that clears the grade.
 - **FB-9 Claude Haiku 5.5 (S, 6h):** 100k-context variant; very verbose (440M tokens/task) → hours burn fast; treat as S-ceiling, probe first. (A 15h "Claude Haiku 5.5" row was also observed — if confirmed as the regular-context variant, add as a separate row, ctx in notes.)
 - **FB-12 DeepSeek V4.1 Flash 1017 (S-ceiling, 5h, probe-first):** AA 45 is the

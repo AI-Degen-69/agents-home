@@ -72,7 +72,18 @@ listed as `None`.
 | OC-8 | Nemotron 3.5 Lightning | None | Free | Speed-focused variant; no effort levels surfaced. | OpenCode dropdown; user-reported |
 | OC-9 | Nemotron 3.5 Super VL | Default, None, Minimal, Low, Medium, High, Extra High | Free | NVIDIA 120B open-weight MoE; only Nemotron with effort ladder. | OpenCode dropdown; user-reported |
 | OC-10 | MiniMax M3.1 Flash | Default, Low, Medium, High, Extra High, Max | Free | 1M ctx multimodal in; AA-43 API ceiling (free tier unmeasured); indie SWE-Mini 75%, TB 64%; verbose + default-max burn → set effort explicitly. Harness ID: `space-bunny-free`. | OpenCode dropdown; AA page + vendor blog 2026-10-19 + indie |
+| OC-11 | Mercury 3 | low, medium, high | Free (BYOK) | Diffusion LLM, Inception, 2026-10-19. **OpenCode ships a native `inception` provider** (models.dev catalog: api `https://api.inceptionlabs.ai/v1/`, env `INCEPTION_API_KEY`) with `mercury-2` / `mercury-2.5` / `mercury-3` / `mercury-edit-2` → model ref **`inception/mercury-3`**. Catalog limits: ctx **1,000,000**, output **131,072**, reasoning effort low/medium/high, tool_call + structured_output, text-only, cost $0.10/$0.35 (cache_read $0.01) — matches vendor. Cost for the operator = his own Inception key: **100M free tokens per new key**, then $0.20/$0.70 (50% launch $0.10/$0.35). Measured Oct 21 (through the FreeLLMAPI path on the same account): TTFT 0.71s, decode ~415 tok/s, tool call in 0.51s; reasoning tokens dominate at effort=medium. No AA page → `[unverified]`. | OpenCode native `inception` provider, operator's own key (operator-confirmed 2026-10-21; verified in `opencode.db` credential table + models.dev catalog) |
 
+- Added OC-11 Mercury 3 (Oct 21, 2026) — **native OpenCode `inception` provider**
+  (models.dev catalog entry `inception`: api `https://api.inceptionlabs.ai/v1/`,
+  env `INCEPTION_API_KEY`), models mercury-2 / mercury-2.5 / mercury-3 /
+  mercury-edit-2, operator's own key (stored in `opencode.db` → credential
+  table, integration_id `inception`). Catalog limits for mercury-3: ctx
+  1,000,000, output 131,072, effort low/medium/high, tool_call +
+  structured_output. The same key is also wired in the FreeLLMAPI router
+  (custom platform `mercury-3`) and in Freebuff BYOK — probe measurements came
+  through the FreeLLMAPI path on the same account. Cost basis = 100M free
+  tokens per new Inception key, then list price. Grade in capability.md.
 ### Update log
 - Added OC-1..OC-10 from the OpenCode free-tier dropdown (images image_3e2797.png,
   image_7ea323.png). Effort levels per model from user; cost = Free daily-reset
@@ -108,6 +119,7 @@ Medium / High / Extra (per the Cline dropdown, image_97b6fa.png).
 | CL-4 | Muse Spark 1.3 Contributor | None / Low / Medium / High / Extra | Free | Meta multimodal reasoning; regular-tier AA Intel 48.1 / Coding 75.8 / Agentic 55.5 (proxy; free tier reasoning-capped). | Cline dropdown; user-reported |
 
 | CL-5 | MiniMax M3.1 Flash | None / Low / Medium / High / Extra | Free | Same model as OC-10; AA-43 API ceiling (free tier unmeasured); indie SWE-Mini 75%, TB 64%; verbose → set effort explicitly. | Cline dropdown; user-reported |
+| CL-6 | Mercury 3 | low, medium, high (vendor also exposes `instant`) | Free (BYOK) | Same model as OC-11 — Inception diffusion LLM via the operator's own key (100M free tokens per new key, then $0.20/$0.70 list, 50% launch discount $0.10/$0.35). 1M ctx / 131,072 max out; tool calling + structured outputs; text-only. No AA page → `[unverified]`. | Cline: **native `inception` provider** verified in `~/.cline/data/settings/providers.json` (provider id `inception`, apiKey, tokenSource manual, set 2026-10-20); `mercury-3` is also listed under Cline's `freellm` (router) provider in `~/.cline/data/settings/models.json` |
 
 ### Update log
 - Added CL-1..CL-4 from the Cline free-tier dropdown (image_b03dd9.png); thinking
@@ -116,6 +128,12 @@ Medium / High / Extra (per the Cline dropdown, image_97b6fa.png).
 - Added CL-5 MiniMax M3.1 Flash (Oct 20, 2026; user-confirmed free on Cline,
   None/Low/Medium/High/Extra ladder). Same evidence as OC-10; grade in
   capability.md.
+- Added CL-6 Mercury 3 (Oct 21, 2026) — Inception custom OpenAI-compatible
+  provider, operator's own key (100M free tokens per new key). Same model and
+  evidence as OC-11. Verified on disk: `~/.cline/data/settings/providers.json`
+  → provider `inception` (apiKey, tokenSource manual, updated 2026-10-20);
+  `~/.cline/data/settings/models.json` also lists `mercury-3` under Cline's
+  `freellm` (FreeLLMAPI router) provider.
 
 ---
 
@@ -145,6 +163,7 @@ faster; **close sessions early → unused hours auto-refund**. Higher-tier varia
 | FB-10 | Gemini 4 Argon | N/A | 20h | Google; AA 53 (S+); Promotional · **1 session/day**; $2.00/$10.00 token. | Freebuff hours pool; image_d241b0.png |
 | FB-11 | MiniMax M3.1 Flash | N/A | Free | Same model as OC-10/CL-5; AA 43 (A); indie SWE-Mini 75%, TB 64%; verbose → set effort explicitly if exposed. | Freebuff dropdown; user-reported |
 | FB-12 | DeepSeek V4.1 Flash 1017 | N/A | 5h | 17 Oct 2026 refresh; AA Intel 45 Max-tier (v4.3.2); vendor DeepSWE 77.0 / TB4 42.3 / HLE 42.6 (unreproduced); MIT, 1M ctx; verbose 210M/task. Distinct from FB-4/FB-5 base (AA 39). | Freebuff dropdown; user-reported |
+| FB-13 | Mercury 3 | N/A (BYOK) | Free (BYOK) | Inception diffusion LLM via the operator's own key: **100M free tokens per new key**, then $0.20/$0.70 list (50% launch $0.10/$0.35). BYOK connection `Custom OpenAI-compatible mercury-3` → https://api.inceptionlabs.ai/v1, model `mercury-3`. ⚠️ Connection declares contextWindow 32,768 / maxOutput 4,096 — under-provisioned vs the model's 1M / 131,072; raise if the harness allows. Freebuff hour-burn for BYOK entries unconfirmed. No AA page → `[unverified]`. | Freebuff BYOK (operator-confirmed 2026-10-21) |
 
 Notes: FB-1..FB-10 costs are hours consumed per session from the daily 21h
 (subscriber) / 5h (free) pool (refill 12:00 AM Asia/Jerusalem). FB-11 MiniMax is
@@ -167,3 +186,23 @@ regular-context variant, add it as a separate row with ctx in notes, same rule.
   Freebuff, distinct from FB-4/FB-5 base). AA Intel 45 Max-tier ceiling
   (v4.3.2); vendor deltas DeepSWE 77.0 / TB4 42.3 / HLE 42.6 unreproduced;
   S-ceiling probe-first; cost 5h operator-confirmed. Grade in capability.md.
+- Added FB-13 Mercury 3 (Oct 21, 2026) — BYOK connection to the operator's
+  Inception key (verified on disk: `.config/freebuff/byok/connections.json`).
+  Same model and evidence as OC-11. Context/output caps in the connection are
+  32,768 / 4,096 → raise. Freebuff hour-burn for BYOK models unknown.
+
+---
+
+## Claude Code
+
+**Not installed on this machine** (as of Oct 21, 2026) — no Claude Code
+harness, no `~/.claude` provider config, and the only `claude-code` artefact
+found is a **disabled** Hermes plugin (`hermes-claude-code` in
+`config.yaml → plugins.disabled`). Any future row here starts from scratch.
+
+### Update log
+- (Oct 21, 2026) Removed the speculative CC-1 Mercury 3 row — the operator has
+  no Claude Code. The Inception wirings that actually exist are OpenCode
+  (native `inception` provider), Cline (native `inception` provider +
+  `freellm` router entry), Freebuff (BYOK connection) and the FreeLLMAPI
+  router itself.
