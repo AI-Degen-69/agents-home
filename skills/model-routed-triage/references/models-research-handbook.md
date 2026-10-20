@@ -41,13 +41,41 @@ Tiers are set by ranks 1–2, bounded by rank 4, nudged by 5–6, never set by
 
 ## 3. Where to get the data
 
-### 3.1 Primary yardstick — read first
+### 3.1 Primary yardstick — read first (prefer API/MCP on Free; page-read only what Free omits)
 
-- **Artificial Analysis model page:** `https://artificialanalysis.ai/models/<slug>`.
-  Record Intelligence Index, Coding / Agentic scores, speed (tok/s), cost tier,
+- **Preferred: AA Data API / MCP (Free tier covers this step).**
+  Same data either way; MCP gets double quota. Use whichever fits the session:
+  - **MCP (interactive):** server `https://mcp.artificialanalysis.ai/mcp`, OAuth
+    sign-in, no key. Works in any MCP client with remote servers. Free = 200
+    tool calls / 24h window; Pro = 1,000. Ask in natural language
+    (e.g. "highest Intelligence Index under $1/M input tokens?", "compare the
+    three fastest on speed + price"). Agent looks up the OpenAPI spec itself.
+  - **REST (scripts / unattended):** base `https://artificialanalysis.ai/api/v2`,
+    key in `x-api-key` header. Free = 100 req / fixed 24h window; Pro = 500.
+    Backend agents use REST (MCP needs a human OAuth sign-in).
+    Free endpoint: `GET /language/models/free` — paginated (`?page=N`),
+    envelope `{tier, pagination, data}`, quota headers `X-AA-Tier`,
+    `X-RateLimit-Limit/Remaining/Reset`, `Retry-After` on 429.
+  - **What Free covers:** headline Intelligence / Coding / Agentic indices, the
+    six Capability Indexes, median performance, input/output prices,
+    `intelligence_index_version` (currently v4.3.2 — record it; compare scores
+    only within the same major version), slug, release date. Null = not
+    measured, never zero.
+  - **What Free omits (still page-read):** full eval set, token counts, blended
+    pricing, percentiles, context window, params, modalities, licensing,
+    provider detail. Those need Pro (`GET /language/models`,
+    `GET /language/models/{slug}`) or the model page below.
+  - **Attribution required** on all tiers (visible AA byline/link) + Data
+    Platform Terms apply.
+- **Fallback / supplement — AA model page:** `https://artificialanalysis.ai/models/<slug>`.
+  Use for whatever Free omits (context window, full eval breakdown, TB 2.1 vs
+  4.0 splits) and for Pro-only fields when no Pro key exists. Record
+  Intelligence Index, Coding / Agentic scores, speed (tok/s), cost tier,
   verbosity (tokens/task), context window. Cite slug + URL + date read.
 - **AA leaderboards / articles:** contextualize the score (median for weight
-  class, rank among peers).
+  class, rank among peers). Frontier read (§5.1 step 1) may come from
+  `GET /language/models/free` (top Intelligence Index = F) instead of the
+  leaderboard page.
 
 ### 3.2 Hard benchmarks — versioned pass@1 numbers
 
@@ -196,7 +224,9 @@ every run:
 
 ## 8. Pre-publish checklist
 
-- [ ] Yardstick read in-session, cited with slug/URL + date.
+- [ ] Yardstick read in-session, cited with slug/URL + date (API/MCP slug +
+  `intelligence_index_version` counts as citation; page URL only for
+  Free-omitted fields).
 - [ ] Every pass@1 carries version + source + vendor/independent tag.
 - [ ] No "beats X" without independent re-run or AA backing.
 - [ ] Conflicts recorded, primary nominated, flag set.
@@ -215,9 +245,15 @@ headline-only, never as data.
 
 ### 9.1 General and composite benchmarks
 
-- **Artificial Analysis** (`artificialanalysis.ai/leaderboards/models` +
-  `.../models/<slug>`). Verified live. Pull: Intelligence / Coding / Agentic
-  indices, tok/s, TTFT, $/task, verbosity (tokens/task), context window.
+- **Artificial Analysis** — Data API / MCP first, pages second.
+  API: `GET /language/models/free` (Free: headline Intelligence / Coding /
+  Agentic indices, 6 Capability Indexes, median perf, input/output prices,
+  `intelligence_index_version`; paginated; key in `x-api-key`; 100 req / 24h).
+  MCP: `https://mcp.artificialanalysis.ai/mcp` (same data, OAuth, 200 calls /
+  24h, NL prompts). Pull: indices + version + prices + slug + release date.
+  Pages (`.../leaderboards/models` + `.../models/<slug>`) only for what Free
+  omits: context window, full eval set, TB 2.1 vs 4.0 splits, tok/s, TTFT,
+  $/task, verbosity (tokens/task).
   The primary yardstick (rank 1). Limit: scores reflect paid-tier serving;
   free tiers are frequently absent — proxy rules (§4) apply.
 - **LMArena** (`lmarena.ai`). Blind crowdsourced A/B, Bradley-Terry Elo, with
