@@ -144,9 +144,12 @@ Two reports from the template. The closing What-now states the build is live wit
 - **Condensed merge summary (no verbose git-ops block):** the CI gate, squash-merge SHA, issue-close, local reset, and remote-delete outcomes collapse into 1–2 status rows (`#<id> Closed | #<n> Merged (<sha>) | Branch: <branch> → <base>, clean, synced`). Never narrate each git command with its output — that detail stays in the transcript, not the report.
 - **Manual verification walkthrough lives here:** after a successful merge, guide the operator through seeing the change with their own eyes — as many short steps as it takes for clarity, no step cap, each step one quick action in the shape where → what to do → what to see, with `→` arrows and a direct link when one exists. Plain words, no jargon. Name the real screen / tab / button, never the presentation file. Backend-only with nothing to see → one line saying so plus how it was checked automatically. (Moved here from Station VI: verification belongs at merge-time, right after the work lands.)
 
+  **Read the artifact before you write the walkthrough.** A manual-verification block may already exist — the PR body's `## How to verify`, the CodeRabbit summary, the issue body, or Station IV's report. Read it first, then decide deliberately: reuse it, tighten it, or replace it. When your version differs — a step dropped, a different launch command, a corrected number — say so and why in one line. Never hand the operator a walkthrough that quietly loses a detail the artifact already got right; the PR body is often the better document, and the chat must not contradict it. What the artifact states about how to *run* the surface wins over your assumption about the default entry point (e.g. the flag that points the dashboard at a store with real rows, without which the new page shows nothing).
+
 <!-- local-only:v-babysit-pr-and-merge:output-template-begin -->
-The chat output template for this station is `references/output-template.md`.
+The chat output template for this station is `references/english-template.md` (default).
 Read it before writing your first report.
+If the operator explicitly requests Hebrew output, use the Hebrew template at `references/hebrew-template.md`.
 <!-- local-only:v-babysit-pr-and-merge:output-template-end -->
 
 

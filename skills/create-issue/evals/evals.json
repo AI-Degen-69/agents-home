@@ -5,7 +5,7 @@
     {
       "id": "raw-idea-to-published-issue",
       "prompt": "/create-issue I want the deploy script to retry failed uploads three times before giving up.",
- "expected_output": "Agent scans the repo for the relevant deploy script and related files, drafts the issue from the template with a concrete problem statement and a [TAG] title, runs gh label list and publishes it with gh using only relevant existing labels, posts the CodeRabbit plan request as its own comment, and reports the issue number.",
+      "expected_output": "Agent scans the repo for the relevant deploy script and related files, drafts the issue from the template with a concrete problem statement and a [TAG] title, runs gh label list and publishes it with gh using only relevant existing labels, posts the CodeRabbit plan request as its own comment, and reports the issue number.",
       "mode_coverage": ["numbered"],
       "files": [],
       "static_assertions": [
@@ -19,13 +19,13 @@
         { "id": "coderabbit-request-posted", "type": "regex", "pattern": "post the canonical `@coderabbitai plan` prompt", "must_match": true, "why": "the plan request is what primes Station II while the operator is still in Station I" },
         { "id": "coderabbit-body-not-file", "type": "regex", "pattern": "Post the prompt body, never the file", "must_match": true, "why": "passing the reference doc as-is would publish a wrapper and bury the mention in a code block" },
         { "id": "coderabbit-skip-trivial", "type": "regex", "pattern": "Skip the request for a genuinely trivial issue", "must_match": true, "why": "a docs/typo-only issue gets nothing back from phases and test cases" },
- { "id": "report-contract", "type": "regex", "pattern": "Chat Output Contract", "must_match": true, "why": "the closeout report is a hard contract of this skill" }
+        { "id": "report-contract", "type": "regex", "pattern": "Chat Output Contract", "must_match": true, "why": "the closeout report is a hard contract of this skill" }
       ],
       "live_assertions": [
         "The repo is scanned and real file paths with line numbers are cited before the draft is written",
         "The issue is published with a [TAG] title and only relevant existing labels via gh",
         "The CodeRabbit plan request is posted as its own issue comment, starting with the lowercase mention",
- "The issue number and URL are reported back to the operator"
+        "The issue number and URL are reported back to the operator"
       ]
     },
     {
@@ -45,6 +45,24 @@
         "The published issue carries an Open questions body section",
         "Publication is not blocked on unresolved questions",
         "No fictional file paths or invented requirements appear in the draft"
+      ]
+    },
+    {
+      "id": "settling-open-questions",
+      "prompt": "/create-issue The operator answered the questions on issue #42. Settle the open questions and update the ticket.",
+      "expected_output": "The agent reads the existing issue, converts the Open questions section in place into settled decisions with choices, fallback rules, and rationale, removes the needs-answers label via gh issue edit, and verifies the update.",
+      "mode_coverage": ["numbered"],
+      "files": [],
+      "static_assertions": [
+        { "id": "settling-flow-documented", "type": "regex", "pattern": "Settling open questions", "must_match": true, "why": "the maintenance flow for settling open questions must be explicit in SKILL.md" },
+        { "id": "body-file-edit", "type": "regex", "pattern": "gh issue edit <n> --body-file", "must_match": true, "why": "multi-line body editing must always use a body file" },
+        { "id": "remove-needs-answers", "type": "regex", "pattern": "Remove `needs-answers` in the same `gh issue edit`", "must_match": true, "why": "the needs-answers label must be removed when questions are settled" }
+      ],
+      "live_assertions": [
+        "The issue body is edited via gh issue edit --body-file",
+        "Open questions section is converted to settled decisions",
+        "The needs-answers label is removed",
+        "The issue is re-read to verify the label is gone"
       ]
     },
     {

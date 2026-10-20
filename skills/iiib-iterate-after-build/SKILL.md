@@ -54,7 +54,8 @@ Respect `CONSTRAINTS.md` (no skipped tests, no new external dependencies without
 Pre-IV verification gate — after the fixes, guide the operator through re-checking the change with their own eyes so they can loop again via `/iiib-iterate-after-build` or advance to Station IV. Build the walkthrough from the live product: name the real screen / tab / button, use as many short steps as it takes for clarity — no step cap — each step one quick action in the shape where → what to do → what to see, with `→` arrows and a direct link when one exists. Plain words, no jargon. Say exactly what to look at (text, state, count). Prefer visual proof. Nothing visual → one line saying so plus how it was checked automatically.
 
 <!-- local-only:iiib-iterate-after-build:output-template-begin -->
-The chat output template for this station is `references/output-template.md`.
+The chat output template for this station is `references/english-template.md` (default).
 Read it before writing your first report.
+If the operator explicitly requests Hebrew output, use the Hebrew template at `references/hebrew-template.md`.
 <!-- local-only:iiib-iterate-after-build:output-template-end -->
 

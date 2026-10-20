@@ -31,6 +31,7 @@ const NON_SKILL_TOKENS = new Set([
   'html_url', 'step-play', 'hero-demo', 'pr-test-analyzer',
   // Label and API field names, not skill references.
   'needs-answers', 'needs-triage', 'ready-for-agent', 'blocked-by', 'start_line',
+  'node_modules',
 ]);
 
 function read(p) {
@@ -156,7 +157,8 @@ function extractTemplateFor(skillPath, text) {
   if (inline) return inline;
   const ref = text.match(/references\/output-template\.md/);
   if (!ref) return null;
-  const p = path.join(path.dirname(skillPath), 'references', 'output-template.md');
+  const eng = path.join(path.dirname(skillPath), 'references', 'english-template.md');
+  const p = fs.existsSync(eng) ? eng : path.join(path.dirname(skillPath), 'references', 'output-template.md');
   try {
     if (!fs.existsSync(p)) return null;
     const m = fs.readFileSync(p, 'utf8').match(/```markdown\r?\n([\s\S]*?)\r?\n```/);

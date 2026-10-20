@@ -18,6 +18,8 @@ This skill implements **Station II (Define & Plan)** of the 6-station pipeline (
 
 ## 1. Invocation & Target Issue Discovery
 
+**Pre-flight helper:** run `node scripts/issue-intake.js [number]` (or `--json`) to verify tree status, detect tech stack, inspect stale plans, and pre-fetch issue data in a single pass.
+
 ### Option A: Invoked with an Issue Number (e.g. `/ii-plan-issue 42`)
 1. **Fetch Issue Details:** Run `gh issue view <number> --comments` — title, body, labels, and all discussion comments.
 2. **Check tree clean first:** Run `git status --short --branch` — if the tree is dirty stop and route to `pipeline-triage` before claiming or branching.
@@ -173,7 +175,8 @@ Propose **at most one** concrete improvement to the issue's approach — an arch
 ---
 
 <!-- local-only:ii-plan-issue:output-template-begin -->
-The chat output template for this station is `references/output-template.md`.
+The chat output template for this station is `references/english-template.md` (default).
 Read it before writing your first report.
+If the operator explicitly requests Hebrew output, use the Hebrew template at `references/hebrew-template.md`.
 <!-- local-only:ii-plan-issue:output-template-end -->
 

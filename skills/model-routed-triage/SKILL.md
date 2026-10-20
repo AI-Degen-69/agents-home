@@ -77,6 +77,32 @@ Then establish value-for-money per candidate.
      State the expected spend per job so the operator sees what "value" means
      in money, not adjectives — and name which tasks were deemed worthy of the
      reserve and why, so the choice is auditable.
+   - **Default to full budget unless the operator states otherwise.** When the
+     operator has not mentioned remaining budget, quota usage, or cost
+     constraints for a harness, assume the full daily/weekly budget is
+     available and route accordingly. Never self-impose artificial frugality
+     on a capable harness that has capacity. On time-billed harnesses
+     (e.g. Freebuff), unused daily slots are wasted budget, not saved budget
+     -- an unused FB-10 Argon slot is a day of S+ capability gone forever.
+     Early-close refunds unused hours, so the real cost of a short session
+     (plan-only, probe, review) is far below the headline rate; factor the
+     refund into the worthiness calculation.
+   - **Prefer the highest-grade available model for any S-grade+ worthy task
+     when budget is unconstrained.** If a task clears S-grade worthiness by
+     even a small margin, route to the strongest model whose slot is
+     available today. Do not defer to a hypothetically "more worthy" future
+     task that may never arrive. The tiebreaker between S and S+ models is
+     grade, not cost, when budget is unconstrained.
+   - **Budget-constrained mode (triggered when the operator states remaining
+     quota/hours/slots).** When the operator declares a constraint (e.g.
+     "3h left on Freebuff", "Argon slot used today", "out of OpenCode quota"),
+     shift into value-density routing: rank open tasks by (worthiness x
+     expected impact) / cost, assign the most worthy task to the strongest
+     model still affordable, and cascade remaining tasks to the next cheapest
+     capable model. State the constraint explicitly in the routing table
+     (e.g. "Freebuff 3h remaining -> FB-4 DeepSeek instead of FB-6 Muse") so
+     the operator sees how the constraint shaped every assignment. Never
+     silently downgrade a task without naming the constraint that caused it.
 
 ## Step 1: Forensic triage (evidence, not names)
 
@@ -153,14 +179,43 @@ For each task in the table, provide an executable task section immediately follo
 
 **Your setup:**
 
-- **Directory:** exact worktree/checkout path to open the session in.
+- **Directory:** the worktree **this session owns** — never a path another session holds. Most harnesses create one per session (OpenCode: `C:\Users\<user>\.local\share\opencode\worktree\<session>\`; Freebuff: `C:\Users\<user>\.freebuff\worktrees\<id>\`). If your harness gave you none, create one from the checkout that holds the base branch:
+
+  ```powershell
+  cd "<primary checkout path>"          # the checkout that currently holds `main`
+  git fetch origin
+  git rev-list --count HEAD..origin/main   # Expected: 0 (synchronized)
+  git worktree add -b i<number>/<slug> C:\Users\<user>\.worktrees\<repo>\i<number> origin/main
+  ```
+
+  **Never hard-code one directory across every task card.** Two sessions on one path clobber each other: one switches the branch under the other mid-task, and the second session's commits land on the wrong branch. The card names the **branch**; the session owns the **path**.
 - **Branch:** exact branch the session must be on (feature branch for build and later stations, `main` for planning intake).
-- **Pre-flight Verify:**
+- **Pre-flight Verify** (run inside the task's own worktree):
+
+  ```powershell
+  git worktree list                                 # your branch must appear ONLY on your path
+  git branch --show-current                         # Expected: i<number>/<slug>
+  git status --short                                # Expected: empty (clean tree)
+  git rev-list --count HEAD..origin/main            # Expected: 0 (synchronized)
+  ```
+
+  If `git worktree list` shows your branch checked out somewhere else, another session owns it — stop and report that instead of taking the path.
+
+**Closeout (only for the session that merged the work):**
+
+The base branch usually lives in **another** worktree (the primary checkout). Inside a linked worktree `git switch main` fails with `fatal: 'main' is already used by worktree at ...`, and the Clean Exit Gate's "checkout is on the base branch" and "up to date with origin/main" checks can then only be satisfied in substance — `HEAD` sitting at `origin/main`'s SHA. Use the detach form and disclose the deviation in the closeout report:
 
 ```powershell
-git status --short                     # Expected: empty (clean tree)
-git rev-list --count HEAD..origin/main # Expected: 0 (synchronized)
+git switch --detach origin/main    # detach — the base branch is held elsewhere
+git branch -D i<number>/<slug>      # now deletable (no longer checked out here)
+git push origin --delete i<number>/<slug>
+git fetch --prune
+git worktree remove <your-path>    # only for a worktree YOU created (git worktree add)
 ```
+
+The last line applies to a worktree the session created itself. A **harness-provided** session worktree (OpenCode's `…\opencode\worktree\<session>\`, Freebuff's `…\.freebuff\worktrees\<id>\`) stays where it is — the harness reclaims it, and removing it from inside the session deletes the session's own working directory mid-flight.
+
+**A merge never removes a worktree.** `gh pr merge` is a remote operation; it touches nothing local. Station V deletes the *branch*; Station VI prunes *files*. The worktree dies only at `git worktree remove` (or `git worktree prune`, and only once its folder is gone by hand) — so "the merge closed my worktree" is always a wrong model, and a session that assumes it will leave a stale worktree behind for the next task.
 
 **Session Prompt (Copy & Paste):**
 Place the entire ready-to-run session prompt in a single clean code block (` ```markdown `).
@@ -196,6 +251,10 @@ inherits every fix.
    from a branch/worktree's existence.
 3. **No destructive git ops** (branch/worktree/remote deletes, stash drops,
    reverts of others' files) without declaring each one and receiving a yes.
+   The Closeout block above is the one declared exception: approving the card
+   is the yes for exactly those four operations, on that card's own branch
+   and its own worktree. A worktree removal outside that path, a stash drop,
+   or a delete of anything else still needs a fresh yes.
 4. **Three recording homes, never mixed — and every line carries an owner
    and a when:** code-level out-of-scope rows go in
    `docs/issues/<n>-noticed-but-not-touching.md` (Status open, Resolved-by
@@ -243,8 +302,16 @@ inherits every fix.
    verifiable from `main` via `git show <branch>:<path>` — no chat-history
    dependence. Same-window model switches preserve context; confirm the prior
    station's exit state before switching.
+10. **One worktree per task, owned by one session.** The card names the
+    branch, never a shared directory. Two sessions on one path clobber each
+    other's checkout: one switches the branch under the other mid-task, and
+    the second session's commits land on the wrong branch. Prove ownership
+    before the first edit (`git worktree list` shows your branch only on your
+    path); if another session already holds it, stop and report that instead
+    of taking the path. The base branch may be held by another worktree — do
+    not try to switch to it; the closeout detaches instead.
 
 ## Anti-patterns (learned)
 
 Full list of operational pitfalls and prevention rules: see [`references/anti-patterns.md`](references/anti-patterns.md).
-Key rules: verify branch divergence with `git rev-list --count` before starting, pair `models.md` with `capability.md` (never route cheapest-first blindly), and never let an `[unverified]` model ship an irreversible final step.
+Key rules: verify branch divergence with `git rev-list --count` before starting, give every task its own worktree and never share a path between sessions, pair `models.md` with `capability.md` (never route cheapest-first blindly), and never let an `[unverified]` model ship an irreversible final step.

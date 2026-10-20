@@ -78,9 +78,9 @@ function audit(skillPath) {
     add('pass', 'phantom-skill-refs', 'All kebab/snake-case backticked skill references resolve to real skill folders');
   }
 
-  // 2) SKILL.md length (Red Hat: < ~500 lines; also flag >150 for an entry point).
+  // 2) SKILL.md length (progressive-disclosure budget: <=250 full marks, fail >=500).
   if (lines.length >= 500) add('fail', 'skill-length', `${lines.length} lines (>=500)`);
-  else if (lines.length > 150) add('warn', 'skill-length', `${lines.length} lines — consider splitting optional content into on-demand files`);
+  else if (lines.length > 250) add('warn', 'skill-length', `${lines.length} lines — consider splitting optional content into on-demand files`);
   else add('pass', 'skill-length', `${lines.length} lines`);
 
   // 3) L1 description specificity: must name trigger context + output, not be generic.

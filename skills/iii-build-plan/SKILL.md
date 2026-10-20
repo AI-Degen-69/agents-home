@@ -8,11 +8,7 @@ description: Station III (Build) — Universal execution orchestrator. Implement
 This skill implements **Station III (Build)** of the 6-station pipeline (numbered stations `i`–`vi`). It works across **any project, language, or repository**, consuming the task plan from `tasks/plan.md` (created in Station II by `ii-plan-issue`) and executing implementation through disciplined type-aware builds, official documentation grounding, incremental commits, and code simplification.
 
 ## Pipeline Position
-- **Station:** Station III of VI (numbered stations `i`–`vi`)
-- **Previous Station:** `ii-plan-issue` (Plan)
-- **Next Station:** `quick-fix` (only on a Step 1c divert — which itself requires a `quick-fix`-labeled issue, the gate passing, and the operator's choice) or `iv-review-build-and-pr` (Review & Verify)
-
----
+- **Station:** Station III of VI (`ii-plan-issue` ➔ `iii-build-plan` ➔ `iv-review-build-and-pr`, or `quick-fix` divert).
 
 ## 1. Invocation & Execution Modes
 
@@ -27,14 +23,12 @@ This command supports two execution modes:
 - Picks only the **single next open task** from `tasks/plan.md`.
 - Implements it, simplifies code, creates a local commit, marks the task `[x]`, and **halts immediately** for inspection.
 
----
-
 ## 2. Per-Task Execution Protocol (Under the Hood)
 
 For every task executed, follow these phases:
 
 ### Phase 1: Pre-flight & Specialized Skill Routing
-0. **Verify Plan:** Confirm `tasks/plan.md` exists. If missing, halt: "No plan found! Run `/ii-plan-issue` first." Nothing below can run without it.
+0. **Verify Plan & Pre-flight:** Run `node scripts/build-preflight.js` (or inspect manually): confirm `tasks/plan.md` exists. If missing, halt: "No plan found! Run `/ii-plan-issue` first." Nothing below can run without it.
 1. **Preconditions — verify all three before touching a file:**
    1. **Right branch.** Run `git branch --show-current`. You must be on the plan's feature branch (`i<number>/<slug>`). On the base branch, or on a branch that is not the plan's, stop and route to `pipeline-triage` — never start a build on the wrong branch. When the repo isolates issue work in worktrees, also confirm you are inside the issue's worktree (`git worktree list`), not the main checkout — building in the main checkout edits the operator's live tree and collides with other sessions' writers.
    2. **Dirt has a known origin.** Run `git status --short`. Every changed file must trace to the plan's tasks. Foreign or unattributable dirt → stop and route to `pipeline-triage` for the unknown-origin stop rule. Do not absorb another stream's changes into this build, and do not stash them away silently.
@@ -79,7 +73,7 @@ has already disproved the lane.
   - **Unpack recorded tuples before transforming them.** Distinguish records shaped as `(argv, kwargs)` where `argv` is already a list from mock calls where `args` is a positional tuple `(cmd, *rest)`. When iterating `(argv, _)` records, access `argv` directly; if accessing a mock's `args[0]`, verify it is a list before `" ".join(...)` — otherwise joining a command string silently char-joins individual characters. Explicitly unpack and check field shape so mismatches fail loudly instead of producing assertions that can never fail.
   - **Find the project's runnable test command before the first red run.** The interpreter first on PATH is not always the project's: a `python -m pytest` that dies with "No module named pytest" means the project's environment lives behind its own runner (e.g. `uv run pytest` in a uv-managed repo). Probe once (`uv run pytest --collect-only -q` or the manifest's documented command) and use that command for the whole TDD cycle — never conclude "tests cannot run" from the bare interpreter.
   - **After changing renderer output, sweep the sibling suites that render the same component.** "Targeted" means the touched module's tests, but sibling suites pin rendered strings: axis labels, badge wording, bar counts. A UI fix that changes one label fails those suites too, and their failures are the pins of the old (defective) behavior — repin them to the new expected output in the same change, with a comment naming why the old pin was wrong.
-  - **Derive fixture assertions from the fixture's actual rows, not the ticket's summary of it.** A ticket saying "fills land around 43%–52%" may describe one scenario while the fixture also fills elsewhere (rescue and single-leg scenarios). Assert `any(...)`/`at-least` unless the fixture is genuinely uniform — an `all(...)` over a range read off a summary red-fails on data the summary never mentioned.
+  - **Derive fixture assertions from the fixture's actual rows, not the ticket's summary of it.** A ticket saying "fills land around 43%–52%" may describe one scenario while the fixture also fills elsewhere (rescue and single-leg scenarios). Assert `any(...)` / at least one match unless the fixture is genuinely uniform — an `all(...)` over a range read off a summary red-fails on data the summary never mentioned.
   - **A stub-DOM harness cannot set module-local state through `module.exports`.** When a harness evaluates bundled page JS in a `new Function` scope, the renderer reads `let` bindings private to that scope; assigning `app.someFlag` on the exports object is dead code. Inject the state by appending the assignment to the evaluated source itself (`source += ";currentMetric = 'x';"` before the `new Function` call) so it lands in the same scope the renderer reads.
 - **Deletion tasks: cut at the last reference, not the first.** A flag, field, or function
   removed at its definition site often has a second consumer deeper in the same function or
@@ -135,14 +129,22 @@ has already disproved the lane.
 - **Disclose deviations from the locked plan in the station report.** When the build merged two planned tasks into one commit (interleaved regions in one file), skipped a planned edit on purpose, or otherwise diverged from `tasks/plan.md`, name the deviation and its reason in the closing report — Station IV reviews the diff against the plan, and an undisclosed deviation reads as drift.
 - Once all tasks are complete, hand off to **Station IV (`iv-review-build-and-pr`)** for code review, final verification, and PR creation.
 
----
+## Example
+
+```bash
+# Mode A: autonomous build of all tasks in tasks/plan.md
+/iii-build-plan auto
+# Mode B: single next open task and halt for inspection
+/iii-build-plan
+```
 
 ## Final check walkthrough (mandatory input to the report)
 
 Pre-IV verification gate — after the build, guide the operator through seeing the change with their own eyes so they can catch anything to iterate on via `/iiib-iterate-after-build` before advancing to Station IV. Build the walkthrough from the live product: name the real screen / tab / button, use as many short steps as it takes for clarity — no step cap — each step one quick action in the shape where → what to do → what to see, with `→` arrows and a direct link when one exists. Plain words, no jargon. Say exactly what to look at (text, state, count). Prefer visual proof. Backend-only with nothing to see → one line saying so plus how it was checked automatically.
 
 <!-- local-only:iii-build-plan:output-template-begin -->
-The chat output template for this station is `references/output-template.md`.
+The chat output template for this station is `references/english-template.md` (default).
 Read it before writing your first report.
+If the operator explicitly requests Hebrew output, use the Hebrew template at `references/hebrew-template.md`.
 <!-- local-only:iii-build-plan:output-template-end -->
 

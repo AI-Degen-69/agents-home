@@ -85,9 +85,9 @@
         {
           "id": "report-bullet-requirements",
           "type": "regex",
-          "pattern": "➕ \\[place \\+ what's new",
+          "pattern": "(➕ \\[place \\+ what's new|➕ \\[מקום \\+ מה חדש)",
           "must_match": true,
-          "why": "the what-will-be-built block is an add/change/fix bullet list"
+          "why": "the what-will-be-built block is an add/change/fix bullet list (supports English and Hebrew contracts)"
         },
         {
           "id": "report-verification-section",

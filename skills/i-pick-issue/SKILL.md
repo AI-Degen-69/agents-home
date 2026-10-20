@@ -38,7 +38,7 @@ Every invocation of this skill begins with the **Discovery Station**, regardless
 2. **Categorize and group:**
    Group them logically by domain area, risk, architectural component, or dependency chain.
 3. **Recommend an execution sequence:**
-   Propose a concrete order of work (unblockers and core infrastructure before dependent features, quick wins vs. deep changes), and explicitly highlight the single recommended issue to start. By default the recommended issue IS the selected one — the run proceeds with it unless the operator overrides. The report header and wording follow `references/output-template.md`. No separate recommendation screen, and no separate "pick a number" menu: the alternatives are one line under the recommendation.
+   Propose a concrete order of work (unblockers and core infrastructure before dependent features, quick wins vs. deep changes), and explicitly highlight the single recommended issue to start. By default the recommended issue IS the selected one — the run proceeds with it unless the operator overrides. The report header and wording follow `references/english-template.md`. No separate recommendation screen, and no separate "pick a number" menu: the alternatives are one line under the recommendation.
 4. **Confirm or override:**
    Present the recommended (auto-selected) issue and proceed with it. The operator may override with another issue number at any point before Station II starts.
 5. **Route non-issue states:** no open issues and the operator has a brand-new idea → `create-issue`. No open issues and nothing new → say so and route to `pipeline-triage`.
@@ -144,6 +144,7 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
 ---
 
 <!-- local-only:i-pick-issue:output-template-begin -->
-The chat output template for this station is `references/output-template.md`.
+The chat output template for this station is `references/english-template.md` (default).
 Read it before writing your first report.
+If the operator explicitly requests Hebrew output, use the Hebrew template at `references/hebrew-template.md`.
 <!-- local-only:i-pick-issue:output-template-end -->

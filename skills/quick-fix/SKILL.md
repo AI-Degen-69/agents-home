@@ -127,7 +127,7 @@ No `@coderabbitai` comment, no `@coderabbitai summary`, no review trigger — th
 
 ### 7. Report and hand back
 
-Report per `references/output-template.md`, then hand back to `i-pick-issue` for the next item. The point of the lane is to reach the next task fast.
+Report per `references/english-template.md`, then hand back to `i-pick-issue` for the next item. The point of the lane is to reach the next task fast.
 
 ## Rules
 
@@ -139,8 +139,10 @@ Report per `references/output-template.md`, then hand back to `i-pick-issue` for
 6. **Push is autonomous.** Once the gate passes and verification is green, push without asking. The operator chose the lane by asking for the quick fix.
 7. **Scope discipline — never fix it, never log it.** Anything noticed but out of scope is left untouched and named in one line of the chat report, nothing more. The lane deliberately does **not** write the `NOTICED-BUT-NOT-TOUCHING` ledger at `docs/issues/<id>-noticed-but-not-touching.md`: it closes the issue and never runs Station VI, the only station that resolves those rows, so a row written here would stay `open` forever. A lane that leaves a file behind is a lane that skipped a step.
 8. **Leave no label residue.** `quick-fix` comes off the issue when the lane closes it, and comes off at any divert point that disproves it.
+9. **Read the artifact before reporting verification.** The lane opens no PR, so the artifacts are the issue body and the diff — read the issue's `How to verify` (or the diverting station's report) before writing the chat block, and reuse its commands and expected values verbatim. If yours differs, name the deviation in one line. A verification block that drops the flag or store the operator needs is a failed report, not a shortcut.
 
 <!-- local-only:quick-fix:output-template-begin -->
-The chat output template for this skill is `references/output-template.md`.
+The chat output template for this skill is `references/english-template.md` (default).
 Read it before writing your report.
+If the operator explicitly requests Hebrew output, use the Hebrew template at `references/hebrew-template.md`.
 <!-- local-only:quick-fix:output-template-end -->

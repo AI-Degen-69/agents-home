@@ -186,103 +186,32 @@ Before applying fixes, run the Spec axis in full:
 as the PR title. Do NOT generate the actual PR title yourself. Do NOT add tags
 such as `[FIX]`, `[ADD]`, `[IMPROVE]`, etc. yourself. CodeRabbit's effective
 configuration (`reviews.auto_title_placeholder` plus
-`reviews.auto_title_instructions`) detects `@coderabbitai` and generates the
-final PR title according to the title instructions. In this home the source of
-both keys is the root `.coderabbit.yaml`; other repositories may set them
-elsewhere (central configuration, repository UI, or organization UI).
-Conventional-Commits types
-(`feat:`, `fix:`) belong to commit messages only — never write one into a PR
-title. See `config/coderabbit/README.md` for the full command playbook.
+`reviews.auto_title_instructions`, configured in online account/org settings or central configuration)
+detects `@coderabbitai` and generates the final PR title according to title instructions.
+Conventional-Commits types (`feat:`, `fix:`) belong to commit messages only — never write one into a PR title.
 
 ```bash
 gh pr create --title "@coderabbitai" --body "## Summary`n...`n`nCloses #<issue>`n`n@coderabbitai summary"
 ```
 
-**After creating the PR, verify the title was replaced:** run `gh pr view <pr_number> --json title` and if the title is still exactly `@coderabbitai`, note in the handoff that CodeRabbit did not replace the placeholder (this may happen if the `.coderabbit.yaml` is missing or misconfigured).
+**The body is the verification artifact every later station reads.** Follow the repo's PR template when it defines one — in this repo `## Why`, `## Test output`, `## How to verify`, `Closes #<issue>` (`docs/agents/git-workflow.md`). Write `## How to verify` out of the gate you just ran: the exact launch command and the exact value the operator should see, copy-paste runnable, including whatever flag or store makes the surface show the thing (a page that only has numbers when pointed at a seeded registry is not verifiable against the empty default one). Stations V and VI read that block instead of inventing their own; a body without it guarantees the drift you then have to explain.
 
-The root `.coderabbit.yaml` in this home sets both title keys, so the handover
-works here with no other precondition — title generation is owned by the
-effective configuration, not by any single layer. Never fall back to a
-hand-written title. If CodeRabbit does not replace the placeholder title, say
-so in the handoff instead of inventing a title.
+**After creating the PR, verify the title was replaced:** run `gh pr view <pr_number> --json title` and if the title is still exactly `@coderabbitai`, note in the handoff that CodeRabbit did not replace the placeholder (this may happen if settings are disabled or misconfigured). Never fall back to an invented hand-written title.
 
-**Allowance pre-check (plan-gated — know what it costs before you spend it):**
-`@coderabbitai rate limit` reports the remaining review allowance and when the next review frees
-up **without consuming a review**. Post it only when the quota is thin — but it is a **chat-gated
-command**: on the Free plan it is refused with the "upgrade to CodeRabbit Essentials" notice, and
-that refusal is its own outcome, **never** "zero allowance". On Free, skip the comment entirely and
-read the allowance from the trigger acknowledgement below — it carries the same signal. This is a
-pre-check only; it never replaces the post-trigger ack.
-
-```bash
-gh pr comment <pr_number> --body "@coderabbitai rate limit"   # Free: declines — skip it
-```
-
-**Two exits from this step — take exactly one:**
-
-- **Allowance available (or the probe was skipped/unavailable)** → post the trigger and run the
-  10-second acknowledgement wait below, unchanged.
-- **Zero allowance reported** (probe answers with a window, e.g. "next review in N minutes") →
-  **do not post the trigger and do not run the acknowledgement wait.** Report the rate-limited
-  status with the reported minutes as the handoff line, and stop. A trigger posted here would be
-  declined anyway, so the wait would burn a minute to learn nothing.
-
-Immediately post the review trigger comment (**post exactly once** — pick ONE of the two forms below, never both):
+Immediately post the review trigger comment:
 
 ```bash
 gh pr comment <pr_number> --body "@coderabbitai review"
 ```
 
-Fresh-run one-liner alternative (post + 10s wait + poll in one — use INSTEAD of the snippet above):
-
-```powershell
-gh pr comment <pr_number> --body "@coderabbitai review" 2>&1 | Select-Object -Last 1; Start-Sleep -Seconds 10; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
-```
-
-**Wait for the trigger acknowledgement (MANDATORY before handoff):** Do not conclude the station on a blind post. Post the trigger, wait **10s**, then read CodeRabbit's reply to the trigger comment once, then classify it:
+**Wait for the trigger acknowledgement (MANDATORY before handoff):** Do not conclude the station on a blind post. Post the trigger, wait **10s**, read CodeRabbit's reply to the trigger comment, and classify it:
 
 - `Review triggered.` ("Action performed" reply) — review started. Proceed to handoff.
-- **Summary-only review** — an acknowledgement with a high-level summary and **no inline findings**. This is the expected shape on a **private repo on the Free plan**, where PR reviews are summarization-only. It is **not** a pass and **not** a quality signal: hand off stating plainly that CodeRabbit produced no findings here and that verification rests on the local gates (OCR delegation, type-matched reviewers, Spec axis, targeted tests). Never imply a bot review approved the code. Public repos and paid tiers do produce inline findings, so read the reply rather than assuming this shape.
-- Rate-limit reply (`## Review limit reached` / `rate limited by coderabbit.ai` / `Next included review available in N minutes`) — review NOT started. Record the reported minutes and carry them into the handoff report so the operator (and Station V) know the quota window.
-- Any other refusal/skip notice (e.g. "does not re-review already reviewed commits", or the Free-plan "upgrade to CodeRabbit Essentials" notice on a chat-gated command) — record verbatim; it may mean incremental review found nothing new, which is itself a signal Station V must read (not a silent pass). An upgrade refusal is a plan gate, not a quota reading.
-- **`## Review skipped` / "Auto reviews are disabled on this repository"** — a repo-configuration notice, not a refusal. The manual `@coderabbitai review` trigger still runs as an incremental review; look for the separate `Action performed` → `Review triggered.` comment and classify that as *review started*, noting the skipped-auto-review config verbatim. See the bot-login / two-comment rules under Comment links below.
-- **`## Review skipped: manual review required for this OSS repository`** — the Open-Source (public-repo) CodeRabbit plan: the check resolves `pass` but yields **no inline findings**; `gh pr view --json reviews` stays at 0 at every poll, so this is terminal, not in-progress. Do **not** run the 5m→1m countdown (it only re-confirms zero each step). Classify at once as *CodeRabbit skipped (OSS: manual review required on this public repo) — verification rests on the local gates*; run the agent-fallback review or hand off with the local-gate findings, and quote the skip notice verbatim. Never present this as a CodeRabbit approval.
-- No reply within ~10s — report `trigger acknowledgement not received` honestly; do not claim the review started.
-- **Ack polling (PowerShell, 10s wait, matches the real rate-limit header):** only when the trigger was already posted via the snippet above — do NOT re-post:
+- Rate-limit reply (`## Review limit reached` / `rate limited by coderabbit.ai` / `Next included review available in N minutes`) — review NOT started. Record the reported minutes and carry them into the handoff report.
+- **Summary-only review** (private repo on Free plan) / **`## Review skipped: manual review required for this OSS repository`** / **no reply within ~10s** — record status honestly; verification rests on local gates.
+- Full classification details, rate-limit pre-checks, and polling one-liners: `references/coderabbit-interaction.md`.
 
-```powershell
-Start-Sleep -Seconds 10; gh pr view <pr_number> --comments 2>&1 | Select-String "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | Select-Object -Last 6
-```
-
-- **Ack polling (bash fallback, same 10s wait, same markers):**
-
-```bash
-sleep 10; gh pr view <pr_number> --comments 2>&1 | grep -iE "Action performed|Review triggered|Review limit reached|Next included review available|rate limited by coderabbit" | tail -6
-```
-
-**Comment links (mandatory whenever the ack is anything other than `Review triggered.`):** post direct jump links in the handoff report so the operator can reach the exchange in one click — both the trigger comment and CodeRabbit's reply. Pull the `html_url` of each comment via the API:
-
-```bash
-gh api repos/:owner/:repo/issues/<pr_number>/comments --jq '.[] | select(.body | contains("@coderabbitai review")) | {trigger: .html_url}'
-gh api repos/:owner/:repo/issues/<pr_number>/comments --jq '[.[] | select(.user.login | test("coderabbitai"))] | last | {reply: .html_url, body: .body[0:300]}'
-```
-
-**The bot's GitHub login is `coderabbitai[bot]`, not `coderabbitai`.** Match with
-`.user.login | test("coderabbitai")` (a substring test), never `.user.login == "coderabbitai"` —
-an exact-match filter silently returns `null` and the reply is treated as "not received".
-
-**Read CodeRabbit's reply by content, not by a single jq/`Select-String` grab.** One trigger
-typically produces **two** bot comments: (1) a run-status comment that may open with a
-`## Review skipped` / "Auto reviews are disabled" block, and (2) the action reply whose body
-carries `Action performed` → `Review triggered.`. The `Review skipped` banner is a **repo
-configuration notice** (auto-reviews off; Org-UI profile), NOT a refusal, NOT a pass, and NOT a
-rate-limit — the explicit `@coderabbitai review` trigger still runs as an incremental review.
-Classify from the full reply: locate the `Action performed` line and treat `Review triggered.`
-as *review started*; record any `Review skipped` banner verbatim in the handoff as a config note
-(facts), then quote the found line as the status. If neither line is present, classify as the
-literal fallback (`other reply (quoted)` / `no acknowledgement`). When an exact-grab `jq`/grep
-returns empty but commenters are visible, re-pull every bot comment and scan its body before
-concluding the acknowledgement is missing.
+**Comment links (mandatory whenever the ack is anything other than `Review triggered.`):** post direct jump links in the handoff report so the operator can reach the exchange in one click (API query: `references/coderabbit-interaction.md`). Note that the bot login is `coderabbitai[bot]`.
 
 **Handoff:** Conclude Station IV and recommend `v-babysit-pr-and-merge`. The handoff report MUST state the trigger status in one line, choosing exactly one of: *review started* / *rate limited (N minutes)* / **summary-only review — no findings expected on a private Free repo; verification rests on the local gates** / *CodeRabbit skipped (OSS: manual review required on this public repo) — no inline findings; verification rests on the local gates* / *other reply (quoted)* / *no acknowledgement*. Station V reads this line to classify the review, so it must never present a summary-only review as a pass.
 
@@ -293,6 +222,7 @@ concluding the acknowledgement is missing.
 List review findings per reviewer (name + what was found + fixed or not). A reviewer with nothing found is not listed. The What-now section carries the PR hyperlink and the CodeRabbit trigger status line. The summary is 3 quick lines, not a journey.
 
 <!-- local-only:iv-review-build-and-pr:output-template-begin -->
-The chat output template for this station is `references/output-template.md`.
+The chat output template for this station is `references/english-template.md` (default).
 Read it before writing your first report.
+If the operator explicitly requests Hebrew output, use the Hebrew template at `references/hebrew-template.md`.
 <!-- local-only:iv-review-build-and-pr:output-template-end -->

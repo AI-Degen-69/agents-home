@@ -1,17 +1,20 @@
 # Component Kit (Step 4 companion)
 
-Canonical source for the vi-present-pr copy-paste kit. Vanilla only — fill
+Canonical source for the present-pr copy-paste kit. Vanilla only — fill
 with THIS job's words, never ship the placeholders as-is. Compose only the
 blocks picked in Step 2 (see `visual-pickers.md`).
 
 ## Base shells — pick ONE per page (do not mix dark + light)
 
 ```html
-<!-- Dark shell (hero-demo / split / rail) -->
+<!-- Dark shell (hero-demo / split / rail) — Hebrew / RTL default -->
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
 <style>
 :root { --ink:#eaf1f6; --muted:#9aabb8; --bg:#0b1117; --panel:#121c25; --panel-2:#172530;
 --line:#29404d; --accent:#55d6c2; --accent-ink:#06281f; --shadow:0 20px 55px rgba(0,0,0,.28); }
-* { box-sizing:border-box } body { margin:0; color:var(--ink); background:var(--bg); font:16px/1.65 "Segoe UI",Tahoma,sans-serif }
+* { box-sizing:border-box } body { margin:0; color:var(--ink); background:var(--bg); font:16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, "Heebo", Arial, sans-serif }
 main { max-width:1100px; margin:auto; padding:40px 20px 70px }
 .panel { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:26px; margin-top:24px; box-shadow:var(--shadow) }
 .figure { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--panel-2) }
@@ -21,8 +24,9 @@ main { max-width:1100px; margin:auto; padding:40px 20px 70px }
 .ctrl-btn.primary { background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:700 }
 .ctrl-btn.active { background:var(--ink); color:var(--bg) }
 .figure-caption { font-size:.78rem; color:var(--muted); padding:.6rem 1rem .8rem; border-top:1px solid var(--line) }
-.callout { border-left:3px solid var(--accent); background:rgba(255,255,255,.04); padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin:1.2rem 0 }
+.callout { border-right:3px solid var(--accent); background:rgba(255,255,255,.04); padding:1rem 1.2rem; border-radius:8px 0 0 8px; margin:1.2rem 0 }
 </style>
+</head>
 <!-- Light article shell (distill-style, for how-it-works / sequence / dataflow with prose) -->
 <style>
 :root { --ink:rgba(0,0,0,.8); --muted:rgba(0,0,0,.54); --bg:#FAF8F4; --panel:#fff; --line:rgba(0,0,0,.08);
