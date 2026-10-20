@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דוח וורקבנץ' והסבר ביצוע: iii-build-plan</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --code-bg: #090d16;
+      --tag-bg: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1.5rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-inline-start: 0.5rem;
+    }
+
+    .badge-pipeline {
+      background-color: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-success {
+      background-color: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .meta-path {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      direction: ltr;
+      text-align: right;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: var(--card-bg);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    .section-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-card h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--accent);
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    p, li {
+      color: #cbd5e1;
+      margin-bottom: 0.75rem;
+    }
+
+    ul, ol {
+      padding-inline-start: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: var(--code-bg);
+      color: #e2e8f0;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .score-box {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 1.25rem;
+    }
+
+    .score-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.1);
+      border: 3px solid var(--success);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: var(--success);
+      flex-shrink: 0;
+    }
+
+    .score-circle span {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: -4px;
+    }
+
+    .score-details {
+      flex: 1;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.95rem;
+    }
+
+    .metric-row:last-child {
+      border-bottom: none;
+    }
+
+    .metric-name {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .metric-weight {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .metric-val {
+      font-weight: 600;
+    }
+
+    .explanation-box {
+      background: rgba(56, 189, 248, 0.06);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-right: 4px solid var(--accent);
+      padding: 1.25rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .explanation-title {
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .source-tag {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-family: monospace;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--code-bg);
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      border: 1px solid var(--card-border);
+    }
+
+    .check-icon {
+      color: var(--success);
+      font-size: 1.1rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        סקיל: iii-build-plan
+        <span class="badge badge-pipeline">Pipeline station III</span>
+        <span class="badge badge-success">ציון: 100/100 (excellent)</span>
+      </h1>
+      <div class="meta-path">C:\Users\Tiger\.agents\skills\iii-build-plan</div>
+    </header>
+
+    <!-- הסבר מפורט לשאלת המשתמש -->
+    <div class="section-card">
+      <h2>💡 איך ידענו בדיוק מה לכתוב ב-references/source-scanning-guard-tests.md?</h2>
+      
+      <div class="explanation-box">
+        <div class="explanation-title">
+          <span>🔍 עקבות הראיות (Evidence Trail) בהיסטוריית המאגר</span>
+        </div>
+        <p>הידע שנכתב בקובץ לא הומצא, אלא מבוסס על שלוש עדויות מוצקות שנמצאו ישירות בקוד ובהיסטוריית ה-Git של הריפו:</p>
+        <ol>
+          <li>
+            <strong>מקור ההפניה (קומיט <code>30cfbfb</code> מ-PR #42):</strong>
+            השורה ב-<code>SKILL.md</code> המפנה ל-<code>source-scanning-guard-tests</code> התווספה בקומיט <code>30cfbfb</code> תחת כותרת הלקחים מפיצ'ר Ghostex:
+            <br>
+            <code>"When the task builds a test that scans the repo's own source (a no-drift guard), load source-scanning-guard-tests for the scanner-design pitfalls."</code>
+          </li>
+          <li>
+            <strong>ההקשר בסעיף Deletion tasks (שורות 84–118 ב-SKILL.md):</strong>
+            באותו קומיט בדיוק הוכנסו הכללים הקפדניים לסריקת מקור בעת מחיקות ומיגרציות:
+            איסור על חיפוש תבניתי כגון <code>from X import name</code> (כי ייבוא מרובה שמות <code>from X import a, name, b</code> חומק מהסורק) וחובת שימוש ב-Word boundaries (<code>\b&lt;name&gt;\b</code>) על שורות ייבוא.
+          </li>
+          <li>
+            <strong>הכלל המשלים בתחנה IV (שורה 46 ב-iv-review-build-and-pr):</strong>
+            שם הוגדר הכלל של <em>Red-by-design guard tests</em>: סורק שנועד מראש להיכשל כדי להציג את רשימת העבודה למשימות הבאות אינו נחשב לרגרסיה, אלא כהוכחה שהסורק פעיל ומזהה מפרים ("Treat a failure that matches the expected red list as proved").
+          </li>
+        </ol>
+      </div>
+
+      <p><strong>ארבעת העקרונות שרוכזו בקובץ העזר הייעודי:</strong></p>
+      <ul>
+        <li><strong>מלכודת ה-Regex מול AST:</strong> למה אסור להשתמש בביטויי Regex פשוטים שמפספסים ייבואים מרובי שורות או מרובי שמות, ומתי עדיף להשתמש ב-AST parser של השפה.</li>
+        <li><strong>מניעת זיהויי שווא (False Positives):</strong> סינון הערות (comments), מחרוזות תיעוד (docstrings) והגדרות טיפוסים בטקסט חופשי.</li>
+        <li><strong>מנגנון החרגות קשיח:</strong> החרגת קובץ הבדיקה עצמו (שמכיל מן הסתם את המחרוזת האסורה!), החרגת תיקיות <code>tests/</code>, <code>fixtures/</code>, <code>node_modules/</code> ו-<code>.git/</code>.</li>
+        <li><strong>חוזה פלט אחיד (Output Contract):</strong> החזרת שגיאות בפורמט קואורדינטות מדויק (<code>path:line: trimmed_source_line</code>) כך שהסוכן יכול להעתיק את רשימת המפרים ישירות ל-<code>tasks/plan.md</code> כהוראת עבודה למשימות הבאות.</li>
+      </ul>
+    </div>
+
+    <!-- מצב הסקיל & ציון סופי -->
+    <div class="section-card">
+      <h2>📊 מצב הסקיל & ציון סופי</h2>
+      
+      <div class="score-box">
+        <div class="score-circle">
+          100
+          <span>/ 100</span>
+        </div>
+        <div class="score-details">
+          <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--success);">
+            דירוג: Excellent (מושלם — עמידה מלאה בכל התקנים והבדיקות)
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">spec-compliance <span class="metric-weight">(משקל 40)</span></span>
+            <span class="metric-val" style="color: var(--success);">100/100</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">file-integrity <span class="metric-weight">(משקל 25)</span></span>
+            <span class="metric-val" style="color: var(--success);">100/100 (עלה מ-50)</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">eval-readiness <span class="metric-weight">(משקל 20)</span></span>
+            <span class="metric-val" style="color: var(--success);">100/100</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">size-discipline <span class="metric-weight">(משקל 10)</span></span>
+            <span class="metric-val" style="color: var(--success);">100/100 (150 שורות גוף בדיוק)</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">self-containment <span class="metric-weight">(משקל 5)</span></span>
+            <span class="metric-val" style="color: var(--success);">100/100</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- מה בוצע בפועל -->
+    <div class="section-card">
+      <h2>✅ משימות שטופלו ויושמו בהצלחה</h2>
+      
+      <div class="checklist-item">
+        <span class="check-icon">✓</span>
+        <div>
+          <strong>תיקון ביטוי שורה 82 ב-SKILL.md:</strong>
+          המרת הביטוי <code>Assert any(...)/at-least</code> לניסוח באנגלית פשוטה <code>Assert any(...) / at least one match</code>. הוסר זיהוי השווא של הוולידטור.
+        </div>
+      </div>
+
+      <div class="checklist-item">
+        <span class="check-icon">✓</span>
+        <div>
+          <strong>יצירת קובץ עזר ייעודי <code>references/source-scanning-guard-tests.md</code>:</strong>
+          מסמך מפורט המעגן את כל מלכודות התכנון של בדיקות סריקת מקור. פתר את ה-phantom-ref במלואו והעלה את ציון <code>file-integrity</code> ל-100 מלא.
+        </div>
+      </div>
+
+      <div class="checklist-item">
+        <span class="check-icon">✓</span>
+        <div>
+          <strong>הצעה 1 — סקריפט בדיקות מקדימות אוטומטי (<code>scripts/build-preflight.js</code>):</strong>
+          בודק במכה אחת ובפקודה בודדת את כל תנאי הסף של Phase 1 (ענף נוכחי מול ענף התוכנית, עצי עבודה, מקור לכלוך Git, קיום תוכנית, משימה פתוחה הבאה וזכאות ל-Quick-Fix Divert). תומך ב-<code>--json</code>, <code>--plan</code> ו-<code>--help</code>.
+        </div>
+      </div>
+
+      <div class="checklist-item">
+        <span class="check-icon">✓</span>
+        <div>
+          <strong>הצעה 2 — סגירת אזהרת דוגמה קנונית ב-SKILL.md:</strong>
+          הוספת סעיף <code>## Example</code> עם בלוק קוד מגודר של פקודות ההפעלה הנפוצות תוך שמירה על משמעת שורות מדויקת (150 שורות). בדיקת <code>canonical-examples</code> ו-<code>skill-length</code> בגריידר עברו ל-<code>pass</code> מלא (0 אזהרות ו-0 כשלים בגריידר).
+        </div>
+      </div>
+
+      <div class="checklist-item">
+        <span class="check-icon">✓</span>
+        <div>
+          <strong>הצעה 3 — סוויטת בדיקות יחידה מלאה (<code>evals/grade.test.js</code>):</strong>
+          6 בדיקות יחידה מבוססות <code>node --test</code> הבודקות את <code>grade.js audit</code>, <code>grade.js case</code> ו-<code>build-preflight.js</code>. כל 6 הבדיקות עוברות בהצלחה (100% ירוק).
+        </div>
+      </div>
+    </div>
+
+    <!-- בדיקות סביבה ופריסה -->
+    <div class="section-card">
+      <h2>🚀 סטטוס פריסה בסביבות הרצה (Step D)</h2>
+      <ul>
+        <li>Hermes: <code>Junction</code> → <code>C:\Users\Tiger\.agents\skills\iii-build-plan</code> (תקין ומאומת 🟢)</li>
+        <li>OpenCode: <code>Junction</code> → <code>C:\Users\Tiger\.agents\skills\iii-build-plan</code> (תקין ומאומת 🟢)</li>
+        <li>Gemini / Antigravity: <code>SymbolicLink</code> → <code>C:\Users\Tiger\.agents\skills\iii-build-plan</code> (תקין ומאומת 🟢)</li>
+      </ul>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">נותרו 0 ממצאים, 0 שאלות פתוחות, ו-0 הצעות בהמתנה. הסקיל מוכן ומיושר לחלוטין.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דוח סקירת Skill Workbench — present-pr</title>
+  <style>
+    :root {
+      --bg: #090d13;
+      --surface: #111827;
+      --surface-hover: #1f2937;
+      --card: #141d2e;
+      --border: #243247;
+      --border-accent: #374151;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --heading: #f9fafb;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.15);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.15);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #a855f7;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.65;
+      padding: 32px 20px;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      background: linear-gradient(135deg, #131c2e, #0e1522);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--accent), var(--purple));
+    }
+    .badge-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-primary {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .badge-success {
+      background: var(--success-glow);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-muted {
+      background: rgba(156, 163, 175, 0.1);
+      color: var(--text-muted);
+      border: 1px solid rgba(156, 163, 175, 0.2);
+    }
+    h1 {
+      font-size: 1.85rem;
+      color: var(--heading);
+      margin-bottom: 8px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .path-row {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      direction: ltr;
+      text-align: right;
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--heading);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+    }
+    .instruction-list {
+      list-style-position: inside;
+      padding-right: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .instruction-list li {
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+    .code-pill {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.82rem;
+      background: #0d1420;
+      color: #93c5fd;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid #1e293b;
+      direction: ltr;
+      display: inline-block;
+    }
+    /* Scorecard */
+    .scorecard-hero {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    @media (max-width: 720px) {
+      .scorecard-hero {
+        grid-template-columns: 1fr;
+      }
+    }
+    .score-circle {
+      background: radial-gradient(circle, #10b98118 0%, #0d1420 70%);
+      border: 2px solid var(--success);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+    }
+    .score-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #34d399;
+      line-height: 1;
+    }
+    .score-total {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .score-verdict {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--success);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .metric-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .metric-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .metric-name {
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .metric-weight {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+    .metric-score {
+      color: var(--success);
+      font-family: monospace;
+    }
+    .progress-bar-bg {
+      height: 8px;
+      background: #1f293d;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #34d399);
+      border-radius: 4px;
+    }
+    /* Audit Findings */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    th {
+      background: #0f172a;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      text-align: right;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text);
+    }
+    .finding-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-right: 4px solid var(--warning);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+    .finding-tags {
+      display: flex;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .finding-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 6px;
+    }
+    .finding-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    /* Proposal / Questions */
+    .item-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .item-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+      padding-top: 2px;
+    }
+    .item-content {
+      flex: 1;
+    }
+    .item-title {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--heading);
+      margin-bottom: 4px;
+    }
+    .item-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .item-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 0.78rem;
+    }
+    .action-pill {
+      padding: 2px 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      color: var(--text);
+    }
+    /* Deploy list */
+    .deploy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .deploy-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .deploy-target {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--heading);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .deploy-type {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-family: monospace;
+    }
+    .deploy-path {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      direction: ltr;
+      text-align: left;
+      word-break: break-all;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .option-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.92rem;
+    }
+    .option-num {
+      width: 28px;
+      height: 28px;
+      background: var(--surface-hover);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="badge-bar">
+        <span class="badge badge-primary">Skill Workbench</span>
+        <span class="badge badge-muted">Delivery Pipeline (Ad-hoc)</span>
+        <span class="badge badge-success">ציון 100/100 מושלם</span>
+      </div>
+      <h1>סקיל: <span class="code-pill">present-pr</span></h1>
+      <div class="path-row">C:\Users\Tiger\.agents\skills\present-pr</div>
+    </header>
+
+    <!-- 1. תקציר הסקיל -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-title">תקציר הסקיל 📋</div>
+      </div>
+      <p class="summary-text">
+        <strong>מטרת הסקיל:</strong> הפקת דף HTML עצמאי יחיד, ויזואלי וברור בשפה פשוטה ללקוח (ללא ז'רגון טכני), שמסביר את מהות השינוי ומנחה כיצד לבדוק אותו באפליקציה החיה.
+      </p>
+      <ol class="instruction-list">
+        <li><strong>איסוף הקשר:</strong> קריאת הדיון, ה-PR, ה-diff והכרטיס, תוך פענוח מדויק של שמות הגדרות וערכים מול קוד המקור.</li>
+        <li><strong>סיווג הסיפור:</strong> עיון ב־<span class="code-pill">references/visual-pickers.md</span> ובחירת ויז'ואל מרכזי יחיד (Centerpiece) מתוך 11 משפחות.</li>
+        <li><strong>התאמת רכיבים ופלטה:</strong> שימוש ב־<span class="code-pill">references/component-kit.md</span> לבחירת שלד עמוד, בקרות אינטראקציה ופלטת צבעים מתחלפת (איסור חזרה על אותו עיצוב ברצף).</li>
+        <li><strong>הגבלת בלוקים:</strong> יצירת דף ממוקד עם עד 3 בלוקים סך הכל (ויז'ואל מרכזי + עד 2 תומכים) וללא רכיבי מפתחים מיותרים.</li>
+        <li><strong>אימות סטטי מקדים:</strong> בדיקת שלמות HTML, תקינות תחבירית של JS והיעדר תלויות חיצוניות או CDN — ללא הרצת בדיקות דפדפן.</li>
+        <li><strong>השקה חד-פעמית:</strong> פתיחת הקובץ בדפדפן ברירת המחדל של המפעיל וסיום מעורבות הסוכן.</li>
+        <li><strong>דיווח והדרכה באפליקציה החיה:</strong> הצגת דוח לפי <span class="code-pill">references/output-template.md</span> עם הדרכת בדיקה באפליקציה האמיתית (ולא בתוך דף ה-HTML).</li>
+      </ol>
+    </section>
+
+    <!-- 2. מצב הסקיל & ציון -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-title">מצב הסקיל 📊</div>
+      </div>
+      <p class="summary-text">הסקיל נקי לחלוטין ועומד בכל כללי המפרט. 0 שגיאות, 0 אזהרות.</p>
+
+      <div class="scorecard-hero">
+        <div class="score-circle">
+          <div class="score-number">100</div>
+          <div class="score-total">מתוך 100</div>
+          <div class="score-verdict">מצוין (excellent)</div>
+        </div>
+
+        <div class="metric-list">
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-name"><span class="code-pill">spec-compliance</span> עמידה במפרט</span>
+              <span class="metric-weight">משקל 40%</span>
+              <span class="metric-score">100/100</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 100%;"></div></div>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-name"><span class="code-pill">file-integrity</span> שלמות קבצים וקישורים</span>
+              <span class="metric-weight">משקל 25%</span>
+              <span class="metric-score">100/100</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 100%;"></div></div>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-name"><span class="code-pill">eval-readiness</span> מוכנות להערכה (7 מקרי בדיקה)</span>
+              <span class="metric-weight">משקל 20%</span>
+              <span class="metric-score">100/100</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 100%;"></div></div>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-name"><span class="code-pill">size-discipline</span> משמעת נפח (171 שורות)</span>
+              <span class="metric-weight">משקל 10%</span>
+              <span class="metric-score">100/100</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 100%;"></div></div>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-name"><span class="code-pill">self-containment</span> הכלה עצמית (scripts, references, evals)</span>
+              <span class="metric-weight">משקל 5%</span>
+              <span class="metric-score">100/100</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 100%;"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ממצאי ביקורת -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-title">ממצאי ביקורת 🔍</div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>קטגוריה</th>
+              <th>ממצאים</th>
+              <th>חומרה</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>📝 תיעוד ותקינות</td>
+              <td>1</td>
+              <td>🟡 מינורי</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="finding-card">
+        <div class="finding-tags">
+          <span>📝 תיעוד ותקינות</span> | <span>🟡 מינורי</span> | <span>⚡ ניצן מהיר</span>
+        </div>
+        <div class="finding-title">עדכון שאריות שמות היסטוריים מ־vi-present-pr ל־present-pr בקבצי הרפרנס</div>
+        <div class="finding-desc">
+          בקבצים <span class="code-pill">references/visual-pickers.md</span> (שורה 3) ו־<span class="code-pill">references/component-kit.md</span> (שורה 3) מופיע האזכור ההיסטורי <code>vi-present-pr</code> מתקופת ארגון התחנות הקודמת. מכיוון שהסקיל הוגדר מחדש כסקיל ad-hoc ללא מספר תחנה (<span class="code-pill">present-pr</span>), מומלץ ליישר את שתי השורות הללו כדי לשמור על עקביות מושלמת.
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. שאלות פתוחות -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-title">שאלות פתוחות ❓</div>
+      </div>
+      <p class="summary-text" style="color: var(--text-muted);">אין שאלות פתוחות. כל החוזים וההגדרות של הסקיל מוגדרים באופן חד-משמעי.</p>
+    </section>
+
+    <!-- 5. הצעות שיפור -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-title">הצעות שיפור 💡</div>
+      </div>
+
+      <div class="item-card">
+        <div class="item-icon">💡</div>
+        <div class="item-content">
+          <div class="item-title">הוספת סקריפט עזר לאימות סטטי מהיר של דף ה-HTML</div>
+          <div class="item-text">
+            הוספת <span class="code-pill">scripts/verify-html.js</span> (ללא תלויות חיצוניות) המבצע אימות אוטומטי בהתאם לשלב 5: בדיקת שלמות תגיות HTML, וידוא היעדר קישורי CDN חיצוניים, ובדיקת תחביר JS inline לפני השקת הקובץ.
+          </div>
+          <div class="item-actions">
+            <span class="action-pill">להחלטתך: לאמץ / לדחות / להשמיט</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. ניתוב -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-title">ניתוב מחזור חיים 🧭</div>
+      </div>
+      <p class="summary-text">
+        הסקיל נקי מכנית ועובר את כל בדיקות המפרט וההערכה (100/100) — מנותב ישירות לבדיקת פריסה (Step D).
+      </p>
+    </section>
+
+    <!-- 7. בדיקת פריסה -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-title">בדיקת פריסה (Step D) 🚀</div>
+      </div>
+      <p class="summary-text">סטטוס פריסה בכל סביבות הריצה (Harnesses) נבדק ואומת בהצלחה מול השורש הקנוני:</p>
+      
+      <div class="deploy-grid">
+        <div class="deploy-card">
+          <div class="deploy-target">
+            <span>Hermes Agent</span>
+            <span class="badge badge-success">מקושר ✓</span>
+          </div>
+          <div class="deploy-type">Junction</div>
+          <div class="deploy-path">AppData\Local\hermes\skills\present-pr</div>
+        </div>
+
+        <div class="deploy-card">
+          <div class="deploy-target">
+            <span>OpenCode</span>
+            <span class="badge badge-success">מקושר ✓</span>
+          </div>
+          <div class="deploy-type">Junction</div>
+          <div class="deploy-path">~/.config/opencode/skills/present-pr</div>
+        </div>
+
+        <div class="deploy-card">
+          <div class="deploy-target">
+            <span>Gemini CLI / Antigravity</span>
+            <span class="badge badge-success">מקושר ✓</span>
+          </div>
+          <div class="deploy-type">SymbolicLink</div>
+          <div class="deploy-path">~/.gemini/config/skills/present-pr</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. אפשרויות להמשך -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-title">אפשרויות להמשך 🔀</div>
+      </div>
+      
+      <div class="options-list">
+        <div class="option-item">
+          <div class="option-num">1</div>
+          <div>לטפל בממצא העריכה היחיד (החלפת שם התחנה הישן ב־2 קבצי הרפרנס) ובהצעת השיפור בתוך הסקיל.</div>
+        </div>
+        <div class="option-item">
+          <div class="option-num">2</div>
+          <div>לבחור פרטים ספציפיים (לאמץ / לדחות / להשמיט לממצא ולהצעת השיפור).</div>
+        </div>
+        <div class="option-item">
+          <div class="option-num">3</div>
+          <div>לבדוק את הפלט של הסקיל בסימולציה בצ'אט על בסיס אחד מ-7 מקרי הבדיקה הקיימים ב־<span class="code-pill">evals/evals.json</span>.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

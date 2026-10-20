@@ -32,6 +32,8 @@ const NON_SKILL_TOKENS = new Set([
   'html_url', 'step-play', 'hero-demo', 'pr-test-analyzer',
   // Label and API field names, not skill references.
   'needs-answers', 'needs-triage', 'ready-for-agent', 'blocked-by', 'start_line',
+  // Environment and tool names, not skills.
+  'execute_code',
 ]);
 
 function read(p) {

@@ -15,4 +15,4 @@ Suggest an implementation plan for the upcoming coding agent (Station II / III):
 5. KEEP IT SIMPLE: Favor the minimal, boring solution over new abstractions (100 lines instead of 1000).
 ```
 
-
+**Posting rule:** The posted comment begins with the exact lowercase mention `@coderabbitai plan` and contains nothing else before it — no file path, no "Here is the plan request:", no wrapper text of any kind. Do NOT precede the mention with any wrapper text; the comment must start with the mention itself.

@@ -156,7 +156,8 @@ function extractTemplateFor(skillPath, text) {
   if (inline) return inline;
   const ref = text.match(/references\/output-template\.md/);
   if (!ref) return null;
-  const p = path.join(path.dirname(skillPath), 'references', 'output-template.md');
+  const eng = path.join(path.dirname(skillPath), 'references', 'english-template.md');
+  const p = fs.existsSync(eng) ? eng : path.join(path.dirname(skillPath), 'references', 'output-template.md');
   try {
     if (!fs.existsSync(p)) return null;
     const m = fs.readFileSync(p, 'utf8').match(/```markdown\r?\n([\s\S]*?)\r?\n```/);

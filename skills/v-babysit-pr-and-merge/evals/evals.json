@@ -11,21 +11,21 @@
         {
           "id": "one-line-per-comment",
           "type": "regex",
-          "pattern": "ACCEPT — \\[location \\+ fix\\]",
+          "pattern": "ACCEPT — \\[(?:location \\+ fix|מקום \\+ מה תוקן)\\]",
           "must_match": true,
           "why": "each triaged comment is one condensed ACCEPT line, not a quoted block"
         },
         {
           "id": "no-full-quotes",
           "type": "regex",
-          "pattern": "what was fixed from the comments",
+          "pattern": "(?:what was fixed from the comments|מה תוקן מההערות)",
           "must_match": true,
           "why": "the report summarizes what was fixed instead of dumping raw comment text"
         },
         {
           "id": "critical-first",
           "type": "regex",
-          "pattern": "🔍 Findings triage",
+          "pattern": "🔍 (?:Findings triage|טריאז׳ הערות)",
           "must_match": true,
           "why": "triage has its own section, so ACCEPT/REJECT verdicts are grouped and scannable"
         },
@@ -98,14 +98,14 @@
         {
           "id": "back-to-base",
           "type": "regex",
-          "pattern": "branch: `main` \\| clean \\| synced",
+          "pattern": "(?:branch: `main` \\| clean \\| synced|ענף: `main` \\| נקי \\| מסונכרן)",
           "must_match": true,
           "why": "the closing report proves the checkout is back on a clean synced base"
         },
         {
           "id": "impact-order",
           "type": "regex",
-          "pattern": "🔍 Findings triage",
+          "pattern": "🔍 (?:Findings triage|טריאז׳ הערות)",
           "must_match": true,
           "why": "triage verdicts are grouped so the operator reads impact, not arrival order"
         },
@@ -119,7 +119,7 @@
         {
           "id": "no-raw-comment-text",
           "type": "regex",
-          "pattern": "what was fixed from the comments",
+          "pattern": "(?:what was fixed from the comments|מה תוקן מההערות)",
           "must_match": true,
           "why": "never dump raw CodeRabbit text; the report carries the resolved summary"
         }

@@ -150,4 +150,6 @@ From 24 failure memories:
 
 Run the command. Read the output. THEN claim the result.
 
+**And read the record before you hand over a manual check.** When your report tells a human how to see the change for themselves — a "How to verify" block, a walkthrough, a closeout — a written one may already exist in the PR body, the PR summary, the issue, or an earlier report. Read it first and decide deliberately: reuse, tighten, or replace. Any difference gets one line saying why. Quietly dropping a step or a flag the artifact already got right is a verification failure of the same family as claiming an unrun check passed: both present something you did not prove.
+
 This is non-negotiable.

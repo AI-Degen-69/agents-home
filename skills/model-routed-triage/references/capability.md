@@ -16,12 +16,20 @@ rule). Add a new harness by copying the block and renaming.
 > primary independent benchmark source for every model — use the slug template
 > `https://artificialanalysis.ai/models/<model-name>` (e.g.
 > `.../nemotron-3-5-super-vl`). Vendor model cards are cited only where AA lacks
-> a metric, and tagged as vendor-reported. For free-tier variants that have **no
-> AA model page / no own benches** (e.g. Muse Spark 1.3 Contributor, Solar Mini 4 —
-> AA/OpenRouter list the free tier as "Not available"), cite the AA article or the
+> a metric, and tagged as vendor-reported. For serving-tier variants that have
+> **no AA model page / no own benches** (e.g. Muse Spark 1.3 Contributor, Solar Mini 4 —
+> AA/OpenRouter list the tier as "Not available"), cite the AA article or the
 > OpenRouter compare page and use the **regular / Standard-tier** numbers as the
-> capability proxy, flagging free-tier caps (e.g. max-reasoning is Standard-only,
+> capability proxy, flagging the tier's caps (e.g. max-reasoning is Standard-only,
 > data-train trade, context/time limits).
+>
+> **No-evidence fallback:** AA absent → cap at D/unverified, probe-only. Then
+> company post (params/ctx/card numbers tagged vendor-reported, never
+> grade-carrying alone) → street sweep (GitHub repros > HF case files > indie
+> multi-bench > X/Reddit patterns; single post = anecdote; sponsored or
+> no-methodology articles rejected). Two independent non-vendor signals in the
+> same direction = provisional C/B with guardrails; vendor-only or one signal =
+> stays D; S needs AA.
 >
 > A model listed in `models.md` but absent from a harness's grade table is
 > `[unverified]` there — do not route it for an irreversible final step.
@@ -36,9 +44,9 @@ School-style: **S+** (reserve) > **S** (top) > **A** > **B** > **C** > **D**.
 
 | Grade | Meaning | Models earning it |
 |---|---|---|
-| S+ | Reserve: irreversible / money-adjacent / subtle-invariant work needing the strongest available | (none yet on Antigravity) |
-| S | Top: long-horizon agentic coding, multi-step reasoning, review/audit needing judgment | **M1: Gemini 3.8 Flash** |
-| A | Competent: well-scoped edits, mechanical execution under tests, straightforward research | (none yet on Antigravity) |
+| S+ | Reserve: irreversible / money-adjacent / subtle-invariant work needing the strongest available | (none on Antigravity — Index 41, A band) |
+| S | Top: long-horizon agentic coding, multi-step reasoning, review/audit needing judgment | (none on Antigravity — M1 is A globally; S-work routes to Freebuff FB-6 / Cline CL-4) |
+| A | Competent: well-scoped edits, mechanical execution under tests, straightforward research | **M1: Gemini 3.8 Flash** |
 | B | Light / probe: trivial mechanical tasks, closeout babysitting, free verification passes | (none yet on Antigravity) |
 | C | Weak fit: known benchmark gaps; usable with guardrails | (none yet on Antigravity) |
 | D | Do not route: capability below bar | (none yet on Antigravity) |
@@ -59,10 +67,11 @@ School-style: **S+** (reserve) > **S** (top) > **A** > **B** > **C** > **D**.
 - **Safety note:** Google DeepMind model card (Sep 2026) states 3.8 Flash shows
   no material safety-level increase over 3.7 Flash per the Frontier Safety
   Framework.
-- **Verdict:** earns **S**. Quota-gated (5h + weekly), so for the *final,
-  irreversible* step of a big job it is graded **high-risk** — route the final
+- **Verdict:** earns **A** (Index 41 high / 40 medium — A band; TB 2.1 90.8% is
+  elite but TB 4.0 19.1% + Index 10+ pts below the live frontier keep it out of
+  S globally). Quota-gated (5h + weekly) — route the final
   verification/review to an S+ model/human rather than burning the reserve on a
-  non-worthy closeout.
+  non-worthy closeout. (Global re-tier: previously S on a stale scale.)
 
 ---
 
@@ -83,23 +92,6 @@ School-style: **S+** (reserve) > **S** (top) > **A** > **B** > **C** > **D**.
 
 ---
 
-## Codex
-
-> *(add your Codex models here — same grade-table shape as Antigravity)*
-
-### Grades (best → worst)
-
-| Grade | Meaning | Models earning it |
-|---|---|---|
-| S+ | Reserve | (none yet on Codex) |
-| S | Top | (none yet on Codex) |
-| A | Competent | (none yet on Codex) |
-| B | Light / probe | (none yet on Codex) |
-| C | Weak fit | (none yet on Codex) |
-| D | Do not route | (none yet on Codex) |
-
----
-
 ## OpenCode
 
 ### Grades (best → worst)
@@ -107,15 +99,16 @@ School-style: **S+** (reserve) > **S** (top) > **A** > **B** > **C** > **D**.
 | Grade | Meaning | Models earning it |
 |---|---|---|
 | S+ | Reserve | (none yet on OpenCode) |
-| S | Top | OC-3: DeepSeek V4.1 Flash Free |
-| A | Competent | OC-4: GLM-5.3-Flash Free; OC-6: MiMo-V2.6-Flash Free; OC-7: Nemotron 3 Ultra Free; OC-9: Nemotron 3.5 Super VL Free |
-| B | Light / probe | OC-8: Nemotron 3.5 Lightning Free |
-| C | Weak fit | (none yet on OpenCode) |
-| D | Do not route | OC-1 Beam Free; OC-2 Big Pickle; OC-5 LongCat 2.5 Preview Free; OC-10 Space Bunny Free — all unverified, no public benchmarks |
+| S+ | Reserve | (none — nothing on OpenCode clears Index 50) |
+| S | Top | (none — nothing on OpenCode clears Index 45) |
+| A | Competent | OC-10: MiniMax M3.1 Flash (43); OC-4: GLM-5.3-Flash (42); OC-3: DeepSeek V4.1 Flash (39); OC-6: MiMo-V2.6-Flash (38) |
+| B | Light / probe | OC-9: Nemotron 3.5 Super VL (26); OC-1: Beam (30); OC-2: Big Pickle (no page; indie B-band) |
+| C | Weak fit | OC-7: Nemotron 3 Ultra (GA page 23; 47.7 pre-release conflict); OC-8: Nemotron 3.5 Lightning (13); OC-5: LongCat 2.5 Preview (Go collapse, slow) |
+| D | Do not route | (none — all OpenCode models now carry at least provisional evidence) |
 
 ### Justification by model
 
-**OC-3 — DeepSeek V4.1 Flash Free (S).** Released 2026-09-10; 552B MoE (8B
+**OC-3 — DeepSeek V4.1 Flash (A).** Released 2026-09-10; 552B MoE (8B
 active prefill / 16B decode), 1M context, multimodal, MIT weights.
 **Artificial Analysis Intelligence Index: 39** (independent; median 19 for
 open-weight large) — 4/4 Intelligence, 4/4 Speed (176 tok/s). Beats GPT-5.6
@@ -125,7 +118,7 @@ Sol and Claude Opus-5.0 on DeepSWE v1.1 (74.2 vs 73.0), AutomationBench
 (paid = 1M) and time-limited.
 Source: https://artificialanalysis.ai/models/deepseek-v4-1-flash
 
-**OC-4 — GLM-5.3-Flash Free (A).** Z.ai, Aug 2026; 320B params (18B active), 1M
+**OC-4 — GLM-5.3-Flash (A).** Z.ai, Aug 2026; 320B params (18B active), 1M
 context, multimodal, MIT weights. **Artificial Analysis Intelligence Index: 42**
 (independent; highest among these OpenCode models, median 19 for open-weight
 large) — 4/4 Intelligence, 3/4 Cost ($0.15/$0.50). Free tier capped at 200K
@@ -133,7 +126,7 @@ context (paid = 1M) and time-limited; one tester found DeepSeek V4.1 Flash
 stronger on agentic coding.
 Source: https://artificialanalysis.ai/models/glm-5-3-flash
 
-**OC-7 — Nemotron 3 Ultra Free (A).** NVIDIA, Jun 2026; 550B params, 1M
+**OC-7 — Nemotron 3 Ultra (C).** NVIDIA, Jun 2026; 550B params, 1M
 context, open-weight (OpenMDW) — largest/hardest-reasoning Nemotron.
 **Artificial Analysis Intelligence Index: 23** on the GA model page (independent;
 median 18), 190 tok/s. ⚠️ Conflict: NVIDIA's pre-release partner launch article
@@ -142,8 +135,10 @@ Kimi K2.6 (53.9). Treat the 47.7 figure as pre-GA/partner-eval until the public
 index matches; flag before routing worth work. Free tier = 1M context; no
 verified DeepSWE/Terminal-Bench 4.0 pass@1 vs DeepSeek.
 Source: https://artificialanalysis.ai/models/nvidia-nemotron-3-ultra-550b-a55b
+(Global re-tier: GA page Index 23 = C band. The 47.7 partner figure would be S
+if the public index ever converges to it — until then, guardrailed only.)
 
-**OC-9 — Nemotron 3.5 Super VL Free (A).** NVIDIA, Oct 2026; 120B MoE (12B
+**OC-9 — Nemotron 3.5 Super VL (B).** NVIDIA, Oct 2026; 120B MoE (12B
 active), 1M context, open-weight (OpenMDW-1.1), text+image in / text out,
 Hugging Face weights. **Artificial Analysis Intelligence Index: 26**
 (independent; 4/4 quality, well above the 8 median for open-weight
@@ -154,7 +149,7 @@ Diamond 89.52%, SWE-Bench Verified 71.10%. Verbose: 170M output tokens/task
 (median 100M). No separate DeepSWE/Terminal-Bench 4.0 pass@1 surfaced.
 Source: https://artificialanalysis.ai/models/nemotron-3-5-super-vl
 
-**OC-6 — MiMo-V2.6-Flash Free (A).** Xiaomi, Sep 2026; 309B MoE (15B active),
+**OC-6 — MiMo-V2.6-Flash (A).** Xiaomi, Sep 2026; 309B MoE (15B active),
 1M context, multimodal, MIT weights. **Artificial Analysis Intelligence Index:
 38** (independent; median 18 for open-weight large) — 4/4 Intelligence, 1/4 Cost
 ($0.14/$0.28). benchlm #32/218 overall, #17/146 coding; slower (49 tok/s).
@@ -162,7 +157,7 @@ Terminal-Bench 4.0 24.2% → weaker on longest agentic suites. Free tier capped
 at 200K context; time-limited.
 Source: https://artificialanalysis.ai/models/mimo-v2-6-flash
 
-**OC-8 — Nemotron 3.5 Lightning Free (B).** NVIDIA, Aug 2026; 31.6B (3.6B
+**OC-8 — Nemotron 3.5 Lightning (B).** NVIDIA, Aug 2026; 31.6B (3.6B
 active), 1M context, open-weight (OpenMDW), text-in only. **Artificial Analysis
 Intelligence Index: 13** (independent; median 8 for open-weight small) — 4/4
 Speed (300 tok/s), 3/4 Verbosity. Fast & cheap ($0.06/$0.20) light/probe worker;
@@ -170,16 +165,70 @@ Speed (300 tok/s), 3/4 Verbosity. Fast & cheap ($0.06/$0.20) light/probe worker;
 quota, 1M context.
 Source: https://artificialanalysis.ai/models/nemotron-3-5-lightning
 
-**OC-1 / OC-2 / OC-5 / OC-10 — Beam Free, Big Pickle, LongCat 2.5 Preview Free,
-Space Bunny Free (D, unverified).** Stealth / limited-time free tiers with no
-model cards and no public benchmarks. No evidence to grade above D — price the
-risk; treat as probe-only, never the final step of an irreversible task.
+**OC-1 — Beam = Reflection Beam 1.0 (C).** Reflection AI, Oct 16 2026; 501B
+MoE (23B active), 1M ctx, text-in, Apache 2.0 weights. **AA Intelligence Index:
+30** (independent; #2 US open-weight) — Coding Agent Index 28 (15 pts behind
+next setup), AutomationBench-AA 48.5%, CritPt 13.1%, TB 4.0 3.0%, AA-Briefcase
+976 Elo, ARC-AGI-2 23.5%. ⚠️ Conflict: vendor card claims 81.6% SWE-bench
+Verified / 80.1% TB v2.1 (different suite versions from AA's TB 4.0) — take AA
+as primary. Street: X praises license + token thrift + free trials; doubts =
+trails smaller Qwen 3.8 27B, needs ~280GB NVFP4 (4×B200) so "open ≠ local";
+indie coding board 42.36/80 (rank #46).
+Sources: https://artificialanalysis.ai/models/ (Beam page)
+https://aicodingdaily.com/model/beam
+
+**OC-2 — Big Pickle (B).** Zen stealth model. No vendor, no card, no AA page — graded
+purely on third-party street, so B with guardrails, never S. Indie 5-bench
+suite (254 items, same harness): Omniscience **+43** (best of 5 incl. paid
+refs), HLE 38%, SciCode 44%, Terminal-Bench 71%, SWE-Mini 65% — best knower,
+mid coder. GitHub repro on SWE Atlas Codebase QnA: **50.8%** (63/124), top of
+the Mini-SWE-Agent scaffold class, logs published. ⚠️ Single-runner evidence;
+no independent re-run yet.
+Sources: https://fellipesoares.com.br/en/opencode-stealth-models-benchmarks/
+https://github.com/PhillipChaffee/big-pickle-swe-atlas
+
+**OC-10 — MiniMax M3.1 Flash (A).**
+Released Oct 19 2026 (served anonymously beforehand as "Space Bunny"; 200T
+anon tokens); 1M ctx, text+image in / text out,
+proprietary (weights "later"), thinking always-on low→max (default max).
+Harness ID: `space-bunny-free`.
+**AA Intelligence Index: 43** (independent; 4/4, #4/173 price class, median
+13) — 122.8 tok/s, TTFT 1.12s, $0.15/$0.60 ($0.22/task), **verbose 180M
+tokens/task** (median 99M). ⚠️ Proxy rule: the AA page measures the served
+API model, not the free `space-bunny-free` tier — the 43 is an S-ceiling,
+not a free-tier grade. Vendor (tagged): DeepSWE v1.1 **73.7%**, OSWorld V2
+**61.7**, ALE **29.6**, BankerToolBench **76.2**, CyberGym **82%** —
+⚠️ harness unnamed, not comparable to DeepSeek's 77.0/35.4 (Mini-SWE-V2);
+AA primary. Street (light): indie SWE-Mini **75%** (ties best free bug-fix),
+Terminal 64%, HLE 28%, Omniscience +29; measured bug-fix 215/215 at both
+efforts — default-max 6,673 toks/56s vs low 889 toks/9.5s (set effort
+explicitly); "fast, needs explicit instructions; loops on long runs"
+(anecdote-grade). Press headline (VB/Vectara: "beats DeepSeek + Opus 5, high
+hallucination") unfetchable — headline-only, ungraded. Verdict: **A — competent
+globally (Index 43), strongest OpenCode Index alongside GLM 42**; set effort
+low/medium, never default-max; first-draft geometry stays C-work;
+never the S+ final step.
+Sources: https://artificialanalysis.ai/models/minimax-m3-1-flash
+https://www.minimax.io/blog/minimax-m31f
+https://fellipesoares.com.br/en/opencode-stealth-models-benchmarks/
+https://huggingface.co/blog/karmen-beatapi/space-bunny-tested-real-cases-evaluation
+Source: https://artificialanalysis.ai/models/minimax-m3-1-flash
+(Global re-tier Oct 20, 2026: Index 43 = A band. Vendor DeepSWE 73.7 +
+indie SWE-Mini 75% confirm competent, not top — 15 pts below the live
+frontier. Verbosity/effort guardrails stand; never the S+ final step.)
+
+**OC-5 — LongCat 2.5 Preview, Meituan (C).** 1.6T MoE (~48B active), 1M
+ctx; official repo claims TB 2.1 70.8 / SWE-bench Pro 59.5 (vendor-reported).
+Indie board: **46.65/80** (rank #43) — Go 0.9/5 collapse vs Dart/Flutter 4/5,
+slowest runs (16:50); verdict "finishes yet lags, small tasks only." Weakest
+street of the four: C, Go and deadline agent loops excluded.
+Source: https://aicodingdaily.com/model/longcat-2-5-preview
 
 ---
 
 ## Cline
 
-The Cline free tier gives all four models on the free dropdown (image_b03dd9.png)
+The Cline free tier gives all five models on the free dropdown (image_b03dd9.png)
 with a shared None/Low/Medium/High/Extra thinking-effort control (image_97b6fa.png).
 Per-user, you rotate multiple accounts for fresh quotas, so cost is treated as ~free
 with account-quota limits (not a daily-reset clock). Grades are harness-fit only
@@ -190,15 +239,22 @@ for models actually switchable on Cline.
 | Grade | Meaning | Models earning it |
 |---|---|---|
 | S+ | Reserve | (none yet on Cline) |
-| S | Top | CL-4: Muse Spark 1.3 Contributor |
-| A | Competent | CL-2: MiMo-V2.6-Flash; CL-3: Nemotron 3.5 Super VL |
-| B | Light / probe | CL-1: Solar Mini 4 |
+| S+ | Reserve | (none — nothing on Cline clears Index 50) |
+| S | Top | CL-4: Muse Spark 1.3 Contributor (48.1 proxy) |
+| A | Competent | CL-5: MiniMax M3.1 Flash (43); CL-2: MiMo-V2.6-Flash (38) |
+| B | Light / probe | CL-3: Nemotron 3.5 Super VL (26); CL-1: Solar Mini 4 (24) |
 | C | Weak fit | (none yet on Cline) |
 | D | Do not route | (none yet on Cline) |
 
 ### Justification by model
 
-**CL-3 — Nemotron 3.5 Super VL (A).** NVIDIA, Oct 2026; 120B MoE (12B active), 1M
+**CL-5 — MiniMax M3.1 Flash (A; same evidence as OC-10).** Same model,
+same Index 43: competent globally, strongest alongside GLM on OpenCode's
+scale. Verbose + effort-burn → set effort explicitly. Inherits the OC-10
+verdict: A, never the S+ final step.
+Source: same as OC-10.
+
+**CL-3 — Nemotron 3.5 Super VL (B).** NVIDIA, Oct 2026; 120B MoE (12B active), 1M
 ctx, open-weight (OpenMDW-1.1), text+image in / text out. **Artificial Analysis
 Intelligence Index: 26** (independent; 4/4 quality, well above the 8 median for
 open-weight medium-size), spanning all 10 Index evals; vendor-reported GPQA
@@ -206,6 +262,7 @@ Diamond 89.52%, SWE-Bench Verified 71.10% (not independently re-verified here).
 Same underlying model as OpenCode's OC-9 (grade A there). Free on Cline via the
 free dropdown; no stated 200K cap beyond per-account quota.
 Source: https://artificialanalysis.ai/models/nemotron-3-5-super-vl
+(Global re-tier: Index 26 = B band on both harnesses.)
 
 **CL-2 — MiMo-V2.6-Flash (A).** Xiaomi, Sep 2026; 309B MoE (15B active), 1M ctx,
 multimodal, MIT weights. **Artificial Analysis Intelligence Index: 38**
@@ -213,6 +270,7 @@ multimodal, MIT weights. **Artificial Analysis Intelligence Index: 38**
 overall, #17/146 coding; slower (49 tok/s), Terminal-Bench 4.0 24.2% (weaker on
 longest agentic suites). Same model as OpenCode's OC-6 (grade A there).
 Source: https://artificialanalysis.ai/models/mimo-v2-6-flash
+(Global re-tier: Index 38 = A floor; TB4 24.2% keeps it competent.)
 
 **CL-1 — Solar Mini 4 (B).** Upstage, Sep 2026; 35B total / 3B active MoE, 1M ctx,
 text→text only, proprietary (weights not released), knowledge cutoff Feb 2026.
@@ -224,6 +282,8 @@ AutomationBench-AA 22%, knowledge accuracy 18% (AA-Omniscience −11). Fast deco
 text-in reasoning; never research/QA, never agentic coding, never the irreversible
 final step.
 Source: https://artificialanalysis.ai/articles/korean-ai-lab-upstage-releases-solar-mini-4
+(Global re-tier: Index 24 = B band. Long-context text-in strength stands;
+never research/QA, never agentic coding.)
 
 **CL-4 — Muse Spark 1.3 Contributor (S — top free model on Cline).** Meta (MSL),
 1.3 released 2 Sep 2026; multimodal reasoning, text+image+video (+audio/PDF) in /
@@ -237,8 +297,9 @@ frontier-tier agentic coding; Agentic 55.5 strong). Free Contributor caveats:
 it is ≈92–95% cheaper ($0.10/$0.20), prompts/completions **may train Meta
 models**, and—per TrueFoundry—**max reasoning is Standard-only**, so the free
 tier is capped to low/medium reasoning and will run below the cited indices in
-practice. → Grade **S** (capability ceiling), but free-tier/reasoning-cap means
-treat as S-ceiling: probe-verify before routing real S-grade work; never the
+practice. → Grade **S** (48.1 = S band 45–49 globally; top of your inventory,
+10 pts below the live frontier 58): probe-verify before routing real S-grade
+work; never the
 irreversible final step without an S+ cross-check. Re-grade once
 Contributor-specific benches publish.
 
@@ -267,47 +328,60 @@ pool faster; route the smallest time-slice that clears the grade. No S+ anywhere
 
 | Grade | Meaning | Models earning it |
 |---|---|---|
-| S+ | Reserve | (none yet on Freebuff) |
-| S | Top | FB-10: Gemini 4 Argon; FB-6: Muse Spark 1.3; FB-9: Claude Haiku 5.5; FB-4 / FB-5: DeepSeek V4.1 Flash |
-| A | Competent | FB-8: GPT-6 Luna; FB-7: GLM 5.3 Flash; FB-1 / FB-2 / FB-3: MiMo 2.6 Flash |
-| B | Light / probe | (none yet on Freebuff) |
-| C | Weak fit | (none yet on Freebuff) |
+| S+ | Reserve | FB-10: Gemini 4 Argon (53 — live frontier cluster) |
+| S | Top | FB-6: Muse Spark 1.3 (48.1) |
+| A | Competent | FB-9: Claude Haiku 5.5 (43, 100k-context variant); FB-11: MiniMax M3.1 Flash (43); FB-7: GLM 5.3 Flash (42); FB-4 / FB-5: DeepSeek V4.1 Flash (39); FB-1 / FB-2 / FB-3: MiMo 2.6 Flash (38); FB-8: GPT-6 Luna (38) |
+| B | Light / probe | (none on Freebuff — A-models cover it: FB-11 free, FB-1 1h) |
+| C | Weak fit | (none on Freebuff) |
 | D | Do not route | (none yet on Freebuff) |
 
 ### Justification by model
 
-**FB-10 — Gemini 4 Argon (S).** Google, 30 Sep 2026; proprietary, reasoning,
+**FB-10 — Gemini 4 Argon (S+).** Google, 30 Sep 2026; proprietary, reasoning,
 text+image→text, 1M ctx. **Artificial Analysis Intelligence Index: 53** (independent;
 highest in the cohort, 4/4 Intelligence) — TB4 57%, #1 AutomationBench-AA 78%
 (7 pts over Claude Sonnet 5.5), AA-Briefcase 1494 Elo, lowest hallucination (15%)
 among models scoring 45+. Verbose (110M tokens/task). ⚠️ Freebuff: **20h/session
 + Promotional · 1 session/day** and $2.00/$10.00 per token — not routine; use the
-single daily slot only for high-value S work.
+single daily slot only for high-value S+ work. **Your only reserve-grade model:
+Index 53, live frontier cluster (Opus 5.5 max 58, Astra max 53).**
 Source: https://artificialanalysis.ai/models/gemini-4-argon
+(Global re-tier: 53 = S+ band 50+. The "no S+ on Freebuff" flag is retired.)
 
 **FB-6 — Muse Spark 1.3 (S).** Meta (MSL), 2 Sep 2026; multimodal reasoning
 (text+image+video+audio/PDF→text), 1M ctx, Standard/"Max" tier. **AA Intelligence
 Index 48.1 / Coding Index 75.8 / Agentic Index 55.5** — S-class ceiling, the
 cohort's strongest coding. ⚠️ Freebuff: **3h/session** — best S-value here; this is
 the Standard tier (no free-tier cap, unlike Cline's CL-4 Contributor).
+(Global re-tier: 48.1 = S band 45–49. Strong coding, but 10 pts below the live
+frontier — top, not reserve.)
 Sources: https://artificialanalysis.ai/models/muse-spark-1-3
          https://openrouter.ai/compare/meta/muse-spark-1-3/meta/muse-spark-1-3-contributor
 
-**FB-9 — Claude Haiku 5.5 · 100k ctx (S).** Anthropic, 7 Oct 2026; reasoning,
-text+image→text, 1M ctx (per AA) — Freebuff exposes the **100k-context** variant.
+**FB-9 — Claude Haiku 5.5 (S).** Anthropic, 7 Oct 2026; reasoning,
+text+image→text, 1M ctx (per AA) — Freebuff exposes the 100k-context variant.
 **AA Intelligence Index: 43** (independent; 4/4 Intelligence); TB4 33%, AA-Briefcase
 1578 Elo (within CI of GPT-6 Astra max / Claude Fable 5.1 high). ⚠️ Freebuff:
 **6h/session**; **very verbose (440M tokens/task) → burns hours fast**; S-ceiling,
 probe first. (A 15h "Claude Haiku 5.5" row was also observed — variant unreconciled.)
+(Global re-tier: 43 = A band globally. Kept at S-ceiling per verbosity + probe-first
+practice on this harness — revisit if verbosity drops.)
 Source: https://artificialanalysis.ai/models/claude-haiku-5-5
 
-**FB-4 / FB-5 — DeepSeek V4.1 Flash (Fast) (S).** DeepSeek, 10 Sep 2026; 552B MoE
+**FB-4 / FB-5 — DeepSeek V4.1 Flash (Fast) (A).** DeepSeek, 10 Sep 2026; 552B MoE
 (8B/16B), 1M ctx, multimodal, MIT. **AA Intelligence Index: 39** (independent) —
 DeepSWE 74.2 (beats GPT-5.6 Sol 73.0), AutomationBench 54.8, Agent's Last Exam 31.8
 vs 26.7, CyberGym 88.1 vs 84.5; 4/4 Intelligence, 4/4 Speed (176 tok/s). Freebuff's
 **recommended default (3h)**; Fast variant 5h. Full 1M context here (unlike OpenCode's
-200K free cap).
+200K free cap). (Global re-tier: 39 = A band. Recommended default stands —
+best A-value, not S.)
 Source: https://artificialanalysis.ai/models/deepseek-v4-1-flash
+
+**FB-11 — MiniMax M3.1 Flash (A; same evidence as OC-10).** Same model,
+same Index 43: competent globally. Free on Freebuff
+(no hour burn — cheapest Freebuff worker alongside FB-1 MiMo 1h). Inherits the
+OC-10 verdict: A, never the S+ final step.
+Source: same as OC-10.
 
 **FB-8 — GPT-6 Luna (A).** OpenAI, 22 Sep 2026; reasoning, text+image→text, 1M ctx,
 proprietary. **AA Intelligence Index: 38** (independent; median 13) — outranks
@@ -319,6 +393,7 @@ Source: https://artificialanalysis.ai/models/gpt-6-luna
 **FB-7 — GLM 5.3 Flash (A).** Z.ai, Aug 2026; 320B (18B active), 1M ctx, multimodal,
 MIT. **AA Intelligence Index: 42** (independent; 4/4 Intelligence, 3/4 Cost); one
 tester found DeepSeek stronger on agentic coding. Freebuff: 4h.
+(Global re-tier: 42 = A band.)
 Source: https://artificialanalysis.ai/models/glm-5-3-flash
 
 **FB-1 / FB-2 / FB-3 — MiMo 2.6 Flash / Flash Fast / Pro (A).** Xiaomi, Sep 2026; 309B
@@ -326,6 +401,7 @@ MoE (15B active), 1M ctx, multimodal, MIT. **AA Intelligence Index: 38** (indepe
 4/4 Intelligence); benchlm #32/218 overall, #17/146 coding; slower (49 tok/s);
 Terminal-Bench 4.0 24.2% (weaker on longest agentic suites). Freebuff variants: base
 1h, Fast 2h, Pro 5h — same AA-38 backbone. **Cheapest capable Freebuff worker (1h).**
+(Global re-tier: 38 = A floor.)
 Source: https://artificialanalysis.ai/models/mimo-v2-6-flash
 
 ## Task-class matrix (which grade each kind of work demands)
@@ -335,52 +411,66 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 
 | Task class | Required grade | Harness | Earned by | Notes / risk |
 |---|---|---|---|---|
-| Planning / strategy | S | Antigravity | M1 | Reasoning-heavy; 90.8% Terminal-Bench + HLE justify. |
-| Long-horizon agentic coding (build) | S | Antigravity | M1 | DeepSWE win + Terminal-Bench 2.1 = strongest fit here. |
-| Multi-step review / audit (judgment) | S | Antigravity | M1 | Outperforms frontier on reasoning/agentic tasks. |
-| Well-scoped code edits (tests decide) | A | Antigravity | — | No A on Antigravity yet; M1 is the ceiling. |
+| Planning / strategy | S | Antigravity | — | No S on Antigravity (M1 is A globally) — plan here only if cross-checked, else Freebuff FB-6 / Cline CL-4. |
+| Long-horizon agentic coding (build) | S | Antigravity | — | No S builder on Antigravity — M1 (A) supervised only; real S builds go to Freebuff FB-6. |
+| Multi-step review / audit (judgment) | S | Antigravity | — | No S reviewer on Antigravity — escalate. |
+| Well-scoped code edits (tests decide) | A | Antigravity | M1 | M1's home turf (TB 2.1 90.8%). |
 | Mechanical execution / babysitting | B | Antigravity | — | M1 is overkill & quota-costly; don't route here. |
-| Research / extraction (no hard guarantees) | S | Antigravity | M1 | Reasoning + knowledge strength useful; keep quota in mind. |
-| Final irreversible verification | S+ | Antigravity | — | No S+ anywhere yet — price the risk; human or cross-check. |
-| Planning / strategy | S | OpenCode | OC-3 | DeepSWE win; free tier 200K ctx, time-limited. |
-| Long-horizon agentic coding (build) | S | OpenCode | OC-3 | Best free agentic coding bench here (DeepSWE 74.2). |
-| Multi-step review / audit (judgment) | S | OpenCode | OC-3 | Strongest free reasoning/agentic evidence. |
-| Well-scoped code edits (tests decide) | A | OpenCode | OC-4 / OC-6 / OC-7 / OC-9 | GLM / MiMo / Ultra / Super VL; DeepSeek (S) is the stronger ceiling. |
-| Mechanical execution / babysitting | B | OpenCode | OC-8 | Lightning — fast, cheap, light/probe only. |
-| Research / extraction (no hard guarantees) | S | OpenCode | OC-3 | Strongest general-reasoning free model. |
-| Final irreversible verification | S+ | OpenCode | — | No S+ on OpenCode yet — price the risk; cross-check. |
-| Planning / strategy | S | Cline | CL-4 | Muse Contributor (AA Intel 48.1); free-tier reasoning-capped → probe before high-stakes. |
+| Research / extraction (no hard guarantees) | S | Antigravity | — | No S researcher on Antigravity — M1 (A) for light extraction only. |
+| Final irreversible verification | S+ | Antigravity | — | No S+ on Antigravity — price the risk; cross-check with Freebuff FB-10. |
+| Planning / strategy | S | OpenCode | — | No S on OpenCode — best available is A (OC-10 MiniMax 43 / OC-4 GLM 42); plan here only if cross-checked, else route to Cline CL-4 / Freebuff FB-6. |
+| Long-horizon agentic coding (build) | S | OpenCode | — | No S builder on OpenCode — OC-10/OC-4 (A) supervised only; real S builds go to Freebuff FB-6 / Cline CL-4. |
+| Multi-step review / audit (judgment) | S | OpenCode | — | No S reviewer on OpenCode — escalate to S harnesses. |
+| Well-scoped code edits (tests decide) | A | OpenCode | OC-10 / OC-4 / OC-3 / OC-6 | MiniMax 43 / GLM 42 lead; DeepSeek 39 / MiMo 38 follow. |
+| Mechanical execution / babysitting | B | OpenCode | OC-9 / OC-1 (OC-2 alt.) | Super VL 26 / Beam 30; OC-2 Big Pickle for knowledge-flavored (no page, indie B-band). |
+| Research / extraction (no hard guarantees) | S | OpenCode | — | No S researcher on OpenCode — OC-2 Big Pickle (Omniscience +43) for low-stakes only; real S research elsewhere. |
+| Final irreversible verification | S+ | OpenCode | — | No S+ on OpenCode — price the risk; cross-check with Freebuff FB-10. |
+| Planning / strategy | S | Cline | CL-4 | Muse Contributor (48.1 proxy); reasoning-capped → probe before high-stakes. |
 | Long-horizon agentic coding (build) | S | Cline | CL-4 | Strongest free agentic coder (Coding 75.8); reasoning-capped → probe first. |
 | Multi-step review / audit (judgment) | S | Cline | CL-4 | Muse (Agentic 55.5, Intel 48.1); free/reasoning-capped → human-check final review. |
-| Well-scoped code edits (tests decide) | A | Cline | CL-2 / CL-3 | MiMo (AA 38) / Super VL (AA 26); prefer Super VL; CL-4 (S) available if needed. |
-| Mechanical execution / babysitting | B | Cline | CL-1 | Solar (AA 24): long-context text only; 18% knowledge — not for QA. |
-| Research / extraction (no hard guarantees) | S | Cline | CL-4 | Muse (Intel 48.1); avoid Solar (18% knowledge); probe before relying. |
-| Final irreversible verification | S+ | Cline | — | No S+ on Cline — price the risk; cross-check with Antigravity. |
-| Planning / strategy | S | Freebuff | FB-4 / FB-6 | DeepSeek 3h (recommended) or Muse 3h — best S-value. |
-| Long-horizon agentic coding (build) | S | Freebuff | FB-4 / FB-5 | DeepSeek V4.1 Flash (DeepSWE 74.2); Fast 5h. |
-| Multi-step review / audit (judgment) | S | Freebuff | FB-6 / FB-9 | Muse (Coding 75.8) or Claude 43; Claude very verbose (6h). |
-| Well-scoped code edits (tests decide) | A | Freebuff | FB-1 | MiMo 1h — cheapest capable; overkill at A but lowest hours burn. |
-| Mechanical execution / babysitting | B | Freebuff | — | No B-grade Freebuff model; cheapest capable = FB-1 MiMo (1h). |
-| Research / extraction (no hard guarantees) | S | Freebuff | FB-4 / FB-6 | DeepSeek/Muse S; avoid GPT-6 Luna (13% agentic, slow). |
-| Final irreversible verification | S+ | Freebuff | — | No S+ on Freebuff — price the risk; cross-check with Antigravity. |
+| Well-scoped code edits (tests decide) | A | Cline | CL-5 / CL-2 | MiniMax 43 / MiMo 38; CL-4 (S) available if needed. |
+| Mechanical execution / babysitting | B | Cline | CL-3 / CL-1 | Super VL 26 / Solar 24 (text-only; 18% knowledge — not QA). |
+| Final irreversible verification | S+ | Cline | — | No S+ on Cline — price the risk; cross-check with Freebuff FB-10. |
+| Planning / strategy | S | Freebuff | FB-6 | Muse 3h — best S-value. |
+| Long-horizon agentic coding (build) | S | Freebuff | FB-6 | Muse (Coding 75.8) leads S builds; FB-4 DeepSeek (A) supervised alt. |
+| Multi-step review / audit (judgment) | S | Freebuff | FB-6 | Muse; FB-9 Haiku S-ceiling alt (verbose 6h). |
+| Well-scoped code edits (tests decide) | A | Freebuff | FB-11 / FB-7 / FB-4 / FB-1 | MiniMax free (no burn) leads; GLM 4h / DeepSeek 3h / MiMo 1h alts. |
+| Mechanical execution / babysitting | B | Freebuff | — | No B-grade needed — A-models cover it (FB-11 free, FB-1 1h). |
+| Research / extraction (no hard guarantees) | S | Freebuff | FB-6 | Muse S; avoid GPT-6 Luna (13% agentic, slow). |
+| Final irreversible verification | S+ | Freebuff | FB-10 | Argon 53 — your only reserve-grade model; 1 session/day, high-value only. |
 
 ---
 
 ## Risk flags
 
-- **No S+ on Antigravity or OpenCode yet:** no model clears the irreversible-final-step bar. Flag every such decision.
+- **No S+ on Antigravity or OpenCode:** no model clears Index 50 there. Flag every such decision.
 - **Quota gating:** M1 is subscription-quota bound (5h + weekly). Route worthy tasks first; defer low-worth work. Watch the weekly reset window.
-- **Terminal-Bench 4.0 weak:** avoid routing the hardest long-horizon agent suites to M1 as if it were S+ frontier-class.
-- **OpenCode free tiers are time-limited + daily-quota:** OC-1/2/5/10 (Beam, Big Pickle, LongCat, Space Bunny) are stealth/limited-time with no model cards or benchmarks → D/unverified; never route an irreversible final step to them.
+- **Terminal-Bench 4.0 weak:** M1's 19.1% keeps it A globally — avoid routing the hardest long-horizon agent suites as if it were frontier-class.
+- **S+ now exists (global re-tier Oct 20, 2026):** FB-10 Gemini 4 Argon 53 =
+  live frontier cluster (top 58). Retires all "no S+ on Freebuff" flags —
+  FB-10 is the reserve-grade closeout path (1 session/day).
+- **OpenCode/Cline have no S or S+:** best available is A (MiniMax 43, GLM 42)
+  / S-proxy (Muse 48.1). S-work routes to Freebuff/Cline-CL-4; S+ closeouts to
+  FB-10. Task matrix reflects the gaps honestly.
+- **Nemotron 3 Ultra is C on the GA page (23):** the 47.7 partner figure would
+  be S if the public index converges — until then, guardrailed only.
+- **Super VL is B (26) on both harnesses:** vendor GPQA/SWE numbers cannot lift
+  it above the yardstick without independent re-verification.
+- **OC-10 / CL-5 / FB-11 MiniMax M3.1 Flash (A):** Index 43 = A band globally
+  (15 pts below frontier 58); vendor DeepSWE 73.7 harness-unnamed (AA primary);
+  indie SWE-Mini 75%; verbose 180M/task + default-max burn → set effort
+  low/medium explicitly; geometry first-drafts C-work; HHEM unmeasured → no
+  summarization/RAG routing until scored; never S+ final step.
 - **OpenCode free context caps:** DeepSeek V4.1 Flash Free and GLM-5.3-Flash Free are capped at 200K context (paid = 1M); verify the cap serves the task before routing.
-- **Nemotron 3 Ultra score conflict:** GA model page AA 23 vs pre-release partner 47.7 — grade A but flag before routing worth work.
+- **Nemotron 3 Ultra score conflict:** GA model page AA 23 vs pre-release partner 47.7 — grade C on the GA page; flag before routing worth work.
 - **Cline free tiers are account-quota-limited** (rotate accounts for fresh quotas); watch per-account limits before a long run, not a daily-reset clock.
 - **CL-1 Solar Mini 4 (B, text-only):** 1% agentic coding + 18% knowledge accuracy → long-context text-in reasoning only; never research/QA, never coding.
 - **CL-4 Muse Spark 1.3 Contributor (S, but free-tier caveats):** grade S uses the regular-tier AA indices as the proxy (Intelligence 48.1 / Coding 75.8 / Agentic 55.5) because the free Contributor tier has no own benches; the free tier is capped to low/medium reasoning (max reasoning is Standard-only) and trades data for price, so real free-tier output runs below the cited indices — probe-verify before S-grade work; never the irreversible final step.
-- **No S+ (and no S with verified free-tier benches) on Cline yet:** CL-4 Muse Contributor is graded S on regular-tier indices (ceiling), but the irreversible final step stays S+ only; cross-check S-grade closeouts with Antigravity/M1.
+- **No S+ (and no S with verified free-tier benches) on Cline:** CL-4 Muse Contributor is graded S on regular-tier indices (ceiling), but the irreversible final step stays S+ only; cross-check S-grade closeouts with Freebuff FB-10.
 - **Freebuff is time-billed, not token-billed:** 21h/day (Starter $8/mo) + 60h wallet/mo (replaces unused); refill 12:00 AM Asia/Jerusalem. Higher models burn the pool faster — route the smallest time-slice that clears the grade.
-- **FB-9 Claude Haiku 5.5 · 100k ctx (S, 6h):** very verbose (440M tokens/task) → hours burn fast; treat as S-ceiling, probe first. (A 15h "Claude Haiku 5.5" row was also observed — variant unreconciled.)
-- **FB-10 Gemini 4 Argon (S, 20h):** Promotional · **1 session/day** only — do not treat as routine; use the single daily slot for high-value S work.
-- **FB-4/5 DeepSeek V4.1 Flash (S, 3h/5h):** Freebuff's best S-value (recommended default); 1M ctx (no 200K cap here).
+- **FB-9 Claude Haiku 5.5 (S, 6h):** 100k-context variant; very verbose (440M tokens/task) → hours burn fast; treat as S-ceiling, probe first. (A 15h "Claude Haiku 5.5" row was also observed — if confirmed as the regular-context variant, add as a separate row, ctx in notes.)
+- **FB-10 Gemini 4 Argon (S+, 20h):** Promotional · **1 session/day** only —
+  reserve-grade closeout path; use the single daily slot for high-value S+ work.
+- **FB-4/5 DeepSeek V4.1 Flash (A, 3h/5h):** Freebuff's best A-value (recommended default); 1M ctx (no 200K cap here).
 - **FB-8 GPT-6 Luna (A, 4h):** weak agentic coding (TB4 13%) + slow (TTFT ~113s, 140M tok/task) → knowledge/multimodal reasoning only, not coding.
 - **No S+ on Freebuff:** no irreversible-final-step candidate; cross-check S closeouts with Antigravity (M1).

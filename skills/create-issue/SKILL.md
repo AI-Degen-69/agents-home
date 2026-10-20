@@ -230,7 +230,8 @@ last item is a runnable verification command.
 ---
 
 <!-- local-only:create-issue:output-template-begin -->
-The chat output template for this station is `references/output-template.md`.
+The chat output template for this station is `references/english-template.md` (default).
 Read it before writing your first report.
+If the operator explicitly requests Hebrew output, use the Hebrew template at `references/hebrew-template.md`.
 <!-- local-only:create-issue:output-template-end -->
 
