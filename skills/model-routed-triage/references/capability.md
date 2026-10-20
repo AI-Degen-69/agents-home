@@ -328,7 +328,7 @@ pool faster; route the smallest time-slice that clears the grade. No S+ anywhere
 | Grade | Meaning | Models earning it |
 |---|---|---|
 | S+ | Reserve | FB-10: Gemini 4 Argon (53 — live frontier cluster) |
-| S | Top | FB-6: Muse Spark 1.3 (48.1) |
+| S | Top | FB-6: Muse Spark 1.3 (48.1); FB-12: DeepSeek V4.1 Flash 1017 (45 ceiling, probe-first) |
 | A | Competent | FB-9: Claude Haiku 5.5 (43, 100k-context variant); FB-11: MiniMax M3.1 Flash (43); FB-7: GLM 5.3 Flash (42); FB-4 / FB-5: DeepSeek V4.1 Flash (39); FB-1 / FB-2 / FB-3: MiMo 2.6 Flash (38); FB-8: GPT-6 Luna (38) |
 | B | Light / probe | (none on Freebuff — A-models cover it: FB-11 free, FB-1 1h) |
 | C | Weak fit | (none on Freebuff) |
@@ -376,6 +376,31 @@ vs 26.7, CyberGym 88.1 vs 84.5; 4/4 Intelligence, 4/4 Speed (176 tok/s). Freebuf
 best A-value, not S.)
 Source: https://artificialanalysis.ai/models/deepseek-v4-1-flash
 
+**FB-12 — DeepSeek V4.1 Flash 1017 (S-ceiling; probe-first).** DeepSeek, 17 Oct
+2026 refresh of V4.1 Flash (`deepseek-flash` now routes to 1017; MIT, 552B MoE,
+8B/16B, 1M ctx, text+image→text). **AA Intelligence Index: 45, Max tier
+(v4.3.2, read Oct 20, 2026)** — ceiling proxy: Freebuff serving tier
+unconfirmed vs benchmarked Max, so the 45 is a ceiling, not a floor. Vendor
+changelog (DeepSeek API docs + QZ/Bloomberg re-report, independent
+reproduction absent): DeepSWE v1.1 74.2→**77.0**, Terminal-Bench 4.0
+31.2→**42.3** (Claude Code harness per QZ), HLE no-tools 36.8→**42.6**,
+ProgramBench 20.3→**29.1**; shorter outputs, ~$0.20/task API-side, 209 tok/s,
+but still verbose (AA: 210M tokens/task vs 140M median). Meyer's street check
+(Oct 18, 2026) agrees directionally but flags: all numbers vendor-sourced,
+rivals compared a generation old, still trails Claude Opus 5 on hardest
+reasoning/vision. Grade: **S-band ceiling (45 = S floor 45–49) but S-ceiling
+probe-first** — same treatment as FB-9: free-tier/unconfirmed-tier output runs
+below the cited Max index; verify with a probe before S-grade work; never the
+irreversible final step (S+ stays FB-10). Freebuff cost: **5h/session**
+(operator-confirmed Oct 20, 2026) — same burn as FB-5 Fast; pricier than the
+FB-4 base (3h), so prefer FB-12 only where the 1017 gains matter (agentic
+coding depth), else FB-4 for routine A-work. Distinct entry from FB-4/FB-5 base (AA 39): routes preferring 1017
+should name FB-12 explicitly.
+Sources: https://artificialanalysis.ai/models/deepseek-v4-1-flash-1017
+         https://api-docs.deepseek.com/news/news261017/ (vendor changelog)
+         https://qz.com/deepseek-v4-1-flash-1017-model-update-benchmarks-101926
+         https://thorstenmeyerai.com/reality-check/deepseek-v4-1-flash-1017-agents-price-benchmarks/ (street, vendor-numbers caveat)
+
 **FB-11 — MiniMax M3.1 Flash (A; same evidence as OC-10).** Same model,
 same Index 43: competent globally. Free on Freebuff
 (no hour burn — cheapest Freebuff worker alongside FB-1 MiMo 1h). Inherits the
@@ -410,7 +435,7 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 
 | Task class | Required grade | Harness | Earned by | Notes / risk |
 |---|---|---|---|---|
-| Planning / strategy | S | Antigravity | — | No S on Antigravity (M1 is A globally) — plan here only if cross-checked, else Freebuff FB-6 / Cline CL-4. |
+| Planning / strategy | S | Antigravity | — | No S on Antigravity (M1 is A globally) — plan here only if cross-checked, else Freebuff FB-6 / FB-12 (probe-first) / Cline CL-4. |
 | Long-horizon agentic coding (build) | S | Antigravity | — | No S builder on Antigravity — M1 (A) supervised only; real S builds go to Freebuff FB-6. |
 | Multi-step review / audit (judgment) | S | Antigravity | — | No S reviewer on Antigravity — escalate. |
 | Well-scoped code edits (tests decide) | A | Antigravity | M1 | M1's home turf (TB 2.1 90.8%). |
@@ -430,10 +455,10 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 | Well-scoped code edits (tests decide) | A | Cline | CL-5 / CL-2 | MiniMax 43 / MiMo 38; CL-4 (S) available if needed. |
 | Mechanical execution / babysitting | B | Cline | CL-3 / CL-1 | Super VL 26 / Solar 24 (text-only; 18% knowledge — not QA). |
 | Final irreversible verification | S+ | Cline | — | No S+ on Cline — price the risk; cross-check with Freebuff FB-10. |
-| Planning / strategy | S | Freebuff | FB-6 | Muse 3h — best S-value. |
-| Long-horizon agentic coding (build) | S | Freebuff | FB-6 | Muse (Coding 75.8) leads S builds; FB-4 DeepSeek (A) supervised alt. |
+| Planning / strategy | S | Freebuff | FB-6 | Muse 3h — best S-value; FB-12 1017 (5h, probe-first) alt. |
+| Long-horizon agentic coding (build) | S | Freebuff | FB-6 | Muse (Coding 75.8) leads S builds; FB-12 DeepSeek-1017 (5h; DeepSWE 77.0 vendor, TB4 42.3; probe-first) supervised alt; FB-4 base DeepSeek (A, 3h) fallback. |
 | Multi-step review / audit (judgment) | S | Freebuff | FB-6 | Muse; FB-9 Haiku S-ceiling alt (verbose 6h). |
-| Well-scoped code edits (tests decide) | A | Freebuff | FB-11 / FB-7 / FB-4 / FB-1 | MiniMax free (no burn) leads; GLM 4h / DeepSeek 3h / MiMo 1h alts. |
+| Well-scoped code edits (tests decide) | A | Freebuff | FB-11 / FB-7 / FB-4 / FB-1 | MiniMax free (no burn) leads; GLM 4h / DeepSeek base 3h / MiMo 1h alts. FB-12 (5h) only if 1017 depth needed. |
 | Mechanical execution / babysitting | B | Freebuff | — | No B-grade needed — A-models cover it (FB-11 free, FB-1 1h). |
 | Research / extraction (no hard guarantees) | S | Freebuff | FB-6 | Muse S; avoid GPT-6 Luna (13% agentic, slow). |
 | Final irreversible verification | S+ | Freebuff | FB-10 | Argon 53 — your only reserve-grade model; 1 session/day, high-value only. |
@@ -468,6 +493,11 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 - **No S+ (and no S with verified free-tier benches) on Cline:** CL-4 Muse Contributor is graded S on regular-tier indices (ceiling), but the irreversible final step stays S+ only; cross-check S-grade closeouts with Freebuff FB-10.
 - **Freebuff is time-billed, not token-billed:** 21h/day (Starter $8/mo) + 60h wallet/mo (replaces unused); refill 12:00 AM Asia/Jerusalem. Higher models burn the pool faster — route the smallest time-slice that clears the grade.
 - **FB-9 Claude Haiku 5.5 (S, 6h):** 100k-context variant; very verbose (440M tokens/task) → hours burn fast; treat as S-ceiling, probe first. (A 15h "Claude Haiku 5.5" row was also observed — if confirmed as the regular-context variant, add as a separate row, ctx in notes.)
+- **FB-12 DeepSeek V4.1 Flash 1017 (S-ceiling, 5h, probe-first):** AA 45 is the
+  Max-tier ceiling; Freebuff serving tier unconfirmed, all deltas
+  vendor-sourced/unreproduced — probe before S work; never the
+  irreversible final step. Same burn as FB-5 Fast; prefer FB-4 base (3h) for
+  routine A-work.
 - **FB-10 Gemini 4 Argon (S+, 20h):** Promotional · **1 session/day** only —
   reserve-grade closeout path; use the single daily slot for high-value S+ work.
 - **FB-4/5 DeepSeek V4.1 Flash (A, 3h/5h):** Freebuff's best A-value (recommended default); 1M ctx (no 200K cap here).

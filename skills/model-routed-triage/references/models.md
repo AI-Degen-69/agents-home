@@ -144,6 +144,7 @@ faster; **close sessions early → unused hours auto-refund**. Higher-tier varia
 | FB-9 | Claude Haiku 5.5 | N/A | 6h | 100k-context variant; Anthropic; AA 43 (A band; S-ceiling per verbosity + probe-first on this harness); 440M tokens/task — burns hours fast. | Freebuff hours pool; image_084962.png |
 | FB-10 | Gemini 4 Argon | N/A | 20h | Google; AA 53 (S+); Promotional · **1 session/day**; $2.00/$10.00 token. | Freebuff hours pool; image_d241b0.png |
 | FB-11 | MiniMax M3.1 Flash | N/A | Free | Same model as OC-10/CL-5; AA 43 (A); indie SWE-Mini 75%, TB 64%; verbose → set effort explicitly if exposed. | Freebuff dropdown; user-reported |
+| FB-12 | DeepSeek V4.1 Flash 1017 | N/A | 5h | 17 Oct 2026 refresh; AA Intel 45 Max-tier (v4.3.2); vendor DeepSWE 77.0 / TB4 42.3 / HLE 42.6 (unreproduced); MIT, 1M ctx; verbose 210M/task. Distinct from FB-4/FB-5 base (AA 39). | Freebuff dropdown; user-reported |
 
 Notes: FB-1..FB-10 costs are hours consumed per session from the daily 21h
 (subscriber) / 5h (free) pool (refill 12:00 AM Asia/Jerusalem). FB-11 MiniMax is
@@ -162,3 +163,7 @@ regular-context variant, add it as a separate row with ctx in notes, same rule.
   capability.md.
 - Added FB-11 MiniMax M3.1 Flash (Oct 20, 2026; user-confirmed free on
   Freebuff). Same evidence as OC-10; grade in capability.md.
+- Added FB-12 DeepSeek V4.1 Flash 1017 (Oct 20, 2026; user-confirmed on
+  Freebuff, distinct from FB-4/FB-5 base). AA Intel 45 Max-tier ceiling
+  (v4.3.2); vendor deltas DeepSWE 77.0 / TB4 42.3 / HLE 42.6 unreproduced;
+  S-ceiling probe-first; cost 5h operator-confirmed. Grade in capability.md.
