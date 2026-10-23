@@ -9,6 +9,12 @@ in `SKILL.md` and never copies this file.
 ## 🎯 What Was Shipped:
 [1-2 clear sentences: what capability was built and verified for Issue [#<id>](<url-issue>)]
 
+## 📊 Change Visual:
+[First element of the PR body — Mermaid diagram, file-tree diff, or call tree showing the change at a glance]
+
+## ⚠️ Merge Danger:
+[Decision: one/two-way door · Blast radius: N files, Low/Moderate/High · Rollback: Easy/Moderate/Hard]
+
 ## 🔍 Quality & Review Findings:
 - `code-review-and-quality`: [Finding] — [Fixed / No fix needed]
 - `security-reviewer`: [Finding] — [Fixed]
