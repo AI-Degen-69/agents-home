@@ -1,5 +1,5 @@
 ---
-name: pipeline-triage
+name: pipeline-triage-legacy-snapshot
 description: Session-start triage and dirty-repo router. Use at the start of any session when intent is unclear, the request continues existing work, or the operator says "where were we". Also use whenever the user asks what to do next with uncommitted changes, unpushed commits, open PR comments, or a dirty repo, or wants to finish existing work and start fresh from a clean branch, or when the next step is unclear between planning, reviewing, pushing, merging, or cleaning up.
 ---
 
@@ -71,6 +71,21 @@ declaring anything unknown-origin:
    plan — a handoff doc or a new script often names its own origin issue in its
    first lines (read it before calling it unknown).
 4. Files matching nothing after those three passes are unknown-origin → stop rule. `stat -c '%y' <file>` against the current clock confirms freshness — modified seconds ago while your commands run means a live writer, not leftover state.
+
+## Operator-performed deletions — audit before agreeing
+
+A dirty tree whose dirt is `D` lines (the operator cleaned up "stale" files) is scoped
+dirt, but the staleness claim is **unverified**. Deleted files are frequently test
+fixtures — arm/config JSON, run records, dated docs — that no runtime code imports and
+so look dead to a grep of source only. Before endorsing the cleanup or committing it:
+
+1. Enumerate and group: `git status --porcelain | grep '^ D' | awk '{print $2}' | cut -d/ -f1-2 | sort | uniq -c | sort -rn`.
+2. **Grep the test tree, `scripts/`, and `docs/` prose for every deleted basename**, not just source imports. A rulebook doc that cites the deleted file as "the recipe for doing X" is load-bearing even when no code imports it.
+3. Run the tests that referenced a deleted path — a `FileNotFoundError` beats any judgement about whether a doc is stale.
+4. `git restore` only the load-bearing paths, then re-run the suite green before reporting. Restoring is safe; never `git checkout` the whole directory back (that undoes the intentional cleanup).
+5. A guard test asserting a directory exists cannot survive an empty directory (git does not track them) — restore one file or add a `.gitkeep`.
+
+Full procedure, including orphaned `__pycache__`-only directories and the destructive-wipe handoff rule: `references/deletion-audit.md`.
 
 ## "Branch off / pick an issue" gate
 

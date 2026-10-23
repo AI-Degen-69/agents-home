@@ -18,6 +18,12 @@ exclusively from it — never from global per-token API costs. If the file is
 missing or a listed model is absent, stop and ask; do not invent prices.
 Also read `references/capability.md` for the worthiness/class → grade mapping; capability
 ranks the cheapest-capable model per task class, `models.md` prices it.
+Read `references/models-research-handbook.md` before researching or re-grading a
+model — it is the evidence method (source hierarchy, yardstick, tier ladder), and
+its §9 catalog lists every source that may be quoted, including AI Coding Daily's
+LLM Coding Leaderboard for end-to-end coding points plus cost and wall time per
+prompt. Never quote a benchmark the handbook does not list; never set a tier from
+one board alone.
 Both files are organized **per harness** (identical structure under each
 `## <Harness>` heading: pricing → effort levels → inventory table → grade
 table → model justification). Model IDs (`M1`, `M2`, …) are stable **per
@@ -230,7 +236,7 @@ Prompt rules:
 - Structure:
   1. `# Context & Target`: Issue link, current state, and the specific station goal.
   2. `# Domain Intelligence & Traps`: Architectural rules, mathematical invariants, domain edge cases, traps to avoid, and exact subsystem files/parameters.
-  3. `# Job Guards`: Sync check, forbidden outcomes, and out-of-scope recording home (`docs/issues/<n>-noticed-but-not-touching.md` with owner and when).
+  3. `# Job Guards`: Sync check, forbidden outcomes, and out-of-scope recording home (`docs/backlog/i<n>-<slug>.md` with owner and when).
   4. `# Checkpoint`: Precise, verifiable exit condition.
 
 Do NOT nest markdown prompt code blocks inside table cells. Keep them full-width, clean, and immediately copyable.
@@ -257,7 +263,7 @@ inherits every fix.
    or a delete of anything else still needs a fresh yes.
 4. **Three recording homes, never mixed — and every line carries an owner
    and a when:** code-level out-of-scope rows go in
-   `docs/issues/<n>-noticed-but-not-touching.md` (Status open, Resolved-by
+   `docs/backlog/i<n>-<slug>.md` (Status open, Resolved-by
    empty); run-environment caveats go in named `tasks/plan.md` sections;
    tree state is proven by `git status`, never prose. A limitation line
    without an owner (model / you / named future issue) and a when

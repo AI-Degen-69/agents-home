@@ -36,4 +36,12 @@ in `SKILL.md` and never copies this file.
 [1-2 clear lines: where the task stands right now]
 
 👉 **Next Step:** Run **`[Next Station Command]`**
+
+### Station V Post-Merge — Retro Option:
+After Station V merges the PR, offer the operator:
+
+> PR merged. Would you like to run **`/retro`**? It analyzes the session and
+> proposes environment improvements (navigation pointers, lint rules, coding
+> standards) — never code changes. Runs periodically (every 3–5 PRs).
+> Reply **yes** to analyze, or **no/skip** to go straight to `/vi-close-pipeline`.
 ```

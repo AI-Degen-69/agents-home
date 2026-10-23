@@ -88,6 +88,9 @@ Core suites for coding/agent routing:
 - Tool-use / automation: CyberGym, AutomationBench, Agent's Last Exam.
 - Efficiency: output tokens/task, time-to-first-token, tok/s — bound routing
   cost even though they don't set capability tier.
+- **End-to-end coding agent (model + harness + effort):** AI Coding Daily's LLM
+  Coding Leaderboard — points/70 on 7 real repos, published with cost and wall
+  time per prompt (§9.2). Rank-2 corroboration, never a tier anchor.
 
 - **AA-Briefcase, GDPval, SciCode** for knowledge-work coverage.
 
@@ -283,6 +286,39 @@ headline-only, never as data.
   MCP Atlas, Remote Labor Index) with ±CI. Pull: contamination-resistant
   scores. Note: a model's absence here is data about coverage, not evidence
   of weakness.
+- **AI Coding Daily — LLM Coding Leaderboard** (`aicodingdaily.com/leaderboard`).
+  Independent publisher's end-to-end coding-agent board: ~51 model + harness +
+  effort configurations, each scored on 7 real repos and published with **cost
+  and wall time per prompt** — the two fields AA's Free tier omits.
+  - **Method** (verified 2026-10-21 against the methodology article
+    `aicodingdaily.com/article/llm-coding-leaderboard-my-methodology-and-scoring-formulas`):
+    7 projects / 27 prompts per model — CSV Import, Offline Sync (PHP/Laravel),
+    Bank Feed (Dart/Flutter), Shipping Quotes (Go), Equipment Library
+    (PHP/Laravel), Support Inbox (React + TypeScript), Bug Hunt (PHP/Laravel).
+    Every project starts from existing code, never a blank folder. One coding
+    agent (Claude Code, Codex CLI, OpenCode, Cursor, Devin, Antigravity, DeepSeek
+    Harness) gets one prompt and one repo and does the work itself — no
+    orchestration, no subagent swarms, no human feedback, no retries. Each prompt
+    starts in a fresh copy of the project, and the model never sees the hidden
+    tests or the rubric. Ticket-sized work: median 4.2–10.7 min per prompt.
+  - **Scoring, max 70 points:**
+
+    | Leaderboard column | Projects | Runs per prompt | Max points | Scored by |
+    |---|---|---|---|---|
+    | Laravel Code Quality | Equipment Library | 3 | 20 | Judge model, 100-point rubric |
+    | React-TS Code Quality | Support Inbox | 3 | 20 | Judge model, 100-point rubric, plus hidden tests |
+    | Bug Finding Test | Bug Hunt | — | 10 | Bugs matched against a private answer key, minus false claims |
+    | Edge-case Testing | CSV Import, Offline Sync, Bank Feed, Shipping Quotes | 4 prompts × 5 pts | 20 | Hidden automated tests |
+    | **Total** | **7 projects** | **27 prompts** | **70** | — |
+
+    Runs exist to stop one lucky (or unlucky) run deciding a score; the Total
+    row's `27` is the prompt count per model (the article's own wording), not a sum
+    of the column above it.
+  - **Formula:** `total points (max 70) = Laravel Code Quality (max 20) + React-TS Code Quality (max 20) + Bug Finding Test (max 10) + Edge-case Testing (max 20)`. Verified by recomputation: all 51 published rows sum exactly to their displayed total, and the board sorts by that total descending.
+  - **Pull:** total points + the four column scores, avg cost per prompt (USD, API pricing; `N/A` on subscription plans), avg time per prompt, harness used, effort level, board last-update date.
+  - **Weight: rank 2** — an independent third-party re-run with a published, reproducible method. Never rank 1: one publisher, one unnamed judge model on the two code-quality columns, and each row is a **model + harness + effort configuration, not the model in isolation**. Use it to corroborate a tier and to price cost/time; never to set a tier alone, and never to compare rows that differ in harness (Deepseek-V4.1-Flash-1017 (Max) scores 61.20 on DeepSeek Harness vs 60.97 on OpenCode — same model, same effort, different harness, different score).
+  - **Effort:** sibling page `aicodingdaily.com/compare/effort-levels` gives per-model Low/Medium/High/Xhigh/Max deltas in points, cost and time, and defines "sweet spot" as the lowest effort level scoring within 1 point of that model's best. Read it in the same session as the board to fill the Effort cell of a routing table.
+  - **Limits:** judge-model subjectivity on 40 of 70 points; harness-scoped rows; only tested configurations are listed (~51); `N/A` cost means subscription-priced, **not free**; the site's score bars start at 30 points, so compare numbers, not bar lengths.
 
 ### 9.3 Advanced reasoning and expert knowledge
 
@@ -315,5 +351,12 @@ counts confirmed; BFCL version + date confirmed; Scale Labs boards + CI
 confirmed; HLE size + publication confirmed; LiveCodeBench contamination
 design confirmed; METR corrected from "leaderboard" to "horizon/risk
 research". Re-verify any entry before depending on it — boards drift.
+
+AI Coding Daily added and re-verified 2026-10-21: leaderboard page and its
+methodology article fetched; the article's four table images transcribed; all 51
+published rows recomputed (each row's total equals the sum of its four published
+point columns exactly, board sorted by that total); effort-levels page read. The
+board's own last-update stamp was October 20th, 2026 — treat the numbers as a
+snapshot of that date and re-read the page before quoting a score.
 
 

@@ -136,8 +136,23 @@ Only after the operator selected an issue (step 4) AND an execution mode (step 1
 
 - Hand off to `v-babysit-pr-and-merge` to track CodeRabbit review (5m-4m-3m-2m-1m countdown or agent fallback on quota limit), resolve comments, squash merge on green CI, and fast-forward the local base branch (`git pull --ff-only`).
 
+### Step 5B: Retro (Optional) — Post-Merge Session Analysis
+
+- After Station V merges the PR, optionally run `/retro` to analyze the completed session and propose **environment** improvements (not code changes):
+  - **Navigation pointers** for `AGENTS.md` (files that were hard to find)
+  - **Automated checks** for mechanical findings (lint rules, pre-commit hooks, CI jobs)
+  - **Coding standards** in `CODING_STANDARDS.md` for judgment-call findings
+  - **Tool economy** (inefficient tool usage, redundant browser sessions)
+  - **Information access** (stale docs, missing ADRs, absent GLOSSARY entries)
+- **Not mandatory** — offered as a one-line question in the Step 5 report. The operator opts in or skips.
+- **Never applies changes automatically** — presents a structured report; the operator approves each item with ✅ before any file is written.
+- **Periodic cadence** — retro runs every 3–5 PRs by convention, not after every single one. This prevents the project from shifting to meta-improvement.
+- **Missing guardrails are a finding** — if the repo has no `AGENTS.md`, no lint rules, or no CI checks, that is itself a retro finding proposing the minimal baseline.
+- Full retro flow: `skills/retro/SKILL.md`.
+
 ### Step 6: Station VI — Close Pipeline (`vi-close-pipeline`)
 
+- If `/retro` ran (Step 5B), its report is available as context. Station VI does not re-analyze — it reads the retro report and incorporates any approved environment changes into its artifact sweep.
 - Run `vi-close-pipeline` to close out: verify/close the issue, sweep stale per-issue artifacts (signal-based, any layout), handle dead code on the spot with zero-reference proof + targeted tests, and pass the Clean Exit Gate — pushed, on base branch, spotless, ready for the next issue.
 - Optionally suggest `/present-pr <number>` (ad-hoc visual presentation, outside the pipeline) — never mandatory.
 

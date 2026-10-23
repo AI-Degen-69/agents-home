@@ -19,7 +19,7 @@ via links back to the canonical folder — **and the link type matters per harne
 
 ## Global Issue-to-PR Pipeline (Stations I–VI + system skills)
 
-The canonical delivery pipeline lives in numbered folders (`i-pick-issue` through `vi-close-pipeline`). **A numbered prefix means the skill is a step in the chain, invoked in order — I → II → III → IIIB → IV → V → VI.** Everything without a numeral is a system skill: the `pipeline-triage` state gate, the `create-issue` intake branch, the `quick-fix` fast lane, and the ad-hoc `present-pr` visual presentation skill.
+The canonical delivery pipeline lives in numbered folders (`i-pick-issue` through `vi-close-pipeline`). **A numbered prefix means the skill is a step in the chain, invoked in order — I → II → III → IIIB → IV → V → VI.** Everything without a numeral is a system skill: the `pipeline-triage` state gate, the `create-issue` intake branch, the `quick-fix` fast lane, the `retro` post-merge analysis skill, and the ad-hoc `present-pr` visual presentation skill.
 Detailed documentation of the entire pipeline and its reporting rules is in:
 👉 [`issue-to-pr-skill-workflow.md`](../docs/issue-to-pr-skill-workflow.md) — it summarizes the rules and points to each station's local-only template for the exact Hebrew shape.
 
@@ -34,6 +34,7 @@ Detailed documentation of the entire pipeline and its reporting rules is in:
 | **IIIB** | `iiib-iterate-after-build` | Iterate After Build (free-text corrections on a fresh build → specialist fix loop, no push) |
 | **IV** | `iv-review-build-and-pr` | Review, Verify & Ship (multi-axis review, test gate, push branch, open PR) |
 | **V** | `v-babysit-pr-and-merge` | Babysit PR & Merge (CodeRabbit 1-round tracking, triage, squash merge, pull base) |
+| **V→VI** (optional, not numbered) | `retro` | Post-Merge Retro (periodic session analysis → environment improvements: navigation pointers, automated checks, CODING_STANDARDS.md; operator approves) |
 | **VI** | `vi-close-pipeline` | Close Pipeline (signal-based prune in any layout, issue close, on-the-spot dead-code exception, Clean Exit Gate — base branch pushed & spotless) |
 | ad-hoc (not numbered) | `present-pr` | Visual HTML presentation / explain-mode — suggested by Station VI, runnable any time |
 
