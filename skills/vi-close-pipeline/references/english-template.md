@@ -8,7 +8,7 @@
 ## 📦 Deliverables & Documentation:
 - **Pull Request:** [#<n>](<url-pr>) (Merged)
 - **Issue:** [#<id>](<url-issue>) (Closed)
-- **Visual Presentation:** [Archived to `docs/issues/<id>-presentation-xxx.html` / Run `/present-pr <id>` if you wish to generate one]
+- **Visual Presentation:** [Archived to `docs/pr-presentations/<pr>-<slug>.html` / Run `/present-pr <id>` if you wish to generate one]
 
 ## 🧹 Repository State:
 - **Workspace:** Clean, synchronized with `origin/main`, all temporary scratch and plan files swept.

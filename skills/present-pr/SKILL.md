@@ -146,7 +146,8 @@ Example tone:
 
 ## 6. Step 4 — Build & save the HTML
 
-- Save the page inside the project (its docs folder or equivalent), with a clear filename carrying the ticket id and a short title, e.g. `<id>-presentation-<short-title>.html`.
+- Save the page into **`docs/pr-presentations/`** — the home for visual summaries of a pull request and the changes in it. Filename `<pr>-<slug>.html`, where `<pr>` is the pull-request number (the merge/change number once one exists). Never `docs/issues/`, `docs/presentations/`, the repo root, or a scratch folder: an unreserved folder dies unowned and invisible to every guard. A question or design explainer that is not about a PR belongs to the `explain` skill (`docs/explanations/`).
+- Filename: `<id>-presentation-<short-title>.html`, kebab-case slug, `<id>` first (that is how the operator and the close-out station find it).
 - `<id>` = merge/change number when one exists, otherwise the ticket id; in explain-mode use the topic's short title.
 - **Default Language & Structure:** The HTML document must default to Hebrew: `<html lang="he" dir="rtl">` with readable modern fonts (e.g. `system-ui, -apple-system, "Segoe UI", Roboto, "Heebo", Arial, sans-serif`). English technical terms or code paths should be wrapped in `<span dir="ltr">` or `<code>` blocks to preserve visual flow without BiDi distortion.
 - The copy-paste kit (base shells, shared `initCanvas()` JS, six snippets: lifelines, dataflow dots, lifecycle rail, tabs, stepper, slider) lives in [references/component-kit.md](references/component-kit.md). Borrow colors, panels, buttons — do NOT copy its section order. Compose only the blocks you picked in Step 2.

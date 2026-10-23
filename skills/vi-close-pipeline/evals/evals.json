@@ -84,7 +84,7 @@
     },
     {
       "id": "noticed-disposition-blocks-gate",
-      "prompt": "/vi-close-pipeline 19 with docs/issues/19-noticed-but-not-touching.md holding one open row N1. Resolve it with the operator, then pass the Clean Exit Gate.",
+      "prompt": "/vi-close-pipeline 19 with docs/backlog/i19-<slug>.md holding one open row N1. Resolve it with the operator, then pass the Clean Exit Gate.",
       "expected_output": "Agent presents open row N1 for operator decision (publish via create-issue, dismiss with reason, or confirm duplicate), records the resolution in the ledger, and refuses closeout while any row stays open — a recorded dismissal with reason closes the loop.",
       "mode_coverage": [
         "numbered"

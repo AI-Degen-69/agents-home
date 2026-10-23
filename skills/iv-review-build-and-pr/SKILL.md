@@ -131,7 +131,7 @@ Before applying fixes, run the Spec axis in full:
 1. Load the linked GitHub issue (`gh issue view <n> --comments`) and the plan (`tasks/plan.md`).
 2. Compare the diff against them and report, with the spec line quoted for every finding:
    - **Missing** — requirements the issue/plan asked for that are absent or partial.
-   - **Added-not-asked** — behavior in the diff that nothing requested (scope creep; the NOTICED-BUT-NOT-TOUCHING leftovers of Station III belong here — flag, don't silently keep). Review findings that are out of scope become `open` rows in `docs/issues/<id>-noticed-but-not-touching.md`; only Station VI (`vi-close-pipeline`) resolves them.
+   - **Added-not-asked** — behavior in the diff that nothing requested (scope creep; the NOTICED-BUT-NOT-TOUCHING leftovers of Station III belong here — flag, don't silently keep). Review findings that are out of scope become `open` rows in `docs/backlog/i<id>-<slug>.md`; only Station VI (`vi-close-pipeline`) resolves them.
    - **Implemented-wrong** — requirements that look implemented but behave differently than specified.
 3. Spec-axis findings join the fix list (Step 2) with severity from operator impact. Spec axis runs **separately** from the quality axes — never merged or re-ranked into them: "follows every standard but implements the wrong thing" is not the same finding as "implements correctly but breaks standards".
 
@@ -182,6 +182,47 @@ Before applying fixes, run the Spec axis in full:
 
 ### Step 5: Open Pull Request & Trigger Review
 
+#### Step 5a: Generate Diagram-First Summary (before PR body)
+
+Classify the change type from the diff and generate the **smallest visual
+that makes the change clear**. Full algorithm: `references/diagram-generation.md`.
+
+```bash
+git diff --name-only origin/<base>...HEAD   # classify change type
+```
+
+| Change Type | Diagram | Signals |
+|---|---|---|
+| API / interface change | Mermaid contract diagram | `.d.ts`, `routes/*`, `openapi*` |
+| New feature / module | File tree + call tree | new files/dirs, new exports |
+| Refactor (no behavior change) | File-tree diff (before/after) | renamed symbols, moved functions |
+| Bug fix | State transition (before→after) | logic branches, conditionals |
+| UI change | Before/after screenshot | `.tsx`/`.jsx`/`.css` |
+| Config / docs only | Inline diff snippet | `.json`/`.yaml`/`.md` only |
+
+The diagram goes as the **first** element of `## Summary` — a `## Change Visual`
+section. Prose summary follows below it.
+
+#### Step 5b: Assess Merge Danger (before PR body)
+
+Compute three dimensions from the live diff. Full algorithm:
+`references/merge-danger.md`.
+
+1. **Decision type:** one-way door (DB migration, data transform, external API
+   contract) or two-way door (internal refactor, new module, config tweak).
+2. **Blast radius:** files / directories / modules / public API surface —
+   mapped to Minimal / Low / Moderate / High.
+3. **Rollback feasibility:** easy (revert, no state impact) / moderate
+   (consumers must migrate) / hard (data has migrated, backup restore needed).
+
+Append a `## Merge Danger` section to the PR body right after `## Summary`.
+
+> **High blast radius** → flag the PR for explicit human review before Station V
+> attempts an autonomous merge. The Merge Danger section is informational — it
+> drives review depth, never blocks PR creation.
+
+---
+
 **CodeRabbit writes the PR title — you do not.** Use exactly `@coderabbitai`
 as the PR title. Do NOT generate the actual PR title yourself. Do NOT add tags
 such as `[FIX]`, `[ADD]`, `[IMPROVE]`, etc. yourself. CodeRabbit's effective
@@ -191,10 +232,19 @@ detects `@coderabbitai` and generates the final PR title according to title inst
 Conventional-Commits types (`feat:`, `fix:`) belong to commit messages only — never write one into a PR title.
 
 ```bash
-gh pr create --title "@coderabbitai" --body "## Summary`n...`n`nCloses #<issue>`n`n@coderabbitai summary"
+gh pr create --title "@coderabbitai" --body "## Change Visual`n<diagram>`n`n## Summary`n<brief prose>`n`n## Merge Danger`n<decision> · <blast radius> · <rollback>`n`n## How to verify`n<exact launch + expected value>`n`nCloses #<issue>`n`n@coderabbitai summary"
 ```
 
-**The body is the verification artifact every later station reads.** Follow the repo's PR template when it defines one — in this repo `## Why`, `## Test output`, `## How to verify`, `Closes #<issue>` (`docs/agents/git-workflow.md`). Write `## How to verify` out of the gate you just ran: the exact launch command and the exact value the operator should see, copy-paste runnable, including whatever flag or store makes the surface show the thing (a page that only has numbers when pointed at a seeded registry is not verifiable against the empty default one). Stations V and VI read that block instead of inventing their own; a body without it guarantees the drift you then have to explain.
+**The body is the verification artifact every later station reads.** Follow the repo's PR template when it defines one — in this repo `## Why`, `## Test output`, `## How to verify`, `Closes #<issue>` (`docs/agents/git-workflow.md`). The PR body must now contain these sections in order:
+
+1. `## Change Visual` — the diagram-first summary (Step 5a)
+2. `## Summary` — brief prose explaining the visual, if needed
+3. `## Merge Danger` — decision type, blast radius, rollback feasibility (Step 5b)
+4. `## How to verify` — the exact launch command and the exact value the operator should see, copy-paste runnable, including whatever flag or store makes the surface show the thing
+5. `## Test output` — from the Step 3 verification gate
+6. `Closes #<issue>` + `@coderabbitai summary`
+
+Stations V and VI read the `## How to verify` block instead of inventing their own; a body without it guarantees the drift you then have to explain. A body missing `## Change Visual` or `## Merge Danger` should be amended before handoff.
 
 **After creating the PR, verify the title was replaced:** run `gh pr view <pr_number> --json title` and if the title is still exactly `@coderabbitai`, note in the handoff that CodeRabbit did not replace the placeholder (this may happen if settings are disabled or misconfigured). Never fall back to an invented hand-written title.
 

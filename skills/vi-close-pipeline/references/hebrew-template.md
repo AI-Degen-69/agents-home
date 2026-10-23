@@ -14,7 +14,7 @@ in `SKILL.md` and never copies this file.
 ## 📦 תוצרים ותיעוד:
 - **Pull Request:** [#<n>](<url-pr>) (מוזג)
 - **משימה (Issue):** [#<id>](<url-issue>) (נסגרה)
-- **מצגת חזותית:** [נשמרה בארכיון ב-`docs/issues/<id>-presentation-xxx.html` / הריצו `/present-pr <id>` אם תרצו להפיק אחת]
+- **מצגת חזותית:** [נשמרה בארכיון ב-`docs/pr-presentations/<pr>-<slug>.html` / הריצו `/present-pr <id>` אם תרצו להפיק אחת]
 
 ## 🧹 מצב סביבת העבודה:
 - **סביבת עבודה:** נקייה, מסונכרנת עם `origin/main`, וכל קובצי התכנון והטיוטה הזמניים נוקו.

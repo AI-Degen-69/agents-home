@@ -18,7 +18,7 @@ Its job:
 9. When reporting speed, prefer independent measurements (e.g., BenchLM’s tok/s) over vendor‑claimed numbers.
 
 10. Always include context window, input/output cost per million tokens, and cached‑input discount if available.
-6. Save the file where the repo already keeps research notes (e.g., `docs/research/` or a `research/` folder); if none exists, create a sensible location and note its path in the output.
+6. Save the file to `docs/research/<slug>.md` — always that folder, never "a sensible location". Add a `YYYY-MM-DD-` prefix when the note records a dated investigation, and use a kebab-case slug that names the question (the project's `docs/agents/naming.md` wins if it defines a different home).
 7. After writing, verify the file exists and contains the expected sections; if anything is missing, repeat extraction for the missing pieces.
 
 Pitfalls:

@@ -10,7 +10,7 @@ Source of the 6 rules: Addy Osmani, `using-agent-skills` (github.com/addyosmani/
 
 - **`skills/`** (~91 skills) — the capability library. General-purpose skills (research, debugging, TDD, review, docs) plus the numbered issue→PR delivery pipeline below.
 - **`agents/`** — helper sub-agent personas (`code-explorer`, `code-reviewer`, stack-specific resolvers) that pipeline stations delegate to.
-- **`docs/`** — durable knowledge: the pipeline map (`docs/issue-to-pr-skill-workflow.md`) and nothing else.
+- **`docs/`** — durable knowledge: the pipeline map (`docs/issue-to-pr-skill-workflow.md`), the artifact-path index (`docs/artifact-paths.md`), and nothing else.
 - **`scripts/`** — maintenance automation (harness sync, CodeRabbit config sync, and project sync for the published pipeline repo — see `skills/README.md`).
 - **`config/`** — per-harness configuration.
 
@@ -21,7 +21,7 @@ Skills are self-contained folders (`SKILL.md` + optional `references/`, `scripts
 - **Projects live at `C:/Users/Tiger/Agents/Projects`** (a.k.a. "my projects" / "the Projects folder"). That folder holds **two kinds of entries side by side**: lone project folders, and **category folders that nest more projects** (`AI Trading`, `general`, `vantage`, `non-active`, `issue-to-pr-skills`, `temp`). Do not assume it is a flat list of projects, and do not assume a project you remember still exists — **enumerate it live** before naming or acting on a path.
 - Never source a project path from memory or a remembered list; read it from the filesystem or ask. A stale path is worse than no path.
 
-## The 8 rules (always on, for every task)
+## The 9 rules (always on, for every task)
 
 1. **Surface assumptions.** Before non-trivial work, state your assumptions and let the operator correct them. Never guess silently.
 2. **Stop when confused.** Contradiction or ambiguity → stop, name it, ask. Never plow ahead on a guess.
@@ -31,6 +31,7 @@ Skills are self-contained folders (`SKILL.md` + optional `references/`, `scripts
 6. **Verify, don't assume.** A task is not done without evidence: passing tests, build output, or runtime data. "Seems right" is not evidence.
 7. **Direct, concise & plain language.** Zero filler words. Get straight to the point and tell the truth as it is. Explain concepts with effortless clarity—plain English, high-school level, no gratuitous jargon, but zero dumbing down of technical facts. Use intuitive analogies and comparison tables wherever contrasting choices. Use purposeful visual cues/emojis sparingly for scannability (🔴 error/loss, ⚠️ warning/caution, 🟢 success/gain, 💡 tip/insight) — never overuse.
 8. **Dynamic Content-Aware RTL Artifacts.** The agent must dynamically evaluate its output before sending: if a response in Hebrew is non-trivial, exceeds 2-3 short sentences, or mixes Hebrew prose with English technical terms, code snippets, file paths, or lists (which cause BiDi text reversal in chat), DO NOT dump it into the chat. Instead, automatically package the full response into a clean, standalone HTML artifact with `dir="rtl"`, dark theme styling, and clear visual hierarchy, then post a 1-sentence summary and direct link in the chat. Chat is strictly reserved for trivial 1-2 sentence status pings. This applies universally across all tasks, skills, and tools based on content shape and volume.
+9. **A skill's artifact path is fixed.** Before writing any file a skill produces, use the path in [`docs/artifact-paths.md`](docs/artifact-paths.md) — never "a sensible location", never a new sibling folder. A skill with no row there gets one in the same change that adds the writer.
 
 ## Router boundary
 
