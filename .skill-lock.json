@@ -792,6 +792,69 @@
       "skillFolderHash": "b6906ead1637d1222b31d9bd5666957143b7a28b",
       "installedAt": "2026-09-30T15:46:31.976Z",
       "updatedAt": "2026-09-30T15:46:31.976Z"
+    },
+    "autofix": {
+      "source": "coderabbitai/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/coderabbitai/skills.git",
+      "skillPath": "skills/autofix/SKILL.md",
+      "skillFolderHash": "86943cf54a86526ab96d55db6afcb329b3420634",
+      "installedAt": "2026-11-01T12:44:11.475Z",
+      "updatedAt": "2026-11-01T12:44:11.475Z"
+    },
+    "polymarket-analyzer": {
+      "source": "mjunaidca/polymarket-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mjunaidca/polymarket-skills.git",
+      "skillPath": "polymarket-analyzer/SKILL.md",
+      "skillFolderHash": "7150804838969baf1a09daa8a73a4220a57dacf4",
+      "installedAt": "2026-11-01T21:03:42.634Z",
+      "updatedAt": "2026-11-01T21:03:42.634Z"
+    },
+    "polymarket-live-executor": {
+      "source": "mjunaidca/polymarket-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mjunaidca/polymarket-skills.git",
+      "skillPath": "polymarket-live-executor/SKILL.md",
+      "skillFolderHash": "a496deb23bbcd3aa532340fba14e29ad0baee1ea",
+      "installedAt": "2026-11-01T21:03:42.644Z",
+      "updatedAt": "2026-11-01T21:03:42.644Z"
+    },
+    "polymarket-monitor": {
+      "source": "mjunaidca/polymarket-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mjunaidca/polymarket-skills.git",
+      "skillPath": "polymarket-monitor/SKILL.md",
+      "skillFolderHash": "36b26255b29f4d652743f7867d2d3d435d391cd7",
+      "installedAt": "2026-11-01T21:03:42.651Z",
+      "updatedAt": "2026-11-01T21:03:42.651Z"
+    },
+    "polymarket-paper-trader": {
+      "source": "mjunaidca/polymarket-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mjunaidca/polymarket-skills.git",
+      "skillPath": "polymarket-paper-trader/SKILL.md",
+      "skillFolderHash": "eae3f0474aa264915a8b6d07893f1a2ae926661f",
+      "installedAt": "2026-11-01T21:03:42.657Z",
+      "updatedAt": "2026-11-01T21:03:42.657Z"
+    },
+    "polymarket-scanner": {
+      "source": "mjunaidca/polymarket-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mjunaidca/polymarket-skills.git",
+      "skillPath": "polymarket-scanner/SKILL.md",
+      "skillFolderHash": "6f4b6334730b9a31db74b25b8fb656797abcacf2",
+      "installedAt": "2026-11-01T21:03:42.663Z",
+      "updatedAt": "2026-11-01T21:03:42.663Z"
+    },
+    "polymarket-strategy-advisor": {
+      "source": "mjunaidca/polymarket-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mjunaidca/polymarket-skills.git",
+      "skillPath": "polymarket-strategy-advisor/SKILL.md",
+      "skillFolderHash": "d77ea7064b9f05d2621d23497d076f42e56b039f",
+      "installedAt": "2026-11-01T21:03:42.668Z",
+      "updatedAt": "2026-11-01T21:03:42.668Z"
     }
   },
   "dismissed": {
@@ -803,11 +866,13 @@
     "codex",
     "cursor",
     "droid",
+    "fx",
     "gemini-cli",
     "github-copilot",
     "kilo",
     "kimi-code-cli",
     "opencode",
+    "pi",
     "warp",
     "zed"
   ]

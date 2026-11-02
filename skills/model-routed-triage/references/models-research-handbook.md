@@ -58,7 +58,7 @@ Tiers are set by ranks 1–2, bounded by rank 4, nudged by 5–6, never set by
     `X-RateLimit-Limit/Remaining/Reset`, `Retry-After` on 429.
   - **What Free covers:** headline Intelligence / Coding / Agentic indices, the
     six Capability Indexes, median performance, input/output prices,
-    `intelligence_index_version` (currently v4.3.2 — record it; compare scores
+    `intelligence_index_version` (v5.0 as of 2026-11-02 — record it; compare scores
     only within the same major version), slug, release date. Null = not
     measured, never zero.
   - **What Free omits (still page-read):** full eval set, token counts, blended
@@ -164,7 +164,7 @@ every run:
 1. **Read the frontier first.** Fetch the live AA leaderboard; record the top
    Intelligence Index score (= F), the frontier cluster shape, and the date.
    (Reference stamp: Oct 20 2026 → F = 58; cluster 52–58; slope 38–48; tail
-   below. That stamp expires — it is an example, not the scale.)
+   below. That stamp expires — it is an example, not the scale. **Nov 2 2026 → F = 59; cluster 50–59; slope 26–38; tail <26** — the v5.0 basket is harder; re-stamp before any grade comparison.)
 2. **Check the clusters.** Note where the population bunches and where it
    slopes — clusters confirm the bands still fit; a new cliff or a compressed
    slope means re-read the bands, not just the numbers.
@@ -262,6 +262,40 @@ headline-only, never as data.
 - **LMArena** (`lmarena.ai`). Blind crowdsourced A/B, Bradley-Terry Elo, with
   Coding / Hard Prompts / Vision sub-boards. Pull: Elo overall + sub-board.
   Human-preference signal, not capability proof — never sets a tier alone.
+- **BenchLM** (`data.benchlm.ai`) — secondary benchmark + price source, approved
+  2026-10-28. REST `https://data.benchlm.ai/v1`, MCP `https://data.benchlm.ai/mcp`
+  (Streamable HTTP); auth `Authorization: Bearer <key>`, key from env
+  `BENCHLM_DATA_KEY` or the gitignored `skills/model-routed-triage/.env`. Free plan: 250 successful reads/month, 30 req/min, current
+  state plus only the last 30 days of history; usage and coverage checks are free.
+  A model snapshot costs 3 reads (rankings + benchmark results + pricing); the
+  skill's 14 covered models are ~42 reads per full sweep.
+  Pull: per-board scores `GET /v1/benchmarks/results/current?modelKey=<key>`,
+  composite `GET /v1/models/<key>/rankings/current`, prices with the provider
+  quote `GET /v1/pricing?modelKey=<key>`. `node scripts/benchlm-snapshot.mjs
+  --skill` does the whole sweep.
+  - **It records, it does not re-run.** Board scores come from benchmark operators
+    and model cards. DeepSeek V4.1 Flash 1017 returns DeepSWE 77.0 / HLE 42.6 —
+    the same vendor figures already flagged unreproduced. Treat it as evidence
+    rank 3 unless the board is a licensed independent dataset (the LMArena cells
+    are), so it corroborates, prices, or fills a gap; it never confirms capability
+    alone.
+  - **Never blend BenchAlign with AA.** `bench-align-v5.8` is its own scale and
+    scoring basket (Gemini 4 Argon 82.93 overall, Claude Opus 5.5 86.66). Keep it a
+    labelled separate column or drop it; do not convert it into AA points, and do
+    not set a tier from it alone.
+  - **The confidence fields are the real value.** Each ranking carries
+    `evidenceStatus` (`supported` / `estimated` / `benchmark-only`), `maturity`,
+    a 90% interval (`intervalValidated: false` on every row today, ±7-12 points)
+    and `sourceFamilyCount`. Estimated + wide interval means its rank ordering is
+    not grade evidence.
+  - **Identity traps** (verified 2026-10-28): `deepseek-v4-1-flash` is the **1017**
+    refresh (FB-11), not the FB-4/FB-5 base; `claude-haiku-5-5` is the 1M-context
+    build while FB-9 is the 100k variant; Big Pickle, LongCat 2.5 Preview and
+    Solar Mini 4 are absent from its 1,002-model catalog; Mercury 3 and Muse Spark
+    1.3 have board scores but no BenchAlign rank.
+  - **Terms:** internal analysis and routing decisions only; attribute "Data from
+    BenchLM.ai" and keep publisher notices. Commercial display and feed
+    redistribution require a separate agreement.
 - **Stanford HELM** (`crfm.stanford.edu/helm`). Academic multi-metric suite
   (accuracy, robustness, bias, toxicity, calibration). Pull: robustness/safety
   caveats other boards miss. Slow-moving by design — a complement, not the
@@ -351,6 +385,15 @@ counts confirmed; BFCL version + date confirmed; Scale Labs boards + CI
 confirmed; HLE size + publication confirmed; LiveCodeBench contamination
 design confirmed; METR corrected from "leaderboard" to "horizon/risk
 research". Re-verify any entry before depending on it — boards drift.
+
+BenchLM added and verified live 2026-10-28: full 1,002-model catalog paged, 14 of
+the skill's 17 models matched, per-model rankings + board results + prices pulled,
+MCP `initialize`/`tools/list` and the usage endpoint exercised. Confirmed on that
+run: BenchLM's DeepSWE/HLE for DeepSeek V4.1 Flash equal the vendor numbers already
+in models.md; Mercury 3 and Muse Spark 1.3 return `current_ranking_not_found` but
+do return board scores; Mercury 3 prices at $0.20/$0.70 with no 50% launch row,
+which conflicts with the launch-discount claim in models.md. Re-check the plan caps
+and the identity map before quoting.
 
 AI Coding Daily added and re-verified 2026-10-21: leaderboard page and its
 methodology article fetched; the article's four table images transcribed; all 51

@@ -24,6 +24,11 @@ its §9 catalog lists every source that may be quoted, including AI Coding Daily
 LLM Coding Leaderboard for end-to-end coding points plus cost and wall time per
 prompt. Never quote a benchmark the handbook does not list; never set a tier from
 one board alone.
+Approved secondary source: **BenchLM** (handbook §9.1). `node
+scripts/benchlm-snapshot.mjs --skill` pulls BenchAlign ranks, board scores and
+prices for the covered models — 3 reads per model against a 250/month Free cap,
+key in `BENCHLM_DATA_KEY`. Its board numbers are recorded, not re-run, and its
+BenchAlign score never mixes with AA points or sets a tier by itself.
 Both files are organized **per harness** (identical structure under each
 `## <Harness>` heading: pricing → effort levels → inventory table → grade
 table → model justification). Model IDs (`M1`, `M2`, …) are stable **per
@@ -39,7 +44,7 @@ Then establish value-for-money per candidate.
    recommend a model from training knowledge or web search unless the operator
    confirms it exists on their harnesses at a stated price.
 2. **Harness fit:** each task runs in a specific harness. A model is eligible only where it is actually installed and switchable — note the harness per assignment.
-2b. **Confidentiality before routing:** if the repository or task is private/confidential, do not route to models whose data policy trains on prompts/completions (e.g. CL-4 Muse Spark Contributor on Cline). Route to no-train or open-weight models only; verify the model's data policy exists and is acceptable before selection.
+2b. **Confidentiality before routing:** if the repository or task is private/confidential, do not route to models whose data policy trains on prompts/completions (e.g. Muse Spark 1.3 Contributor on Cline — the free tier). Route to no-train or open-weight models only; verify the model's data policy exists and is acceptable before selection.
 3. **Capability evidence:** use benchmark figures only from sources read in
    this session (or prior verified session notes); vendor-reported numbers
    are labeled as such. No invented scores. Where no data exists, say so and
@@ -89,7 +94,7 @@ Then establish value-for-money per candidate.
      available and route accordingly. Never self-impose artificial frugality
      on a capable harness that has capacity. On time-billed harnesses
      (e.g. Freebuff), unused daily slots are wasted budget, not saved budget
-     -- an unused FB-10 Argon slot is a day of S+ capability gone forever.
+     -- an unused FB-10 Argon slot is a day of S capability gone forever.
      Early-close refunds unused hours, so the real cost of a short session
      (plan-only, probe, review) is far below the headline rate; factor the
      refund into the worthiness calculation.
@@ -97,8 +102,7 @@ Then establish value-for-money per candidate.
      when budget is unconstrained.** If a task clears S-grade worthiness by
      even a small margin, route to the strongest model whose slot is
      available today. Do not defer to a hypothetically "more worthy" future
-     task that may never arrive. The tiebreaker between S and S+ models is
-     grade, not cost, when budget is unconstrained.
+     task that may never arrive. The tiebreaker between two models of the same grade is cost.
    - **Budget-constrained mode (triggered when the operator states remaining
      quota/hours/slots).** When the operator declares a constraint (e.g.
      "3h left on Freebuff", "Argon slot used today", "out of OpenCode quota"),

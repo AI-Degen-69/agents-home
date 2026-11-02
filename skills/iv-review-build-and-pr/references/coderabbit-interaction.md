@@ -2,6 +2,15 @@
 
 Detailed reference for PR title handling, rate-limit pre-checks, trigger acknowledgement polling, bot reply classification, and jump link extraction.
 
+## 0. CLI Pre-Flight (Optional, Adopted from the Official CodeRabbit CLI)
+
+When the CodeRabbit CLI is installed, run `coderabbit auth status --agent` before the allowance
+pre-check (§2) and treat a sandboxed `authenticated: false` as unknown, not logged-out. Let the
+trusted CLI access its own credential store; never retrieve, expose, or pass credentials. If the
+CLI is missing or unauthenticated, skip this pre-flight and continue with the GitHub-side probes
+— a missing CLI is not a blocker and never means "zero allowance". Keep `--version`/`--help`
+diagnostics sandboxed.
+
 ## 1. PR Title Replacement
 
 CodeRabbit's effective configuration (`reviews.auto_title_placeholder` plus `reviews.auto_title_instructions`, configured in online account/org settings or repository configuration) detects `@coderabbitai` and generates the final PR title according to title instructions. Conventional-Commits types (`feat:`, `fix:`) belong to commit messages only — never write one into a PR title.
@@ -14,7 +23,19 @@ If the title is still exactly `@coderabbitai`, note in the handoff that CodeRabb
 
 ## 2. Allowance Pre-check (Plan-Gated)
 
-`@coderabbitai rate limit` reports remaining review allowance and when the next review frees up **without consuming a review**. Post it only when quota is thin — but note this is a **chat-gated command**: on the Free plan it is refused with the "upgrade to CodeRabbit Essentials" notice, which is its own outcome, **never** "zero allowance". On Free, skip the comment entirely and read the allowance from the trigger acknowledgement.
+Prefer the CodeRabbit CLI when it is available and authenticated (official CodeRabbit CLI
+diagnostics): `coderabbit usage --agent` returns structured allowance/billing/credit information
+without consuming a review and without the chat gate. Missing or unavailable credit/cap fields
+mean **unknown, not zero**. Run `coderabbit auth status --agent` first; proceed only on a
+well-formed `authenticated: true`. If the CLI is missing or unauthenticated, do not treat that as
+"zero allowance" — degrade gracefully to the legacy probe below.
+
+Legacy probe (only when the CLI is unavailable): `@coderabbitai rate limit` reports remaining
+review allowance and when the next review frees up **without consuming a review**. Post it only
+when quota is thin — but note this is a **chat-gated command**: on the Free plan it is refused
+with the "upgrade to CodeRabbit Essentials" notice, which is its own outcome, **never** "zero
+allowance". On Free, skip the comment entirely and read the allowance from the trigger
+acknowledgement.
 
 ```bash
 gh pr comment <pr_number> --body "@coderabbitai rate limit"   # Free: declines — skip it
