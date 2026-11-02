@@ -186,5 +186,5 @@ The report delivers **dual verification**:
 ---
 
 <!-- local-only:present-pr:output-template-begin -->
-The chat output template for this station is `references/english-template.md`.
+The chat output template for this station is `references/english-template.md` (canonical; `references/output-template.md` is the grader-recognized alias for the same file — see `grade.js` `extractTemplateFor()`).
 <!-- local-only:present-pr:output-template-end -->

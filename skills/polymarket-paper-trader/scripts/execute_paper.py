@@ -80,8 +80,9 @@ def execute_recommendation(
             "recommendation": recommendation,
         }
 
-    # Handle CLOSE action
-    if action == "CLOSE":
+    # Handle CLOSE action. A SELL is a close of an existing position:
+    # routing it to place_order would BUY more shares instead.
+    if action in ("CLOSE", "SELL"):
         if dry_run:
             return {
                 "status": "dry_run",
@@ -116,9 +117,25 @@ def execute_recommendation(
     if size_usd is None and size_pct is not None:
         size_usd = portfolio["total_value"] * size_pct
     elif size_usd is None:
-        # Default: Kelly-inspired sizing based on confidence
-        # Half-Kelly: f = (2p - 1) where p = confidence, then halved
-        kelly_fraction = max(0, (2 * confidence - 1)) * 0.5
+        # Default: price-aware half-Kelly for a binary share priced q
+        # paying $1: f = (p - q) / (1 - q), then halved. The old 2p - 1
+        # formula only holds at q = 0.50 and would size losing bets
+        # (e.g. 75% sure at $0.90).
+        try:
+            kelly_price = price if price is not None else fetch_midpoint(token_id)
+        except Exception:
+            kelly_price = None
+        if kelly_price is None or not 0 < kelly_price < 1:
+            return {
+                "status": "rejected",
+                "reason": "No market price available for Kelly sizing",
+            }
+        if confidence <= kelly_price:
+            return {
+                "status": "rejected",
+                "reason": f"Negative edge: confidence {confidence:.2f} <= price {kelly_price:.2f}",
+            }
+        kelly_fraction = ((confidence - kelly_price) / (1 - kelly_price)) * 0.5
         # Cap at 10% of portfolio
         kelly_fraction = min(kelly_fraction, 0.10)
         size_usd = portfolio["total_value"] * kelly_fraction

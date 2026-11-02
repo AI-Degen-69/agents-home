@@ -28,7 +28,14 @@ def poll_prices(client, token_ids):
 
     results = {}
     for tid in token_ids:
-        mid_val = midpoints.get(tid, "0")
+        if tid not in midpoints:
+            print(json.dumps({
+                "type": "error",
+                "token_id": tid,
+                "message": "midpoint unavailable",
+            }), file=sys.stderr, flush=True)
+            continue
+        mid_val = midpoints[tid]
         spread_val = spreads.get(tid, "0")
         results[tid] = {
             "midpoint": float(mid_val) if mid_val else 0.0,
@@ -52,6 +59,11 @@ def run_monitor(token_ids, interval, threshold, max_polls, baseline_window):
         except Exception as e:
             print(json.dumps({"type": "error", "timestamp": now,
                               "message": str(e)}), file=sys.stderr)
+            if max_polls and poll_count >= max_polls:
+                print(json.dumps({"type": "monitor_complete",
+                                  "total_polls": poll_count,
+                                  "timestamp": now}), flush=True)
+                break
             time.sleep(interval)
             continue
 

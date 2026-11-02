@@ -79,8 +79,13 @@ fi
 
 ```bash
 title=$(git log -1 --pretty=format:'%s')
-body=$(git log -1 --pretty=format:'%b')
-gh pr create --title "$title" --body "${body:-Auto-created by CodeRabbit autofix}"
+# Never publish the raw commit body: it may contain tokens, private data, or
+# reviewer text. Confirm a short fixed body before creating the PR.
+body="Auto-created by CodeRabbit autofix — see commit $(git rev-parse --short HEAD) for details."
+echo "About to run: gh pr create --title $title --body $body"
+read -r -p "Create PR with this title/body? [y/N] " ans
+[ "$ans" = "y" ] || { echo "Aborted."; EXIT; }
+gh pr create --title "$title" --body "$body"
 ```
 
 After creating the PR, inform "Run skill again in ~5 min", EXIT.

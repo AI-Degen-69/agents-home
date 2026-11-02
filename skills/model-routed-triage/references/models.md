@@ -193,8 +193,9 @@ regular-context variant, add it as a separate row with ctx in notes, same rule.
   32,768 / 4,096 → raise. Freebuff hour-burn for BYOK models unknown.
 - **MiniMax M3.1 Flash removed from the Freebuff roster (Nov 2, 2026,
   operator-confirmed)** — it no longer appears in the Freebuff model list, so it
-  is not routeable here (it stays listed for OpenCode as OC-10 and for Cline's
-  free dropdown). No FB id is free-standing for it. Cheapest Freebuff worker is
+  is not routeable here (it stays reachable on OpenCode via `space-bunny-free`
+  and on Cline's free dropdown — it is NOT OC-10; OC-10 is Mercury 3).
+  No FB id is free-standing for it. Cheapest Freebuff worker is
   **FB-1 MiMo 2.6 Flash (1h, B)**.
 - **Whole board re-tiered on AA Intelligence Index v5.0 (Nov 2, 2026):** F = 59,
   bands S+ 51–59 · S 46–50 · A 39–45 · B 26–38 · C <26. Every AA number in the

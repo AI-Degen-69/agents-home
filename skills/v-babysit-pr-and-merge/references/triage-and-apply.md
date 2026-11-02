@@ -36,11 +36,12 @@ Also capture the GraphQL `threadId` for each comment so rejections can be resolv
 
 ```bash
 gh api graphql -f query='
-  query($owner:String!, $repo:String!, $pr:Int!) {
+  query($owner:String!, $repo:String!, $pr:Int!, $cursor:String) {
     repository(owner:$owner, name:$repo) {
       pullRequest(number:$pr) {
-        reviewThreads(first:100) {
-          nodes { id isResolved comments(first:1) { nodes { databaseId path line } } }
+        reviewThreads(first:100, after:$cursor) {
+          pageInfo { hasNextPage endCursor }
+          nodes { id isResolved isOutdated comments(first:1) { nodes { databaseId path line author { login } } } }
         }
       }
     }

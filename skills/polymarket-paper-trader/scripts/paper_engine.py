@@ -143,9 +143,14 @@ def _init_schema(conn: sqlite3.Connection):
             opened_at     TEXT NOT NULL,
             updated_at    TEXT NOT NULL,
             closed        INTEGER NOT NULL DEFAULT 0,
-            closed_at     TEXT,
-            UNIQUE(portfolio_id, token_id, side, closed)
+            closed_at     TEXT
         );
+
+        -- Only one OPEN position per (portfolio, token, side). Closed
+        -- rows stay unique-free so a market can be re-entered and
+        -- re-closed any number of times.
+        CREATE UNIQUE INDEX IF NOT EXISTS ux_positions_open
+            ON positions(portfolio_id, token_id, side) WHERE closed = 0;
 
         CREATE TABLE IF NOT EXISTS trades (
             id            INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -174,6 +179,46 @@ def _init_schema(conn: sqlite3.Connection):
             UNIQUE(portfolio_id, date)
         );
     """)
+    conn.commit()
+    _migrate_positions_unique(conn)
+
+
+def _migrate_positions_unique(conn: sqlite3.Connection):
+    """Replace the legacy UNIQUE(portfolio_id, token_id, side, closed)."""
+    row = conn.execute(
+        "SELECT sql FROM sqlite_master "
+        "WHERE type = 'table' AND name = 'positions'"
+    ).fetchone()
+    if not row or "UNIQUE(portfolio_id, token_id, side, closed)" not in (row["sql"] or ""):
+        return
+    conn.executescript(
+        """
+        ALTER TABLE positions RENAME TO positions_legacy;
+        CREATE TABLE positions (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            portfolio_id  INTEGER NOT NULL REFERENCES portfolios(id),
+            token_id      TEXT NOT NULL,
+            market_question TEXT,
+            side          TEXT NOT NULL CHECK(side IN ('YES','NO')),
+            shares        REAL NOT NULL DEFAULT 0,
+            avg_entry     REAL NOT NULL DEFAULT 0,
+            current_price REAL NOT NULL DEFAULT 0,
+            opened_at     TEXT NOT NULL,
+            updated_at    TEXT NOT NULL,
+            closed        INTEGER NOT NULL DEFAULT 0,
+            closed_at     TEXT
+        );
+        INSERT INTO positions
+            (id, portfolio_id, token_id, market_question, side, shares,
+             avg_entry, current_price, opened_at, updated_at, closed, closed_at)
+        SELECT id, portfolio_id, token_id, market_question, side, shares,
+             avg_entry, current_price, opened_at, updated_at, closed, closed_at
+        FROM positions_legacy;
+        DROP TABLE positions_legacy;
+        CREATE UNIQUE INDEX IF NOT EXISTS ux_positions_open
+            ON positions(portfolio_id, token_id, side) WHERE closed = 0;
+        """
+    )
     conn.commit()
 
 
@@ -759,11 +804,18 @@ def close_position(
 
             now = datetime.now(timezone.utc).isoformat()
 
-            # Mark position closed
-            conn.execute(
-                "UPDATE positions SET closed = 1, closed_at = ?, updated_at = ? WHERE id = ?",
-                (now, now, pos["id"]),
-            )
+            if remaining_shares >= 0.0001:
+                # Partial fill: keep the unsold shares open at the same entry
+                conn.execute(
+                    "UPDATE positions SET shares = ?, updated_at = ? WHERE id = ?",
+                    (round(remaining_shares, 4), now, pos["id"]),
+                )
+            else:
+                # Mark position closed
+                conn.execute(
+                    "UPDATE positions SET closed = 1, closed_at = ?, updated_at = ? WHERE id = ?",
+                    (now, now, pos["id"]),
+                )
 
             # Credit proceeds to balance
             new_balance = pf["cash_balance"] + net_proceeds
@@ -793,6 +845,7 @@ def close_position(
                 "token_id": token_id,
                 "market": pos["market_question"],
                 "shares_sold": round(shares_sold, 4),
+                "remaining_shares": round(remaining_shares, 4),
                 "avg_sell_price": round(avg_sell_price, 6),
                 "avg_entry_price": pos["avg_entry"],
                 "fee": round(fee, 4),
@@ -938,7 +991,6 @@ def main():
 Examples:
   %(prog)s --action init --balance 1000
   %(prog)s --action buy --token TOKEN_ID --side YES --size 50
-  %(prog)s --action sell --token TOKEN_ID --side YES --size 50
   %(prog)s --action close --token TOKEN_ID
   %(prog)s --action portfolio
   %(prog)s --action trades
@@ -980,7 +1032,11 @@ Examples:
                 print(f"Portfolio '{result['name']}' initialized with "
                       f"${result['starting_balance']:,.2f}")
 
-        elif args.action in ("buy", "sell"):
+        elif args.action == "sell":
+            # A partial sell by USD amount does not exist yet, and routing
+            # sell to place_order would BUY more shares. Use close instead.
+            parser.error("--action sell is not supported; use --action close")
+        elif args.action == "buy":
             if not args.token:
                 parser.error("--token is required for buy/sell")
             if not args.side:

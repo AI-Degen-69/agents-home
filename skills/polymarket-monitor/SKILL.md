@@ -24,7 +24,7 @@ All scripts require the Python venv at `/home/verticalclaw/.venv`.
 ### Monitor Multiple Markets for Price Alerts
 
 ```bash
-source /home/verticalclaw/.venv/bin/activate && python polymarket-monitor/scripts/monitor_prices.py \
+source /home/verticalclaw/.venv/bin/activate && python skills/polymarket-monitor/scripts/monitor_prices.py \
   --token-id "<TOKEN_ID_1>" \
   --token-id "<TOKEN_ID_2>" \
   --interval 30 \
@@ -36,7 +36,7 @@ This polls every 30 seconds and prints a JSON alert whenever a token's midpoint 
 ### Watch a Single Market Live
 
 ```bash
-source /home/verticalclaw/.venv/bin/activate && python polymarket-monitor/scripts/watch_market.py \
+source /home/verticalclaw/.venv/bin/activate && python skills/polymarket-monitor/scripts/watch_market.py \
   --token-id "<TOKEN_ID>" \
   --interval 15
 ```

@@ -159,7 +159,7 @@ School-style: **S+** (reserve) > **S** (top) > **A** > **B** > **C** > **D**.
 | S+ | Reserve | (none — nothing on OpenCode clears 51; best is 32, 27 pts below F) |
 | S | Top | (none — nothing on OpenCode clears 46) |
 | A | Competent | (none — nothing on OpenCode reaches 39) |
-| B | Light / probe | OC-4: GLM-5.3-Flash (28); OC-6: MiMo-V2.6-Flash (27); OC-3: DeepSeek V4.1 Flash (unmeasured on v5.0; 1017 refresh 32 = ceiling proxy); OC-2: Big Pickle (no page; street B); MiniMax M3.1 Flash (29, no `models.md` row) |
+| B | Light / probe | OC-4: GLM-5.3-Flash (28); OC-6: MiMo-V2.6-Flash (27); OC-3: DeepSeek V4.1 Flash (unmeasured on v5.0; 1017 refresh 32 = ceiling proxy); OC-2: Big Pickle (no page; street B); MiniMax M3.1 Flash (29, OpenCode `space-bunny-free`, no `models.md` row) |
 | C | Weak fit | OC-1: Beam (18); OC-9: Nemotron 3.5 Super VL (14); OC-7: Nemotron 3 Ultra (12; 47.7 partner figure is v4.3.2); OC-8: Nemotron 3.5 Lightning (6); OC-5: LongCat 2.5 Preview (Go collapse, slow); OC-10: Mercury 3 (no AA page; family prior 11–12) |
 | D | Do not route | (none — all OpenCode models now carry at least provisional evidence) |
 
@@ -347,7 +347,7 @@ for models actually switchable on Cline.
 | S+ | Reserve | (none — best on Cline is 36, 23 pts below F) |
 | S | Top | (none — nothing on Cline clears 46) |
 | A | Competent | (none — nothing on Cline reaches 39) |
-| B | Light / probe | CL-2: MiMo-V2.6-Flash (27); Muse Spark 1.3 Contributor (36 regular-tier proxy, free tier capped); MiniMax M3.1 Flash (29, no `models.md` row) |
+| B | Light / probe | CL-2: MiMo-V2.6-Flash (27); Muse Spark 1.3 Contributor (36 regular-tier proxy, free tier capped, no `models.md` Cline id); MiniMax M3.1 Flash (29, Cline free dropdown, no `models.md` row) |
 | C | Weak fit | CL-3: Nemotron 3.5 Super VL (14); CL-1: Solar Mini 4 (no v5.0 index; 1% agentic, 18% knowledge); CL-4: Mercury 3 (no AA page; family prior 11–12) |
 | D | Do not route | (none yet on Cline) |
 

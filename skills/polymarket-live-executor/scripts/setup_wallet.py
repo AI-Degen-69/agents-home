@@ -41,11 +41,25 @@ def create_wallet():
     print("=" * 60)
     print("  NEW BURNER WALLET CREATED")
     print("=" * 60)
+    # 0o600 at creation (POSIX) + chmod after close against a loose umask. On Windows ACLs are inherited -- tighten them if the machine is shared.
+    key_path = Path(__file__).parent.parent / ".burner_key"
+    try:
+        fd = os.open(key_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        print(f"ERROR: {key_path} already exists — refusing to overwrite.")
+        print("Back up or delete it yourself, then re-run --create.")
+        sys.exit(1)
+    with os.fdopen(fd, "w") as f:
+        f.write(private_key + "\n")
+    os.chmod(key_path, 0o600)
     print(f"  Address:     {address}")
-    print(f"  Private Key: {private_key}")
+    print(f"  Private key: written to {key_path} (mode 600)")
     print("=" * 60)
     print("")
-    print("SAVE THE PRIVATE KEY NOW — it cannot be recovered.")
+    print("The key was written straight to disk and is NOT shown here, so it")
+    print("never lands in chat logs or shell history. Back it up yourself:")
+    print(f"copy {key_path} to your password manager, then delete it if you")
+    print("rotate wallets. It cannot be recovered from the address.")
     print("")
     print("Next steps:")
     print(f"  1. Fund {address} with USDC on Polygon")
@@ -62,7 +76,7 @@ def create_wallet():
         print(f"     chmod 600 {env_path}")
         print(f"     # Edit {env_path} and paste your private key")
     else:
-        print(f"     export POLYMARKET_PRIVATE_KEY={private_key}")
+        print(f"     export POLYMARKET_PRIVATE_KEY=$(cat {key_path})")
         print("     export POLYMARKET_CONFIRM=true")
         print("     export POLYMARKET_MAX_SIZE=5")
         print("     export POLYMARKET_DAILY_LOSS_LIMIT=10")

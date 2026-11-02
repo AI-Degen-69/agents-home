@@ -312,7 +312,14 @@ def main():
     )
     print(confirmation)
 
-    # Ask for confirmation
+    # Ask for confirmation. Refuse piped stdin so an agent cannot auto-confirm
+    # with `echo yes | ...`: a live trade needs a human at a terminal.
+    if not sys.stdin.isatty():
+        print("ERROR: interactive terminal required for confirmation.",
+              file=sys.stderr)
+        print("Run this command yourself in a terminal; the agent must never "
+              "auto-confirm a live trade.", file=sys.stderr)
+        sys.exit(1)
     try:
         response = input("\n  Type 'yes' to execute this trade: ").strip().lower()
     except (EOFError, KeyboardInterrupt):

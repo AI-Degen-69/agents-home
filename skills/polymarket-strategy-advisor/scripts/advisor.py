@@ -265,18 +265,20 @@ def load_portfolio(db_path):
         # Read account balance from portfolios table
         try:
             cur.execute(
-                "SELECT cash_balance, peak_value FROM portfolios "
+                "SELECT id, cash_balance, peak_value FROM portfolios "
                 "WHERE active = 1 ORDER BY id DESC LIMIT 1"
             )
             row = cur.fetchone()
             if row:
+                pid = row["id"]
                 portfolio["cash"] = float(row["cash_balance"])
                 portfolio["peak_value"] = float(row["peak_value"])
                 # Calculate total value: cash + positions value
                 pos_cur = conn.cursor()
                 pos_cur.execute(
                     "SELECT COALESCE(SUM(shares * current_price), 0) as pos_val "
-                    "FROM positions WHERE portfolio_id = 1 AND closed = 0"
+                    "FROM positions WHERE portfolio_id = ? AND closed = 0",
+                    (pid,)
                 )
                 pos_row = pos_cur.fetchone()
                 pos_val = float(pos_row["pos_val"]) if pos_row else 0.0
@@ -288,7 +290,8 @@ def load_portfolio(db_path):
         try:
             cur.execute(
                 "SELECT token_id, side, shares, avg_entry, market_question "
-                "FROM positions WHERE closed = 0"
+                "FROM positions WHERE portfolio_id = ? AND closed = 0",
+                (pid,)
             )
             positions = [dict(r) for r in cur.fetchall()]
             portfolio["positions"] = positions
@@ -301,8 +304,8 @@ def load_portfolio(db_path):
             today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
             cur.execute(
                 "SELECT daily_pnl FROM daily_snapshots "
-                "WHERE date = ? ORDER BY id DESC LIMIT 1",
-                (today,),
+                "WHERE portfolio_id = ? AND date = ? ORDER BY id DESC LIMIT 1",
+                (pid, today,),
             )
             row = cur.fetchone()
             if row:
@@ -378,7 +381,10 @@ def score_market(market, portfolio):
     edges = []
 
     arb = detect_arbitrage(yes_price, no_price)
-    if arb:
+    # Gamma prices are not executable: only surface the pair when the live
+    # orderbook confirms a tight market. Otherwise this would be an unhedged
+    # one-sided bet wearing an arbitrage label, not a locked profit.
+    if arb and spread_info and spread_info["spread_pct"] < 0.20:
         edges.append(arb)
 
     if spread_info:
@@ -417,8 +423,9 @@ def score_market(market, portfolio):
 
     # Determine trade side and entry price
     if best["type"] == "arbitrage":
-        side = "YES"  # Will also need NO side, noted in reasoning
-        entry_price = yes_price
+        # A pair trade: both legs must fill together or there is no edge.
+        side = "BOTH"
+        entry_price = yes_price + no_price  # cost of one YES + one NO share
         estimated_prob = 0.5  # Irrelevant for arb, size differently
     elif best["direction"] == "YES":
         side = "YES"
@@ -448,11 +455,10 @@ def score_market(market, portfolio):
 
     position_size_usdc = portfolio["value"] * kelly_frac
 
-    # Apply hard caps
+    # Apply hard caps. No oversized cap for arbitrage: the pair earns its
+    # keep only when both legs are actually included below.
     max_pct = DEFAULT_MAX_POSITION_PCT
-    if best["type"] == "arbitrage":
-        max_pct = 0.20  # Higher cap for hedged arb
-    elif confidence < 0.7:
+    if confidence < 0.7:
         max_pct = 0.05
     elif best["type"] == "momentum":
         max_pct = 0.05  # News-like, capped lower
@@ -486,7 +492,7 @@ def score_market(market, portfolio):
     reward_amount = (target - entry_price) * (position_size_usdc / entry_price)
     risk_reward = reward_amount / risk_amount if risk_amount > 0 else float("inf")
 
-    return {
+    rec = {
         "market": market["question"],
         "url": f"https://polymarket.com/event/{market['slug']}",
         "side": side,
@@ -504,6 +510,19 @@ def score_market(market, portfolio):
         "risk_reward": round(risk_reward, 2) if risk_reward != float("inf") else "inf",
         "skipped": False,
     }
+    if best["type"] == "arbitrage":
+        # Both legs or nothing: executing one side alone is an unhedged bet.
+        rec["legs"] = [
+            {"side": "YES", "token_id": market["token_ids"][0],
+             "price": round(yes_price, 4)},
+            {"side": "NO", "token_id": market["token_ids"][1],
+             "price": round(no_price, 4)},
+        ]
+        rec["reasoning"] = (
+            "ARBITRAGE — execute BOTH legs simultaneously or skip; "
+            "one side alone is an unhedged directional bet. " + rec["reasoning"]
+        )
+    return rec
 
 
 def main():

@@ -35,8 +35,11 @@ safety controls on every operation.
 
 Use the setup wizard to configure everything:
 
+Run Step 1 yourself in your own terminal — never ask the agent to run it.
+The private key must never enter chat logs or agent output.
+
 ```bash
-# Step 1: Create a burner wallet
+# Step 1: Create a burner wallet (your own terminal only)
 python scripts/setup_wallet.py --create
 
 # Step 2: Fund wallet with USDC on Polygon (manually via MetaMask/bridge)

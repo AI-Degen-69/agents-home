@@ -51,14 +51,24 @@ def get_closed_trades(conn, since_date):
                 t.fee,
                 t.reasoning,
                 t.executed_at as closed_at,
-                -- Calculate realized P&L: for SELL trades, profit = (sell_price - avg_entry) * shares
+                -- Prefer the entry_avg snapshot recorded at close time.
+                -- Fall back to the latest BUY (old rows predate entry_avg),
+                -- then to the exit price so P&L degrades to fees, not fiction.
                 COALESCE(
+                    t.entry_avg,
                     (SELECT b.price FROM trades b
                      WHERE b.token_id = t.token_id AND b.action = 'BUY'
                      AND b.portfolio_id = t.portfolio_id
                      ORDER BY b.executed_at DESC LIMIT 1),
                     t.price
-                ) as entry_price
+                ) as entry_price,
+                -- Earliest BUY at-or-before the SELL: approximation of the
+                -- round-trip open time for hold-time stats.
+                (SELECT MIN(b.executed_at) FROM trades b
+                 WHERE b.token_id = t.token_id AND b.action = 'BUY'
+                 AND b.portfolio_id = t.portfolio_id
+                 AND b.executed_at <= t.executed_at
+                ) as opened_at
             FROM trades t
             WHERE t.action = 'SELL'
               AND t.executed_at >= ?
@@ -69,6 +79,7 @@ def get_closed_trades(conn, since_date):
         rows = [dict(row) for row in cur.fetchall()]
         # Calculate realized P&L for each trade
         for r in rows:
+            r["edge_type"] = _classify_strategy(r.get("reasoning", ""))
             entry = float(r.get("entry_price", 0))
             exit_p = float(r.get("exit_price", 0))
             shares = float(r.get("shares", 0))
@@ -119,6 +130,29 @@ def get_account_history(conn, since_date):
         return [dict(row) for row in cur.fetchall()]
     except sqlite3.OperationalError:
         return []
+
+
+# Strategy keywords mirror backtest.classify_strategy (the canonical copy).
+# Kept local so this script runs standalone; keep the two in sync.
+_STRATEGY_KEYWORDS = {
+    "arbitrage": ["arbitrage", "arb", "gabagool", "yes+no", "underpriced pair"],
+    "momentum": ["momentum", "imbalance", "vol/liq", "volume/liquidity"],
+    "mean-reversion": ["mean-reversion", "mean reversion", "spread", "midpoint",
+                   "deviates", "revert"],
+    "news": ["news", "breaking", "announcement", "event-driven", "headline"],
+}
+
+
+def _classify_strategy(reasoning):
+    """Classify a trade from its reasoning text; unclassified if unknown."""
+    if not reasoning:
+        return "unclassified"
+    text = reasoning.lower()
+    for strategy, keywords in _STRATEGY_KEYWORDS.items():
+        for kw in keywords:
+            if kw in text:
+                return strategy
+    return "unclassified"
 
 
 def compute_metrics(trades):

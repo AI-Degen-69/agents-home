@@ -25,8 +25,9 @@ If no PR exists and the user wants one created, derive title/body from the lates
 
 ```bash
 title=$(git log -1 --pretty=format:'%s')
-body=$(git log -1 --pretty=format:'%b')
-gh pr create --title "$title" --body "${body:-Auto-created by CodeRabbit autofix}"
+# Never publish the raw commit body without confirmation (see SKILL.md).
+body="Auto-created by CodeRabbit autofix — see commit $(git rev-parse --short HEAD) for details."
+gh pr create --title "$title" --body "$body"
 ```
 
 ## 2. Resolve Repository Coordinates
