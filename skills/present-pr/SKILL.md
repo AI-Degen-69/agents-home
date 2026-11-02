@@ -186,7 +186,5 @@ The report delivers **dual verification**:
 ---
 
 <!-- local-only:present-pr:output-template-begin -->
-The chat output template for this station is `references/english-template.md` (default).
-Read it before writing your first report.
-If the operator explicitly requests Hebrew output, use the Hebrew template at `references/hebrew-template.md`.
+The chat output template for this station is `references/english-template.md`.
 <!-- local-only:present-pr:output-template-end -->

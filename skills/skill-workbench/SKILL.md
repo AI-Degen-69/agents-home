@@ -42,25 +42,21 @@ Claude Code / Hermes, SymbolicLink for Gemini CLI / Antigravity).
 ### 1. No args — Workbench Discovery
 
 1. Run `node scripts/inventory.js` (add `--json` when another tool consumes it).
-2. Present in this fixed order, each under its own header (every line opens
-   with a Hebrew word):
-   - Summary line first: `סך הכל <total> סקילים` + counts.
-   - `## בדיקות חסרות 🧪` — top 3 most urgent without evals, then `ועוד X נוספים...` if more. Clean skills are never listed in full.
-   - `## אזהרות ⚠️` — top 3, then `ועוד X נוספים...`.
-   - `## לטפל קודם ❌` — top 3 violations, then `ועוד X נוספים...`.
-3. Then `## הפעולה הבאה 🎯` — **one** section, not two. Never print a
+2. Present in this fixed order, each under its own header:
+   - Summary line first: total skills count.
+   - `## Missing Tests 🧪` — top 3 most urgent without evals, then `and X more...` if more. Clean skills are never listed in full.
+   - `## Warnings ⚠️` — top 3, then `and X more...`.
+   - `## Fix First ❌` — top 3 violations, then `and X more...`.
+3. Then `## Next Action 🎯` — **one** section, not two. Never print a
    recommendation and then a separate choice menu: the recommendation is the
    default action, the alternatives are one line under it. The header names the
-   action, not a position — `הפעולה הבאה 🎯` when a single next action is
-   recommended, `אפשרויות להמשך 🔀` when the paths genuinely differ and none is
-   recommended. Never write that something was *chosen* while nothing has been
-   chosen yet. Include:
-   - `מומלץ על <one skill>` — inventory.js ranks for you (violations first,
+   action, not a position. Include:
+   - `Recommended: <one skill>` — inventory.js ranks for you (violations first,
      then never-evaluated, then warns) plus one line on how to approach it
      (validate → audit → route).
    - One line: how to start on the recommendation (write the skill name), and
      how to pick something else (number from the lists above, e.g.
-     `לטפל קודם 1` / `אזהרה 2` / `בדיקות 1`).
+     `Fix First 1` / `Warning 2` / `Missing Tests 1`).
 4. **Halt for operator choice.** Do not pick silently. A recommended default is
    not permission to proceed — the operator still confirms or overrides.
 
@@ -145,193 +141,193 @@ routing, no deploy. It never escalates itself into a full workbench run.
 
 ## Conventions
 
-- **The worked-on skill is the star.** Title opens with a Hebrew word:
-  `סקיל: <name>`, plus group tag when it belongs to one (numbered Pipeline
+- **The worked-on skill is the star.** Title format: `Skill: <name>`, plus group tag when it belongs to one (numbered Pipeline
   stations `i`–`vii`, or the system skills `pipeline-triage` / `create-issue`).
-  Line below opens with
-  `נתיב:` + full path; if Junction show `→` target and always work on the
+  Line below: `Path:` + full path; if Junction show `→` target and always work on the
   original. Workbench machinery gets one compact line each.
   Never enumerate steps or check-ids in the headline of the reply.
 - **Dashboard** (when an HTML report is produced): save inside the worked-on
   skill's own folder — `skills/<name>/docs/workbench-report-<date>.html` — as a
-  durable doc. Verify in the Preview tab (snapshot/screenshot/logs) before
-  delivery. Never `.freebuff/` or temp.
+  durable doc. **Default Language & Structure:** The HTML document must default to Hebrew: `<html lang="he" dir="rtl">` with readable modern fonts (e.g. `system-ui, -apple-system, "Segoe UI", Roboto, "Heebo", Arial, sans-serif`). English technical terms or code paths should be wrapped in `<span dir="ltr">` or `<code>` blocks to preserve visual flow without BiDi distortion. Verify in the Preview tab (snapshot/screenshot/logs) before delivery. Never `.freebuff/` or temp.
 - This skill must itself pass its own validator: run
   `node scripts/validate.js <agents-root>/skills/skill-workbench` after any edit.
 
 - **Size discipline:** keep the SKILL.md body under 250 lines for full marks; if exceeded, move detail to references/ or scripts/.
 
-## Hebrew Chat Output Contract (חובת דיווח בעברית)
+## English Chat Output Contract
 
-Bidi rule (חובה — תיקון כיווניות): כל שורה מתחילה במילה עברית — זה מה
-שקובע כיוון מימין לשמאל. שמות לטיניים / נתיבים / פקודות / check-id
-נכתבים בגרש בודד עם מבודדי כיווניות מסביב — ⁦`...`⁩ (U+2066 LRI לפני
-הגרש הפותח, U+2069 PDI אחרי הגרש הסוגר). אמוג'י תמיד אחרי המילים,
-אף פעם לא בתחילת שורה.
+**Output format** — every report follows this structure:
 
 ```markdown
-# סקיל: ⁦`<skill-name>`⁩ [(קבוצה — Pipeline, רק אם שייך)]
+# Skill: `<skill-name>` [(Group — Pipeline, if applicable)]
 
-נתיב: ⁦`<full path>`⁩ [→ ⁦`<target>`⁩ אם Junction — לעבוד תמיד על המקור]
+Path: `<full path>` [→ `<target>` if Junction — always work on the original]
 
-## תקציר הסקיל 📋
-[תמונה מסוכמת של הסקיל וההוראות שלו — מבוסס רק על מה שנקרא בפועל ב־⁦`SKILL.md`⁩ + ⁦`references/`⁩]
+## Skill Summary 📋
+[Concise picture of the skill and its instructions — based only on what was actually read in `SKILL.md` + `references/`]
 
-מטרת הסקיל: [משפט אחד — מה הסקיל אמור לתת בסוף]
+Skill Purpose: [One sentence — what the skill delivers at the end]
 
-הוראות:
-1. [מה הסקיל מורה לסוכן לעשות — פועל + מושא]
-2. [מה לקרוא — קובץ / רפרנס, בגרש מבודד ⁦`...`⁩]
-3. [באיזה רפרנס להשתמש כדי ליישם מה]
-4. [מה נוצר — קובץ / פלט / דוח]
-5. [גישה לסקיל אחר — שם בגרש מבודד + למה]
-6. [הפעלת תת־סוכן — איזה סוג + לאיזו משימה]
-[להמשיך לפי הצורך — צעד אחד ממוספר לכל הוראה, לפי סדר הקריאה ב־⁦`SKILL.md`⁩. אין להמציא צעדים]
+Instructions:
+1. [What the skill directs the agent to do — verb + object]
+2. [What to read — file / reference, in backticks]
+3. [Which reference to use to implement what]
+4. [What is produced — file / output / report]
+5. [Access to another skill — name in backticks + why]
+6. [Sub-agent invocation — which type + for what task]
+[Continue as needed — one numbered step per instruction, in the order read from `SKILL.md`. Do not invent steps.]
 
-## מצב הסקיל 📊
-[שורה־שתיים בלבד: כמה הפרות + שמותיהן. בדיקות שעברו מסוכמות במילה אחת, לא מפורטות]
+## Skill State 📊
+[One or two lines only: violation count + names. Passed checks summarized in one word, not detailed.]
 
-### ציון מספרי (חובה — פלט של `scripts/score.js`)
+### Numerical Score (Required — output of `scripts/score.js`)
 
-**ציון כללי: <overall>/100 (<verdict>)** — אחר כך שורה לכל מדד, בפורמט:
-`<score>/100` ⁦`<metric-id>`⁩ (משקל <w>). סדר קבוע:
+**Overall: <overall>/100 (<verdict>)** — then one line per metric, format:
+`<score>/100` `<metric-id>` (weight <w>). Fixed order:
 `spec-compliance` (40) · `file-integrity` (25) · `eval-readiness` (20) ·
-`size-discipline` (10) · `self-containment` (5). מדד מתחת ל־100 זוכה לשורת
-הסבר אחת — מה הפיל אותו (שמות ה-check-id מהטבלה ב-Step A). ציון מלא לא
-מפורט. אין להמציא ציונים — רק פלט הסקורר.
+`size-discipline` (10) · `self-containment` (5). Any metric below 100 gets one
+explanation line — what dropped it (check-id names from the Step A table). Full
+score is not detailed. Do not invent scores — only scorer output.
 
-## ממצאי ביקורת 🔍
-[פורמט CodeRabbit — ראה "פורמט ממצאים (חובה)" למטה. ממצאים נכתבים אחד־אחד
-בכרטיסים ממוספרים (ממצא 1, ממצא 2...), כל ממצא מגובה בקוד או בתקן,
-אין להמציא. שאלות פתוחות לא נכתבות כאן — רק בסעיף שאלות פתוחות]
+## Audit Findings 🔍
+[CodeRabbit-style format — see "Finding Format (Required)" below. Findings written
+one by one in numbered cards (Finding 1, Finding 2...), each backed by code or
+standard, never invented. Open questions go in Open Questions only — not as findings.]
 
-## שאלות פתוחות ❓
-[רק אם יש — כל שאלה במספר משלה, שורה ריקה בין שאלה לשאלה. פורמט לכל שאלה:]
-[שאלה 1: טקסט השאלה — מה צריך החלטת מפעיל]
-[ניחוש: התשובה הסבירה ביותר לפי ההיגיון — נחשב נכון אם לא עונים או לא דוחים]
-[אין שאלות = לכתוב: אין שאלות פתוחות. אין להמציא]
+## Open Questions ❓
+[Only if any — each question on its own line, blank line between questions. Format:
+Question 1: Question text — what needs operator decision
+Guess: Most likely answer per logic — counts as correct if unanswered or not rejected]
+[No questions = write: No open questions. Do not invent.]
 
-## הצעות שיפור 💡
-[כל הצעה במספר משלה, שורה אחת, שורה ריקה בין הצעה להצעה. להחלטתך: לאמץ / לדחות / להשמיט]
+## Improvement Proposals 💡
+[Each proposal on its own line, one line, blank line between proposals. Your call: adopt / defer / drop.]
 
-## ניתוב 🧭
-[שורה אחת תמציתית: מה הולך לקרות ומי עושה את זה. אם חסום — מה האישור הנדרש.
-אין פירוט, אין שלוש שורות. אמוג'י רק בסוף כותרות, אף פעם לא בסוף שורות —
-אין הוראה כזאת בחוזה, ואין להמציא אותה כתירוץ לצפיפות]
+## Routing 🧭
+[One concise line: what happens next and who does it. If blocked — what approval is needed.
+No detail, no three lines. Emoji only at end of headers, never end of lines — no such
+instruction in the contract, do not invent it as an excuse for density.]
 
-## אפשרויות להמשך 🔀
-[שלושה צעדים קבועים, ממוספרים, כל צעד בשורה אחת. הכותרת אינה «הפעולה הבאה»
-כי אין כאן פעולה אחת — שלוש דרכים שונות באמת, ואחת מהן לא מומלצת:]
-[1. לטפל בכל הממצאים אחד־אחד בתוך הסקיל — כולל השאלות הפתוחות והניחושים — לפי «טיפול בממצאים אחד־אחד» למטה]
-[2. לבחור פרטים ספציפיים (לאמץ / לדחות / להשמיט לכל ממצא, שאלה והצעה)]
-[3. לבדוק את הפלט של הסקיל בסימולציה בצ'אט — לראות את הפלט ולערוך לפיו]
+## Next Options 🔀
+[Three fixed steps, numbered, each on one line. Header is not "Next Action" because
+there isn't one action — three genuinely different paths, and none is recommended:]
+[1. Handle all findings one by one inside the skill — including open questions and guesses — per "One-by-One Finding Handling" below]
+[2. Pick specific items (adopt / defer / drop per finding, question, proposal)]
+[3. Simulate skill output in chat — see the output and edit accordingly]
 ```
 
-במצב Discovery: שורת סיכום בעברית + 3 כותרות בסדר קבוע (בדיקות חסרות →
-אזהרות → לטפל קודם), כל אחת עד 3 פריטים + ⁦`ועוד X נוספים...`⁩, נקיים
-לא מוצגים. אחריהם כותרת אחת בלבד ⁦`## הפעולה הבאה 🎯`⁩ (מכנה את הפעולה,
-לא את המיקום ברשימה): המומלץ (סקיל אחד) כברירת מחדל, ואחריו שורה אחת
-עם הדרך להתחיל מהמומלץ ולחלופין (מספר מהרשימות). אין כותרת המלצה נפרדת
-ואין תפריט בחירה נפרד — זהו אותו סעיף. אחריו עצור לבחירת המפעיל.
-כל שורה מתחילה במילה עברית. אין לבחור בשקט. אין לכתוב שמשהו «נבחר» לפני
-שהמפעיל בחר — רק «מומלץ».
+In Discovery mode: English summary line + 3 headers in fixed order (Missing Tests →
+Warnings → Fix First), each up to 3 items + `and X more...`, clean skills not shown.
+Then one header only `## Next Action 🎯` (names the action, not the list position):
+the recommended (one skill) as default, followed by one line with how to start from
+the recommendation and the alternative (number from the lists). No separate
+recommendation header and no separate choice menu — this is the same section. Then
+stop for operator choice. Do not pick silently. Do not write that something was
+"chosen" before the operator chooses — only "Recommended".
 
-## פורמט ממצאים (חובה) — בסגנון CodeRabbit
+## Finding Format (Required) — CodeRabbit Style
 
-ממצאי ביקורת מוצגים בטבלה מקובצת לפי קטגוריה, ואחריה כרטיס פרטים לכל ממצא —
-בדיוק כמו סקירת CodeRabbit ב-GitHub. מבנה כרטיס ממצא (שלוש שורות, שורה ריקה
-בין כרטיס לכרטיס):
+Audit findings displayed in a table grouped by category, followed by detail cards per
+finding — exactly like a CodeRabbit review on GitHub. Finding card structure (three
+lines, blank line between cards):
 
 ```markdown
-## ממצאי ביקורת 🔍
+## Audit Findings 🔍
 
-| קטגוריה | ממצאים | חומרה |
+| Category | Findings | Severity |
 |---|---|---|
-| 📐 איכות ותחזוקה | 2 | 🟡 |
-| 🗄️ שלמות נתונים ותשתית | 1 | 🔴 |
+| 📐 Quality & Maintainability | 2 | 🟡 |
+| 🗄️ Data & Infrastructure Integrity | 1 | 🔴 |
 
-### ממצא 1
+### Finding 1
 
-🗄️ שלמות נתונים ותשתית | 🟡 מינורי | ⚡ ניצן מהיר
+🗄️ Data & Infrastructure Integrity | 🟡 Minor | ⚡ Quick Fix
 
-**כותרת קצרה בפועל לתיקון.**
+**Short action-title for the fix.**
 
-תיאור בן שתיים־שלוש שורות: מה לא עקבי, איפה בדיוק (קובץ + שורות,
-בגרש מבודד), ומה נדרש כדי שהרשומה תהיה חד־משמעית. מגובה בקוד או בתקן,
-אין להמציא. שאלות פתוחות הולכות לסעיף שאלות פתוחות בלבד — לא כממצאים.
+Two-to-three line description: what is inconsistent, where exactly (file + lines,
+in backticks), and what is needed for the record to be unambiguous. Backed by code
+or standard, never invented. Open questions go to Open Questions only — not as
+findings.
 ```
 
-קטגוריות קבועות (ממצא נופל לקטגוריה הקרובה ביותר): 📐 איכות ותחזוקה,
-🗄️ שלמות נתונים ותשתית, ⚡ ביצועים ויעילות, 🧪 בדיקות וכיסוי, 📝 תיעוד
-ותקינות, 🔒 אבטחה ואמינות.
+Fixed categories (finding falls to nearest): 📐 Quality & Maintainability,
+🗄️ Data & Infrastructure Integrity, ⚡ Performance & Efficiency, 🧪 Tests &
+Coverage, 📝 Documentation & Correctness, 🔒 Security & Reliability.
 
-חומרה: 🔴 קריטי / 🟠 מייג'ור / 🟡 מינורי. מאמץ: ⚡ ניצן מהיר / 🔧 בינוני /
-🏗️ מבני. חובה: תגית הקטגוריה מופיעה ראשונה בשורת התגים, אחריה חומרה ואז
-מאמץ, מופרדות בפס עם רווחים מסביב. הכותרת הקצרה היא משפט פעולה בבולד,
-ובתיאור אין פסקאות.
+Severity: 🔴 Critical / 🟠 Major / 🟡 Minor. Effort: ⚡ Quick Fix / 🔧 Medium /
+🏗️ Structural. Required: category tag appears first in tag line, then severity,
+then effort, separated by pipes with spaces. Short title is an action sentence in
+bold, and description has no paragraphs.
 
-## טיפול בממצאים אחד־אחד (אופציה 1 של «אפשרויות להמשך 🔀»)
+## One-by-One Finding Handling (Option 1 of "Next Options 🔀")
 
-כשהמפעיל בוחר באופציה 1 — לטפל בכל הממצאים אחד־אחד, כולל השאלות הפתוחות
-והניחושים — הדיווח על פי [חוזה הדיווח](references/reporting-contract.md)
-(הגדרה קנונית משותפת עם ⁦`skill-refinement-loop`⁩ — שם ההכללה, כאן היישום):
+When the operator chooses Option 1 — handle all findings one by one, including
+open questions and guesses — reporting follows the [Reporting Contract](references/reporting-contract.md)
+(canonical definition shared with `skill-refinement-loop` — name of the
+generalization, here the implementation):
 
-- ממצא אחד בכל פעם: תיקון בתוך הסקיל, ואז ולידציה —
-  ⁦`node scripts/validate.js <skill-folder>`⁩ חייבת לצאת נקייה לפני מעבר
-  לממצא הבא.
-- אחרי כל ממצא — דיווח התקדמות בן שורה־שתיים בעברית: מה תוקן, וכמה נשאר
-  (⁦`נותרו X ממצאים ו-Y שאלות פתוחות`⁩). לא דוח, לא סיכום — המפעיל חייב
-  לראות שהעבודה עוד לא הסתיימה.
-- אין «סיכום סופי» חלקי. רק אחרי שכל הממצאים טופלו וכל השאלות הפתוחות נענו
-  (בתשובה או בניחוש) ובדיקת הפריסה (Step D) בוצעה או נדחתה מפורשות על ידי
-  המפעיל: להריץ מחדש ⁦`scripts/score.js`⁩ + ולידציה סופית נקייה,
-  ואז להציג את «סיכום סופי» כולל «דוגמה לשימוש» — וזה סוגר את הוורקבנץ' לסקיל
-  הזה.
-- שאלות ללא מענה נפתרות בניחוש ומסומנות ככאלה; הצעות שיפור נכנסות לתור רק
-  באימוץ מפורש; ממצא שדורש החלטת מפעיל (למשל ויתור מפורש על כלל) עוצר ושואל
-  — לא סיכום לפני ההחלטה.
-- פריט אחד לתגובה: מתקנים ממצא יחיד, מדווחים הערת התקדמות, ועוצרים. אין
-  לתקן שני ממצאים בתגובה אחת, אין לצרף לתיקון יצירת בדיקות או שינוי אחר,
-  ואין לצרף «סיכום סופי» לשום תגובת תיקון — הסיכום יוצא תמיד בתגובה נפרדת
-  משלו, רק אחרי שהערת ההתקדמות של הפריט האחרון כבר נשלחה.
-  (כלל זה חל כשהמפעיל מבקש לעצור בין פריטים; כשהמפעיל בוחר לטפל בכולם —
-  ראה רשימת סימונים למטה.)
-- רשימת סימונים (ברירת מחדל כשהמפעיל אומר לטפל בכל הממצאים אחד־אחד):
-  רצים על כל התור ברצף, פריט אחר פריט, עם ולידציה אחרי כל פריט — בלי
-  לעצור אחרי פריט יחיד. בסוף מציגים רשימת משימות אחת שבה כל פריט מסומן
-  ✓ בוצע או X נשאר (ממצאים, שאלות פתוחות, הצעות מאומצות, פריסה) — כך
-  המפעיל רואה מה נעשה ומה לא. כל עוד יש X כלשהו, הדיווח הוא דוח מצב
-  ולא «סיכום סופי», והוא חייב להציג את הרשימה המלאה.
-- שאלה פתוחה שנענתה והצעת שיפור שאומצה הן כל אחת פריט בפני עצמו עם הערת
-  התקדמות משלה, בדיוק כמו ממצא.
-- בתחילת טיפול אחד־אחד מצהירים על כל התור מתוך הסריקה הראשונית: מספר ממצאים,
-  מספר שאלות פתוחות, מספר הצעות מאומצות, ומצב בדיקת הפריסה — ואין להשמיט
-  פריט בשקט.
-- שורת הנותרים חובה בכל דיווח: כל הערת התקדמות וכל סיכום חייבים לכלול
-  «נותרו X ממצאים ו-Y שאלות פתוחות ו-Z הצעות מאומצות + מצב פריסה»; סיכום
-  בלי שורה זאת אינו תקף, וסיכום שמציג עבודה כגמורה בעוד הנותרים אינם אפס
-  הוא הפרה של החוזה.
-- «המשך» או «GO» פירושם הפריט הבא היחיד בלבד, לעולם לא שאר התור בבת אחת.
+- One finding at a time: fix inside the skill, then validate —
+  `node scripts/validate.js <skill-folder>` must pass clean before moving
+  to the next finding.
+- After each finding — two-line English progress note: what was fixed, and how
+  many remain (`X findings and Y open questions remaining`). Not a report, not a
+  summary — the operator must see the work is not done.
+- No partial "Final Summary". Only after all findings handled and all open
+  questions answered (by answer or guess) and deploy check (Step D) done or
+  explicitly deferred by the operator: re-run `scripts/score.js` + final clean
+  validation, then show "Final Summary" including "Usage Example" — and that
+  closes the workbench for this skill.
+- Unanswered questions resolved by guess and marked as such; improvement
+  proposals enter queue only on explicit adoption; finding requiring operator
+  decision (e.g. explicit rule waiver) stops and asks — no summary before the
+  decision.
+- One item per response: fix a single finding, report progress note, stop. Do
+  not fix two findings in one response, do not attach test creation or other
+  changes to the fix, and do not attach "Final Summary" to any fix response —
+  the summary always comes in its own separate response, only after the last
+  item's progress note has been sent.
+  (This rule applies when the operator asks to stop between items; when the
+  operator chooses to handle all — see checklist below.)
+- Checklist (default when operator says handle all findings one by one):
+  iterate through the full queue sequentially, item by item, with validation
+  after each item — no stopping after a single item. At the end show one task
+  list where every item is marked ✓ Done or X Remaining (findings, open
+  questions, adopted proposals, deploy) — so the operator sees what was done
+  and what wasn't. As long as any X remains, the report is a status report, not
+  a "Final Summary", and it must show the full list.
+- An answered open question and an adopted improvement proposal are each their
+  own item with their own progress note, exactly like a finding.
+- At the start of one-by-one handling, declare the full queue from the initial
+  scan: finding count, open question count, adopted proposal count, and deploy
+  check status — and do not silently omit any item.
+- Remaining line required in every report: every progress note and every
+  summary must include "X findings and Y open questions and Z adopted proposals
+  remaining + deploy status"; summary without this line is invalid, and a
+  summary showing work as done while remaining is non-zero violates the
+  contract.
+- "Continue" or "GO" means the next single item only, never the rest of the
+  queue at once.
 
-## סיכום סופי (רק אחרי שכל הממצאים והשאלות הפתוחות טופלו — סוגר את הוורקבנץ')
+## Final Summary (Only after all findings and open questions handled — closes the workbench)
 
-שפה פשוטה, בלי מושגי קוד וטכני. לטינית רק בגרש מבודד ⁦`...`⁩.
+Plain language, no code or technical concepts. Latin only in backticks.
 
 ```markdown
-# סיכום עבודה 🏁: ⁦`<skill-name>`⁩
+# Work Summary 🏁: `<skill-name>`
 
-## מה נעשה ✅
-[מה שונה בפועל, בשפה פשוטה]
+## What Was Done ✅
+[What actually changed, in plain language]
 
-## למה זה נעשה 💡
-[למה זה עוזר למי שמשתמש בסקיל, בשפה פשוטה]
+## Why It Was Done 💡
+[Why this helps the skill user, in plain language]
 
-## מה עובד עכשיו 🟢
-[מה אפשר לעשות עם הסקיל אחרי התיקון]
+## What Works Now 🟢
+[What can be done with the skill after the fix]
 
-## צעדים הבאים 👉
-[המלצה אחת מה לעשות מכאן]
+## Next Steps 👉
+[One recommendation for what to do from here]
 
-## דוגמה לשימוש 💬
-[משפט אחד: מתי להפעיל את הסקיל הזה]
+## Usage Example 💬
+[One sentence: when to invoke this skill]
 ```

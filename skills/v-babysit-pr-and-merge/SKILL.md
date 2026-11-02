@@ -94,6 +94,8 @@ digraph babysit_pr_and_merge {
 
 ## Standing Rules
 
+- **AGENTS.md load (adopted from the official CodeRabbit `autofix` skill):** before any review/fix work, search for `AGENTS.md` in the repository and load applicable instructions; follow its build/lint/test/commit guidance throughout the run. If absent, continue with defaults.
+- **Push-status guard (adopted from the official CodeRabbit `autofix` skill):** before review, check `git status` and unpushed commits; if uncommitted or unpushed work exists, warn and confirm before proceeding (uncommitted changes will not be in the CodeRabbit review).
 - **Zero human in the loop:** Extraction, triage, replies, thread resolution, code application, verification, self-healing, commit, push, and merge run autonomously. Escalate only if critical blockers cannot be resolved.
 - **Full autonomy on GitHub operations:** Agent commits, pushes, creates PRs, and merges without requiring manual sign-offs.
 - **Mandatory inline reply on every resolution:** Every single resolved thread MUST have an explicit inline reply (`ACCEPT: <summary of fix>` or `REJECT: <concrete technical reason>`) posted before resolution via `repos/:owner/:repo/pulls/:pr/comments/:id/replies`. Never resolve silently, and never run blind bulk resolutions that close unaddressed or newly arrived comments.

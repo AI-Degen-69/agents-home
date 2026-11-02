@@ -25,5 +25,11 @@ __pycache__/
 .venv/
 venv/
 
+# Local secrets - skill .env files hold API keys (e.g.
+# skills/model-routed-triage/.env -> BENCHLM_DATA_KEY); never commit them.
+.env
+.env.*
+!.env.example
+
 # Node artifacts — parity/future-proofing; nothing generates these yet.
 node_modules/

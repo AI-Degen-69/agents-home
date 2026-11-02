@@ -137,6 +137,8 @@ Before applying fixes, run the Spec axis in full:
 
 ### Step 2: Apply Review Fixes Locally
 
+**AGENTS.md load (adopted from the official CodeRabbit `autofix` skill):** before applying fixes, search for `AGENTS.md` in the repository and load applicable build/lint/test/commit guidance; follow it throughout. If absent, continue with defaults.
+
 - Merge OCR finds (Critical/High first, then Medium), reviewer finds, and Spec-axis findings. One list, no dupes.
 - For any actionable findings (nits, type errors, edge-case risks):
   - Apply minimal, clean fixes directly to the local codebase.
@@ -161,6 +163,8 @@ Before applying fixes, run the Spec axis in full:
 3. **Only when verification is green may the agent push** — where "green" means *proved or honestly unverified*: every check either passed, or ended `unverified` under the Step 0.1 abort rule and is disclosed in the PR body's `## Verification` section. **A genuine failure** (a check that ran and failed) blocks the push and returns to `iiib-iterate-after-build`. An unverified gate does not: there is no defect to fix, so blocking would stall the pipeline on broken tooling. Record the trigger status honestly — never present an unverified item as passed.
 
 ### Step 4: Git Synchronization & Push (`git-workflow-and-versioning`)
+
+**Secret-scope check (adopted from the official CodeRabbit CLI):** before push/PR, verify the change scope contains no secrets or credentials (tracked changes plus any explicitly included untracked files); do not print secret contents. If found, stop and remove them before pushing.
 
 - Confirm active on a dedicated feature branch (never push directly to `master`/`main`). A direct push to the base branch happens in exactly one place: the Step 0.2 quick-fix divert, which routes through `quick-fix` and never reaches these steps.
 
