@@ -802,15 +802,6 @@
       "installedAt": "2026-11-01T12:44:11.475Z",
       "updatedAt": "2026-11-01T12:44:11.475Z"
     },
-    "code-review": {
-      "source": "coderabbitai/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/coderabbitai/skills.git",
-      "skillPath": "skills/code-review/SKILL.md",
-      "skillFolderHash": "0b1ed6b70f6e604e14c49616c4d5d4e3082a1152",
-      "installedAt": "2026-11-01T12:44:11.478Z",
-      "updatedAt": "2026-11-01T12:44:11.478Z"
-    },
     "polymarket-analyzer": {
       "source": "mjunaidca/polymarket-skills",
       "sourceType": "github",

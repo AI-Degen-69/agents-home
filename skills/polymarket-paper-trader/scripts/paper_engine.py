@@ -263,8 +263,9 @@ def get_portfolio(name: str = "default", refresh_prices: bool = True) -> dict:
                         (p["current_price"],
                          datetime.now(timezone.utc).isoformat(), p["id"]),
                     )
-                except Exception:
-                    pass  # keep stale price
+                except Exception as e:
+                    print(f"warn: price refresh failed for {p.get('token_id')}: {e}", file=sys.stderr)
+                    # keep stale price
             value = p["shares"] * p["current_price"]
             unrealized_pnl = (p["current_price"] - p["avg_entry"]) * p["shares"]
             pos_list.append({
