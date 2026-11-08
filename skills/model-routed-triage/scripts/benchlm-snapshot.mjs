@@ -41,6 +41,7 @@ function loadDotEnv() {
 export const IDENTITY = [
   { id: 'M1', key: 'gemini-3-8-flash' },
   { id: 'M2', key: 'claude-opus-5-5' },
+  { id: 'M3', key: 'claude-sonnet-5-5' },
   { id: 'OC-1', key: 'reflection-beam' },
   { id: 'OC-2', key: null, note: 'Big Pickle: absent from BenchLM catalog' },
   { id: 'OC-3', key: null, note: 'V4.1 base build absent; only the 1017 refresh is listed (FB-11)' },

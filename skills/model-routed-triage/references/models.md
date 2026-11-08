@@ -34,6 +34,7 @@ quota before routing.
 | --- | ---------------- | ------------------- | --------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
 | M1  | Gemini 3.8 Flash | Low / Medium / High | Google AI subscription: 5-hour + weekly quota | AA v5.0 31 high / 30 medium / 22 low (**B**; the 41/40 that earned A was v4.3.2). Quota-gated. | Verified — api id `gemini-3.8-flash` (Sep 2, 2026); benchmarks cited in capability.md |
 | M2  | Claude Opus 5.5  | Default thinking (tier not surfaced — see notes) | Google AI subscription: 5-hour + weekly quota | AA Intelligence **58** (v5.0, #2/59) at max effort; xhigh 57 / high 52 / medium 48 / low 35 — the serving tier decides S+ vs S vs B. Heaviest quota draw on the harness: 220M tokens/task, $10.04/task at max, 96 tok/s, TTFT 640.9s. 1M ctx, text+image → text. Anthropic's cyber safeguards re-route most security work to Opus 4.8. | Operator-confirmed in the Antigravity picker (Nov 2, 2026); AA model page + Anthropic card (Sep 22, 2026) |
+| M3  | Claude Sonnet 5.5 | Default thinking (tier not surfaced — see notes) | Google AI subscription: 5-hour + weekly quota (Claude bucket, shared with M2 — separate from M1's Gemini bucket) | AA v5.0 effort ladder: **Max 54 (S+)** / Xhigh 50 (S) / High 41 (A) / Medium 30 (B) / Low 25 (C). $2/$10 per M, 1M ctx, text+image → text, 139 tok/s (Max), 340M tokens/task. Faster (30% over Sonnet 5) and cheaper than Opus; CursorBench 4.0 55.5% (vendor). The serving tier decides S+ vs S vs A vs B vs C. | Operator-confirmed on Antigravity (Nov 3, 2026); AA model page (Sep 28, 2026 release) + Anthropic card |
 
 ### Update log
 
@@ -46,6 +47,13 @@ quota before routing.
   ladder 57 / 52 / 48 / 35 — which tier Antigravity actually serves is
   unconfirmed, so it carries grade **S** (S+ ceiling). Evidence, vendor numbers
   and caveats in capability.md.
+- Added M3 Claude Sonnet 5.5 (Nov 3, 2026) — operator-confirmed on Antigravity,
+  same Google AI subscription (5-hour + weekly) as M2 but the **Claude bucket**,
+  separate from M1's Gemini bucket. AA v5.0 effort ladder Max 54 (S+) / Xhigh 50
+  (S) / High 41 (A) / Medium 30 (B) / Low 25 (C); $2/$10, 1M ctx,
+  text+image → text, 139 tok/s at Max. Serving tier unconfirmed → graded **S**
+  (S+ ceiling at Max, C floor at Low), same treatment as M2. Evidence and
+  vendor numbers in capability.md.
 
 ---
 

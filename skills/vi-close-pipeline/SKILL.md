@@ -1,6 +1,6 @@
 ---
 name: vi-close-pipeline
-description: "Station VI (Close Pipeline) — Final station. Post-merge closeout: verifies the issue is closed, sweeps stale per-issue artifacts via signal-based discovery (works in any project layout), investigates before staging anything to git, handles dead code on the spot as the pipeline's single approved code-change exception (zero-reference proof + targeted tests), and ends with the mandatory Clean Exit Gate — base branch pushed, synced, spotless, ready for the next run."
+description: Station VI (Close Pipeline) — Final station. Post-merge closeout that verifies the issue is closed, sweeps stale per-issue artifacts via signal-based discovery (works in any project layout), investigates before staging anything to git, handles dead code on the spot as the pipeline's single approved code-change exception (zero-reference proof plus targeted tests), and ends with the mandatory Clean Exit Gate — base branch pushed, synced, spotless, ready for the next run.
 ---
 
 # Station VI: Close Pipeline (`vi-close-pipeline`)
