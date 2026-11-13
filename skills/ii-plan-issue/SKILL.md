@@ -123,7 +123,7 @@ Load specialized skills that match the classified task type (and only skills tha
 
 | Task type | Planning skills |
 |---|---|
-| Design/UI | `frontend-ui-engineering`, `frontend-design`, `tailwind-design-system`, `extract-design-system` |
+| Design/UI | `frontend-ui-engineering`, `frontend-design`, `tailwind-design-system`, `extract-design-system`, `better-interface` (only to diagnose an existing interface before planning the fix) |
 | API/Backend | `api-and-interface-design` |
 | Debug | `debugging-and-error-recovery`, `doubt-driven-development` |
 | Performance | `performance-optimization` |
@@ -134,6 +134,7 @@ Load specialized skills that match the classified task type (and only skills tha
 | Core (default) | `test-driven-development`, `incremental-implementation` |
 
 *Design distinction:* `frontend-design` governs aesthetic direction, typography, and non-templated choices; `frontend-ui-engineering` governs accessible, responsive, production-quality UI and WCAG compliance.
+*Review family:* `better-interface` reviews an existing interface (ranked findings, severity, verdict) and owns no build rules; `frontend-ui-engineering` remains the owner of implementation correctness.
 *Execution tagging:* in `tasks/plan.md`, every task declares its domain tag (`[Design/UI]`, `[Backend/Logic]`, `[Debug]`, ...) and the verification mode `iii-build-plan` will run (browser preview for UI, unit/integration runner for logic).
 
 ### Step 2: Specification (`spec-driven-development`)

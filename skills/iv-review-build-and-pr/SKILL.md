@@ -115,7 +115,7 @@ Feed the OCR file list + Rule Groups + OCR finds into each reviewer below (no fi
    - **Rust files modified (.rs):** Deploy `rust-reviewer` (lifetimes, unsafe blocks, concurrency, borrowing).
    - **Go files modified (.go):** Deploy `go-reviewer` (goroutines, error handling, interface boundaries).
    - **Database / Schema files touched (.sql, ORM models):** Deploy `database-reviewer` (N+1 queries, indexes, migrations).
-   - **CSS / UI Components touched:** Deploy `web-design-guidelines` (accessibility, ARIA roles, contrast) with `frontend-ui-engineering` (WCAG requirements, responsive layout).
+   - **CSS / UI Components touched:** Deploy `better-interface` (accessibility, ARIA roles, contrast, layout, typography, writing) with `frontend-ui-engineering` (build correctness, responsive layout); add `web-design-guidelines` for the code-level rules it alone owns (hydration, image dimensions, URL state, touch gestures, dark-mode meta, `Intl` formatting). `interface-review` is user-invoked and cannot be started from a station; when the operator has run it, apply its findings as the review input.
 4. **Silent Failure Hunt (`silent-failure-hunter`, diff-triggered):**
    - Deploy whenever the diff touches catch/except blocks, fallback defaults, async paths, or logging. Hunt swallowed errors, empty catch blocks, dangerous fallbacks (`.catch(() => [])`), lost stack traces, and missing error propagation.
 5. **Test Engineering Audit (`test-driven-development`):**

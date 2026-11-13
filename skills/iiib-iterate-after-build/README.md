@@ -29,7 +29,8 @@ routes it to the right specialist, fixes locally — no push, no PR.
 1. Splits the operator message into items; one line each: "Item N → Lane
    X because [observable reason]". The operator never picks a skill.
 2. Lanes: bug/error → `diagnosing-bugs` + `debugging-and-error-recovery`;
-   dead button → click-path checklist; UI/mobile → `frontend-ui-engineering`;
+   dead button → click-path checklist; UI/mobile → `better-interface` then
+   `frontend-ui-engineering`;
    slow → `performance-optimization`; auth/secrets → `security-and-hardening`.
 3. Per item: reproduce → name the root cause → minimal fix → simplify →
    local commit (never push) → verify (browser check for UI, targeted

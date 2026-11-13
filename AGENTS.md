@@ -8,7 +8,7 @@ Source of the 10 rules: Addy Osmani, `using-agent-skills` (github.com/addyosmani
 
 `~/.agents` is the operator's **shared agent home** — one canonical copy of everything agents need, synced read-only into every harness (`scripts/sync-harness-skills.ps1`):
 
-- **`skills/`** (~91 skills) — the capability library. General-purpose skills (research, debugging, TDD, review, docs) plus the numbered issue→PR delivery pipeline below.
+- **`skills/`** (~110 skills) — the capability library. General-purpose skills (research, debugging, TDD, review, docs) plus the numbered issue→PR delivery pipeline below.
 - **`agents/`** — helper sub-agent personas (`code-explorer`, `code-reviewer`, stack-specific resolvers) that pipeline stations delegate to.
 - **`docs/`** — durable knowledge: the pipeline map (`docs/issue-to-pr-skill-workflow.md`), the artifact-path index (`docs/artifact-paths.md`), and nothing else.
 - **`scripts/`** — maintenance automation (harness sync, CodeRabbit config sync, and project sync for the published pipeline repo — see `skills/README.md`).
@@ -41,6 +41,16 @@ Skills are self-contained folders (`SKILL.md` + optional `references/`, `scripts
 - **Ad-hoc → `using-agent-skills`.** Quick questions, small fixes, exploration, "where is X".
 - **Ambiguous?** If it will end in a PR on code, it is Issue work. Still ambiguous? Ask one question.
 - Never run two routers on the same request.
+
+## UI routing (which skill owns a UI request)
+
+- **Building or changing UI code** → `frontend-ui-engineering`; aesthetic direction for a new or reshaped interface → `frontend-design`; tokens → `tailwind-design-system`.
+- **Reviewing a screen, flow or whole interface** → `better-interface` (one ranked report: severity, evidence, verdict). Its rule owners are `better-accessibility`, `better-layout`, `better-writing`, `better-typography`, `better-colors`, `better-ui`.
+- **Reviewing a diff for interface regressions** → `interface-review` (user-invoked: the operator starts it, no station may).
+- **One component under every scenario** → `break`; **every state of one component** → `state-machine`; **design alternatives** → `variant` (all user-invoked; each writes a throwaway page).
+- **Code-level rules the review family does not own** (hydration, image dimensions, URL state, touch gestures, dark-mode meta, `Intl` formatting) → `web-design-guidelines`.
+- **Copy and capitalization policy** → `better-writing` (it reads the project's own policy first). `web-design-guidelines` does not own copy.
+- One owner per request: the review family reviews, `frontend-ui-engineering` builds the fix.
 
 ## Router Charter (session start)
 

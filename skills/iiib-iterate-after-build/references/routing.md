@@ -6,7 +6,7 @@ Canonical lookup for Section 2 in `SKILL.md`. Read the operator's free-text item
 |---|---|---|---|
 | crash, error, traceback, console error, worked before and broke, wrong result | Bug / error / regression | `diagnosing-bugs`, then `debugging-and-error-recovery` | Full diagnosis loop first (red loop, minimise, ranked hypotheses, instrument), then triage checklist; add a regression test |
 | button does nothing, click has no effect, form never submits, no error shown | Dead button | `click-path-audit` (procedure condensed in `click-path-audit.md`) | Trace handler calls in order; find the later write that undoes an earlier one; check shared-store side effects and async races |
-| looks wrong, off-center, broken on mobile, bad spacing, hard to read, not accessible | UI / styling / mobile | `frontend-ui-engineering` (+ `tailwind-design-system` when design tokens apply) | This is a small rebuild, not debugging |
+| looks wrong, off-center, broken on mobile, bad spacing, hard to read, not accessible | UI / styling / mobile | `better-interface` (diagnose: accessibility, layout, typography, color, writing), then `frontend-ui-engineering` (the fix; + `tailwind-design-system` when design tokens apply) | This is a small rebuild, not debugging |
 | slow, laggy, takes too long, times out | Performance | `performance-optimization` | Profile before optimizing |
 | login, permission, secret, token, private data, user input | Security | `security-and-hardening` | Untrusted input, auth boundaries, secrets handling |
 

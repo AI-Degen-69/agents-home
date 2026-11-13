@@ -51,6 +51,7 @@ the id reads as a reference, not as a document's own sequence number.
 | Skill | Artifact | Path |
 | --- | --- | --- |
 | `playwright-cli` | screenshots, traces, session state | `.playwright-cli/` beside the invocation, or the system temp directory — never committed, never inside `docs/` |
+| `break`, `state-machine`, `variant` | throwaway harness page, fixtures and switcher for one component | a scratch route inside the app under test, deleted on the operator's word — never committed, never inside `docs/` |
 
 ## Generated state (a program reads it back, not a human)
 

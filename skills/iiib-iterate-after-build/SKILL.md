@@ -28,7 +28,7 @@ Split the operator message into separate items (one bug or change each). For eve
 
 - **Bug / error / regression** (crash, console error, worked before and broke): `diagnosing-bugs` for the full diagnosis loop (feedback loop, minimise, hypothesise, instrument, fix, regression test), then `debugging-and-error-recovery` for reproduce, localize, fix, and guard.
 - **Dead button** (click does nothing, no error): follow the dead-button checklist in [references/click-path-audit.md](references/click-path-audit.md) — trace the handler call by call and find the state write that undoes an earlier one.
-- **UI / styling / mobile change** (works but looks wrong): `frontend-ui-engineering` (plus `tailwind-design-system` when design tokens apply).
+- **UI / styling / mobile change** (works but looks wrong): `better-interface` to diagnose, then `frontend-ui-engineering` to fix (plus `tailwind-design-system` when design tokens apply).
 - **Slow**: `performance-optimization` — profile before optimizing.
 - **Auth / secrets / untrusted input**: `security-and-hardening`.
 - **Unclear**: treat as a bug, ask exactly one focused question, never guess.
