@@ -1,15 +1,6 @@
 {
   "version": 3,
   "skills": {
-    "find-skills": {
-      "source": "vercel-labs/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/vercel-labs/skills.git",
-      "skillPath": "skills/find-skills/SKILL.md",
-      "skillFolderHash": "76a98a285cb0434f3d39e1a873823556330e398b",
-      "installedAt": "2026-07-02T00:46:28.601Z",
-      "updatedAt": "2026-07-20T01:07:36.2Z"
-    },
     "pattern-detection": {
       "source": "akillness/oh-my-skills",
       "sourceType": "github",
@@ -644,13 +635,6 @@
       "source": "local",
       "sourceType": "local",
       "skillPath": "skills/ps1-theme-audit/SKILL.md",
-      "installedAt": "2026-09-22T07:03:18.000Z",
-      "updatedAt": "2026-09-22T07:03:18.000Z"
-    },
-    "remotion-best-practices": {
-      "source": "local",
-      "sourceType": "local",
-      "skillPath": "skills/remotion-best-practices/SKILL.md",
       "installedAt": "2026-09-22T07:03:18.000Z",
       "updatedAt": "2026-09-22T07:03:18.000Z"
     },

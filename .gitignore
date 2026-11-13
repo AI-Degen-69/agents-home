@@ -33,3 +33,6 @@ venv/
 
 # Node artifacts — parity/future-proofing; nothing generates these yet.
 node_modules/
+
+# Third-party MCP server clones - runtime dependencies, never canonical (own .git, node_modules).
+notebooklm-mcp/
