@@ -1,6 +1,6 @@
 ---
 name: web-design-guidelines
-description: Review UI code for Web Interface Guidelines compliance. Use when asked to "review my UI", "check accessibility", "audit design", "review UX", or "check my site against best practices".
+description: Check UI code against the code-level Web Interface Guidelines rules the interface review family does not own - hydration safety, image dimensions and loading, URL state, touch gestures, dark-mode meta, and Intl locale formatting. For a full interface review (accessibility behavior, layout, typography, color, copy, polish) use `better-interface` instead.
 metadata:
   author: vercel
   version: "1.0.0"
@@ -8,6 +8,13 @@ metadata:
 ---
 
 # Web Interface Guidelines
+
+**Scope.** This skill owns the code-level rules only: hydration safety, image
+dimensions and loading, URL state and deep-linking, touch gestures, dark-mode
+meta, and `Intl` locale formatting. Everything it also says about
+accessibility, layout, typography, color and copy is owned by the interface
+review family (`better-interface` and its domain skills) - report those through
+that path, not here, so one rule has one owner.
 
 Review files for compliance with Web Interface Guidelines.
 
