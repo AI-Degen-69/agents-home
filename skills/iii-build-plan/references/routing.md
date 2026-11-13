@@ -7,7 +7,7 @@ detail.
 
 | Domain tag | Invoke | Notes |
 |---|---|---|
-| UI / Frontend / Design | `frontend-ui-engineering` (+ `tailwind-design-system` when tokens/utilities apply) | Visual components, styling, layouts; accessible + responsive |
+| UI / Frontend / Design | `frontend-ui-engineering` (+ `tailwind-design-system` when tokens/utilities apply) | Visual components, styling, layouts; accessible + responsive. Implementation stays with `frontend-ui-engineering`; read the owning `better-*` domain skill (ownership map in `~/.agents/AGENTS.md` -> "UI routing") when the task touches that domain's surface |
 | Code / Backend / API | `test-driven-development`, `source-driven-development`, `api-and-interface-design` | TDD minimal code; official docs grounding for API usage |
 | Debug / Defect | `debugging-and-error-recovery` | Root cause first, fix second |
 | Performance | `performance-optimization` | Profile before optimizing |

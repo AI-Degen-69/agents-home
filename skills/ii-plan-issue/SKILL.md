@@ -134,7 +134,7 @@ Load specialized skills that match the classified task type (and only skills tha
 | Core (default) | `test-driven-development`, `incremental-implementation` |
 
 *Design distinction:* `frontend-design` governs aesthetic direction, typography, and non-templated choices; `frontend-ui-engineering` governs accessible, responsive, production-quality UI and WCAG compliance.
-*Review family:* `better-interface` reviews an existing interface (ranked findings, severity, verdict) and owns no build rules; `frontend-ui-engineering` remains the owner of implementation correctness.
+*Review family:* `better-interface` reviews an existing interface (ranked findings, severity, verdict) and owns no build rules; `frontend-ui-engineering` remains the owner of implementation correctness. At plan time `better-interface` diagnoses only - its report becomes the plan's Design/UI tasks, and the fixes are built in Station III.
 *Execution tagging:* in `tasks/plan.md`, every task declares its domain tag (`[Design/UI]`, `[Backend/Logic]`, `[Debug]`, ...) and the verification mode `iii-build-plan` will run (browser preview for UI, unit/integration runner for logic).
 
 ### Step 2: Specification (`spec-driven-development`)
