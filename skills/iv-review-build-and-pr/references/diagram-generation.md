@@ -7,8 +7,8 @@ step contract in `SKILL.md` is the source of truth; this file holds the detail.
 
 Before writing the PR body, generate the **smallest visual that makes the
 change clear** — a diagram, file tree, pseudocode, or call tree — and place
-it as the **first** element of `## Summary`. Prose becomes the fallback
-explanation below the visual, never the leading summary.
+it as its own first section, `## Change Visual`, before `## Summary`.
+Prose summary follows in `## Summary`, never leading.
 
 ### Step 5a: Classify the Change Type
 
@@ -111,5 +111,6 @@ Use `playwright-cli screenshot --before` (checkout base) and `--after`
   through `mmdc` if available; otherwise eyeball syntax.
 - If no diagram type fits (e.g., a one-line config change), use an inline
   diff snippet and skip the visual section.
-- The visual replaces the first paragraph of `## Summary`. If the operator
+- The visual is its own `## Change Visual` section — the first thing in
+  the PR body — followed by `## Summary` prose. If the operator
   explicitly requests "no diagram," produce prose instead and note the skip.

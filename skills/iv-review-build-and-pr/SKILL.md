@@ -205,8 +205,8 @@ git diff --name-only origin/<base>...HEAD   # classify change type
 | UI change | Before/after screenshot | `.tsx`/`.jsx`/`.css` |
 | Config / docs only | Inline diff snippet | `.json`/`.yaml`/`.md` only |
 
-The diagram goes as the **first** element of `## Summary` — a `## Change Visual`
-section. Prose summary follows below it.
+The diagram goes in its own `## Change Visual` section — the first thing
+in the PR body. `## Summary` prose follows below it.
 
 #### Step 5b: Assess Merge Danger (before PR body)
 
