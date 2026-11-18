@@ -92,9 +92,29 @@ rtk python "C:\Users\Tiger\.agents\skills\asd-ste100\scripts\build_dictionary.py
 
 # Run built-in self-tests
 rtk python "C:\Users\Tiger\.agents\skills\asd-ste100\scripts\ste-lint.py" --selftest
+
+# Lint a Hebrew file or piped Hebrew text
+rtk python "C:\Users\Tiger\.agents\skills\asd-ste100\scripts\ste-lint-he.py" path\to\hebrew.md
+"טקסט לבדיקה." | python "C:\Users\Tiger\.agents\skills\asd-ste100\scripts\ste-lint-he.py" --json
+rtk python "C:\Users\Tiger\.agents\skills\asd-ste100\scripts\ste-lint-he.py" --selftest
 ```
 
 Useful CLI flags: `--baseline N` fails only when hard violations exceed `N`, and `--disable rule1,rule2` silences named rules (repeatable). Known rule IDs: `semicolon`, `long-sentence`, `phrasal-verb`, `marketing-adjective`, `nominalization`, `bloat-phrase`, `synonym-rotation`, `dangling-conjunction`, `passive-voice` (advisory), `present-perfect` (advisory), `unapproved-word` (advisory with `--strict-dict`).
+
+## Hebrew STE-Core Rules (Adapted from `g4lb/asd-ste100-hebrew-skill`)
+
+ASD-STE100 defines English only, so these Hebrew rules adapt the structure rules without banning everyday dev nouns (`דיבוג`, `קינפוג`, `דיפלוי`):
+
+| Rule | Hebrew Standard | Avoid |
+|---|---|---|
+| Sentence length | `<=16` words (instructions), `<=20` words (explanations) | Stacked clauses over 20 words |
+| Clause & `סמיכות` cap | Max 1 `ש-` clause per sentence and `<=3` nouns in `סמיכות` | Chained `אשר`/`ש-` or 4-noun chains |
+| Hyphen before Latin/digits | `ב-API`, `ה-JSON`, `ב-2025` (or maqaf `־`) | `בAPI`, `הJSON`, `ב2025` |
+| One instruction form | Infinitive every time (`לפתוח את הקובץ. לבדוק את הלוג.`) | Mixing `פתח`, `תפתח`, `יש לפתוח` |
+| Verb, not nominalization | `לבדוק`, `להשוות`, `להחליט`, `לענות` | `לבצע בדיקה`, `לערוך השוואה`, `לקבל החלטה`, `מתן מענה` |
+| Modality & spelling | Keep `ייתכן`/`עשוי`/`אולי` hedges and write full words | Deleting hedges or using `בד"כ`/`עפ"י`/`וכו'` |
+
+Non-trivial Hebrew responses follow Rule 8 of [AGENTS.md](file:///C:/Users/Tiger/.agents/AGENTS.md) and render inside a `dir="rtl"` HTML artifact. Use [writing-rules-he.md](references/writing-rules-he.md) and `ste-lint-he.py` for full Hebrew checks.
 
 ## Rewrite Process
 
@@ -112,6 +132,7 @@ Useful CLI flags: `--baseline N` fails only when hard violations exceed `N`, and
 ## References & Examples
 
 - [`references/writing-rules.md`](references/writing-rules.md) — Summary of all 53 rules across 9 sections, GR-1..GR-8, and Issue 9 updates.
+- [`references/writing-rules-he.md`](references/writing-rules-he.md) — Hebrew STE adaptation rules and `ste-lint-he.py` mapping.
 - [`examples/before-after.md`](examples/before-after.md) — Worked examples across STE rules and agent text.
 - [`references/issue9-dictionary.json`](references/issue9-dictionary.json) — Local Issue 9 dictionary index (do not redistribute outside your machine).
 - [`references/ASD-STE100 (Issue 9).pdf`](references/ASD-STE100%20(Issue%209).pdf) — Local copy of the official Issue 9 standard PDF.
