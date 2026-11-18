@@ -36,3 +36,7 @@ node_modules/
 
 # Third-party MCP server clones - runtime dependencies, never canonical (own .git, node_modules).
 notebooklm-mcp/
+
+# Copyrighted ASD-STE100 Issue 9 source files (generated/used locally; never publish).
+skills/asd-ste100/references/ASD-STE100 (Issue 9).pdf
+skills/asd-ste100/references/issue9-dictionary.json
