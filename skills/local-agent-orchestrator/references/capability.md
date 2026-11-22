@@ -112,10 +112,30 @@ name those cases and route them to a flat Neon, Carbon, or Argon.
 **Two-bucket trick:** planner on Claude Opus 5.5 draws the Claude bucket, executor Hydrogen draws
 the Gemini bucket. That splits one run across both pools.
 
-### The A/B that settles the pair (not run yet)
+### The A/B, first result (Nov 22, 2026)
 
-The vendor numbers are unreproduced on this machine, so the pair carries no grade it did not
-inherit. One task settles it.
+| Run | Planner | Executor | Pass | Minutes | Quota used | Corrections |
+| --- | --- | --- | --- | --- | --- | --- |
+| A | Neon Medium | — | 10/10 | 1 | not recorded | 0 |
+| B | Neon Medium | Hydrogen High | 10/10 | 1 | not recorded | 0 |
+
+Task: extract the channel decision into `classify_channel()` in `sigma-channel-screener`, graded by
+ten acceptance tests. Both runs changed the same one file and produced the same six branches, the
+same `signal` field, and the same integration. A added 28 lines, B added 30; the difference is
+formatting.
+
+**What it settles:** on work with a precise spec and a test gate, the executor did not drift. No
+phantom edits, no scope creep, no rewording beyond the one line the brief ordered. The pair is safe
+to use.
+
+**What it does not settle:** the cost claim. One minute is too short for a 24% quota difference to
+show, one file gave no room for a saving to appear, and Usage was not read before either run.
+The vendor figure comes from Terminal-Bench 4.1 runs that spend hundreds of millions of tokens.
+
+**Next test, if cost matters:** one task that runs 20+ minutes, with the Usage reading captured
+before and after each run. Until then, treat the pair as quality-neutral and cost-unproven.
+
+The protocol, for that longer run:
 
 1. **Pick a task with a test gate:** one small feature in a repo whose suite fails before and
    passes after. Same prompt both runs, written once and pasted twice.
