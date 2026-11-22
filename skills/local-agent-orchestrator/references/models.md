@@ -40,7 +40,7 @@ One paid Google AI Pro plan plus six free accounts. Switch accounts in the app; 
 
 Free accounts reach AG-1, AG-4 and AG-9 only: Gemini 3.8 Flash plus the two deprecated Claude 4.6 models. That is B at best, so **every S and S+ path needs the Pro plan**.
 
-**Orchestrator** is a pick, not a model. It wraps AG-5, AG-6, or AG-2 and routes routine steps to a faster executor. See capability.md for the guardrail.
+**Orchestrator** is a pick, not a model. It wraps AG-5, AG-6, or AG-2 and routes routine steps to a faster executor. It is a cost mode: same ceiling, fewer tokens, no provenance. See capability.md for when to pick it over the flat model.
 
 Gemini 4 Carbon shows as Unavailable on this plan. Do not route it.
 

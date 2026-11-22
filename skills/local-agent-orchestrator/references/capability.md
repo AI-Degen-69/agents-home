@@ -80,15 +80,32 @@ grade depends on the tier picked. Each row lists the ladder.
 
 Gemini 4 Carbon appears in the picker as Unavailable. Do not route it.
 
-### Orchestrator — a pick, not a model
+### Orchestrator — a cost mode, not a capability mode
 
 Tooltip: "Offloads routine steps to a faster executor. Same quality, fewer tokens used."
-It wraps AG-5, AG-6, or AG-2 at Low / Medium / High.
+It wraps AG-5 Neon, AG-6 Argon, or AG-2 Opus 5.5 at Low / Medium / High.
 
-- **Grade it one step below the wrapped model.** The executor is undisclosed and the "same quality" claim has no measurement behind it.
-- **Never for review, audit, or the irreversible final step.** You cannot attribute a step to a model, so the audit trail is gone.
-- **Good for long mechanical builds** where tests decide the outcome and the 5-hour window is the binding constraint.
-- It adds no capability. If the window is not the constraint, pick the model directly.
+It changes **which model executes a step**. It does not change the ceiling of the model you
+picked and it adds no capability. It trades token spend for provenance.
+
+**Pick Orchestrator-on-X instead of flat X when all five hold:**
+
+1. The work is a build or refactor, not a review or an audit.
+2. A test suite or compiler can reject a wrong step without you reading it.
+3. The run is long and mostly mechanical, so token spend is what binds the window.
+4. No line needs attribution to a model (no compliance, security or incident trail).
+5. You will re-run any failed or ambiguous step flat on the named model.
+
+**Pick flat X when any of these hold:** review, audit, security, a migration with subtle
+invariants, an irreversible operation, or a repo you cannot test.
+
+**Grade:** the run's ceiling is X's grade. The effective grade is one step lower until a
+test gates every offloaded step, because the executor is undisclosed and "same quality" has
+no measurement behind it.
+
+**First use is an A/B, not a default.** Run one representative task flat on Neon Medium, then
+the same task through Orchestrator-on-Neon-Medium. Compare pass rate and window spent, and
+record both numbers here. Until that exists, treat the mode as unverified.
 
 ## OpenCode
 
@@ -308,7 +325,7 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 | Task class | Required grade | Harness | Earned by | Notes / risk |
 |---|---|---|---|---|
 | Planning / strategy | S | Antigravity | M2 / M3 | Opus 5.5 at High (52) or Medium (48); Sonnet 5.5 at High (41) is only A. Fallback Freebuff FB-10 (Argon 50). |
-| Long-horizon agentic coding (build) | S | Antigravity | M2 / AG-5 | Opus 5.5 at High (52, TB 4.0 66.4% vendor) or Gemini 4 Neon at Medium (55, cheaper per token). M1 (B) supervised only. |
+| Long-horizon agentic coding (build) | S | Antigravity | M2 / AG-5 | Opus 5.5 at High (52, TB 4.0 66.4% vendor) or Gemini 4 Neon at Medium (55, cheaper per token). Orchestrator-on-Neon-Medium is the cost mode for a long build that tests gate. M1 (B) supervised only. |
 | Multi-step review / audit (judgment) | S | Antigravity | M2 | Opus 5.5 is the strongest reviewer here; security-flavored audits may be served by Opus 4.8 via safeguards. |
 | Well-scoped code edits (tests decide) | A | Antigravity | M3 / AG-5 | Sonnet 5.5 at High = 41 = A is the cheap path; Neon at Low (44) also lands in A. M1 (31) as fallback under tests. |
 | Mechanical execution / babysitting | B | Antigravity | M1 / M3 | M1 (31, 22 at low) and M3 at Medium/Low (30/25) are what you can afford to burn; M2 is not. |
@@ -357,10 +374,11 @@ Harness + Earned-by columns pin it to the model actually on that harness.
   ladder High 41 (A) / Medium 30 (B) / Low 25 (C); High is its ceiling on this
   harness. $2/$10, 1M ctx. Prefer M3 over M2 for cost-sensitive A work; M2 stays
   the stronger reviewer. Watch the Claude bucket, not just the Gemini one.
-- **Orchestrator is not a model:** it wraps Neon, Argon, or Opus 5.5 and sends
-  routine steps to an undisclosed executor. No measurement backs "same quality".
-  Grade it one step below the wrapped model, and keep it out of review, audit and
-  the irreversible step.
+- **Orchestrator is a cost mode, not a model:** it wraps Neon, Argon, or Opus 5.5 and
+  sends routine steps to an undisclosed executor. No measurement backs "same quality".
+  Use it on long builds where tests gate every step and the window binds. Keep it out
+  of review, audit, security and the irreversible step. First use is an A/B against the
+  flat model, recorded in the Antigravity block.
 - **Board re-tiered on AA Intelligence Index v5.0.** Bands **S+ 51+ · S 46–50 ·
   A 39–45 · B 26–38 · C <26**. Highest measured is Gemini 4 Neon at 61. Every
   grade in this file is stamped on v5.0. v4.3.2 numbers are historical: Gemini 3.8
