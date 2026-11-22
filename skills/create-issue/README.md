@@ -25,7 +25,7 @@ until CodeRabbit writes the final title.
 |---|---|
 | Brand-new idea, nothing to pick in the backlog | The work starts from an existing issue → `i-pick-issue` |
 | A vague "make X better" that needs shaping | A quick question or exploration → `using-agent-skills` |
-| Splitting one big idea into a family of issues | Work is already in flight (dirty tree / open PR) → `pipeline-triage` first |
+| Splitting one big idea into a family of issues | Work is already in flight (dirty tree / open PR) → `local-agent-orchestrator` first |
 
 ## How it works (short)
 

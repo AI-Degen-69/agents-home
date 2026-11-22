@@ -310,7 +310,7 @@ This task is pretty important (we are trying to create billions a year in econom
 ### Consolidating duplicate skills
 
 When the library ends up with two skills for the same job (e.g. `triage-and-route`
-vs `model-routed-triage`), consolidation is a deletion-plus-keep, not a merge —
+vs `local-agent-orchestrator`), consolidation is a deletion-plus-keep, not a merge —
 one canonical skill must own each piece of knowledge. Three checks before touching
 anything:
 
@@ -327,7 +327,7 @@ anything:
 3. **One source of truth per datum — delete, don't merge.** If both skills carry a
    cost table, the canonical skill's file owns it and the per-skill copy is deleted,
    never merged. Divergent rows (e.g. DeepSeek V4.1 Flash Fast 50 vs 75) smell drift;
-   merging resurrects the conflict. Canonical prices live with the skill that owns them — `model-routed-triage` carries its prices in `references/models.md` (at `AGENTS_HOME/skills/model-routed-triage/references/models.md`),
+   merging resurrects the conflict. Canonical prices live with the skill that owns them — `local-agent-orchestrator` carries its prices in `references/models.md` (at `AGENTS_HOME/skills/local-agent-orchestrator/references/models.md`),
    normalized to "hours" (÷5 from legacy freebucks — 105 freebucks/day = 21 hours/day);
    update that single bundled file, not a root or per-skill shadow copy.
 

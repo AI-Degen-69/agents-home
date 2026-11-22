@@ -11,7 +11,7 @@ conversation.
 
 ## Pipeline Position
 - **Position:** Intake branch — **not a numbered station.** Invoked from Station I (`i-pick-issue`) when the backlog has nothing worth picking, or directly by the operator (`/create-issue <idea>`).
-- **Previous Station:** none — this is the entry for a brand-new idea. When work is already in flight, `pipeline-triage` comes first.
+- **Previous Station:** none — this is the entry for a brand-new idea. When work is already in flight, `local-agent-orchestrator` comes first.
 - **Next Station:** `i-pick-issue` — the new issue re-enters Discovery and gets picked like any other.
 
 ## CodeRabbit posture for this skill

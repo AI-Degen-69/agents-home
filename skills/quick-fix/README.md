@@ -10,7 +10,7 @@ base branch** — no feature branch, no PR, no reviewers, no CodeRabbit wait.
 
 ## Pipeline position
 
-- **Position:** fast lane — unnumbered, like `pipeline-triage`, `create-issue`, `present-pr`.
+- **Position:** fast lane — unnumbered, like `local-agent-orchestrator`, `create-issue`, `present-pr`.
 - **Replaces:** Stations II → VI entirely. It is never a partial step inside them.
 - **Enters from:** Station I, II, III, or IV.
 - **Exits to:** `i-pick-issue` for the next item.
@@ -23,7 +23,7 @@ base branch** — no feature branch, no PR, no reviewers, no CodeRabbit wait.
 | Docs or comment fix, zero behavior change | New behavior, API, schema, or config → `ii-plan-issue` |
 | Existing tests already cover the touched code | A new test is required → `iii-build-plan` |
 | Operator asked for it fast, not for a discussion | The approach is still undecided → `i-pick-issue` |
-| Base branch is clean, synced, unprotected — or carries the lane's own staged handoff | Foreign dirt or unpushed commits → `pipeline-triage` |
+| Base branch is clean, synced, unprotected — or carries the lane's own staged handoff | Foreign dirt or unpushed commits → `local-agent-orchestrator` |
 
 ## The gate
 

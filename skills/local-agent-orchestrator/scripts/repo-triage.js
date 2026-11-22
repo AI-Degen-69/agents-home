@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Automated forensic triage data collector for model-routed-triage.
+// Automated forensic triage data collector for local-agent-orchestrator.
 // Gathers live repository state across branches, worktrees, stashes, PRs, and issues
 // in a single pass, calculating branch divergence and ancestry relative to main.
 //
@@ -132,20 +132,28 @@ function collectTriageData(cwd, base) {
   }
 
   // 5. GitHub PRs & Issues (optional / non-fatal)
+  // A failed or unparseable gh call is reported, never silently read as "no PRs".
+  const warnings = [];
   let prs = [];
   const ghPrRes = runCmd('gh', ['pr', 'list', '--state', 'open', '--json', 'number,title,headRefName,isDraft,author'], cwd);
-  if (ghPrRes.ok && ghPrRes.out) {
+  if (!ghPrRes.ok) warnings.push(`gh pr list failed: ${ghPrRes.err}`);
+  else if (ghPrRes.out) {
     try {
       prs = JSON.parse(ghPrRes.out);
-    } catch {}
+    } catch {
+      warnings.push('gh pr list output was not valid JSON');
+    }
   }
 
   let issues = [];
   const ghIssueRes = runCmd('gh', ['issue', 'list', '--state', 'open', '--json', 'number,title,author,labels'], cwd);
-  if (ghIssueRes.ok && ghIssueRes.out) {
+  if (!ghIssueRes.ok) warnings.push(`gh issue list failed: ${ghIssueRes.err}`);
+  else if (ghIssueRes.out) {
     try {
       issues = JSON.parse(ghIssueRes.out);
-    } catch {}
+    } catch {
+      warnings.push('gh issue list output was not valid JSON');
+    }
   }
 
   return {
@@ -156,6 +164,7 @@ function collectTriageData(cwd, base) {
     stashes,
     prs,
     issues,
+    warnings,
   };
 }
 
@@ -224,6 +233,10 @@ function main() {
   }
   for (const i of data.issues) {
     console.log(`  Issue #${i.number}: ${i.title}`);
+  }
+  if (data.warnings.length) {
+    console.log('');
+    for (const w of data.warnings) console.log(`WARN: ${w}`);
   }
 }
 

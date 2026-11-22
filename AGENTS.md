@@ -10,7 +10,7 @@ Source of core rules: Addy Osmani, `using-agent-skills` (`github.com/addyosmani/
 
 `C:\Users\Tiger\.agents` is your shared agent home. `scripts/sync-harness-skills.ps1` links each harness to this single source of truth.
 
-- **`skills/`** (`111` skills) — general capability skills plus the numbered issue-to-PR pipeline (map in [skills/README.md](file:///C:/Users/Tiger/.agents/skills/README.md)).
+- **`skills/`** (`110` skills) — general capability skills plus the numbered issue-to-PR pipeline (map in [skills/README.md](file:///C:/Users/Tiger/.agents/skills/README.md)).
 - **`agents/`** (`17` files) — helper subagent personas such as `code-explorer`, `code-reviewer`, and stack-specific resolvers.
 - **`docs/`** — durable references: [docs/artifact-paths.md](file:///C:/Users/Tiger/.agents/docs/artifact-paths.md) and `docs/explanations/`.
 - **`rules/`** — shared rule modules such as [rules/ponytail.md](file:///C:/Users/Tiger/.agents/rules/ponytail.md).
@@ -59,11 +59,11 @@ Each skill lives in a self-contained folder (`SKILL.md` with optional `reference
 
 Run one entry router per request and at most one handoff:
 
-1. **Issue work** (anything ending in a GitHub PR on code) → `i-pick-issue` (Station I). It calls `pipeline-triage` first if the tree is dirty, commits sit unpushed, or a PR stands open.
+1. **Issue work** (anything ending in a GitHub PR on code) → `i-pick-issue` (Station I). It calls `local-agent-orchestrator` first if the tree is dirty, commits sit unpushed, or a PR stands open.
 2. **Ad-hoc work** (questions, small fixes, research) → `using-agent-skills`.
 3. **New idea with no open issue** → `create-issue`, then back to `i-pick-issue`.
 
-Only `pipeline-triage` inspects git and PR state. If two paths tie, pick the safer path. Ask one short question if intent stays unclear.
+Only `local-agent-orchestrator` inspects git and PR state to choose a route. A station still runs its own checks inside its own step. If two paths tie, pick the safer path. Ask one short question if intent stays unclear.
 
 ## Domain & UI Skill Routing
 
@@ -85,6 +85,6 @@ For UI work, use these exact owners:
 
 ## Delivery Pipeline
 
-The numbered folders in `skills/` run the issue-to-PR chain in order (`I → II → III → IIIB → IV → V → VI`). Read [skills/README.md](file:///C:/Users/Tiger/.agents/skills/README.md) before any pipeline run. Supporting system skills are `pipeline-triage` (gate), `create-issue` (intake), `quick-fix` (fast lane), `retro` (V→VI retro), `model-routed-triage` (multi-branch/issue routing), and `present-pr` (visual PR summary).
+The numbered folders in `skills/` run the issue-to-PR chain in order (`I → II → III → IIIB → IV → V → VI`). Read [skills/README.md](file:///C:/Users/Tiger/.agents/skills/README.md) before any pipeline run. Supporting system skills are `local-agent-orchestrator` (state gate and model routing), `create-issue` (intake), `quick-fix` (fast lane), `retro` (V→VI retro), and `present-pr` (visual PR summary).
 
 **Quick-fix lane:** Trivial edits (`<=2` files, zero new behavior, zero contract changes, zero new tests, existing verification available) bypass Stations II–VI. Agents test, commit, and push straight to the base branch without a PR or CodeRabbit wait. Stations I–IV evaluate the 7-box gate only when an issue carries the `quick-fix` label or when the operator asks for it. Every item must pass and the operator must approve the shortcut. Any failed gate item removes the label or falls back to the full pipeline. `create-issue` marks trivial ideas `quick-fix` only as a screening hint.

@@ -21,7 +21,7 @@ artifact kind, all of them under `docs/` except the loop's own working folder.
 | `idea-refine` | shaped idea | `docs/ideas/` | `<slug>.md` |
 | `documentation-and-adrs`, `domain-modeling`, `improve-codebase-architecture` | decision record | `docs/adr/` | `<NNN>-<slug>.md` |
 | `domain-modeling`, `improve-codebase-architecture` | domain glossary | `GLOSSARY.md` | fixed name, one per repo |
-| `iii-build-plan`, `iv-review-build-and-pr`, `quick-fix`, `retro`, `vi-close-pipeline`, `model-routed-triage` | out-of-scope candidate ledger, one per issue | `docs/backlog/` | `i<id>-<slug>.md` |
+| `iii-build-plan`, `iv-review-build-and-pr`, `quick-fix`, `retro`, `vi-close-pipeline`, `local-agent-orchestrator` | out-of-scope candidate ledger, one per issue | `docs/backlog/` | `i<id>-<slug>.md` |
 
 `docs/issues/` no longer exists: every artifact that used to live there now has its
 own folder above. A file numbered for an issue carries the `i` prefix (`i123-…`) so
@@ -31,7 +31,7 @@ the id reads as a reference, not as a document's own sequence number.
 
 | Skill | Artifact | Path | Name |
 | --- | --- | --- | --- |
-| `ii-plan-issue`, `iii-build-plan`, `planning-and-task-breakdown`, `spec-driven-development`, `pipeline-triage` | plan, todo, PR body | `tasks/` | `plan.md`, `todo.md`, `pr-body.md` |
+| `ii-plan-issue`, `iii-build-plan`, `planning-and-task-breakdown`, `spec-driven-development`, `local-agent-orchestrator` | plan, todo, PR body | `tasks/` | `plan.md`, `todo.md`, `pr-body.md` |
 | `planning-with-files` | persistent plan, findings, progress | repo root | `task_plan.md`, `findings.md`, `progress.md` |
 | `constraint-driven-development` | the written quality bar | repo root | `CONSTRAINTS.md` |
 | `retro` | coding standards | repo root | `CODING_STANDARDS.md` |

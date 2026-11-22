@@ -30,8 +30,8 @@ For every task executed, follow these phases:
 ### Phase 1: Pre-flight & Specialized Skill Routing
 0. **Verify Plan & Pre-flight:** Run `node scripts/build-preflight.js` (or inspect manually): confirm `tasks/plan.md` exists. If missing, halt: "No plan found! Run `/ii-plan-issue` first." Nothing below can run without it.
 1. **Preconditions — verify all three before touching a file:**
-   1. **Right branch.** Run `git branch --show-current`. You must be on the plan's feature branch (`i<number>/<slug>`). On the base branch, or on a branch that is not the plan's, stop and route to `pipeline-triage` — never start a build on the wrong branch. When the repo isolates issue work in worktrees, also confirm you are inside the issue's worktree (`git worktree list`), not the main checkout — building in the main checkout edits the operator's live tree and collides with other sessions' writers.
-   2. **Dirt has a known origin.** Run `git status --short`. Every changed file must trace to the plan's tasks. Foreign or unattributable dirt → stop and route to `pipeline-triage` for the unknown-origin stop rule. Do not absorb another stream's changes into this build, and do not stash them away silently.
+   1. **Right branch.** Run `git branch --show-current`. You must be on the plan's feature branch (`i<number>/<slug>`). On the base branch, or on a branch that is not the plan's, stop and route to `local-agent-orchestrator` — never start a build on the wrong branch. When the repo isolates issue work in worktrees, also confirm you are inside the issue's worktree (`git worktree list`), not the main checkout — building in the main checkout edits the operator's live tree and collides with other sessions' writers.
+   2. **Dirt has a known origin.** Run `git status --short`. Every changed file must trace to the plan's tasks. Foreign or unattributable dirt → stop and route to `local-agent-orchestrator` for the unknown-origin stop rule. Do not absorb another stream's changes into this build, and do not stash them away silently.
    3. **Resume an unfinished plan.** If `tasks/plan.md` has unchecked `[ ]` items, you are resuming. Take the next task from **`tasks/plan.md`** — the single source of truth for completion state. `tasks/todo.md` is a derived checklist, so read it for reporting but never select the next task from it: Phase 4 marks completion in `tasks/plan.md` only, and selecting from the checklist can replay an already-completed task. Never restart a plan from task 1, and never overwrite `tasks/plan.md` (Station II owns reconciliation).
 2. **Quality Guardrails:** Respect constraints from `CONSTRAINTS.md` (anti-cheat, forbidden edits, zero regressions).
 3. **Rule 0 — simplicity before writing:** for every task, first ask "what is the simplest thing that fully works?" The boring, shortest solution wins; complexity must justify itself before it gets written.
@@ -61,7 +61,7 @@ is XS or S, the plan touches at most 2 files, adds no behavior, and needs no new
 to `main`, no PR, no reviews, no CodeRabbit). **Yes** → hand off to `quick-fix` **with your 7-box
 verdict** so it re-checks only size and its own diff, which works on the base branch — switch off
 this feature branch first, or the lane's own base-branch precondition fails and it routes to
-`pipeline-triage`. **No, or any box fails** → continue into Phase 2 and build as planned, and
+`local-agent-orchestrator`. **No, or any box fails** → continue into Phase 2 and build as planned, and
 remove the label (`gh issue edit <number> --remove-label "quick-fix"`) — a plan being built here
 has already disproved the lane.
 

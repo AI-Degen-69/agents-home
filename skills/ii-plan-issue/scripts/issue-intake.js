@@ -328,9 +328,9 @@ Options:
   };
 
   if (!git.isClean) {
-    report.routingAdvice = 'Tree is dirty — route to pipeline-triage before branching or claiming';
+    report.routingAdvice = 'Tree is dirty — route to local-agent-orchestrator before branching or claiming';
   } else if (!git.isBaseBranch) {
-    report.routingAdvice = `Currently on feature branch "${git.currentBranch}" — route to pipeline-triage or switch to ${git.baseBranch}`;
+    report.routingAdvice = `Currently on feature branch "${git.currentBranch}" — route to local-agent-orchestrator or switch to ${git.baseBranch}`;
   } else if (plans.hasStalePlan) {
     report.routingAdvice = 'Stale plan files detected from a previous issue — replace tasks/plan.md and CONSTRAINTS.md fresh';
   } else {

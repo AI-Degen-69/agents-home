@@ -146,11 +146,11 @@
     },
     {
       "id": "validate-only-single-skill-no-scorecard",
-      "prompt": "Just validate pipeline-triage — I only want to know if it passes.",
+      "prompt": "Just validate local-agent-orchestrator — I only want to know if it passes.",
       "expected_output": "A validation report for the named skill only. No scorecard, no audit, no routing, no deploy: validate-only mode produces a validation result and nothing else.",
       "files": [],
       "assertions": [
-        "The validator is run against the pipeline-triage skill folder only, not across the whole root",
+        "The validator is run against the local-agent-orchestrator skill folder only, not across the whole root",
         "The output is a validation report listing findings by check-id",
         "No scorecard is presented — the scorecard comes only from score.js and is not part of validate-only mode",
         "No audit findings, routing decision, or deploy action is produced",

@@ -11,14 +11,14 @@ chain.
 
 ## Router Gate & Boundary (read first)
 
-**Gate:** before any work, check repo state. If the branch is dirty, commits are unpushed, or a PR is open — run `pipeline-triage` first and follow its decision. Never start new Issue work on top of unfinished work.
+**Gate:** before any work, check repo state. If the branch is dirty, commits are unpushed, or a PR is open — run `local-agent-orchestrator` first and follow its decision. Never start new Issue work on top of unfinished work.
 
 **Boundary:** this skill owns Issue work — anything that starts from (or will end as) a GitHub issue with a PR. Ad-hoc requests (quick questions, small fixes, exploration, "where is X") are not Issue work: say so in one line, route to `using-agent-skills`, and stop. Ambiguous? If it will end in a PR on code, it is Issue work. Still ambiguous? Ask one question.
 
 ## Pipeline Position
 
 - **Station:** Station I of VI (single entry point for Issue work)
-- **Previous Station:** `pipeline-triage` (state gate — only when the tree is dirty, commits are unpushed, or a PR is open)
+- **Previous Station:** `local-agent-orchestrator` (state gate — only when the tree is dirty, commits are unpushed, or a PR is open)
 - **Next Station:** `quick-fix` (only when the recommendation is `quick-fix`-labeled or the operator explicitly requested the lane, **and** the §1a gate passes, **and** the operator picks it) or `ii-plan-issue <issue-id>` (Plan)
 
 ---
@@ -41,7 +41,7 @@ Every invocation of this skill begins with the **Discovery Station**, regardless
    Propose a concrete order of work (unblockers and core infrastructure before dependent features, quick wins vs. deep changes), and explicitly highlight the single recommended issue to start. By default the recommended issue IS the selected one — the run proceeds with it unless the operator overrides. The report header and wording follow `references/english-template.md`. No separate recommendation screen, and no separate "pick a number" menu: the alternatives are one line under the recommendation.
 4. **Confirm or override:**
    Present the recommended (auto-selected) issue and proceed with it. The operator may override with another issue number at any point before Station II starts.
-5. **Route non-issue states:** no open issues and the operator has a brand-new idea → `create-issue`. No open issues and nothing new → say so and route to `pipeline-triage`.
+5. **Route non-issue states:** no open issues and the operator has a brand-new idea → `create-issue`. No open issues and nothing new → say so and route to `local-agent-orchestrator`.
 
 ### 1a. Quick-Fix Lane Check (run before the execution-mode gate)
 

@@ -1,0 +1,48 @@
+{
+  "skill_name": "local-agent-orchestrator",
+  "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes.",
+  "evals": [
+    {
+      "id": "routing-report-shape",
+      "prompt": "Triage this repo state and route the top job: main is clean at origin/main; branch i588/remove-profit-take-metrics is fully merged; branch i594/rewards-purge is 21 behind with a focused purge diff; issue #594 is open; one stash holds obsolete plan artifacts.",
+      "expected_output": "The short report shape from references/report-format.md: a one-line state header, Where/Work/Found lines, one next step with its run line, and a fenced prompt only when that step is a prompt.",
+      "files": [],
+      "assertions": [
+        "The output opens with the report-format.md header, not prose",
+        "Where, Work and Found each render as one line",
+        "Exactly one next step is named",
+        "The run line names folder, branch, fresh-or-same, and one model",
+        "The why line names the task class, the grade, and the quota position",
+        "The named model appears in references/models.md on a harness the operator runs",
+        "No price table, no routing-system explanation, no list of rejected models",
+        "Any fenced prompt names no skill, planner, or earlier chat"
+      ]
+    },
+    {
+      "id": "silent-economics",
+      "prompt": "Route a backend refactor with red/green tests (locked plan) plus a subtle PnL-invariant review, using references/models.md and references/capability.md.",
+      "expected_output": "Model choices by tier with a one-line spend statement, no price tables and no explanation of the routing.",
+      "files": [],
+      "assertions": [
+        "The chosen models appear in the report's model line, never in a price discussion",
+        "No per-token API prices appear; every figure matches references/models.md",
+        "The build row is S or better and the invariant review row is AG-2 or AG-6",
+        "Each choice names its thinking tier, not only the model",
+        "The output states the expected spend in window time or hours"
+      ]
+    },
+    {
+      "id": "limitation-disposition",
+      "prompt": "A build reports: one env failure fixable by unsetting a variable, one absent reference fixture, one skipped local reviewer covered by 'the external review runs anyway'.",
+      "expected_output": "Classified limitation handling with owners, whens, and operator commands; no silent accepts; no substitute coverage claims.",
+      "files": [],
+      "assertions": [
+        "Every limitation line in the output carries an owner addressed as 'you' or a named issue plus a when",
+        "At least one Class 1 item is fixed in place with a one-line fix note, not reported as failure",
+        "At least one Class 2 item carries a paste-ready verify command plus expected output",
+        "No external review round is cited as covering a skipped station step",
+        "The output ends with branch name plus file paths readable via git show from main"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// BenchLM per-model snapshot for model-routed-triage (see handbook §9.1).
+// BenchLM per-model snapshot for local-agent-orchestrator (see handbook §9.1).
 // Pulls BenchAlign ranks, board scores and prices for the skill's models,
 // 3 reads per model on the Free plan (250/month, 30 req/min).
 //
@@ -39,35 +39,26 @@ function loadDotEnv() {
 // Skill ID -> BenchLM modelKey. null = BenchLM has no entry for that model.
 // Variants that share weights map to the base key; the note says so out loud.
 export const IDENTITY = [
-  { id: 'M1', key: 'gemini-3-8-flash' },
-  { id: 'M2', key: 'claude-opus-5-5' },
-  { id: 'M3', key: 'claude-sonnet-5-5' },
+  { id: 'AG-1', key: 'gemini-3-8-flash' },
+  { id: 'AG-2', key: 'claude-opus-5-5' },
+  { id: 'AG-3', key: 'claude-sonnet-5-5' },
+  { id: 'AG-6', key: 'gemini-4-argon' },
   { id: 'OC-1', key: 'reflection-beam' },
   { id: 'OC-2', key: null, note: 'Big Pickle: absent from BenchLM catalog' },
-  { id: 'OC-3', key: null, note: 'V4.1 base build absent; only the 1017 refresh is listed (FB-11)' },
-  { id: 'OC-4', key: 'glm-5-3-flash' },
-  { id: 'OC-5', key: null, note: 'LongCat 2.5 Preview: absent (only LongCat-2.0)' },
-  { id: 'OC-6', key: 'mimo-v2-6-flash' },
-  { id: 'OC-7', key: 'nemotron-3-ultra-500b' },
-  { id: 'OC-8', key: 'nemotron-3-5-lightning-30b-a3b-nvfp4' },
-  { id: 'OC-9', key: 'nemotron-3-5-super-vl-120b-a12b' },
-  { id: 'OC-10', key: 'mercury-3' },
-  { id: 'CL-1', key: null, note: 'Solar Mini 4: absent from BenchLM catalog' },
-  { id: 'CL-2', key: 'mimo-v2-6-flash' },
-  { id: 'CL-3', key: 'nemotron-3-5-super-vl-120b-a12b' },
-  { id: 'CL-4', key: 'mercury-3' },
-  { id: 'FB-1', key: 'mimo-v2-6-flash' },
-  { id: 'FB-2', key: 'mimo-v2-6-flash', note: 'Fast serving variant: score is the base model' },
-  { id: 'FB-3', key: 'mimo-v2-6-pro' },
+  { id: 'OC-3', key: null, note: 'V4.1 base build absent; only the 1017 refresh is listed' },
+  { id: 'OC-4', key: null, note: 'LongCat 2.5 Preview: absent (only LongCat-2.0)' },
+  { id: 'OC-5', key: 'mimo-v2-6-flash' },
+  { id: 'OC-6', key: 'nemotron-3-5-lightning-30b-a3b-nvfp4' },
+  { id: 'OC-7', key: 'nemotron-3-5-super-vl-120b-a12b' },
+  { id: 'OC-8', key: null, note: 'hy4-flash: no benchmark published' },
+  { id: 'OC-9', key: null, note: 'tidepool-alpha: no benchmark published' },
+  { id: 'IN-1', key: 'mercury-3' },
   { id: 'FB-4', key: null, note: 'V4.1 base build absent; only the 1017 refresh is listed' },
-  { id: 'FB-5', key: null, note: 'V4.1 base build absent; only the 1017 refresh is listed' },
+  { id: 'FB-5', key: null, note: 'Fast variant: same build as FB-4' },
   { id: 'FB-6', key: 'muse-spark-1-3' },
-  { id: 'FB-7', key: 'glm-5-3-flash' },
   { id: 'FB-8', key: 'gpt-6-luna' },
   { id: 'FB-9', key: 'claude-haiku-5-5', note: 'BenchLM lists the 1M-context build; FB-9 is 100k' },
-  { id: 'FB-10', key: 'gemini-4-argon' },
-  { id: 'FB-11', key: 'deepseek-v4-1-flash' },
-  { id: 'FB-12', key: 'mercury-3' },
+  { id: 'FB-13', key: 'muse-ember' },
 ];
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

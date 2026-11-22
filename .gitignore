@@ -26,7 +26,7 @@ __pycache__/
 venv/
 
 # Local secrets - skill .env files hold API keys (e.g.
-# skills/model-routed-triage/.env -> BENCHLM_DATA_KEY); never commit them.
+# skills/local-agent-orchestrator/.env -> BENCHLM_DATA_KEY); never commit them.
 .env
 .env.*
 !.env.example

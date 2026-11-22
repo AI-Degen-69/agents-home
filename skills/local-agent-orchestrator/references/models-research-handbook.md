@@ -265,7 +265,7 @@ headline-only, never as data.
 - **BenchLM** (`data.benchlm.ai`) — secondary benchmark + price source, approved
   2026-10-28. REST `https://data.benchlm.ai/v1`, MCP `https://data.benchlm.ai/mcp`
   (Streamable HTTP); auth `Authorization: Bearer <key>`, key from env
-  `BENCHLM_DATA_KEY` or the gitignored `skills/model-routed-triage/.env`. Free plan: 250 successful reads/month, 30 req/min, current
+  `BENCHLM_DATA_KEY` or the gitignored `skills/local-agent-orchestrator/.env`. Free plan: 250 successful reads/month, 30 req/min, current
   state plus only the last 30 days of history; usage and coverage checks are free.
   A model snapshot costs 3 reads (rankings + benchmark results + pricing); the
   skill's 14 covered models are ~42 reads per full sweep.
@@ -289,7 +289,7 @@ headline-only, never as data.
     and `sourceFamilyCount`. Estimated + wide interval means its rank ordering is
     not grade evidence.
   - **Identity traps** (verified 2026-10-28): `deepseek-v4-1-flash` is the **1017**
-    refresh (FB-11), not the FB-4/FB-5 base; `claude-haiku-5-5` is the 1M-context
+    refresh, not the FB-4/FB-5 base; `claude-haiku-5-5` is the 1M-context
     build while FB-9 is the 100k variant; Big Pickle, LongCat 2.5 Preview and
     Solar Mini 4 are absent from its 1,002-model catalog; Mercury 3 and Muse Spark
     1.3 have board scores but no BenchAlign rank.

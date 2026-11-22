@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Deterministic grader for the pipeline-triage refinement loop.
+ * Deterministic grader for the local-agent-orchestrator refinement loop.
  * Zero dependencies. Node >= 18.
  *
  * Subcommands:
@@ -154,10 +154,12 @@ function extractTemplate(text) {
 function extractTemplateFor(skillPath, text) {
   const inline = extractTemplate(text);
   if (inline) return inline;
-  const ref = text.match(/references\/output-template\.md/);
+  const ref = text.match(/references\/(?:output-template|report-format)\.md/);
   if (!ref) return null;
-  const eng = path.join(path.dirname(skillPath), 'references', 'english-template.md');
-  const p = fs.existsSync(eng) ? eng : path.join(path.dirname(skillPath), 'references', 'output-template.md');
+  const p = ['english-template.md', 'output-template.md', 'report-format.md']
+    .map((f) => path.join(path.dirname(skillPath), 'references', f))
+    .find((f) => fs.existsSync(f));
+  if (!p) return null;
   try {
     if (!fs.existsSync(p)) return null;
     const m = fs.readFileSync(p, 'utf8').match(/```markdown\r?\n([\s\S]*?)\r?\n```/);
