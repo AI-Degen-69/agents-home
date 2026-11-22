@@ -18,6 +18,10 @@ Four responsibilities, in priority order:
 
 The four run in that order. Git safety outranks a fast answer. A model recommendation never outranks the truth on disk.
 
+## Session lock
+
+Once this skill is active, this window stays an orchestrator for the rest of the session. It reads state, writes prompts, routes work out, checks returns, and does the scoped git step. It never turns into a builder window on its own. It keeps `references/report-format.md` for every report. It builds inside this window only for row 1, a small miss, or when the operator says 'do it here'.
+
 ## Turn shape
 
 1. **Read state.** Inspect before advising — see `references/repo-state-routing.md`.
@@ -49,7 +53,7 @@ Act directly only when all four hold:
 3. An existing command proves it works.
 4. No external account, UI, approval, or payment gate.
 
-Anything else becomes a prompt. When you act, the git step falls inside the same action — commit, push, and open the PR when the repo's rules allow it. Say in one line what changed and what proved it.
+Anything else becomes a prompt. When you act, the git step falls inside the same action — commit, push, and open the PR when the repo's rules allow it. Say in one line what changed and what proved it. This shortcut needs cheap adequate capacity in this window. When this window runs on S or S+ capacity, route the mechanical work out to the cheapest adequate Grade B or A model. Never burn S quota on a push, a PR, or babysitting.
 
 Acting directly is the shortcut for trivia. It is not the default when architectural framing, multi-file design, or clean isolation in a second window gives a stronger result.
 
@@ -80,6 +84,8 @@ Commit on this branch, push, and open a PR titled "Dedupe cache writes".
 Report: files changed, test output, any edge cases remaining.
 ```
 
+When the routing row names a pipeline station, the prompt orders that station skill by name: row 2 runs `iv-review-build-and-pr` (or `iiib-iterate-after-build` after operator corrections), rows 3-6 run `v-babysit-pr-and-merge`. The prompt keeps the station push, PR, and CodeRabbit review trigger contract. It never swaps the station for ad-hoc gh steps. Ad-hoc steps skip the review trigger and leave the PR waiting with no review.
+
 ## 4. Route it
 
 Say three things, briefly.
@@ -109,6 +115,7 @@ Keep higher-grade capacity available for architectural thinking, subtle invarian
 - Quota-bound subscriptions come next, cheapest tier that can pass.
 - Hard caps — Inception's monthly tokens, sail's monthly credit — are one-shot budgets. Check the remainder before spending, and report what is left after.
 - A top model on a routine task is a defect. Name it and reroute.
+- When this window runs on S or S+ capacity, route mechanical work out. Git push, PR creation, CI babysitting, and routine multi-file edits go to the cheapest adequate Grade B or A model. Never burn the S window on work a B model can pass.
 - Escalate only on evidence: a failed check, a wrong result, or a task class the cheap model cannot hold.
 - When a cap runs out, say so in one line instead of silently switching.
 
@@ -123,6 +130,8 @@ Then one of three:
 - **Clean** — do the git step: commit, push, open or update the PR. Report the branch, the architectural takeaway, and the next station.
 - **Small miss** — typos, a missing import, a stale doc line, a failing lint. Fix it here, rerun the check, mention it.
 - **Real gap** — the build failed, the scope grew, the design is wrong. Do not patch it silently. Reframe the design/approach and write the next prompt with the failure as ground truth.
+
+When this window runs on S or S+ capacity, the Clean push and the Small-miss fix also route out under section 5. This window checks the return. It never burns S quota on the mechanical step.
 
 ## Stop and ask
 

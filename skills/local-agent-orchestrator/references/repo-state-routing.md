@@ -45,7 +45,7 @@ Pick exactly one row. First match wins. One exception: an explicit visual-summar
 
 | # | State | Next |
 | --- | --- | --- |
-| 1 | Clean, on base, synced, no open PR, small clear task | Do it here (Step 2), then commit/push/PR |
+| 1 | Clean, on base, synced, no open PR, small clear task | Do it here (Step 2) only when this window runs on cheap adequate capacity, otherwise route out per §5; then commit/push/PR |
 | 2 | Clean, on feature branch, unmerged commits, no PR | `iv-review-build-and-pr` — or `iiib-iterate-after-build` when the operator just reported corrections |
 | 3 | Open PR, no `coderabbit` review, no trigger from any author | With approval, post `@coderabbitai review` (Station IV wording, never reworded), carry the reply into `v-babysit-pr-and-merge` |
 | 4 | Open PR with change requests or failing checks | `v-babysit-pr-and-merge` |
