@@ -117,7 +117,7 @@ the Gemini bucket. That splits one run across both pools.
 | Row | Free | Pro | Ultra |
 | --- | --- | --- | --- |
 | Gemini 4 Neon, Argon | no | yes | yes |
-| Gemini 4 Hydrogen, Opus 5.5, Sonnet 5.5 | no | paid non-trial only | yes |
+| Gemini 4 Hydrogen, Opus 5.5, Sonnet 5.5 | no | yes | yes |
 | Gemini 4 Carbon | no | no | yes |
 | Orchestrator | no | yes | yes |
 

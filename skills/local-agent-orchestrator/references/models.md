@@ -35,12 +35,12 @@ splits its cost across both.
 | # | Model | Thinking | Plan | Note |
 | --- | --- | --- | --- | --- |
 | AG-1 | Gemini 3.8 Flash | Low / Medium / High | Free, Pro, Ultra, Enterprise | the only model left on Free after Nov 30 |
-| AG-2 | Claude Opus 5.5 (Thinking) | Low / Medium / High | Pro paid (non-trial), Ultra, Enterprise | can be the planner |
-| AG-3 | Claude Sonnet 5.5 (Thinking) | Low / Medium / High | Pro paid (non-trial), Ultra, Enterprise | can be the executor |
+| AG-2 | Claude Opus 5.5 (Thinking) | Low / Medium / High | Pro, Ultra, Enterprise | can be the planner |
+| AG-3 | Claude Sonnet 5.5 (Thinking) | Low / Medium / High | Pro, Ultra, Enterprise | can be the executor |
 | AG-4 | Claude Opus 4.6 (Thinking) | Low / Medium / High | Free and Pro | **removed Nov 30, 2026** |
-| AG-5 | Gemini 4 Neon | Low / Medium / High / Extra | Pro (paid or premium-device trial), Ultra | default model; 512K ctx here, not 1M |
+| AG-5 | Gemini 4 Neon | Low / Medium / High / Extra | Pro, Ultra | default model; 512K ctx here, not 1M |
 | AG-6 | Gemini 4 Argon | Low / Medium / High | Pro†, Ultra | can be the planner |
-| AG-7 | Gemini 4 Hydrogen | Low / Medium / High / Extra | Pro paid (non-trial), Ultra | default executor |
+| AG-7 | Gemini 4 Hydrogen | Low / Medium / High / Extra | Pro, Ultra | default executor |
 | AG-8 | GPT-OSS 120B | Medium only | Free and Pro | **removed Nov 30, 2026** |
 | AG-9 | Claude Sonnet 4.6 (Thinking) | Low / Medium / High | Free and Pro | **removed Nov 30, 2026** |
 | AG-10 | Gemini 4 Carbon | Low / Medium / High | **Ultra only** | shows Unavailable on Pro |
@@ -50,8 +50,7 @@ Enterprise-only rows: Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.1 Pro.
 Free accounts reach AG-1, AG-4, AG-8 and AG-9 today, and **only AG-1 after Nov 30, 2026**.
 That is B at best, so every S and S+ path needs the paid Pro plan.
 
-The App and CLI map the tiers as Low / Medium / High / Extra (CLI: `--effort xhigh`,
-`--model gemini-4-neon-xhigh`). Medium is the default on every Gemini 4 row.
+Tiers are Low / Medium / High / Extra. Medium is the default on every Gemini 4 row.
 
 ### Orchestrator — two roles, one conversation
 
@@ -68,9 +67,9 @@ Not a model. It pairs a **planner** with an **executor** inside one session.
 - On a **Pro plan the planner palette shows three rows: Neon, Argon, Claude Opus 5.5.** Carbon
   exists in the docs list but is Ultra-only, so it never appears on Pro. The row label shows the
   current default and its tier, for example `Orchestrator · Gemini 4 Neon Extra`.
-- **CLI differs from the App:** the Planner selector offers Neon, Carbon (Ultra) or Argon, with
-  the executor pinned to Hydrogen. Claude Opus 5.5 as planner is App-only.
-- Enterprise: Carbon High + Hydrogen High, fixed.
+- **CLI is out of scope.** This skill routes the Antigravity desktop app only, because that is
+  the surface in use. Ignore CLI-tier notes in vendor pages.
+- Enterprise: Carbon High + Hydrogen High, fixed. Not your plan.
 - Flow: read-only plan → executor implements → control returns on friction (a verification
   failing twice, an interface that behaves differently, a design choice the plan left open)
   → planner repairs the plan and hands back. On long tasks the planner reviews progress, and
