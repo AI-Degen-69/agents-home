@@ -248,7 +248,7 @@ Free tier only. Paid variants are out of scope.
 
 | Grade | Meaning | Models |
 |---|---|---|
-| B | Light / probe | OR-1 Particle-1 — B provisional, 32 ceiling inherited from its DeepSeek base |
+| B | Light / probe | OR-1 Particle-1 — base-class accuracy at ~45% fewer tokens |
 | C | Weak fit | OR-2 ERNIE 5.5 Flash Preview, OR-3 Nemotron 3 Ultra (AA 12), OR-4 Nemotron 3.5 Super VL (AA 14) |
 | D | Do not route | Nemotron 3.5 Lightning, Nemotron 3 Nano Omni |
 
@@ -256,8 +256,8 @@ Free tier only. Paid variants are out of scope.
 
 | # | Model | Grade | One line | Source |
 |---|---|---|---|---|
-| OR-1 | Particle-1 | B prov. | Post-trained on DeepSeek V4.1 Flash (AA 32); agentic coding, 1M ctx, token-efficient; no independent page; 1.4s probe | openrouter.ai/api/v1/models + probe 2026-11-22 |
-| OR-2 | ERNIE 5.5 Flash Preview | C | 280B, 1M ctx, reasoning + tools; preview and free-only; no AA page; 2.2s probe | openrouter.ai/api/v1/models + probe 2026-11-22 |
+| OR-1 | Particle-1 | B | Vendor DeepSWE 1.1 72.57% vs base 71.15%; ~45% fewer tokens, $0.22 vs $0.34 per task, GPQA 90.4 vs 90.9 — same class as DeepSeek V4.1 Flash, cheaper; vendor-run, no independent re-run; 1.4s probe | particle.ai/blog/introducing-particle-1 |
+| OR-2 | ERNIE 5.5 Flash Preview | C | 280B total / 14B active, 1M ctx, Apache 2.0 weights "soon"; self-described mid-training checkpoint, benchmarks only as an image, no AA page; 2.2s probe | ernie.baidu.com/release/ernie-5-5-flash-preview |
 | OR-3 | Nemotron 3 Ultra | C | AA 12 | artificialanalysis.ai/models/nvidia-nemotron-3-ultra-550b-a55b |
 | OR-4 | Nemotron 3.5 Super VL | C | AA 14, 170M output tokens/task | artificialanalysis.ai/models/nemotron-3-5-super-vl |
 
