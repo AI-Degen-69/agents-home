@@ -95,7 +95,7 @@ Say three things, briefly.
 1. Classify the work — `references/capability.md` carries the task-class matrix.
 2. Take the cheapest model whose grade meets that class.
 3. Confirm the model exists in `references/models.md` for a harness installed on this machine.
-4. Confirm the harness has headroom for the job.
+4. Confirm the harness has headroom, and prefer a single model over a paired mode: Antigravity's **Orchestrator** grades as the lower of its two tiers, so read its guardrail in `capability.md` first.
 
 Never recommend a model absent from the inventory, or a harness the operator does not run. A model with no grade is `[unverified]` — probe it on low-stakes work before trusting it with a top-tier task.
 
@@ -103,7 +103,7 @@ Never recommend a model absent from the inventory, or a harness the operator doe
 
 The point of routing is to keep the good models available for the work that needs them.
 
-- Free and fixed-pool capacity goes first: OpenCode's daily free tier, Freebuff's hour pool, Antigravity's free accounts.
+- Free and fixed-pool capacity goes first, **when it holds the required grade**: OpenCode's daily free tier, Freebuff's hour pool, Antigravity's free account. None of them reaches S or S+, so high-grade work skips this lane.
 - Quota-bound subscriptions come next, cheapest tier that can pass.
 - Hard caps — Inception's monthly tokens, sail's monthly credit — are one-shot budgets. Check the remainder before spending, and report what is left after.
 - A top model on a routine task is a defect. Name it and reroute.

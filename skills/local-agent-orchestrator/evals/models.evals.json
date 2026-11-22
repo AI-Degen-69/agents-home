@@ -3,31 +3,32 @@
   "note": "Eval set in the agentskills.io evals/evals.json format. Assertions are checkable, not vibes.",
   "evals": [
     {
-      "id": "routing-table-shape",
+      "id": "routing-report-shape",
       "prompt": "Triage this repo state and route the top job: main is clean at origin/main; branch i588/remove-profit-take-metrics is fully merged; branch i594/rewards-purge is 21 behind with a focused purge diff; issue #594 is open; one stash holds obsolete plan artifacts.",
-      "expected_output": "Hebrew-first audit tables with hyperlinked issue refs, followed by one routing table with T-prefixed tasks, combined Harness/Model/Effort cells, Objective column, fenced prompts in dedicated task cards without skill invocations, and structured setup blocks. Zero exposition of economics, sequencing, or skill-fit reasoning.",
+      "expected_output": "The short report shape from references/report-format.md: a one-line state header, Where/Work/Found lines, one next step with its run line, and a fenced prompt only when that step is a prompt.",
       "files": [],
       "assertions": [
-        "The output opens with Hebrew-first audit tables, not prose",
-        "Every issue/PR reference renders as a markdown hyperlink",
-        "Steps 0-3 produce no printed sections; only audit tables and the routing table appear",
-        "The routing table columns are Task, Harness / Model / Effort, Suggested Skill, Objective in that order",
-        "Every task carries an ID (T1, T2, ...) used consistently",
-        "Every prompt sits inside its own fenced code block in dedicated task cards with no skill invocation first line",
-        "Every task row carries a structured Your-setup block with Directory, Branch, and fenced verify commands",
-        "No rejected model, non-fitting station, or failed alternative is mentioned anywhere"
+        "The output opens with the report-format.md header, not prose",
+        "Where, Work and Found each render as one line",
+        "Exactly one next step is named",
+        "The run line names folder, branch, fresh-or-same, and one model",
+        "The why line names the task class, the grade, and the quota position",
+        "The named model appears in references/models.md on a harness the operator runs",
+        "No price table, no routing-system explanation, no list of rejected models",
+        "Any fenced prompt names no skill, planner, or earlier chat"
       ]
     },
     {
       "id": "silent-economics",
-      "prompt": "Route a backend refactor with red/green tests (locked plan) plus a subtle PnL-invariant review, using the economics file.",
-      "expected_output": "Silent economics: model choices with effort levels and a spend line, no price tables or value-math exposition.",
+      "prompt": "Route a backend refactor with red/green tests (locked plan) plus a subtle PnL-invariant review, using references/models.md and references/capability.md.",
+      "expected_output": "Model choices by tier with a one-line spend statement, no price tables and no explanation of the routing.",
       "files": [],
       "assertions": [
-        "The chosen models appear only in the table's Harness/Model/Effort cells, never in a price discussion",
-        "No per-token API prices appear; all pricing matches the economics file",
-        "The output states expected spend for the job",
-        "Worthy-of-reserve calls name their reason"
+        "The chosen models appear in the report's model line, never in a price discussion",
+        "No per-token API prices appear; every figure matches references/models.md",
+        "The build row is S or better and the invariant review row is AG-2 or AG-6",
+        "Each choice names its thinking tier, not only the model",
+        "The output states the expected spend in window time or hours"
       ]
     },
     {

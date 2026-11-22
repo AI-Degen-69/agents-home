@@ -112,6 +112,34 @@ name those cases and route them to a flat Neon, Carbon, or Argon.
 **Two-bucket trick:** planner on Claude Opus 5.5 draws the Claude bucket, executor Hydrogen draws
 the Gemini bucket. That splits one run across both pools.
 
+### The A/B that settles the pair (not run yet)
+
+The vendor numbers are unreproduced on this machine, so the pair carries no grade it did not
+inherit. One task settles it.
+
+1. **Pick a task with a test gate:** one small feature in a repo whose suite fails before and
+   passes after. Same prompt both runs, written once and pasted twice.
+2. **Run A, flat.** Fresh conversation, Neon at Medium, Orchestrator off. Note the start time.
+   End when the suite passes or you give up. Record: pass/fail, wall clock, the quota reading
+   from Settings → Usage before and after, files touched, and every time you had to correct it.
+3. **Reset.** `git reset --hard <sha>` plus `git clean -fd` to the exact starting commit. A
+   different tree invalidates the comparison.
+4. **Run B, Orchestrator.** Fresh conversation, planner Neon at Medium, executor Hydrogen at
+   **High** in Orchestrator Settings. Same prompt. Record the same five facts, plus how many
+   times control returned to the planner.
+5. **Compare and write it here.** Pass/fail first — a cheaper failure is not a saving. If B
+   passes, compare quota and minutes. If B fails where A passed, the executor tier is the
+   suspect: rerun B once at Hydrogen Extra before drawing a conclusion.
+
+What the app does not show, do not invent. If Usage reports only a percentage, record the
+percentage. If it reports nothing, say the token comparison is unavailable and decide on pass
+rate and minutes alone.
+
+| Run | Planner | Executor | Pass | Minutes | Quota used | Corrections |
+| --- | --- | --- | --- | --- | --- | --- |
+| A | Neon Medium | — | | | | |
+| B | Neon Medium | Hydrogen High | | | | |
+
 ### Plan gating
 
 | Row | Free | Pro | Ultra |
