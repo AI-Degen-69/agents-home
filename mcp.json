@@ -23,6 +23,9 @@
       ],
       "command": "python",
       "disabled": false
+    },
+    "nvidia-app": {
+      "url": "http://127.0.0.1:13508/mcp"
     }
   }
 }
