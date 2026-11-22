@@ -63,8 +63,14 @@ Not a model. It pairs a **planner** with an **executor** inside one session.
 | Executor | searches, edits files, runs builds and tests, verifies against the plan | Gemini 4 Hydrogen (default), Claude Sonnet 5.5 |
 
 - Defaults: **Settings > Models > Orchestrator Settings**. Per-conversation planner override:
-  hover Orchestrator in the App. CLI: one Orchestrator row with a Planner selector, executor
-  pinned to Hydrogen. Enterprise: Carbon High + Hydrogen High, fixed.
+  hover Orchestrator in the App. The palette picks the **planner only** — the executor is set
+  in Orchestrator Settings, not in that menu.
+- On a **Pro plan the planner palette shows three rows: Neon, Argon, Claude Opus 5.5.** Carbon
+  exists in the docs list but is Ultra-only, so it never appears on Pro. The row label shows the
+  current default and its tier, for example `Orchestrator · Gemini 4 Neon Extra`.
+- **CLI differs from the App:** the Planner selector offers Neon, Carbon (Ultra) or Argon, with
+  the executor pinned to Hydrogen. Claude Opus 5.5 as planner is App-only.
+- Enterprise: Carbon High + Hydrogen High, fixed.
 - Flow: read-only plan → executor implements → control returns on friction (a verification
   failing twice, an interface that behaves differently, a design choice the plan left open)
   → planner repairs the plan and hands back. On long tasks the planner reviews progress, and

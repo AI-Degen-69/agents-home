@@ -83,8 +83,8 @@ It is a planner/executor pair with a documented, closed supported list.
 
 | Role | Models |
 | --- | --- |
-| Planner | Gemini 4 Neon (default), Gemini 4 Carbon (Ultra only), Gemini 4 Argon, Claude Opus 5.5 |
-| Executor | Gemini 4 Hydrogen (default), Claude Sonnet 5.5 |
+| Planner | Gemini 4 Neon (default), Gemini 4 Argon, Claude Opus 5.5 (App only), Gemini 4 Carbon (Ultra only) |
+| Executor | Gemini 4 Hydrogen (default), Claude Sonnet 5.5 — set in Orchestrator Settings, not in the planner palette |
 
 **Flow.** Read-only planning phase, then the executor implements. Control returns to the
 planner on friction: a verification failing twice, an interface that behaves differently, or a
