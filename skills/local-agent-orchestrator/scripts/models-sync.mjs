@@ -17,7 +17,12 @@ const ID = /`([a-z0-9][a-z0-9.-]*\/[a-z0-9][a-z0-9.:~_-]*)`/g;
 const SUMMARY = new Set(['openrouter', 'google', 'freellmapi', 'sail-heshbon-zevel']);
 // Model IDs the operator reviewed and dropped on purpose. Still live on the
 // provider, never routed. A new ID still shows up as drift.
-const DROPPED = new Set(['opencode/flint-40b-free', 'opencode/iceman-free']);
+const DROPPED = new Set([
+  'opencode/flint-40b-free',
+  'opencode/iceman-free',
+  'sail-ai-degen/glm-5.3-flex',
+  'sail-ai-degen/kimi-k3',
+]);
 
 function live() {
   const out = execSync('opencode models', { encoding: 'utf8' });

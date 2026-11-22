@@ -15,11 +15,10 @@ Spend top to bottom. A row higher up costs less of what is scarce.
 | 1 | OpenCode free tier | free, daily reset 00:00 Asia/Jerusalem | daily request quota | 9 models, small context on some |
 | 2 | Freebuff | hours per day | Starter: 21 h/day + 60 h/month wallet | unused hours refund when you close early |
 | 3 | Antigravity free account | 6 free accounts | free-tier quota, smaller than Pro | only Gemini 3.8 Flash + Claude Opus 4.6 |
-| 4 | GitHub Copilot Free | 200 chat requests per month | monthly request cap, no overage | CLI only, low model ceiling |
-| 5 | Antigravity Pro | one Google AI Pro plan | 5-hour + weekly window | best models live here; bank it for hard work |
-| 6 | Inception | 100M free tokens per month, then stop | monthly token cap, never exceeded | no payment beyond the free grant |
-| 7 | sail-ai-degen | $5 free credit per month | monthly dollar cap, never exceeded | no payment beyond the credit |
-| 8 | OpenRouter | free tier | free-tier rate limit | route only `:free` IDs |
+| 4 | Antigravity Pro | one Google AI Pro plan | 5-hour + weekly window | best models live here; bank it for hard work |
+| 5 | Inception | 100M free tokens per month, then stop | monthly token cap, never exceeded | no payment beyond the free grant |
+| 6 | sail-ai-degen | $5 free credit per month | monthly dollar cap, never exceeded | no payment beyond the credit |
+| 7 | OpenRouter | free tier | free-tier rate limit | route only `:free` IDs |
 
 Hard caps at rank 6 and 7 are one-shot budgets. Check the remainder before spending, and report what is left. Never let a task run past a cap because the model looked good.
 
@@ -73,13 +72,13 @@ The `~vendor/model-latest` aliases are paid routing shortcuts, not free tier.
 
 ### `sail-ai-degen/*` — $5 free credit per month
 
-| # | Model ID |
-| --- | --- |
-| SA-1 | `sail-ai-degen/deepseek-v4.1-flash-1017` |
-| SA-2 | `sail-ai-degen/glm-5.3` |
-| SA-3 | `sail-ai-degen/glm-5.3-balanced` |
-| SA-4 | `sail-ai-degen/glm-5.3-flex` |
-| SA-5 | `sail-ai-degen/kimi-k3` |
+| # | Model ID | Notes |
+| --- | --- | --- |
+| SA-1 | `sail-ai-degen/deepseek-v4.1-flash-1017` | 2.6s probe, same model as Freebuff FB-11 |
+| SA-2 | `sail-ai-degen/glm-5.3` | 4.6s probe |
+| SA-3 | `sail-ai-degen/glm-5.3-balanced` | 16.2s probe, slow tier |
+
+Probed 2026-11-22. Two listed IDs are broken and stay out: `glm-5.3-flex` rejects synchronous calls (flex is batch only), and `kimi-k3` returns `model not supported` from the upstream backend.
 
 `sail-heshbon-zevel` mirrors these five IDs on a sibling account that is not in use. Ignore it.
 
@@ -102,26 +101,6 @@ Time-based, not token-based. Starter is 21 h/day plus a 60 h monthly wallet that
 | FB-11 | DeepSeek V4.1 Flash 1017 | 5 | October refresh |
 | FB-12 | Mercury 3 (BYOK) | free | Inception key, counts against IN-1's monthly cap |
 
-## GitHub Copilot
-
-Plan: **Free** (`free_limited_copilot`, individual). Quota is **200 chat requests per month**, 177 remaining at the last read (2026-11-22), token-based billing on, no overage allowed. Endpoint: `api.individual.githubcopilot.com`.
-
-The catalog lists 43 models. The plan enables **7**:
-
-| # | Model ID | Class |
-| --- | --- | --- |
-| CP-1 | `gpt-5.6-luna` | lightweight |
-| CP-2 | `gpt-6-luna` | lightweight |
-| CP-3 | `claude-haiku-4.5` | lightweight |
-| CP-4 | `mai-code-2-flash` | lightweight |
-| CP-5 | `mai-code-1.1-flash` | lightweight |
-| CP-6 | `gpt-4.1` | versatile |
-| CP-7 | `gpt-4.1-2025-04-14` | same model, dated alias |
-
-Blocked on this plan: Opus 5.5, Sonnet 5.5, Fable 5.2, GPT-6.1 Sol, GPT-6 Astra, Gemini 4 Argon, Kimi K3, and 25 others. Do not recommend them — the account cannot call them.
-
-**Not in OpenCode.** The provider authenticates but exposes no `github-copilot/*` IDs, because the free-plan models are absent from the picker that OpenCode reads. Reachable through the Copilot CLI (`npm i -g @github/copilot`) only. Until `opencode models` lists them, route them as a manual step, never as an OpenCode model.
-
 ## Not routeable
 
 | Harness | Why |
@@ -139,5 +118,6 @@ Blocked on this plan: Opus 5.5, Sonnet 5.5, Fable 5.2, GPT-6.1 Sol, GPT-6 Astra,
 
 ## Update log
 
+- 2026-11-22 — pass 2 review. Probed all five sail IDs: three answer, `glm-5.3-flex` and `kimi-k3` fail at the API. Copilot removed — its chat endpoint rejects every model this token reaches.
 - 2026-11-22 — pass 1 review with the operator. Dropped `flint-40b-free` and `iceman-free`; probed `hy4-flash-free` (7s) and `tidepool-alpha-free` (5.3s), both unproven and graded C. Removed the `google/*` and `freellmapi/*` surfaces from routing. OpenCode free tier is now 9 rows.
 - 2026-11-22 — rebuilt from live enumeration. 421 OpenCode IDs across 7 providers; Antigravity reduced to 4 rows after the free-account correction; Cline and Hermes dropped; OpenRouter documented for the first time; three dead rows removed.

@@ -205,6 +205,24 @@ School-style: **S+** (reserve) > **S** (top) > **A** > **B** > **C** > **D**.
 
 Probe-verified models stay C until a benchmark page exists.
 
+## sail-ai-degen
+
+### Grades (best → worst)
+
+| Grade | Meaning | Models |
+|---|---|---|
+| B | Light / probe | SA-1 DeepSeek V4.1 Flash 1017 (AA 32) |
+| C | Weak fit | SA-2 GLM-5.3 (no page read), SA-3 GLM-5.3 balanced (same model, slower tier) |
+| D | Do not route | SA-4 `glm-5.3-flex`, SA-5 `kimi-k3` — both fail at the API |
+
+### Evidence
+
+| # | Model | Grade | One line | Source |
+|---|---|---|---|---|
+| SA-1 | DeepSeek V4.1 Flash 1017 | B | AA 32; 2.6s probe; strongest model on the $5 credit | artificialanalysis.ai/models/deepseek-v4-1-flash |
+| SA-2 | GLM-5.3 | C | 4.6s probe; no benchmark page read yet — unproven | first-party probe 2026-11-22 |
+| SA-3 | GLM-5.3 balanced | C | Same weights, balanced effort tier, 16.2s on a one-word reply | first-party probe 2026-11-22 |
+
 ## Freebuff
 
 Freebuff is **time-billed, not token-billed** (see models.md hours): a daily hour
