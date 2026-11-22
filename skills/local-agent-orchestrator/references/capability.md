@@ -122,8 +122,10 @@ inherit. One task settles it.
 2. **Run A, flat.** Fresh conversation, Neon at Medium, Orchestrator off. Note the start time.
    End when the suite passes or you give up. Record: pass/fail, wall clock, the quota reading
    from Settings → Usage before and after, files touched, and every time you had to correct it.
-3. **Reset.** `git reset --hard <sha>` plus `git clean -fd` to the exact starting commit. A
-   different tree invalidates the comparison.
+3. **Make the same starting point twice.** Easiest: `git worktree add ../ab-b <sha>`, so A runs in the
+   original folder and B in the copy, both at the baseline commit, nothing destroyed. One folder:
+   commit A to a throwaway branch, then `git reset --hard <sha>` and `git clean -fd`. A
+   different tree invalidates the comparison, so check `git rev-parse HEAD` in both.
 4. **Run B, Orchestrator.** Fresh conversation, planner Neon at Medium, executor Hydrogen at
    **High** in Orchestrator Settings. Same prompt. Record the same five facts, plus how many
    times control returned to the planner.
