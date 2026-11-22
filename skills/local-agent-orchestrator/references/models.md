@@ -123,7 +123,7 @@ Only `mercury-3` is routed. The older generations and the edit-only model are dr
 
 | # | Model ID | Notes |
 | --- | --- | --- |
-| SA-1 | `sail-ai-degen/deepseek-v4.1-flash-1017` | 2.6s probe, same model as Freebuff FB-11 |
+| SA-1 | `sail-ai-degen/deepseek-v4.1-flash-1017` | 2.6s probe, DeepSeek 1017 refresh |
 | SA-2 | `sail-ai-degen/glm-5.3` | 4.6s probe |
 | SA-3 | `sail-ai-degen/glm-5.3-balanced` | 16.2s probe, slow tier |
 
@@ -135,20 +135,18 @@ Probed 2026-11-22. Two listed IDs are broken and stay out: `glm-5.3-flex` reject
 
 Time-based, not token-based. Starter is 21 h/day plus a 60 h monthly wallet that replaces unused bonus. Close sessions early to refund unused hours.
 
+Six rows, hand-checked in the app on 2026-11-22. **Nothing here grades above B.**
+
 | # | Model | Hours | Notes |
 | --- | --- | --- | --- |
-| FB-1 | MiMo 2.6 Flash | 1 | cheapest capable |
-| FB-2 | MiMo 2.6 Flash Fast | 2 | speed variant |
-| FB-3 | MiMo 2.6 Pro | 5 | higher tier |
-| FB-4 | DeepSeek V4.1 Flash | 3 | default build model |
-| FB-5 | DeepSeek V4.1 Flash Fast | 5 | speed variant |
-| FB-6 | Muse Spark 1.3 | 3 | standard tier |
-| FB-7 | GLM 5.3 Flash | 4 | |
-| FB-8 | GPT-6 Luna | 4 | weak tool use, slow first token |
+| FB-4 | DeepSeek V4.1 Flash | 2 | cheapest slice at B; recommended default |
+| FB-6 | Muse Spark 1.3 | 3 | best measured score, tied at 36 |
+| FB-5 | DeepSeek V4.1 Flash Fast | 3 | speed variant of FB-4 |
+| FB-8 | GPT-6 Luna | 4 | weak agentic coding, slow first token |
 | FB-9 | Claude Haiku 5.5 | 6 | 100K context, burns hours |
-| FB-10 | Gemini 4 Argon | 20 | one session per day, promotional |
-| FB-11 | DeepSeek V4.1 Flash 1017 | 5 | October refresh |
-| FB-12 | Mercury 3 (BYOK) | free | Inception key, counts against IN-1's monthly cap |
+| FB-13 | Muse Ember | 6 | new; 1M ctx, 115M tokens/task |
+
+Dropped from the roster on 2026-11-22: MiMo 2.6 Flash, MiMo 2.6 Flash Fast, MiMo 2.6 Pro, GLM 5.3 Flash, Gemini 4 Argon, DeepSeek V4.1 Flash 1017, and Mercury 3 BYOK. Argon was the only S model here, so Freebuff is now overflow capacity for B work only. Its S and S+ work moved to Antigravity AG-6.
 
 ## Not routeable
 
@@ -167,6 +165,7 @@ Time-based, not token-based. Starter is 21 h/day plus a 60 h monthly wallet that
 
 ## Update log
 
+- 2026-11-22 — pass 6 review. Freebuff roster hand-checked in the app: six rows remain out of twelve. Gemini 4 Argon, MiMo, GLM 5.3 Flash, DeepSeek 1017 and Mercury 3 BYOK are gone; Muse Ember is new at 6 h. Nothing on the surface grades above B now.
 - 2026-11-22 — pass 4 review. OpenRouter closes at four rows: Particle-1, ERNIE 5.5 Flash Preview, Nemotron 3 Ultra, Nemotron 3.5 Super VL. Seven free IDs dropped for lack of coding evidence.
 - 2026-11-22 — pass 3 review. Inception keeps only `mercury-3`; the older generations and the edit-only model are dropped.
 - 2026-11-22 — pass 2 review. Probed all five sail IDs: three answer, `glm-5.3-flex` and `kimi-k3` fail at the API. Copilot removed — its chat endpoint rejects every model this token reaches.

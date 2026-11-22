@@ -289,7 +289,7 @@ headline-only, never as data.
     and `sourceFamilyCount`. Estimated + wide interval means its rank ordering is
     not grade evidence.
   - **Identity traps** (verified 2026-10-28): `deepseek-v4-1-flash` is the **1017**
-    refresh (FB-11), not the FB-4/FB-5 base; `claude-haiku-5-5` is the 1M-context
+    refresh, not the FB-4/FB-5 base; `claude-haiku-5-5` is the 1M-context
     build while FB-9 is the 100k variant; Big Pickle, LongCat 2.5 Preview and
     Solar Mini 4 are absent from its 1,002-model catalog; Mercury 3 and Muse Spark
     1.3 have board scores but no BenchAlign rank.
