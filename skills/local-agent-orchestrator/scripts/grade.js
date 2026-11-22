@@ -13,6 +13,8 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
+const os = require('os');
 
 // Skills root: override via SKILLS_ROOT env var; else resolve relative to this script
 // (skills/<name>/scripts/grade.js → walk up to the skills/ root).
@@ -61,7 +63,41 @@ function resolves(token, skillPath) {
   return false;
 }
 
+// Workbench validator: the shared spec-compliance gate (skill-workbench).
+// Delegates `audit` to it when resolvable; the skill's own checks are the fallback.
+function workbenchValidator() {
+  const candidates = [
+    process.env.SKILL_WORKBENCH_ROOT,
+    path.join(GLOBAL_SKILLS_DIR, 'skill-workbench'),
+    path.join(os.homedir(), '.config', 'opencode', 'skills', 'skill-workbench'),
+  ].filter(Boolean);
+  for (const c of candidates) {
+    const v = path.join(c, 'scripts', 'validate.js');
+    if (fs.existsSync(v)) return v;
+  }
+  return null;
+}
+
+function auditViaValidator(skillPath, validator) {
+  const r = spawnSync(process.execPath, [validator, path.dirname(skillPath)], { encoding: 'utf8' });
+  const findings = [];
+  let anyFail = false;
+  const re = /^\s*\[(PASS|FAIL|WARN)\]\s+([a-z0-9-]+):\s*(.*)$/gm;
+  let m;
+  while ((m = re.exec(r.stdout || '')) !== null) {
+    const severity = m[1].toLowerCase();
+    if (severity === 'fail') anyFail = true;
+    findings.push({ severity, check: m[2], detail: m[3].trim() });
+  }
+  if (anyFail) findings.push({ severity: 'fail', check: 'workbench-validator', detail: `validator exit ${r.status}` });
+  else if (!findings.length) findings.push({ severity: 'pass', check: 'workbench-validator', detail: 'clean (exit 0)' });
+  const lines = fs.readFileSync(skillPath, 'utf8').split(/\r?\n/).length;
+  return { skill: skillPath, lines, findings };
+}
+
 function audit(skillPath) {
+  const validator = workbenchValidator();
+  if (validator) return auditViaValidator(skillPath, validator);
   const text = read(skillPath);
   const lines = text.split(/\r?\n/);
   const findings = [];

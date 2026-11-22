@@ -303,8 +303,8 @@ headline-only, never as data.
 
 ### 9.2 Software engineering and agentic capabilities
 
-- **SWE-bench family** (`swebench.com`): Verified (500), Pro V2 + HARD,
-  Pro V2 + HARD, Multilingual, Multimodal, Lite. Real GitHub issues, not
+- **SWE-bench family** (`swebench.com`): Verified (500), Pro V2 HARD,
+  Multilingual, Multimodal, Lite. Real GitHub issues, not
   memorized snippets. Pull: % Resolved **plus the harness** (mini-SWE-agent
   vs Codex vs Claude Code) — same-model scores differ by harness, so
   cross-vendor tables without a named harness are not comparable.

@@ -31,7 +31,7 @@ The four run in that order. Git safety outranks a fast answer. A model recommend
 
 Run the read-only checks in `references/repo-state-routing.md`, then pick one route that matches the actual repository state.
 
-Treat unattributed dirt pragmatically: since the operator is the sole developer on the project, if leftover or untracked work is clearly tied to the project or task and its purpose is clear, incorporate it cleanly, keep it on the working branch/prompt, or route it deliberately rather than blocking on it. Only pause to ask if a change looks destructive, contradictory, or genuinely ambiguous and could discard useful work.
+Treat dirt as scoped only when every changed file traces to this session's task, an open issue, or merged work named in this session. Scoped dirt is incorporated cleanly or routed deliberately. Dirt you cannot attribute is never routed by size: report the foreign paths and ask one question — whose work is this? A change that looks destructive or contradictory stops you at the same point.
 
 Keep these guardrails:
 

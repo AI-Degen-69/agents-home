@@ -309,7 +309,7 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 | Planning / strategy | S | OpenCode | — | No S on OpenCode — best is OC-3 (32) and OC-5 (27), both B. Plan here only as an explicit downgrade with tests as arbiter, else route to Antigravity AG-6. |
 | Long-horizon agentic coding (build) | S | OpenCode | — | No S builder on OpenCode — best B supervised only; real S builds go to Antigravity AG-5. |
 | Multi-step review / audit (judgment) | S | OpenCode | — | No S reviewer on OpenCode — escalate to Antigravity AG-2. |
-| Well-scoped code edits (tests decide) | A | OpenCode | - | Required A unmet: best is OC-3 DeepSeek (32 proxy) and OC-5 MiMo (27), both B. OC-4 LongCat 2.5 is C. MiniMax M3.1 Flash (29) is an OpenRouter option, not OpenCode. Explicit downgrade, tests decide. |
+| Well-scoped code edits (tests decide) | A | OpenCode | - | Required A unmet: best is OC-3 DeepSeek (32 proxy) and OC-5 MiMo (27), both B. OC-4 LongCat 2.5 is C. Explicit downgrade, tests decide. |
 | Mechanical execution / babysitting | B | OpenCode | OC-5 / OC-2 / OC-3 | OC-5 MiMo 27, OC-3 DeepSeek 32 and OC-2 Big Pickle clear B. OC-1 Beam 18 and OC-7 Super VL 14 sit below B - explicit downgrade only, never a default. |
 | Research / extraction (no hard guarantees) | S | OpenCode | — | No S researcher on OpenCode — OC-2 Big Pickle (Omniscience +43) for low-stakes only; real S research goes to Antigravity AG-2. |
 | Final irreversible verification | S+ | OpenCode | — | No S+ on OpenCode — route the S+ step to Antigravity AG-5 with a human in the loop. |
@@ -364,8 +364,10 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 - **Claude rows in an Orchestrator pair are metered separately:** an Opus 5.5 planner draws
   the Claude bucket while Hydrogen draws the Gemini bucket.
 - **Board re-tiered on AA Intelligence Index v5.0.** Bands **S+ 51+ · S 46–50 ·
-  A 39–45 · B 26–38 · C <26**. Highest measured is Gemini 4 Neon at 61. Every
-  grade in this file is stamped on v5.0. v4.3.2 numbers are historical: Gemini 3.8
+  A 39–45 · B 26–38 · C <26**. Highest measured is Gemini 4 Neon at 61. The bands are
+  stamped from F = 59 (2026-11-02, handbook §5.1). The top is now 61: a 2-pt move,
+  under the 3-pt drift rule, so grades stand. MiMo at 27 sits 1 pt inside the B floor —
+  re-read it before routing. Every grade in this file is stamped on v5.0. v4.3.2 numbers are historical: Gemini 3.8
   Flash reads 31 now vs 41 then, GLM-5.3-Flash 28 vs 42, MiMo-V2.6-Flash 27 vs 38.
   **Consequence: A and above exist only on Antigravity, every free-tier model is B.**
   Grade any newly added model on v5.0 from `models-research-handbook.md`; re-check
@@ -373,7 +375,7 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 - **Quota gating:** the Antigravity plan is bound by a 5-hour window plus a weekly
   cap. Neon at Medium and Opus 5.5 at High are both heavy draws — route worthy
   tasks first, never run them as a background worker, and watch the reset window.
-- **Terminal-Bench 4.0 weak:** AG-1's 19.1% plus its v5.0 index of 31 keeps it B — do not route the hardest long-horizon agent suites here as if it were frontier-class.
+- **Terminal-Bench weak:** AG-1 reads 18.2% on TB 4.1 and 19.1% on TB 4.0; with its v5.0 index of 31 it stays B — do not route the hardest long-horizon agent suites here as if it were frontier-class.
 - **Freebuff has no S row at all (Nov 22, 2026):** Gemini 4 Argon left the roster,
   so the best remaining score is 36 (B) at 3 h. Freebuff is overflow for B work;
   S and S+ work runs on Antigravity AG-5 or AG-6.
@@ -384,13 +386,6 @@ Harness + Earned-by columns pin it to the model actually on that harness.
   v4.3.2-scale number and cannot lift it — guardrailed only.
 - **Super VL is C (14) on both harnesses:** vendor GPQA/SWE numbers cannot lift
   it above the yardstick without independent re-verification.
-- **MiniMax M3.1 Flash (B) — OpenCode only:** removed from the Freebuff roster
-  on 2026-11-02 → no Freebuff routing, no FB id. Index 29 on v5.0
-  (the 43 was v4.3.2), 30 pts below frontier 59; vendor DeepSWE 73.7
-  harness-unnamed (AA primary); indie SWE-Mini 75%; verbose 180M/task +
-  default-max burn → set effort low/medium explicitly; geometry first-drafts
-  C-work; HHEM unmeasured → no summarization/RAG routing until scored; never
-  the final step.
 - **Freebuff roster cut on 2026-11-22:** MiMo 2.6 Flash / Fast / Pro, GLM 5.3
   Flash, Gemini 4 Argon, DeepSeek V4.1 Flash 1017 and Mercury 3 left the app.
   FB-1, FB-2, FB-3, FB-7, FB-10, FB-11 and FB-12 are retired ids; FB-13 is the
