@@ -88,20 +88,37 @@ It wraps AG-5 Neon, AG-6 Argon, or AG-2 Opus 5.5 at Low / Medium / High.
 It changes **which model executes a step**. It does not change the ceiling of the model you
 picked and it adds no capability. It trades token spend for provenance.
 
-**Pick Orchestrator-on-X instead of flat X when all five hold:**
+**Ask one question about each offloaded step: is it evidence, or is it judgment?**
 
-1. The work is a build or refactor, not a review or an audit.
-2. A test suite or compiler can reject a wrong step without you reading it.
-3. The run is long and mostly mechanical, so token spend is what binds the window.
-4. No line needs attribution to a model (no compliance, security or incident trail).
-5. You will re-run any failed or ambiguous step flat on the named model.
+- **Evidence steps** produce something a tool can check: run the tests, read the file, diff,
+  grep, lint, list, build. A wrong one fails loudly.
+- **Judgment steps** produce a claim about the code: what this diff means, whether the design
+  is safe, what the requirement actually is, which test to write.
 
-**Pick flat X when any of these hold:** review, audit, security, a migration with subtle
-invariants, an irreversible operation, or a repo you cannot test.
+Orchestrator is safe when it takes **only evidence steps** and a deterministic check runs after
+each one. The judge stays the model you picked, and a bad step is rejected before any conclusion
+exists. It is unsafe when it takes a **comprehension or judgment step**, because a wrong summary
+does not fail loudly. It quietly rewrites the artifact the big model is looking at, so the review
+ends up sound about the summary and wrong about the code, and the unnamed executor hides which.
+
+**So the axis is not build-versus-audit. It is whether the offloaded step can be checked.**
+
+| Situation | Verdict |
+| --- | --- |
+| Long build, tests or compiler after every step | Orchestrator is the cost mode to take |
+| Review where the reviewer reads the diff itself, executor runs tests/lint/build | Orchestrator is fine |
+| Review where the executor summarises the code first | Flat model |
+| Formal audit, incident trail, compliance, security sign-off | Flat model |
+| Migration with subtle invariants, irreversible operation | Flat model |
+| Repo with no test or type checker | Flat model |
+
+**Audit stays flat for a reason that is not capability.** Neon does not review worse through an
+orchestrator. But an audit's product is a claim about what was examined. If a delegated step
+condensed the evidence, the audit's scope is the condensation, and you cannot sign for a scope
+you cannot see. That is a provenance limit, not an intelligence limit.
 
 **Grade:** the run's ceiling is X's grade. The effective grade is one step lower until a
-test gates every offloaded step, because the executor is undisclosed and "same quality" has
-no measurement behind it.
+deterministic check gates every offloaded step.
 
 **First use is an A/B, not a default.** Run one representative task flat on Neon Medium, then
 the same task through Orchestrator-on-Neon-Medium. Compare pass rate and window spent, and
@@ -375,10 +392,10 @@ Harness + Earned-by columns pin it to the model actually on that harness.
   harness. $2/$10, 1M ctx. Prefer M3 over M2 for cost-sensitive A work; M2 stays
   the stronger reviewer. Watch the Claude bucket, not just the Gemini one.
 - **Orchestrator is a cost mode, not a model:** it wraps Neon, Argon, or Opus 5.5 and
-  sends routine steps to an undisclosed executor. No measurement backs "same quality".
-  Use it on long builds where tests gate every step and the window binds. Keep it out
-  of review, audit, security and the irreversible step. First use is an A/B against the
-  flat model, recorded in the Antigravity block.
+  sends some steps to an undisclosed executor. The rule is per step, not per task: safe
+  when the offloaded step is evidence a tool can check, unsafe when it is comprehension or
+  judgment the big model then trusts. Audits and signed reviews stay flat because their
+  product is a claim about what was examined. First use is an A/B against the flat model.
 - **Board re-tiered on AA Intelligence Index v5.0.** Bands **S+ 51+ · S 46–50 ·
   A 39–45 · B 26–38 · C <26**. Highest measured is Gemini 4 Neon at 61. Every
   grade in this file is stamped on v5.0. v4.3.2 numbers are historical: Gemini 3.8
