@@ -14,7 +14,7 @@ Spend top to bottom. A row higher up costs less of what is scarce.
 | --- | --- | --- | --- | --- |
 | 1 | OpenCode free tier | free, daily reset 00:00 Asia/Jerusalem | daily request quota | 9 models, small context on some |
 | 2 | Freebuff | hours per day | Starter: 21 h/day + 60 h/month wallet | unused hours refund when you close early |
-| 3 | Antigravity free account | 6 free accounts | free-tier quota, smaller than Pro | only Gemini 3.8 Flash + Claude Opus 4.6 |
+| 3 | Antigravity free account | 6 free accounts | free-tier quota, smaller than Pro | only Gemini 3.8 Flash + Claude Opus 4.6 + Sonnet 4.6 |
 | 4 | Antigravity Pro | one Google AI Pro plan | 5-hour + weekly window | best models live here; bank it for hard work |
 | 5 | Inception | 100M free tokens per month, then stop | monthly token cap, never exceeded | no payment beyond the free grant |
 | 6 | sail-ai-degen | $5 free credit per month | monthly dollar cap, never exceeded | no payment beyond the credit |
@@ -32,12 +32,13 @@ One paid Google AI Pro plan plus six free accounts. Switch accounts in the app; 
 | AG-2 | Claude Opus 5.5 | Low / Medium / High | Pro only |
 | AG-3 | Claude Sonnet 5.5 | Low / Medium / High | Pro only |
 | AG-4 | Claude Opus 4.6 | Low / Medium / High | 6 free accounts only |
-| AG-5 | Gemini 4 Neon | Low / Medium / High / Extra High | unconfirmed |
-| AG-6 | Gemini 4 Argon | Low / Medium / High | unconfirmed |
-| AG-7 | Gemini 4 Hydrogen | Low / Medium / High / Extra High | unconfirmed |
+| AG-5 | Gemini 4 Neon | Low / Medium / High / Extra High | Pro only |
+| AG-6 | Gemini 4 Argon | Low / Medium / High | Pro only |
+| AG-7 | Gemini 4 Hydrogen | Low / Medium / High / Extra High | Pro only |
 | AG-8 | GPT-OSS 120B | Medium only | unconfirmed, carries a Notice flag |
+| AG-9 | Claude Sonnet 4.6 | Low / Medium / High | 6 free accounts only |
 
-Free accounts reach AG-1 and AG-4 only. No Gemini 4 row, no Opus 5.5, no Sonnet 5.5 there.
+Free accounts reach AG-1, AG-4 and AG-9 only: Gemini 3.8 Flash plus the two deprecated Claude 4.6 models. That is B at best, so **every S and S+ path needs the Pro plan**.
 
 **Orchestrator** is a pick, not a model. It wraps AG-5, AG-6, or AG-2 and routes routine steps to a faster executor. See capability.md for the guardrail.
 

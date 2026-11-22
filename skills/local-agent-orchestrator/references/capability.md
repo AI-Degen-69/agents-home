@@ -59,7 +59,7 @@ grade depends on the tier picked. Each row lists the ladder.
 | S | Top: long-horizon agentic coding, multi-step reasoning, review | AG-6 Argon (high, medium), AG-2 Opus 5.5 (medium) |
 | A | Competent: well-scoped edits under tests, straightforward research | AG-5 Neon (low), AG-3 Sonnet 5.5 (high), AG-7 Hydrogen (medium) |
 | B | Light / probe: mechanical work, babysitting, free verification passes | AG-1 Gemini 3.8 Flash (medium, high), AG-3 Sonnet 5.5 (medium), AG-2 Opus 5.5 (low), AG-7 Hydrogen (low) |
-| C | Weak fit: below the bar, deprecated, or unverified | AG-4 Opus 4.6, AG-3 Sonnet 5.5 (low), AG-1 Gemini 3.8 Flash (low), AG-8 GPT-OSS 120B |
+| C | Weak fit: below the bar, deprecated, or unverified | AG-4 Opus 4.6, AG-9 Sonnet 4.6, AG-3 Sonnet 5.5 (low), AG-1 Gemini 3.8 Flash (low), AG-8 GPT-OSS 120B |
 | D | Do not route | none |
 
 ### Evidence
@@ -74,6 +74,9 @@ grade depends on the tier picked. Each row lists the ladder.
 | AG-1 | Gemini 3.8 Flash | B | AA 31 high / 30 medium / 22 low; TB 4.0 19.1% — cheap supervised path, escalate if it flounders | artificialanalysis.ai/models/gemini-3-8-flash |
 | AG-4 | Claude Opus 4.6 | C | Deprecated; AA withdrew the index (N/A). 1M ctx, $5/$25. Only free-account alternative to AG-1 | artificialanalysis.ai/models/claude-opus-4-6 |
 | AG-8 | GPT-OSS 120B | C | Medium effort only, carries a Notice flag; no AA page read — unverified, probe before routing | picker 2026-11-22 |
+| AG-9 | Claude Sonnet 4.6 | C | Deprecated; AA withdrew the index (N/A). 1M ctx, $3/$15. Free-account row, alongside AG-4 | artificialanalysis.ai/models/claude-sonnet-4-6 |
+
+**Free accounts top out at B.** AG-1 Gemini 3.8 Flash is the only usable free-tier model, and both Claude 4.6 rows are deprecated with no AA index. Every S and S+ path needs the Pro plan: Neon, Argon, Hydrogen, Opus 5.5, Sonnet 5.5.
 
 Gemini 4 Carbon appears in the picker as Unavailable. Do not route it.
 
@@ -340,12 +343,13 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 
 ## Risk flags
 
-- **S+ exists now (Nov 22, 2026):** Gemini 4 Neon reaches 55 at Medium and 61 at
-  Extra High, Hydrogen reaches 51 at High, and Opus 5.5 reaches 52 at High — all
-  above the 51 floor, all selectable in the picker. The irreversible step now has
-  a home on Antigravity. Two limits stand: the executor must be a named model (not
-  Orchestrator), and Neon at Medium costs 62.9M tokens per task, so one run can
-  eat the 5-hour window.
+- **S+ exists, but only on the Pro plan (Nov 22, 2026):** Gemini 4 Neon reaches 55
+  at Medium and 61 at Extra High, Hydrogen reaches 51 at High, and Opus 5.5
+  reaches 52 at High. All are Pro-only. The six free accounts reach Gemini 3.8
+  Flash (B) plus the deprecated Claude Opus 4.6 and Sonnet 4.6 (C), so a free
+  account cannot close out an S or S+ task.
+- **Neon cost:** 62.9M output tokens per task at Medium, 283M at Extra High. Route
+  Medium unless the 5-hour window is wide open.
 - **Claude rows are capped at High (Nov 22, 2026):** the picker offers Low /
   Medium / High only. Opus 5.5 reads 52 / 48 / 35, Sonnet 5.5 reads 41 / 30 / 25,
   so Sonnet's AA-max 54 is unreachable here. Grade the tier, never the model card.
