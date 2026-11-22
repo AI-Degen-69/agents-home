@@ -34,147 +34,58 @@ rule). Add a new harness by copying the block and renaming.
 > A model listed in `models.md` but absent from a harness's grade table is
 > `[unverified]` there — do not route it for an irreversible final step.
 
-> **Scale in force: Artificial Analysis Intelligence Index v5.0, frontier
-> F = 59 (Gemini 4 Carbon high), read 2026-11-02.** Bands recomputed from F:
-> **S+ 51–59 · S 46–50 · A 39–45 · B 26–38 · C <26.** Every grade below was
-> re-stamped on this scale; v4.3.2 numbers are historical and not comparable.
-> The v5.0 basket is harder, so the mid-field dropped 7–14 pts while the
-> frontier held — every free-tier model on OpenCode, Cline and Freebuff now sits
-> at **B**, **A is empty**, **S is only M2 and Freebuff FB-10 (Argon 50)**, and
-> **S+ is empty** (M2's max-effort 58 is the sole unconfirmed candidate).
+> **Scale in force: Artificial Analysis Intelligence Index v5.0.** Bands:
+> **S+ 51+ · S 46–50 · A 39–45 · B 26–38 · C <26.** The highest measured model
+> is Gemini 4 Neon at 61 (Extra High), read 2026-11-22. v4.3.2 numbers are
+> historical and not comparable.
+>
+> Antigravity is graded at the **selectable tier**, not the model ceiling. Its
+> picker caps the Claude rows at High, so Opus 5.5 reaches S+ at High (52) and
+> Sonnet 5.5 tops out at A (41). Every free-tier model elsewhere still sits at
+> **B** or below.
 
 ---
 
 ## Antigravity
 
+The Pro plan holds the only S+ models in the inventory. Effort is selectable, so the
+grade depends on the tier picked. Each row lists the ladder.
+
 ### Grades (best → worst)
 
-School-style: **S+** (reserve) > **S** (top) > **A** > **B** > **C** > **D**.
-
-| Grade | Meaning | Models earning it |
+| Grade | Meaning | Models at this tier |
 |---|---|---|
-| S+ | Reserve: irreversible / money-adjacent / subtle-invariant work needing the strongest available | (none confirmed — M2 (Opus 5.5) and M3 (Sonnet 5.5) both have AA-confirmed S+ ceilings at max effort, but Antigravity does not surface which thinking tier it serves for either) |
-| S | Top: long-horizon agentic coding, multi-step reasoning, review/audit needing judgment | **M2: Claude Opus 5.5** (S band; S+ ceiling unconfirmed); **M3: Claude Sonnet 5.5** (Xhigh = 50 = S; Max = 54 = S+ ceiling unconfirmed) |
-| A | Competent: well-scoped edits, mechanical execution under tests, straightforward research | (none earns A by default — M3 Sonnet 5.5 at **High effort = 41 = A** is the A-grade path when the harness serves it; M1 is B) |
-| B | Light / probe: trivial mechanical tasks, closeout babysitting, free verification passes | **M1: Gemini 3.8 Flash** (31 high / 30 medium / 22 low on v5.0) |
-| C | Weak fit: known benchmark gaps; usable with guardrails | (none yet on Antigravity) |
-| D | Do not route: capability below bar | (none yet on Antigravity) |
+| S+ | Reserve: irreversible / money-adjacent / subtle-invariant work | AG-5 Neon (medium, high, extra high), AG-2 Opus 5.5 (high), AG-7 Hydrogen (high, extra high) |
+| S | Top: long-horizon agentic coding, multi-step reasoning, review | AG-6 Argon (high, medium), AG-2 Opus 5.5 (medium) |
+| A | Competent: well-scoped edits under tests, straightforward research | AG-5 Neon (low), AG-3 Sonnet 5.5 (high), AG-7 Hydrogen (medium) |
+| B | Light / probe: mechanical work, babysitting, free verification passes | AG-1 Gemini 3.8 Flash (medium, high), AG-3 Sonnet 5.5 (medium), AG-2 Opus 5.5 (low), AG-7 Hydrogen (low) |
+| C | Weak fit: below the bar, deprecated, or unverified | AG-4 Opus 4.6, AG-3 Sonnet 5.5 (low), AG-1 Gemini 3.8 Flash (low), AG-8 GPT-OSS 120B |
+| D | Do not route | none |
 
-### Gemini 3.8 Flash (M1) — evidence & grade justification
+### Evidence
 
-- **Release:** 2026-09-02. API ID `gemini-3.8-flash`. General availability via
-  Google AI Studio & Gemini Enterprise Agent Platform.
-- **Positioning:** "the best reasoning & coding Flash yet" at 3.7's speed/cost.
-- **Benchmarks (authoritative sources):**
-  - Terminal-Bench 2.1 — **90.8%** (up from 3.7's 81.6%) — strong long-horizon coding agent.
-  - DeepSWE v1.1 (long-horizon coding) — outperforms most larger frontier models.
-  - Vals Finance Agent V2 — #2 of 78.
-  - HLE-Verified — **54.9%** multi-step STEM/humanities reasoning.
-  - CharXiv (reasoning, no tools) — 86.2%; LVBench — 87.1%; BioMysteryBench human-solvable — 88.8%.
-  - Terminal-Bench 4.0 — 19.1% → **weak** on this harder/longer agent suite (flag).
-- **Valuation:** Vals Index #17/47 (overall 54.89%); strong on finance/legal agent tasks.
-- **Safety note:** Google DeepMind model card (Sep 2026) states 3.8 Flash shows
-  no material safety-level increase over 3.7 Flash per the Frontier Safety
-  Framework.
-- **Verdict:** earns **B** on the live scale — **AA v5.0: 31 high / 30 medium /
-  22 low** (it read 41/40 on v4.3.2, which is what earned the old A). TB 2.1
-  90.8% is elite but TB 4.0 19.1% plus a 28-pt gap to the live frontier keep it
-  clearly out of S. It is the cheap supervised path on this harness, not a
-  competent-grade model: **A-work routed here is an explicit downgrade — let
-  tests decide and escalate to M2 if it flounders.** Quota-gated (5h + weekly) —
-  route the final verification/review to an S model/human rather than burning
-  the reserve on a non-worthy closeout. (Re-tier Nov 2, 2026 on v5.0.)
+| # | Model | Grade | One line | Source |
+|---|---|---|---|---|
+| AG-5 | Gemini 4 Neon | S+ | AA 61 extra-high / 60 high / 55 medium / 44 low; agentic coding focus; 283M output tokens at extra high vs 62.9M at medium — route Medium | artificialanalysis.ai/models/gemini-4-neon |
+| AG-7 | Gemini 4 Hydrogen | S+ | AA 54 extra-high / 51 high / 41 medium / 27 low; cheapest S+ at $1.50/$7.50, 163 tok/s, but 304M tokens at extra high | artificialanalysis.ai/models/gemini-4-hydrogen |
+| AG-2 | Claude Opus 5.5 | S+ | AA 52 high / 48 medium / 35 low; TB 4.0 66.4% vendor; the picker offers no xhigh or max, so High is the top | artificialanalysis.ai/models/claude-opus-5-5 |
+| AG-6 | Gemini 4 Argon | S | AA 50 high / 48 medium; same model as Freebuff FB-10; slowest row here at 26.2 min/task, $4/$20 | artificialanalysis.ai/models/gemini-4-argon |
+| AG-3 | Claude Sonnet 5.5 | A | AA 41 high / 30 medium / 25 low; no xhigh or max in the picker, so A is its ceiling on this harness | artificialanalysis.ai/models/claude-sonnet-5-5 |
+| AG-1 | Gemini 3.8 Flash | B | AA 31 high / 30 medium / 22 low; TB 4.0 19.1% — cheap supervised path, escalate if it flounders | artificialanalysis.ai/models/gemini-3-8-flash |
+| AG-4 | Claude Opus 4.6 | C | Deprecated; AA withdrew the index (N/A). 1M ctx, $5/$25. Only free-account alternative to AG-1 | artificialanalysis.ai/models/claude-opus-4-6 |
+| AG-8 | GPT-OSS 120B | C | Medium effort only, carries a Notice flag; no AA page read — unverified, probe before routing | picker 2026-11-22 |
 
-### Claude Opus 5.5 (M2) — evidence & grade justification
+Gemini 4 Carbon appears in the picker as Unavailable. Do not route it.
 
-- **Release / params / context / license / modalities:** 2026-09-22, Anthropic;
-  proprietary (no weights, size undisclosed); 1M ctx; text + image → text.
-  Thinking cannot be switched off; effort ladder low / medium / high / xhigh /
-  max.
-- **Primary yardstick (AA, read 2026-11-02, Intelligence Index v5.0; live
-  frontier F = 59 = Gemini 4 Carbon high):**
-  - max — **58** (#2 of 59), $10.04/task, 96 tok/s, TTFT 640.9s, 220M tok/task
-  - xhigh — 57 ($6.05) · high — 52 ($3.46, TTFT 47.5s) · medium — 48 ($2.45,
-    TTFT 21.9s) · low — 35 ($0.98)
-  - Source: https://artificialanalysis.ai/models/claude-opus-5-5
-- **Hard numbers (Anthropic card, 2026-09-22, vendor; max effort unless noted):**
-  Terminal-Bench 4.0 **66.4%** (±2.6, xhigh effort); FrontierCode v1.1 54.4%;
-  CursorBench 4.0 57.8%; GDPval-AA v2.1 1846 Elo; AutomationBench 40.0%
-  (run by Zapier, safeguard interventions counted as failures); HLE 67.7% with
-  tools; Terminal-Bench-Science 0.1 58.7%; OSWorld 2.1 81.8% (partial).
-  Cross-check: AA's independent TB 4.0 board tops out at Kimi K3.1 Pro 67.2% /
-  Gemini 4 Carbon high 65.2%, so 66.4% sits in the plausible frontier range —
-  vendor number, not an outlier claim.
-- **Secondary (BenchLM, read 2026-11-02, separate scale — corroboration only):**
-  overall 86.29 (#2), coding 82.87, agentic 90.07, knowledge 89.53;
-  `evidenceStatus: supported`; 90% interval 81.63–90.94 (not validated);
-  price $4.00/$20.00 since 2026-09-22 — matches AA and the vendor card.
-- **Street check:** not swept this run (search backend returned no results for
-  the queries tried). No contrary signal in the sources actually read.
-- **Caps / caveats:**
-  - **Serving tier unconfirmed** — Antigravity does not surface which thinking
-    tier it hands out (or whether the ladder is selectable at all). Grade from
-    the measured ladder, not the ceiling: xhigh/max = S+, high/medium = S,
-    low = B.
-  - **Heaviest quota draw on this harness.** 220M tokens/task at max and a
-    640.9s TTFT mean one long session can flatten the 5-hour window; treat it
-    as a focal-task model, never a background/babysitter.
-  - **Safeguard fallbacks:** Anthropic re-routes most cybersecurity tasks to
-    Opus 4.8 and biology / frontier-LLM-dev work to Opus 5 — a security-audit
-    task can silently be answered by a different model. Zero-data-retention is
-    an Anthropic API option, not something the Google subscription guarantees:
-    treat prompts as leaving the machine.
-- **Verdict:** earns **S** (F−1 at max effort, F−11 at high, F−11 at medium;
-  S+ ceiling unconfirmed, B floor if the harness serves low). May route builds,
-  planning, multi-step review and research here while the weekly quota holds;
-  may not take the irreversible final step until max effort is confirmed
-  selectable — nothing else on the board is S+, so that confirmation is the only
-  route to a real S+ closeout (Freebuff FB-10 is S at 50 and cannot substitute).
+### Orchestrator — a pick, not a model
 
----
+Tooltip: "Offloads routine steps to a faster executor. Same quality, fewer tokens used."
+It wraps AG-5, AG-6, or AG-2 at Low / Medium / High.
 
-### Claude Sonnet 5.5 (M3) — evidence & grade justification
-
-- **Release / params / context / license / modalities:** 2026-09-28, Anthropic;
-  proprietary (no weights, size undisclosed); 1M ctx; text + image → text.
-  Hybrid reasoning; thinking effort low / medium / high / xhigh / max.
-- **Primary yardstick (AA, read 2026-11-03, Intelligence Index v5.0; live
-  frontier F = 59 = Gemini 4 Carbon high):**
-  - max — **54** (#9 of 59), $10.02/task, 139.3 tok/s, 340M tok/task
-  - xhigh — **50** ($4.09/task, 107.2 tok/s, 110M tok/task)
-  - high — **41** ($1.64/task, 105.7 tok/s, 55M tok/task)
-  - medium — **30** ($0.78/task, 101.9 tok/s, 29M tok/task)
-  - low — **25** ($0.51/task, 104.8 tok/s, 21M tok/task)
-  - Source: https://artificialanalysis.ai/models/claude-sonnet-5-5 (+ -xhigh/-high/-medium/-low)
-- **Vendor (Anthropic, 2026-09-28):** faster, lower-cost complement to Opus 5.5;
-  30% faster and up to 30% cheaper than Sonnet 5 for typical workloads; 1M ctx;
-  $2.00 / $10.00 per M. CursorBench 4.0 **55.5%** (vendor, second only to
-  Opus 5.5's 57.8%); SWE-bench-style "level with Opus 5" at 3.6 iterations/build
-  vs Opus 7.7; fewest failed tool calls. Cyber safeguards re-route security
-  work to Opus 4.8 (same as Opus).
-- **Cost / quota:** shares the Claude bucket with M2 (5-hour + weekly); cheaper
-  per task than Opus at every tier ($10.02 vs $10.04 at max is a wash, but
-  $4.09 at xhigh vs Opus xhigh $6.05; $1.64 high vs Opus high $3.46). Faster
-  decode (139 vs 96 tok/s at max).
-- **Caps / caveats:**
-  - **Serving tier unconfirmed** — same as M2, Antigravity does not surface
-    which thinking tier it serves. Grade from the measured ladder, not the
-    ceiling: max/xhigh = S+, xhigh = S, high = A, medium = B, low = C.
-  - **Cheaper and faster than Opus at every tier** — prefer M3 over M2 for
-    A-grade and B-grade work; reserve M2 for S-grade judgment and the S+
-    ceiling probe.
-  - **No confirmed S+ on Antigravity** — M3's Max = 54 = S+ is AA-confirmed but
-    the serving tier is unconfirmed, so it cannot take the irreversible final
-    step until Max is confirmed selectable. Cross-check with Freebuff FB-10
-    (also S at 50) — still no true S+ anywhere.
-- **Verdict:** earns **S** (Xhigh = 50 = S band; Max = 54 = S+ ceiling
-  unconfirmed, High = 41 = A, Medium = 30 = B, Low = 25 = C). May route
-  builds, planning, multi-step review and research here while the weekly quota
-  holds; may not take the irreversible final step until Max effort is confirmed
-  selectable. Prefer M3 over M2 for cost-sensitive S/A work; M2 stays the
-  stronger reviewer.
-
----
+- **Grade it one step below the wrapped model.** The executor is undisclosed and the "same quality" claim has no measurement behind it.
+- **Never for review, audit, or the irreversible final step.** You cannot attribute a step to a model, so the audit trail is gone.
+- **Good for long mechanical builds** where tests decide the outcome and the 5-hour window is the binding constraint.
+- It adds no capability. If the window is not the constraint, pick the model directly.
 
 ## OpenCode
 
@@ -393,27 +304,27 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 
 | Task class | Required grade | Harness | Earned by | Notes / risk |
 |---|---|---|---|---|
-| Planning / strategy | S | Antigravity | M2 / M3 | Opus 5.5 (stronger reviewer) or Sonnet 5.5 (cheaper/faster, Xhigh = S) — confirm the thinking tier first; heavy quota draw on M2. Fallback Freebuff FB-6 / FB-10. |
-| Long-horizon agentic coding (build) | S | Antigravity | M2 / M3 | Opus 5.5 at high-or-better thinking (TB 4.0 66.4% vendor, AA 58 at max); Sonnet 5.5 Xhigh (AA 50) for cheaper S builds; M1 (B) supervised only. |
-| Multi-step review / audit (judgment) | S | Antigravity | M2 (M3 alt.) | Opus 5.5 is the strongest reviewer on this harness; Sonnet 5.5 (Xhigh = S) for cheaper reviews; security-flavored audits may be served by Opus 4.8 via safeguards. |
-| Well-scoped code edits (tests decide) | A | Antigravity | M1 / M3 | No A on M1's tier (B): M3 at High = 41 = A is the cheap A path; M1 (B, 31) as fallback under tests. Escalate to M2 (S) if either flounders. |
+| Planning / strategy | S | Antigravity | M2 / M3 | Opus 5.5 at High (52) or Medium (48); Sonnet 5.5 at High (41) is only A. Fallback Freebuff FB-10 (Argon 50). |
+| Long-horizon agentic coding (build) | S | Antigravity | M2 / AG-5 | Opus 5.5 at High (52, TB 4.0 66.4% vendor) or Gemini 4 Neon at Medium (55, cheaper per token). M1 (B) supervised only. |
+| Multi-step review / audit (judgment) | S | Antigravity | M2 | Opus 5.5 is the strongest reviewer here; security-flavored audits may be served by Opus 4.8 via safeguards. |
+| Well-scoped code edits (tests decide) | A | Antigravity | M3 / AG-5 | Sonnet 5.5 at High = 41 = A is the cheap path; Neon at Low (44) also lands in A. M1 (31) as fallback under tests. |
 | Mechanical execution / babysitting | B | Antigravity | M1 / M3 | M1 (31, 22 at low) and M3 at Medium/Low (30/25) are what you can afford to burn; M2 is not. |
-| Research / extraction (no hard guarantees) | S | Antigravity | M2 / M3 | Opus 5.5 (HLE 67.7% with tools, GDPval 1846 Elo); Sonnet 5.5 (Xhigh = S, cheaper) for light research; M1 for light extraction only. |
-| Final irreversible verification | S+ | Antigravity | — | No confirmed S+ anywhere: M2's (Opus) and M3's (Sonnet) max-effort tiers (58 and 54) are the only candidates and Antigravity doesn't expose which tier it serves for either. Price the risk, cross-check with Freebuff FB-10 (S at 50), keep a human in the loop. |
+| Research / extraction (no hard guarantees) | S | Antigravity | M2 / AG-5 | Opus 5.5 (HLE 67.7% with tools, GDPval 1846 Elo); Neon at Medium (55) is the cheaper S+ researcher if the window allows. |
+| Final irreversible verification | S+ | Antigravity | AG-5 / AG-7 / M2 | Selectable at last: Neon at Medium 55 or above, Hydrogen at High 51 or above, Opus 5.5 at High 52. Prefer Neon at Medium (62.9M tokens) over Extra High (283M). Keep a human on the final step. |
 | Planning / strategy | S | OpenCode | — | No S on OpenCode — best is OC-3 (32) and OC-5 (27), both B. Plan here only as an explicit downgrade with tests as arbiter, else route to Antigravity M2. |
 | Long-horizon agentic coding (build) | S | OpenCode | — | No S builder on OpenCode — best B supervised only; real S builds go to Antigravity M2. |
 | Multi-step review / audit (judgment) | S | OpenCode | — | No S reviewer on OpenCode — escalate to Antigravity M2. |
 | Well-scoped code edits (tests decide) | A | OpenCode | OC-3 / OC-4 / MiniMax | Required A is unmet (nothing reaches 39): best B is OC-3 DeepSeek 32 proxy, MiniMax 29, OC-4 GLM 28 — explicit downgrade, tests decide. |
 | Mechanical execution / babysitting | B | OpenCode | OC-5 / OC-1 / OC-7 | MiMo 27 / Beam 18 / Super VL 14; OC-2 Big Pickle for knowledge-flavored work. |
 | Research / extraction (no hard guarantees) | S | OpenCode | — | No S researcher on OpenCode — OC-2 Big Pickle (Omniscience +43) for low-stakes only; real S research goes to Antigravity M2. |
-| Final irreversible verification | S+ | OpenCode | — | No S+ on any harness — cross-check Antigravity M2 (S) with a human in the loop. |
+| Final irreversible verification | S+ | OpenCode | — | No S+ on OpenCode — route the S+ step to Antigravity AG-5 with a human in the loop. |
 | Planning / strategy | S | Freebuff | FB-10 | Argon 50 — the only S on the harness; 20h + 1 session/day, so ration it. FB-6 (36, 3h) is the B fallback. |
 | Long-horizon agentic coding (build) | S | Freebuff | FB-10 | Argon (TB4 57%) is the only S builder; FB-11 DeepSeek-1017 (32, 5h, DeepSWE 77.0 vendor) is the B fallback once the daily slot is gone. |
 | Multi-step review / audit (judgment) | S | Freebuff | FB-10 | Argon; FB-6 Muse (36) alt, FB-9 Haiku (36, verbose 6h) last. |
 | Well-scoped code edits (tests decide) | A | Freebuff | FB-1 / FB-4 / FB-11 | Required A unmet (nothing reaches 39): MiMo 27 at 1h is cheapest, DeepSeek base 3h (32 proxy) and 1017 5h (32) follow. Tests decide. |
 | Mechanical execution / babysitting | B | Freebuff | FB-1 | MiMo 27 at 1h — the cheapest slice on the whole board. |
 | Research / extraction (no hard guarantees) | S | Freebuff | FB-10 | Argon; avoid GPT-6 Luna (28, TB4 13%, slow). |
-| Final irreversible verification | S+ | Freebuff | — | No S+ anywhere — FB-10 is S (50). Cross-check Antigravity M2 (S) and keep a human in the loop. |
+| Final irreversible verification | S+ | Freebuff | — | No S+ on Freebuff — FB-10 is S (50). Route the S+ step to Antigravity AG-5 and keep a human in the loop. |
 
 > **Mercury 3 (OC-10 / CL-4 / FB-12) is graded C** — below every
 > required grade in this matrix, so it earns **no matrix row**. It is a
@@ -429,33 +340,33 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 
 ## Risk flags
 
-- **No confirmed S+ anywhere (Nov 2, 2026):** the S+ band is 51–59 and the
-  highest score in the whole inventory is FB-10 at 50. Antigravity now has two
-  AA-confirmed S+ ceilings — M2 Opus 5.5 (58 at max) and M3 Sonnet 5.5 (54 at
-  max) — but Antigravity does not surface which thinking tier it serves for
-  either, so every irreversible final step is still unowned. Treat "S+ required"
-  work as M2/M3-with-tier-confirmation or human, not as an automated hop.
-- **M3 Claude Sonnet 5.5 (Nov 3, 2026):** added on Antigravity, sharing the
-  **Claude quota bucket** with M2 (separate from M1's Gemini bucket). AA v5.0
-  ladder Max 54 (S+) / Xhigh 50 (S) / High 41 (A) / Medium 30 (B) / Low 25 (C);
-  $2/$10, 1M ctx, 139 tok/s at Max, 30% faster and up to 30% cheaper than
-  Sonnet 5. Graded **S** (same treatment as M2: S+ ceiling unconfirmed, C floor).
-  Prefer M3 over M2 for cost-sensitive S/A work; M2 stays the stronger reviewer.
-  Quota gating is shared with M2 — watch the Claude bucket, not just the
-  Gemini one.
-- **Board re-tiered on AA Intelligence Index v5.0 (Nov 2, 2026).** The live
-  scale is v5.0 (9-eval basket), frontier **F = 59** (Gemini 4 Carbon high),
-  bands **S+ 51–59 · S 46–50 · A 39–45 · B 26–38 · C <26**. Every grade in this
-  file was re-stamped on it. v4.3.2 numbers are historical and not comparable
-  point-for-point: Gemini 3.8 Flash reads 31 now vs 41 then, GLM-5.3-Flash 28 vs
-  42, MiMo-V2.6-Flash 27 vs 38. **Consequence: A is empty, S is M2 and FB-10,
-  every free-tier model on OpenCode/Cline/Freebuff is B.** Grade any newly
-  added model on v5.0 from `models-research-handbook.md`; re-check every score
-  within ~3 pts of a band edge (B/A edge at 38/39, S/S+ edge at 50/51).
-- **Quota gating:** M1 and M2 are subscription-quota bound (5h + weekly). M2 is
-  the heaviest draw on the harness (220M tokens/task, $10.04/task at max effort)
-  — route worthy tasks first, never let it run as a background worker, and watch
-  the weekly reset window.
+- **S+ exists now (Nov 22, 2026):** Gemini 4 Neon reaches 55 at Medium and 61 at
+  Extra High, Hydrogen reaches 51 at High, and Opus 5.5 reaches 52 at High — all
+  above the 51 floor, all selectable in the picker. The irreversible step now has
+  a home on Antigravity. Two limits stand: the executor must be a named model (not
+  Orchestrator), and Neon at Medium costs 62.9M tokens per task, so one run can
+  eat the 5-hour window.
+- **Claude rows are capped at High (Nov 22, 2026):** the picker offers Low /
+  Medium / High only. Opus 5.5 reads 52 / 48 / 35, Sonnet 5.5 reads 41 / 30 / 25,
+  so Sonnet's AA-max 54 is unreachable here. Grade the tier, never the model card.
+- **M3 Claude Sonnet 5.5:** shares the **Claude quota bucket** with M2. AA v5.0
+  ladder High 41 (A) / Medium 30 (B) / Low 25 (C); High is its ceiling on this
+  harness. $2/$10, 1M ctx. Prefer M3 over M2 for cost-sensitive A work; M2 stays
+  the stronger reviewer. Watch the Claude bucket, not just the Gemini one.
+- **Orchestrator is not a model:** it wraps Neon, Argon, or Opus 5.5 and sends
+  routine steps to an undisclosed executor. No measurement backs "same quality".
+  Grade it one step below the wrapped model, and keep it out of review, audit and
+  the irreversible step.
+- **Board re-tiered on AA Intelligence Index v5.0.** Bands **S+ 51+ · S 46–50 ·
+  A 39–45 · B 26–38 · C <26**. Highest measured is Gemini 4 Neon at 61. Every
+  grade in this file is stamped on v5.0. v4.3.2 numbers are historical: Gemini 3.8
+  Flash reads 31 now vs 41 then, GLM-5.3-Flash 28 vs 42, MiMo-V2.6-Flash 27 vs 38.
+  **Consequence: A is thin, S+ is Antigravity-only, every free-tier model is B.**
+  Grade any newly added model on v5.0 from `models-research-handbook.md`; re-check
+  every score within ~3 pts of a band edge (B/A edge at 38/39, S/S+ edge at 50/51).
+- **Quota gating:** the Antigravity plan is bound by a 5-hour window plus a weekly
+  cap. Neon at Medium and Opus 5.5 at High are both heavy draws — route worthy
+  tasks first, never run them as a background worker, and watch the reset window.
 - **Terminal-Bench 4.0 weak:** M1's 19.1% plus its v5.0 index of 31 keeps it B — do not route the hardest long-horizon agent suites here as if it were frontier-class.
 - **No S+ on Freebuff:** FB-10 Gemini 4 Argon is now **S (50)**, 9 pts under F —
   it was re-graded down on v5.0. It stays the harness's best (1 session/day), but

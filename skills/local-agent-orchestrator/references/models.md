@@ -24,16 +24,24 @@ Hard caps at rank 6 and 7 are one-shot budgets. Check the remainder before spend
 
 ## Antigravity
 
-One paid Google AI Pro plan plus six free accounts. Switch accounts in the app; the plan does not change mid-session.
+One paid Google AI Pro plan plus six free accounts. Switch accounts in the app; the plan does not change mid-session. Effort is selectable per model, and the picker offers Low / Medium / High unless the row says otherwise.
 
-| # | Model | Effort | Pool | Availability |
-| --- | --- | --- | --- | --- |
-| AG-1 | Gemini 3.8 Flash | Low / Medium / High | Pro + all 6 free | confirmed in picker |
-| AG-2 | Claude Opus 5.5 | tier not surfaced | Pro only | confirmed in picker |
-| AG-3 | Claude Sonnet 5.5 | tier not surfaced | Pro only | confirmed in picker |
-| AG-4 | Claude Opus 4.6 | default | 6 free accounts only | free tier model list |
+| # | Model | Effort | Pool |
+| --- | --- | --- | --- |
+| AG-1 | Gemini 3.8 Flash | Low / Medium / High | Pro + all 6 free |
+| AG-2 | Claude Opus 5.5 | Low / Medium / High | Pro only |
+| AG-3 | Claude Sonnet 5.5 | Low / Medium / High | Pro only |
+| AG-4 | Claude Opus 4.6 | Low / Medium / High | 6 free accounts only |
+| AG-5 | Gemini 4 Neon | Low / Medium / High / Extra High | unconfirmed |
+| AG-6 | Gemini 4 Argon | Low / Medium / High | unconfirmed |
+| AG-7 | Gemini 4 Hydrogen | Low / Medium / High / Extra High | unconfirmed |
+| AG-8 | GPT-OSS 120B | Medium only | unconfirmed, carries a Notice flag |
 
-Free accounts reach AG-1 and AG-4 only. No Neon, Argon, or Hydrogen there. Route free-account work to AG-1 or AG-4, and keep AG-2 / AG-3 for the Pro window.
+Free accounts reach AG-1 and AG-4 only. No Gemini 4 row, no Opus 5.5, no Sonnet 5.5 there.
+
+**Orchestrator** is a pick, not a model. It wraps AG-5, AG-6, or AG-2 and routes routine steps to a faster executor. See capability.md for the guardrail.
+
+Gemini 4 Carbon shows as Unavailable on this plan. Do not route it.
 
 ## OpenCode
 
