@@ -6,8 +6,11 @@ decides.
 
 ## 1. Inventory the deletions
 
-```bash
-git status --porcelain | grep '^ D' | awk '{print $2}' | cut -d/ -f1-2 | sort | uniq -c | sort -rn
+```powershell
+git status --porcelain |
+  Where-Object { $_ -match '^ D' } |
+  ForEach-Object { (($_.Substring(3) -split '/') | Select-Object -First 2) -join '/' } |
+  Group-Object | Sort-Object Count -Descending | Select-Object Count, Name
 ```
 
 Group by the first two path segments. This tells you whether the cleanup is one coherent
@@ -26,6 +29,9 @@ Three dependency channels, and source imports cover only the first:
 A config or doc that no code imports can still be `json.loads(...)`'d or
 `read_text()`'d by a test. Grep tests for the basename **before** reading the file to
 judge whether it is stale — judgement is not evidence.
+
+On Windows, `grep -rn "<basename>" --include=*.py .` is
+`Get-ChildItem -Recurse -Include *.py | Select-String "<basename>"`.
 
 ## 3. Let the suite arbitrate
 
@@ -78,3 +84,19 @@ The operator asked for a verdict, not a log. Lead with the count of deletions th
 load-bearing and that they are restored + tests green. Then one table of file → why it
 broke. Then the structure/policy proposal. Fold "everything else was genuinely stale"
 into a single sentence — do not enumerate the 50 files that were fine.
+
+## 9. Removing a model or a harness from the roster
+
+Roster cuts are a deletion too, and they fail quietly in a different way: the model keeps
+appearing in the skill after it left the picker.
+
+- Cut only after explicit operator approval. Record the date, the reason, and where that
+  work moved instead.
+- Add a live-but-dropped ID to `DROPPED` in `scripts/models-sync.mjs`. Without it, `--check`
+  reports the ID as drift on every run.
+- Do not write a dropped ID as a full `provider/model` inside backticks. The inventory regex
+  counts it as listed, so the gate passes while the roster is wrong. Use plain text.
+- Delete its grade row in `capability.md` and every matrix cell that names it, then grep the
+  ID and the display name across the skill.
+- Keep the removal note inside the surface's own section, not only in the update log.
+- Gate: `node scripts/models-sync.mjs --check` prints `inventory in sync`.
