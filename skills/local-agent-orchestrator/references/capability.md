@@ -250,19 +250,19 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 
 | Task class | Required grade | Harness | Earned by | Notes / risk |
 |---|---|---|---|---|
-| Planning / strategy | S | Antigravity | M2 / M3 | Opus 5.5 at High (52) or Medium (48); Sonnet 5.5 at High (41) is only A. No Freebuff fallback exists — its best row is 36. |
-| Long-horizon agentic coding (build) | S | Antigravity | Orchestrator (Neon + Hydrogen) | The vendor default: Neon at Medium (55) plans and reviews, Hydrogen at High (51) executes. Both S+, so the pair grades S+. Flat Neon or Opus 5.5 High when one model must hold the whole problem — distributed design, concurrency races, multi-repo migrations. |
-| Multi-step review / audit (judgment) | S | Antigravity | M2 | Opus 5.5 is the strongest reviewer here; security-flavored audits may be served by Opus 4.8 via safeguards. |
-| Well-scoped code edits (tests decide) | A | Antigravity | M3 / AG-5 | Sonnet 5.5 at High = 41 = A is the cheap path; Neon at Low (44) also lands in A. M1 (31) as fallback under tests. |
-| Mechanical execution / babysitting | B | Antigravity | M1 / M3 | M1 (31, 22 at low) and M3 at Medium/Low (30/25) are what you can afford to burn; M2 is not. |
-| Research / extraction (no hard guarantees) | S | Antigravity | M2 / AG-5 | Opus 5.5 (HLE 67.7% with tools, GDPval 1846 Elo); Neon at Medium (55) is the cheaper S+ researcher if the window allows. |
-| Final irreversible verification | S+ | Antigravity | AG-5 / AG-7 / M2 | Neon at Medium 55 or above, Hydrogen at High 51, Opus 5.5 at High 52. An Orchestrator pair (Neon Medium + Hydrogen High) also grades S+ and spends less. Prefer Neon Medium (62.9M tokens) over Extra (283M). Keep a human on the final step. |
-| Planning / strategy | S | OpenCode | — | No S on OpenCode — best is OC-3 (32) and OC-5 (27), both B. Plan here only as an explicit downgrade with tests as arbiter, else route to Antigravity M2. |
-| Long-horizon agentic coding (build) | S | OpenCode | — | No S builder on OpenCode — best B supervised only; real S builds go to Antigravity M2. |
-| Multi-step review / audit (judgment) | S | OpenCode | — | No S reviewer on OpenCode — escalate to Antigravity M2. |
-| Well-scoped code edits (tests decide) | A | OpenCode | OC-3 / OC-4 / MiniMax | Required A is unmet (nothing reaches 39): best B is OC-3 DeepSeek 32 proxy, MiniMax 29, OC-4 GLM 28 — explicit downgrade, tests decide. |
+| Planning / strategy | S | Antigravity | AG-6 / AG-2 | Argon at High (50) plans on the Gemini bucket; Opus 5.5 at High (52, S+) is stronger but spends the Claude bucket. Sonnet 5.5 at High (41) is only A. No Freebuff fallback — its best row is 36. |
+| Long-horizon agentic coding (build) | S | Antigravity | Orchestrator (AG-5 + AG-7) | Neon at Medium (55) plans and reviews, Hydrogen at High (51) executes; both S+, so the pair grades S+. Set the executor tier deliberately — Hydrogen at Medium (41) drops the pair to A. Flat AG-5 or AG-2 at High when one model must hold the whole problem: distributed design, concurrency races, multi-repo migrations. |
+| Multi-step review / audit (judgment) | S | Antigravity | AG-2 / AG-6 | Opus 5.5 at High (52) is the strongest reviewer; Argon at High (50) is the cheaper S reviewer. An Orchestrator pair keeps the evidence chain because reviews go to the planner directly. |
+| Well-scoped code edits (tests decide) | A | Antigravity | AG-3 / AG-5 / AG-7 | Sonnet 5.5 at High (41) is the cheap A path; Neon at Low (44) and Hydrogen at Medium (41) also land in A. AG-1 (31, B) only under tests. |
+| Mechanical execution / babysitting | B | Antigravity | AG-1 / AG-3 | Gemini 3.8 Flash (31, 22 at Low) and Sonnet 5.5 at Medium/Low (30/25) are what you can afford to burn. AG-1 is also the only row a free account keeps after Nov 30. |
+| Research / extraction (no hard guarantees) | S | Antigravity | AG-2 / AG-5 | Opus 5.5 (HLE 67.7% with tools, GDPval 1846 Elo); Neon at Medium (55) is the cheaper S+ researcher if the window allows. |
+| Final irreversible verification | S+ | Antigravity | AG-5 / AG-7 / AG-2 | Neon at Medium (55), Hydrogen at High (51), Opus 5.5 at High (52). An Orchestrator pair (Neon Medium + Hydrogen High) also grades S+ and spends less. Prefer Neon Medium (62.9M tokens) over Extra (283M). Keep a human on the final step. |
+| Planning / strategy | S | OpenCode | — | No S on OpenCode — best is OC-3 (32) and OC-5 (27), both B. Plan here only as an explicit downgrade with tests as arbiter, else route to Antigravity AG-6. |
+| Long-horizon agentic coding (build) | S | OpenCode | — | No S builder on OpenCode — best B supervised only; real S builds go to Antigravity AG-5. |
+| Multi-step review / audit (judgment) | S | OpenCode | — | No S reviewer on OpenCode — escalate to Antigravity AG-2. |
+| Well-scoped code edits (tests decide) | A | OpenCode | — | Required A unmet: best is OC-3 DeepSeek (32 proxy), MiniMax (29), OC-4 GLM (28), all B — explicit downgrade, tests decide. |
 | Mechanical execution / babysitting | B | OpenCode | OC-5 / OC-1 / OC-7 | MiMo 27 / Beam 18 / Super VL 14; OC-2 Big Pickle for knowledge-flavored work. |
-| Research / extraction (no hard guarantees) | S | OpenCode | — | No S researcher on OpenCode — OC-2 Big Pickle (Omniscience +43) for low-stakes only; real S research goes to Antigravity M2. |
+| Research / extraction (no hard guarantees) | S | OpenCode | — | No S researcher on OpenCode — OC-2 Big Pickle (Omniscience +43) for low-stakes only; real S research goes to Antigravity AG-2. |
 | Final irreversible verification | S+ | OpenCode | — | No S+ on OpenCode — route the S+ step to Antigravity AG-5 with a human in the loop. |
 | Planning / strategy | S | Freebuff | — | No S here — the best row is FB-6 at 36. S planning runs on Antigravity AG-2 or an Orchestrator pair. |
 | Long-horizon agentic coding (build) | S | Freebuff | — | No S builder. FB-4 (32 proxy) is the fallback only when both Antigravity windows are dry; real S builds go to AG-5. |
@@ -303,12 +303,10 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 - **Three rows retire Nov 30, 2026:** Claude Opus 4.6, Claude Sonnet 4.6 and
   GPT-OSS 120B. After that date a free account has Gemini 3.8 Flash only.
 - **Claude rows are capped at High (Nov 22, 2026):** the picker offers Low /
-  Medium / High only. Opus 5.5 reads 52 / 48 / 35, Sonnet 5.5 reads 41 / 30 / 25,
-  so Sonnet's AA-max 54 is unreachable here. Grade the tier, never the model card.
-- **M3 Claude Sonnet 5.5:** shares the **Claude quota bucket** with M2. AA v5.0
-  ladder High 41 (A) / Medium 30 (B) / Low 25 (C); High is its ceiling on this
-  harness. $2/$10, 1M ctx. Prefer M3 over M2 for cost-sensitive A work; M2 stays
-  the stronger reviewer. Watch the Claude bucket, not just the Gemini one.
+  Medium / High only. Opus 5.5 (AG-2) reads 52 / 48 / 35, Sonnet 5.5 (AG-3) reads
+  41 / 30 / 25, so Sonnet's AA-max 54 is unreachable here. Both draw the **Claude
+  bucket**, separate from the Gemini bucket. Grade the tier, never the model card.
+  Prefer AG-3 for cost-sensitive A work; AG-2 stays the stronger reviewer.
 - **Orchestrator is a planner/executor pair, not a model:** the supported list is closed
   (planners Neon, Carbon, Argon, Opus 5.5; executors Hydrogen, Sonnet 5.5). Questions and
   reviews go to the planner directly, so a review keeps its evidence chain. Grade a run by
@@ -320,13 +318,13 @@ Harness + Earned-by columns pin it to the model actually on that harness.
   A 39–45 · B 26–38 · C <26**. Highest measured is Gemini 4 Neon at 61. Every
   grade in this file is stamped on v5.0. v4.3.2 numbers are historical: Gemini 3.8
   Flash reads 31 now vs 41 then, GLM-5.3-Flash 28 vs 42, MiMo-V2.6-Flash 27 vs 38.
-  **Consequence: A is thin, S+ is Antigravity-only, every free-tier model is B.**
+  **Consequence: A and above exist only on Antigravity, every free-tier model is B.**
   Grade any newly added model on v5.0 from `models-research-handbook.md`; re-check
   every score within ~3 pts of a band edge (B/A edge at 38/39, S/S+ edge at 50/51).
 - **Quota gating:** the Antigravity plan is bound by a 5-hour window plus a weekly
   cap. Neon at Medium and Opus 5.5 at High are both heavy draws — route worthy
   tasks first, never run them as a background worker, and watch the reset window.
-- **Terminal-Bench 4.0 weak:** M1's 19.1% plus its v5.0 index of 31 keeps it B — do not route the hardest long-horizon agent suites here as if it were frontier-class.
+- **Terminal-Bench 4.0 weak:** AG-1's 19.1% plus its v5.0 index of 31 keeps it B — do not route the hardest long-horizon agent suites here as if it were frontier-class.
 - **Freebuff has no S row at all (Nov 22, 2026):** Gemini 4 Argon left the roster,
   so the best remaining score is 36 (B) at 3 h. Freebuff is overflow for B work;
   S and S+ work runs on Antigravity AG-5 or AG-6.

@@ -39,9 +39,10 @@ function loadDotEnv() {
 // Skill ID -> BenchLM modelKey. null = BenchLM has no entry for that model.
 // Variants that share weights map to the base key; the note says so out loud.
 export const IDENTITY = [
-  { id: 'M1', key: 'gemini-3-8-flash' },
-  { id: 'M2', key: 'claude-opus-5-5' },
-  { id: 'M3', key: 'claude-sonnet-5-5' },
+  { id: 'AG-1', key: 'gemini-3-8-flash' },
+  { id: 'AG-2', key: 'claude-opus-5-5' },
+  { id: 'AG-3', key: 'claude-sonnet-5-5' },
+  { id: 'AG-6', key: 'gemini-4-argon' },
   { id: 'OC-1', key: 'reflection-beam' },
   { id: 'OC-2', key: null, note: 'Big Pickle: absent from BenchLM catalog' },
   { id: 'OC-3', key: null, note: 'V4.1 base build absent; only the 1017 refresh is listed' },

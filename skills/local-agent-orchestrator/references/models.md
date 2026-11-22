@@ -148,6 +148,8 @@ Six rows, hand-checked in the app on 2026-11-22. **Nothing here grades above B.*
 
 Dropped from the roster on 2026-11-22: MiMo 2.6 Flash, MiMo 2.6 Flash Fast, MiMo 2.6 Pro, GLM 5.3 Flash, Gemini 4 Argon, DeepSeek V4.1 Flash 1017, and Mercury 3 BYOK. Argon was the only S model here, so Freebuff is now overflow capacity for B work only. Its S and S+ work moved to Antigravity AG-6.
 
+The $8/mo Starter is **kept** with that cut (operator decision, 2026-11-22). 2 h for FB-4 is still the cheapest way to run a real task without touching either Antigravity window.
+
 ## Not routeable
 
 | Harness | Why |
