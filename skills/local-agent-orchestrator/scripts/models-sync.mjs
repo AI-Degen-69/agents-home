@@ -12,9 +12,12 @@ import { fileURLToPath } from 'node:url';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const MODELS = path.resolve(HERE, '..', 'references', 'models.md');
 const ID = /`([a-z0-9][a-z0-9.-]*\/[a-z0-9][a-z0-9.:~_-]*)`/g;
-// Providers the inventory summarizes by category instead of one row per ID,
-// and accounts deliberately left out. Drift there is not actionable.
-const SUMMARY = new Set(['openrouter', 'google', 'sail-heshbon-zevel']);
+// Providers summarized by category instead of one row per ID, plus surfaces the
+// operator deleted from routing. Drift there is not actionable.
+const SUMMARY = new Set(['openrouter', 'google', 'freellmapi', 'sail-heshbon-zevel']);
+// Model IDs the operator reviewed and dropped on purpose. Still live on the
+// provider, never routed. A new ID still shows up as drift.
+const DROPPED = new Set(['opencode/flint-40b-free', 'opencode/iceman-free']);
 
 function live() {
   const out = execSync('opencode models', { encoding: 'utf8' });
@@ -52,7 +55,7 @@ if (process.argv.includes('--self-test')) {
 
 const liveIds = live();
 const listedIds = listed(fs.readFileSync(MODELS, 'utf8'));
-const checked = liveIds.filter((id) => !SUMMARY.has(id.split('/')[0]));
+const checked = liveIds.filter((id) => !SUMMARY.has(id.split('/')[0]) && !DROPPED.has(id));
 const { unlisted, gone } = diff(checked, listedIds);
 
 console.log(`live ${liveIds.length} / checked ${checked.length} / listed ${listedIds.length}`);

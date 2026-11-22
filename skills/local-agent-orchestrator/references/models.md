@@ -12,15 +12,14 @@ Spend top to bottom. A row higher up costs less of what is scarce.
 
 | Rank | Pool | Billing | Ceiling | Notes |
 | --- | --- | --- | --- | --- |
-| 1 | OpenCode free tier | free, daily reset 00:00 Asia/Jerusalem | daily request quota | 11 models, small context on some |
+| 1 | OpenCode free tier | free, daily reset 00:00 Asia/Jerusalem | daily request quota | 9 models, small context on some |
 | 2 | Freebuff | hours per day | Starter: 21 h/day + 60 h/month wallet | unused hours refund when you close early |
 | 3 | Antigravity free account | 6 free accounts | free-tier quota, smaller than Pro | only Gemini 3.8 Flash + Claude Opus 4.6 |
 | 4 | GitHub Copilot Free | 200 chat requests per month | monthly request cap, no overage | CLI only, low model ceiling |
-| 5 | FreeLLMAPI | free router | rate limited | 14 models, provider of last resort |
-| 6 | Antigravity Pro | one Google AI Pro plan | 5-hour + weekly window | best models live here; bank it for hard work |
-| 7 | Inception | 100M free tokens per month, then stop | monthly token cap, never exceeded | no payment beyond the free grant |
-| 8 | sail-ai-degen | $5 free credit per month | monthly dollar cap, never exceeded | no payment beyond the credit |
-| 9 | OpenRouter | free tier | free-tier rate limit | route only `:free` IDs |
+| 5 | Antigravity Pro | one Google AI Pro plan | 5-hour + weekly window | best models live here; bank it for hard work |
+| 6 | Inception | 100M free tokens per month, then stop | monthly token cap, never exceeded | no payment beyond the free grant |
+| 7 | sail-ai-degen | $5 free credit per month | monthly dollar cap, never exceeded | no payment beyond the credit |
+| 8 | OpenRouter | free tier | free-tier rate limit | route only `:free` IDs |
 
 Hard caps at rank 6 and 7 are one-shot budgets. Check the remainder before spending, and report what is left. Never let a task run past a cap because the model looked good.
 
@@ -39,7 +38,7 @@ Free accounts reach AG-1 and AG-4 only. No Neon, Argon, or Hydrogen there. Route
 
 ## OpenCode
 
-Seven providers behind one CLI. The provider prefix is part of the model ID.
+Four documented providers behind one CLI. The provider prefix is part of the model ID.
 
 ### `opencode/*` — daily free tier
 
@@ -47,24 +46,14 @@ Seven providers behind one CLI. The provider prefix is part of the model ID.
 | --- | --- | --- | --- |
 | OC-1 | `opencode/beam-free` | Low → Max | 1M ctx |
 | OC-2 | `opencode/big-pickle` | none | stealth, no effort control |
-| OC-3 | `opencode/deepseek-v4.1-flash-free` | Low / High / Max | 200K ctx on free |
-| OC-4 | `opencode/flint-40b-free` | — | `[unverified]` |
-| OC-5 | `opencode/hy4-flash-free` | — | `[unverified]` |
-| OC-6 | `opencode/iceman-free` | — | `[unverified]` |
-| OC-7 | `opencode/longcat-2.5-free` | none | 1M ctx, slow |
-| OC-8 | `opencode/mimo-v2.6-flash-free` | Low → Max | full effort ladder |
-| OC-9 | `opencode/nemotron-3.5-lightning-free` | none | speed tier |
-| OC-10 | `opencode/nemotron-3.5-super-vl-free` | Low → Extra High | 1M ctx |
-| OC-11 | `opencode/tidepool-alpha-free` | — | `[unverified]` |
-
-Gone since the last inventory: `Nemotron 3 Ultra`, `GLM-5.3-Flash` (now `freellmapi/glm-5.3-flash`).
-
-### `google/*` — Google subscription
-
-25 IDs. Reached with `GEMINI_API_KEY`. The operator states this is covered by the Google subscription, not per-token billing. **Unconfirmed** — a Studio key normally bills per token. Treat it as quota-bound and cheap-first until the usage page proves otherwise.
-
-Usable set: `gemini-4-neon`, `gemini-4-argon`, `gemini-4-hydrogen`, `gemini-4-carbon`, `gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.6-flash`, `gemini-3.5-flash`, `gemini-3.5-flash-lite`, `gemini-3.1-pro-preview`, `gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash-lite`, plus the `-latest` aliases. Research and computer-use previews are not coding models.
-
+| OC-3 | `opencode/deepseek-v4.1-flash-free` | Low / High / Max | 200K ctx on free, strongest free coder |
+| OC-4 | `opencode/longcat-2.5-free` | none | 1M ctx, slow |
+| OC-5 | `opencode/mimo-v2.6-flash-free` | Low → Max | full effort ladder |
+| OC-6 | `opencode/nemotron-3.5-lightning-free` | none | speed tier |
+| OC-7 | `opencode/nemotron-3.5-super-vl-free` | Low → Extra High | 1M ctx |
+| OC-8 | `opencode/hy4-flash-free` | — | answers in ~7s, no benchmark |
+| OC-9 | `opencode/tidepool-alpha-free` | — | answers in ~5s, no benchmark |
+Dropped 2026-11-22: `flint-40b-free`, `iceman-free` (no evidence), `Nemotron 3 Ultra` (gone). `GLM-5.3-Flash` left the tier.
 ### `openrouter/*` — free tier
 
 357 IDs visible, free tier only. Route only IDs ending `:free`; everything else is unavailable:
@@ -72,27 +61,6 @@ Usable set: `gemini-4-neon`, `gemini-4-argon`, `gemini-4-hydrogen`, `gemini-4-ca
 `openrouter/baidu/ernie-5.5-flash-preview:free`, `openrouter/google/gemma-4-26b-a4b-it:free`, `openrouter/google/gemma-4-31b-it:free`, `openrouter/inclusionai/ling-3.2-flash:free`, `openrouter/liquid/lfm-3-1.7b:free`, `openrouter/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free`, `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free`, `openrouter/nvidia/nemotron-3.5-lightning:free`, `openrouter/nvidia/nemotron-3.5-super-vl:free`, `openrouter/particle-ai/particle-1:free`, `openrouter/recursive/flint-v1.0:free`.
 
 The `~vendor/model-latest` aliases are paid routing shortcuts, not free tier.
-
-### `freellmapi/*` — free router
-
-| # | Model ID |
-| --- | --- |
-| FL-1 | `freellmapi/glm-5.3` |
-| FL-2 | `freellmapi/glm-5.3-flash` |
-| FL-3 | `freellmapi/kimi-k3` |
-| FL-4 | `freellmapi/kimi-k2.6` |
-| FL-5 | `freellmapi/deepseek-v4-flash-0731` |
-| FL-6 | `freellmapi/gemini-3.8-flash` |
-| FL-7 | `freellmapi/gemini-3.7-flash` |
-| FL-8 | `freellmapi/gemini-3.6-flash` |
-| FL-9 | `freellmapi/gemini-3.5-flash` |
-| FL-10 | `freellmapi/claude-haiku-4-5` |
-| FL-11 | `freellmapi/claude-sonnet-4-5` |
-| FL-12 | `freellmapi/claude-opus-4-5` |
-| FL-13 | `freellmapi/poolside-laguna-s-2.1` |
-| FL-14 | `freellmapi/auto` |
-
-Rate limited, order not guaranteed. `auto` picks by the router's own rule, so it cannot be priced.
 
 ### `inception/*` — 100M free tokens per month
 
@@ -171,4 +139,5 @@ Blocked on this plan: Opus 5.5, Sonnet 5.5, Fable 5.2, GPT-6.1 Sol, GPT-6 Astra,
 
 ## Update log
 
-- 2026-11-22 — rebuilt from live enumeration. 421 OpenCode IDs across 7 providers; Antigravity reduced to 4 rows after the free-account correction; Cline and Hermes dropped; OpenRouter and Google documented for the first time; four new OpenCode free models added as `[unverified]`; three dead rows removed.
+- 2026-11-22 — pass 1 review with the operator. Dropped `flint-40b-free` and `iceman-free`; probed `hy4-flash-free` (7s) and `tidepool-alpha-free` (5.3s), both unproven and graded C. Removed the `google/*` and `freellmapi/*` surfaces from routing. OpenCode free tier is now 9 rows.
+- 2026-11-22 — rebuilt from live enumeration. 421 OpenCode IDs across 7 providers; Antigravity reduced to 4 rows after the free-account correction; Cline and Hermes dropped; OpenRouter documented for the first time; three dead rows removed.
