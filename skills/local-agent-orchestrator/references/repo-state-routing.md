@@ -26,7 +26,7 @@ Only a human can attribute foreign dirt.
 
 ### Attribution method
 
-1. `git diff --stat <base>...HEAD` — what the branch itself carries. Files in both that diff and the uncommitted diff belong to the branch's issue.
+1. `git diff --stat <base>...HEAD` — what the branch itself carries. A file in both that diff and the uncommitted diff is a clue, not proof: another session may have edited the same path. Treat it as owned only when this session or the operator confirms the edit.
 2. Read the issue header in `tasks/plan.md` or `tasks/todo.md` — it names the attribution target.
 3. Read files that match neither. A handoff doc or new script often names its origin in the first lines.
 4. What remains is unknown-origin. `stat -c '%y' <file>` against the clock confirms a live writer.
@@ -41,12 +41,12 @@ A `D` line is scoped dirt, but the staleness claim is unverified. Deleted files 
 
 ## Routing table
 
-Pick exactly one row. First match wins. PR rows (3–6) apply only when the PR head is this branch — compare `headRefName` with `git branch --show-current`. An open PR on another branch is context, not a blocker.
+Pick exactly one row. First match wins. One exception: an explicit visual-summary request takes row 13 before row 7. PR rows (3–6) apply only when the PR head is this branch — compare `headRefName` with `git branch --show-current`. An open PR on another branch is context, not a blocker.
 
 | # | State | Next |
 | --- | --- | --- |
 | 1 | Clean, on base, synced, no open PR, small clear task | Do it here (Step 2), then commit/push/PR |
-| 2 | Clean, on feature branch, commits unpushed, no PR | `iv-review-build-and-pr` — or `iiib-iterate-after-build` when the operator just reported corrections |
+| 2 | Clean, on feature branch, unmerged commits, no PR | `iv-review-build-and-pr` — or `iiib-iterate-after-build` when the operator just reported corrections |
 | 3 | Open PR, no `coderabbit` review, no trigger from any author | With approval, post `@coderabbitai review` (Station IV wording, never reworded), carry the reply into `v-babysit-pr-and-merge` |
 | 4 | Open PR with change requests or failing checks | `v-babysit-pr-and-merge` |
 | 5 | Open PR green, no change requests, reviews pending | `v-babysit-pr-and-merge` |
@@ -65,6 +65,6 @@ A trigger already posted by anyone is spent. Do not post a second one — it bur
 ## Safety
 
 1. Guide by default. Stop before push, merge, discard, or reset that the operator did not ask for.
-2. Ask before any destructive step.
+2. Ask before any destructive step. A pull or push that refuses because of staged or committed work stops here: keep the work, name the blocker, and ask. Never reset, stash, or force-push it.
 3. Never invent PR state or check results.
 4. When two rows fit, say so in one sentence and take the smaller safer step.

@@ -8,7 +8,7 @@ decides.
 
 ```powershell
 git status --porcelain |
-  Where-Object { $_ -match '^ D' } |
+  Where-Object { $_.Substring(0,2) -match 'D' } |
   ForEach-Object { (($_.Substring(3) -split '/') | Select-Object -First 2) -join '/' } |
   Group-Object | Sort-Object Count -Descending | Select-Object Count, Name
 ```

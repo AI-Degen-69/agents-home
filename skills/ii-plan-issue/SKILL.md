@@ -22,7 +22,7 @@ This skill implements **Station II (Define & Plan)** of the 6-station pipeline (
 
 ### Option A: Invoked with an Issue Number (e.g. `/ii-plan-issue 42`)
 1. **Fetch Issue Details:** Run `gh issue view <number> --comments` — title, body, labels, and all discussion comments.
-2. **Check tree clean first:** Run `git status --short --branch` — if the tree is dirty stop and route to `local-agent-orchestrator` before claiming or branching.
+2. **Check tree clean first:** Run `git status --short --branch`. Dirt that belongs to this issue is expected here - plan against it. Unattributable dirt stops the run: route to `local-agent-orchestrator` before claiming or branching.
 3. **Claim the Issue:** Run `gh issue edit <number> --add-assignee @me` to signal work has begun.
 4. **Create the feature branch:** see canonical rule in Step 0B (`i<number>/<slug>` from the issue title, e.g. issue #69 `Increase button size` → `i69/increase-button-size`).
 5. Set this issue as the primary planning target.

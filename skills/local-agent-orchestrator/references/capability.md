@@ -246,15 +246,14 @@ Free tier only. Paid variants are out of scope.
 
 | Grade | Meaning | Models |
 |---|---|---|
-| B | Light / probe | OR-1 Particle-1 — base-class accuracy at ~45% fewer tokens |
 | C | Weak fit | OR-2 ERNIE 5.5 Flash Preview, OR-3 Nemotron 3 Ultra (AA 12), OR-4 Nemotron 3.5 Super VL (AA 14) |
-| D | Do not route | Nemotron 3.5 Lightning, Nemotron 3 Nano Omni, Gemma 4 31B, Gemma 4 26B-A4B, Ling 3.2 Flash, Flint v1.0, LFM 3 1.7B — no coding evidence above the free bar |
+| D | Do not route | OR-1 Particle-1, Nemotron 3.5 Lightning, Nemotron 3 Nano Omni, Gemma 4 31B, Gemma 4 26B-A4B, Ling 3.2 Flash, Flint v1.0, LFM 3 1.7B - no independent evidence above the free bar |
 
 ### Evidence
 
 | # | Model | Grade | One line | Source |
 |---|---|---|---|---|
-| OR-1 | Particle-1 | B | Vendor DeepSWE 1.1 72.57% vs base 71.15%; ~45% fewer tokens, $0.22 vs $0.34 per task, GPQA 90.4 vs 90.9 — same class as DeepSeek V4.1 Flash, cheaper; vendor-run, no independent re-run; 1.4s probe | particle.ai/blog/introducing-particle-1 |
+| OR-1 | Particle-1 | D | Vendor DeepSWE 1.1 72.57% vs base 71.15%; ~45% fewer tokens, $0.22 vs $0.34 per task, GPQA 90.4 vs 90.9 - same class as DeepSeek V4.1 Flash, cheaper. Capped at D: vendor-only evidence, no independent re-run, one 1.4s probe | particle.ai/blog/introducing-particle-1 |
 | OR-2 | ERNIE 5.5 Flash Preview | C | 280B total / 14B active, 1M ctx, Apache 2.0 weights "soon"; self-described mid-training checkpoint, benchmarks only as an image, no AA page; 2.2s probe | ernie.baidu.com/release/ernie-5-5-flash-preview |
 | OR-3 | Nemotron 3 Ultra | C | AA 12 | artificialanalysis.ai/models/nvidia-nemotron-3-ultra-550b-a55b |
 | OR-4 | Nemotron 3.5 Super VL | C | AA 14, 170M output tokens/task | artificialanalysis.ai/models/nemotron-3-5-super-vl |
@@ -304,14 +303,14 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 | Long-horizon agentic coding (build) | S | Antigravity | Orchestrator (AG-5 + AG-7) | Neon at Medium (55) plans and reviews, Hydrogen at High (51) executes; both S+, so the pair grades S+. Set the executor tier deliberately — Hydrogen at Medium (41) drops the pair to A. Flat AG-5 or AG-2 at High when one model must hold the whole problem: distributed design, concurrency races, multi-repo migrations. |
 | Multi-step review / audit (judgment) | S | Antigravity | AG-2 / AG-6 | Opus 5.5 at High (52) is the strongest reviewer; Argon at High (50) is the cheaper S reviewer. An Orchestrator pair keeps the evidence chain because reviews go to the planner directly. |
 | Well-scoped code edits (tests decide) | A | Antigravity | AG-3 / AG-5 / AG-7 | Sonnet 5.5 at High (41) is the cheap A path; Neon at Low (44) and Hydrogen at Medium (41) also land in A. AG-1 (31, B) only under tests. |
-| Mechanical execution / babysitting | B | Antigravity | AG-1 / AG-3 | Gemini 3.8 Flash (31, 22 at Low) and Sonnet 5.5 at Medium/Low (30/25) are what you can afford to burn. AG-1 is also the only row a free account keeps after Nov 30. |
+| Mechanical execution / babysitting | B | Antigravity | AG-1 / AG-3 | Gemini 3.8 Flash at Medium/High (30/31) and Sonnet 5.5 at Medium (30) are what you can afford to burn. Their Low tiers (22/25) sit below B - explicit downgrade only. AG-1 is also the only row a free account keeps after Nov 30. |
 | Research / extraction (no hard guarantees) | S | Antigravity | AG-2 / AG-5 | Opus 5.5 (HLE 67.7% with tools, GDPval 1846 Elo); Neon at Medium (55) is the cheaper S+ researcher if the window allows. |
 | Final irreversible verification | S+ | Antigravity | AG-5 / AG-7 / AG-2 | Neon at Medium (55), Hydrogen at High (51), Opus 5.5 at High (52). An Orchestrator pair (Neon Medium + Hydrogen High) also grades S+ and spends less. Prefer Neon Medium (62.9M tokens) over Extra (283M). Keep a human on the final step. |
 | Planning / strategy | S | OpenCode | — | No S on OpenCode — best is OC-3 (32) and OC-5 (27), both B. Plan here only as an explicit downgrade with tests as arbiter, else route to Antigravity AG-6. |
 | Long-horizon agentic coding (build) | S | OpenCode | — | No S builder on OpenCode — best B supervised only; real S builds go to Antigravity AG-5. |
 | Multi-step review / audit (judgment) | S | OpenCode | — | No S reviewer on OpenCode — escalate to Antigravity AG-2. |
-| Well-scoped code edits (tests decide) | A | OpenCode | — | Required A unmet: best is OC-3 DeepSeek (32 proxy), MiniMax (29), OC-4 GLM (28), all B — explicit downgrade, tests decide. |
-| Mechanical execution / babysitting | B | OpenCode | OC-5 / OC-1 / OC-7 | MiMo 27 / Beam 18 / Super VL 14; OC-2 Big Pickle for knowledge-flavored work. |
+| Well-scoped code edits (tests decide) | A | OpenCode | - | Required A unmet: best is OC-3 DeepSeek (32 proxy) and OC-5 MiMo (27), both B. OC-4 LongCat 2.5 is C. MiniMax M3.1 Flash (29) is an OpenRouter option, not OpenCode. Explicit downgrade, tests decide. |
+| Mechanical execution / babysitting | B | OpenCode | OC-5 / OC-2 / OC-3 | OC-5 MiMo 27, OC-3 DeepSeek 32 and OC-2 Big Pickle clear B. OC-1 Beam 18 and OC-7 Super VL 14 sit below B - explicit downgrade only, never a default. |
 | Research / extraction (no hard guarantees) | S | OpenCode | — | No S researcher on OpenCode — OC-2 Big Pickle (Omniscience +43) for low-stakes only; real S research goes to Antigravity AG-2. |
 | Final irreversible verification | S+ | OpenCode | — | No S+ on OpenCode — route the S+ step to Antigravity AG-5 with a human in the loop. |
 | Planning / strategy | S | Freebuff | — | No S here — the best row is FB-6 at 36. S planning runs on Antigravity AG-2 or an Orchestrator pair. |
@@ -327,7 +326,7 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 > so this harness can meet the mechanical and well-scoped rows and nothing above
 > them.
 >
-> **Mercury 3 (OC-10) is graded C** — below every required grade in this matrix,
+> **Mercury 3 (IN-1) is graded C** - below every required grade in this matrix,
 > so it earns **no matrix row**. It is a *probe* instrument: run it on a cheap,
 > reversible task (a draft, a first pass, a latency-sensitive loop) and let a
 > graded model decide. It must never take the S/S+/irreversible slot.
@@ -379,7 +378,7 @@ Harness + Earned-by columns pin it to the model actually on that harness.
   so the best remaining score is 36 (B) at 3 h. Freebuff is overflow for B work;
   S and S+ work runs on Antigravity AG-5 or AG-6.
 - **OpenCode has no S or S+:** best available is B — OC-3 DeepSeek 32 proxy,
-  MiniMax 29, OC-4 GLM 28. S work routes to Antigravity. The task matrix reflects
+  OC-5 MiMo 27, OC-2 Big Pickle. S work routes to Antigravity. The task matrix reflects
   the gap honestly.
 - **Nemotron 3 Ultra is C on the v5.0 page (12):** the 47.7 partner figure was a
   v4.3.2-scale number and cannot lift it — guardrailed only.
@@ -397,7 +396,7 @@ Harness + Earned-by columns pin it to the model actually on that harness.
   FB-1, FB-2, FB-3, FB-7, FB-10, FB-11 and FB-12 are retired ids; FB-13 is the
   only addition (Muse Ember). Read `models.md` before quoting any FB id.
 - **OpenCode free context caps:** DeepSeek V4.1 Flash Free and GLM-5.3-Flash Free are capped at 200K context (paid = 1M); verify the cap serves the task before routing.
-- **Mercury 3 (OC-10) — C, probe-only, five hard flags:**
+- **Mercury 3 (IN-1) - C, probe-only, five hard flags:**
   (1) **No AA page** — nothing independent has reproduced the vendor claim;
   the AA family prior (Mercury 2 = 11, Mercury 2.5 = 12) points well below
   Luna 28 / Haiku 36 on v5.0, so "beats Luna/Haiku" is a statement about Inception's

@@ -73,7 +73,7 @@ git fetch origin && git rev-list --left-right --count HEAD...origin/<base>
 
 Requirements, all required:
 
-- On the **base branch** (`main` / `master`) — the lane pushes there directly, so a wrong branch means a wrong target.
+- On the **base branch** (`main` / `master`) - the lane pushes there directly, so a wrong branch means a wrong target. On any other branch, stop, make no commit, and route to `local-agent-orchestrator`.
 - **Only the lane's own work in the tree.** Two cases are normal and both pass:
   a **clean tree** (Station I, II, III diverts), and the **Station IV handoff** — the gated files already staged on the base branch by `git merge --squash`, which is exactly what that divert produces. Any *other* changed file, or unpushed commits belonging to different work, is foreign dirt → route to `local-agent-orchestrator`. Never absorb another stream's changes, and never stash them away to make the tree look clean.
 - **In sync** with `origin/<base>`. If behind, `git pull --ff-only` first. If that pull is refused because it would overwrite the staged handoff, stop and route to `local-agent-orchestrator` — never reset or stash away the lane's own work to force it through.

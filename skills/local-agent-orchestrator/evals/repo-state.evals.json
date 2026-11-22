@@ -105,7 +105,7 @@
         {
           "id": "routes-to-station-iv",
           "type": "regex",
-          "pattern": "Clean, on feature branch, commits unpushed, no PR.*iv-review-build-and-pr",
+          "pattern": "Clean, on feature branch, unmerged commits, no PR.*iv-review-build-and-pr",
           "must_match": true,
           "why": "unpushed commits on a feature branch route to Station IV"
         },

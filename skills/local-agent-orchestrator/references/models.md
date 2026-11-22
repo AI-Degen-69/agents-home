@@ -102,7 +102,7 @@ Dropped 2026-11-22: `flint-40b-free`, `iceman-free` (no evidence), `Nemotron 3 U
 
 | # | Model ID | Grade | Note |
 | --- | --- | --- | --- |
-| OR-1 | `openrouter/particle-ai/particle-1:free` | B | base-class accuracy, ~45% fewer tokens; 1.4s probe |
+| OR-1 | `openrouter/particle-ai/particle-1:free` | D | base-class accuracy, ~45% fewer tokens; 1.4s probe; vendor-only evidence |
 | OR-2 | `openrouter/baidu/ernie-5.5-flash-preview:free` | C | 280B/14B active, 1M ctx, preview; 2.2s probe |
 | OR-3 | `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free` | C | AA 12 |
 | OR-4 | `openrouter/nvidia/nemotron-3.5-super-vl:free` | C | AA 14, verbose |

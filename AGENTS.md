@@ -63,7 +63,7 @@ Run one entry router per request and at most one handoff:
 2. **Ad-hoc work** (questions, small fixes, research) → `using-agent-skills`.
 3. **New idea with no open issue** → `create-issue`, then back to `i-pick-issue`.
 
-Only `local-agent-orchestrator` inspects git and PR state. If two paths tie, pick the safer path. Ask one short question if intent stays unclear.
+Only `local-agent-orchestrator` inspects git and PR state to choose a route. A station still runs its own checks inside its own step. If two paths tie, pick the safer path. Ask one short question if intent stays unclear.
 
 ## Domain & UI Skill Routing
 
