@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מנהל הפרויקט שיושב בתיקייה</title>
+<style>
+  :root{
+    --bg:#0d0b08; --panel:#17130d; --panel-2:#1f1a12; --line:#332a1c;
+    --ink:#f3ede2; --muted:#a99c88; --accent:#f0b429; --accent-soft:#3a2c10;
+    --stop:#e2725b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Heebo",Arial,sans-serif;
+    line-height:1.65; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 20px 72px}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(240,180,41,.35)}
+  a:hover{border-bottom-color:var(--accent)}
+  code,[dir="ltr"]{font-family:ui-monospace,SFMono-Regular,"Cascadia Code",Consolas,monospace;font-size:.92em}
+  .meta{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    font-size:13px;color:var(--muted);margin-bottom:26px
+  }
+  .meta .dot{width:4px;height:4px;border-radius:50%;background:var(--line)}
+  h1{font-size:clamp(28px,4.4vw,46px);line-height:1.15;margin:0 0 14px;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lede{font-size:clamp(16px,1.9vw,19px);color:#ddd4c5;margin:0 0 22px;max-width:62ch}
+  .claim{
+    border-right:3px solid var(--accent);background:var(--panel);
+    padding:14px 18px;border-radius:8px;max-width:64ch;
+    font-size:15px;color:#cfc5b4
+  }
+  .claim b{color:var(--ink)}
+  section{margin-top:56px}
+  h2{font-size:clamp(20px,2.4vw,25px);margin:0 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+
+  /* centerpiece: picker */
+  .picker{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:16px;align-items:start}
+  .chips{display:flex;flex-direction:column;gap:8px}
+  .chip{
+    text-align:right;background:var(--panel);color:var(--ink);
+    border:1px solid var(--line);border-radius:9px;padding:11px 13px;
+    cursor:pointer;font:inherit;font-size:14px;line-height:1.4;
+    transition:border-color .15s,background .15s,transform .15s;
+  }
+  .chip:hover{border-color:#4d3d22;transform:translateX(-2px)}
+  .chip[aria-selected="true"]{border-color:var(--accent);background:var(--accent-soft)}
+  .chip .en{display:block;direction:ltr;text-align:left;color:var(--muted);font-size:11.5px;margin-top:4px}
+  .chip[aria-selected="true"] .en{color:#d9b972}
+  .panel{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:20px 22px;min-height:250px;display:flex;flex-direction:column;gap:16px
+  }
+  .field{display:flex;flex-direction:column;gap:5px}
+  .kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .rowtext{direction:ltr;text-align:left;font-size:13.5px;color:#cfc5b4}
+  .next{
+    font-size:clamp(17px,2.1vw,21px);font-weight:650;color:var(--accent);
+    direction:ltr;text-align:left;word-break:break-word
+  }
+  .next[data-stop="1"]{color:var(--stop)}
+  .why{font-size:14.5px;color:#c8bfae;border-top:1px dashed var(--line);padding-top:14px}
+  .why b{color:var(--ink)}
+
+  /* support 1: responsibilities */
+  .rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;counter-reset:r}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px 14px}
+  .card .n{
+    counter-increment:r;font-size:11px;color:var(--accent);
+    letter-spacing:.12em;font-weight:700
+  }
+  .card h3{margin:6px 0 6px;font-size:15.5px}
+  .card p{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
+  .order{
+    margin-top:12px;font-size:13.5px;color:#c8bfae;
+    border-right:3px solid var(--line);padding-right:14px
+  }
+
+  /* support 2: turn shape + gate */
+  .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+  .steps{margin:0;padding:0;list-style:none}
+  .steps li{
+    display:grid;grid-template-columns:26px 1fr;gap:10px;
+    padding:9px 0;border-bottom:1px solid var(--line);font-size:14px
+  }
+  .steps li:last-child{border-bottom:0}
+  .steps .num{
+    width:22px;height:22px;border-radius:50%;background:var(--accent-soft);
+    color:var(--accent);font-size:11.5px;font-weight:700;
+    display:grid;place-items:center
+  }
+  .steps .t{color:var(--ink)}
+  .steps .d{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+  .gate{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .gate h3{margin:0 0 4px;font-size:15.5px}
+  .gate p{margin:0 0 12px;font-size:13px;color:var(--muted)}
+  .cond{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;padding:6px 0}
+  .cond .tick{color:var(--accent);flex:none;font-weight:700}
+  .cond .d{color:var(--muted);font-size:12.5px;display:block}
+
+  /* verification runway */
+  .runway{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .runway ol{margin:14px 0 0;padding-inline-start:20px}
+  .runway li{margin-bottom:14px;font-size:14.5px}
+  .runway li:last-child{margin-bottom:0}
+  .runway .where{color:var(--accent);font-weight:600}
+  .runway .see{color:var(--muted);display:block;font-size:13px;margin-top:3px}
+  .runway .cmd{
+    display:block;direction:ltr;text-align:left;background:#0b0906;border:1px solid var(--line);
+    border-radius:7px;padding:9px 12px;margin-top:7px;font-size:12.5px;color:#d9d0bf;overflow-x:auto
+  }
+  .note{margin-top:16px;font-size:12.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  @media (max-width:820px){
+    .picker{grid-template-columns:1fr}
+    .rail{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .two{grid-template-columns:1fr}
+    .chips{display:grid;grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:520px){
+    .chips{grid-template-columns:1fr}
+    .rail{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta">
+    <span>שינוי שהוכנס</span><span class="dot"></span>
+    <a href="https://github.com/AI-Degen-69/agents-home/pull/45">PR #45</a>
+    <span class="dot"></span>
+    <span><span dir="ltr">local-agent-orchestrator</span></span>
+  </div>
+
+  <header>
+    <h1>מנהל הפרויקט שיושב <em>בתיקייה</em></h1>
+    <p class="lede">
+      עד היום העבודה הייתה תלויה בך: לזכור איפה עצרת, להחליט אם העץ נקי,
+      ולבחור את המודל. עכשיו יש כתובת אחת שקוראת את המצב, בוחרת עבודה אחת,
+      וכותבת את הבריף למי שיבצע.
+    </p>
+    <div class="claim">
+      <b>תפקיד אחד:</b> להעביר משימה קטנה מ״שוכבת על הדיסק״ אל ״ממוזגת״,
+      על המודל הזול שמסוגל לעשות אותה.
+    </div>
+  </header>
+
+  <section aria-labelledby="demo-title">
+    <h2 id="demo-title">בחרו מצב — ותראו את ההחלטה</h2>
+    <p class="sub">לחצו על כרטיס. הטבלה האמיתית בוחרת שורה אחת בלבד. הראשון שמתאים מנצח.</p>
+
+    <div class="picker">
+      <div class="chips" role="tablist" aria-label="מצבי מאגר">
+        <button class="chip" role="tab" aria-selected="true" data-i="0">
+          עץ נקי, על בסיס, אין PR
+          <span class="en">Clean, on base, synced, no open PR, small clear task</span>
+        </button>
+        <button class="chip" role="tab" aria-selected="false" data-i="1">
+          ענף פיצ׳ר עם קומיטים שלא נדחפו
+          <span class="en">Clean, on feature branch, commits unpushed, no PR</span>
+        </button>
+        <button class="chip" role="tab" aria-selected="false" data-i="2">
+          PR פתוח, אף אחד לא ביקש סקירה
+          <span class="en">Open PR, no coderabbit review, no trigger from any author</span>
+        </button>
+        <button class="chip" role="tab" aria-selected="false" data-i="3">
+          PR פתוח עם בדיקות כושלות
+          <span class="en">Open PR with change requests or failing checks</span>
+        </button>
+        <button class="chip" role="tab" aria-selected="false" data-i="4">
+          עץ מלוכלך, משימה קטנה וברורה
+          <span class="en">Dirty, scoped small task, no PR</span>
+        </button>
+        <button class="chip" role="tab" aria-selected="false" data-i="5">
+          לכלוך שאין לו מקור
+          <span class="en">Dirt you cannot attribute</span>
+        </button>
+      </div>
+
+      <div class="panel" role="tabpanel" aria-live="polite">
+        <div class="field">
+          <span class="kicker">השורה בטבלה</span>
+          <span class="rowtext" id="rowText">Clean, on base, synced, no open PR, small clear task</span>
+        </div>
+        <div class="field">
+          <span class="kicker">הצעד הבא</span>
+          <span class="next" id="nextText">Do it here (Step 2), then commit/push/PR</span>
+        </div>
+        <div class="why" id="whyText">
+          הכל נקי ומסונכרן. אין סיבה לפתוח חלון שני — עושים את זה כאן,
+          ומסיימים בקומיט, בדחיפה ובפתיחת PR.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="rail-title">
+    <h2 id="rail-title">ארבעה תפקידים, בסדר הזה</h2>
+    <p class="sub">הסדר הוא לא קישוט. הוא קובע מה גובר כששניים מהם מתנגשים.</p>
+    <div class="rail">
+      <div class="card">
+        <div class="n">1 · GIT</div>
+        <h3>לשמור על הענף</h3>
+        <p>ענף, קומיט, דחיפה, PR, מיזוג, ניקוי. אף פעם לא להשאיר עבודה חצי-נחוצה.</p>
+      </div>
+      <div class="card">
+        <div class="n">2 · SESSION</div>
+        <h3>לבחור חלון</h3>
+        <p>חלון חדש כשהסקופ משתנה. אותו חלון כשממשיכים לחדד פרוסה אחת.</p>
+      </div>
+      <div class="card">
+        <div class="n">3 · QUOTA</div>
+        <h3>לשמור על המכסה</h3>
+        <p>הקיבולת הזולה שמספיקה קודם. כל תקרה קשה נבדקת לפני שמבזבזים.</p>
+      </div>
+      <div class="card">
+        <div class="n">4 · ROUTING</div>
+        <h3>להתאים מודל</h3>
+        <p>המודל הזול שדירוגו מתאים לסוג המשימה — ורק מתוך כלים שמותקנים אצלך.</p>
+      </div>
+    </div>
+    <p class="order">
+      בטיחות Git גוברת על תשובה מהירה. המלצת מודל לא גוברת על מה שכתוב בדיסק.
+    </p>
+  </section>
+
+  <section aria-labelledby="turn-title">
+    <h2 id="turn-title">איך נראית פנייה אחת</h2>
+    <p class="sub">חמישה צעדים. שנים מהם קורים לפני שנכתבות מילה.</p>
+    <div class="two">
+      <ol class="steps">
+        <li><span class="num">1</span><span class="t">קריאת מצב<span class="d">בדיקות קריאה בלבד: עץ, ענפים, קומיטים, PR, פתקים.</span></span></li>
+        <li><span class="num">2</span><span class="t">החלטה מי מבצע<span class="d">כאן, או חלון שני עם בריף.</span></span></li>
+        <li><span class="num">3</span><span class="t">כתיבת הבריף<span class="d">משימה, אמת קרקע, צעד Git, ומה להחזיר.</span></span></li>
+        <li><span class="num">4</span><span class="t">ניתוב<span class="d">תיקייה, חלון, ומודל.</span></span></li>
+        <li><span class="num">5</span><span class="t">בדיקת החזרה<span class="d">הטענות נבדקות מול הדיסק, ואז צעד ה-Git.</span></span></li>
+      </ol>
+
+      <div class="gate">
+        <h3>מתי עושים כאן, ומתי שולחים החוצה</h3>
+        <p>״כאן״ הוא קיצור דרך לטיריוויה, לא ברירת מחדל. ארבעת התנאים חייבים להתקיים יחד:</p>
+        <div class="cond"><span class="tick">✓</span><span>Git יכול להחזיר את זה<span class="d">יש דרך נקייה לבטל.</span></span></div>
+        <div class="cond"><span class="tick">✓</span><span>זה נכנס בבערך 15 דקות<span class="d">משימה, לא פרויקט.</span></span></div>
+        <div class="cond"><span class="tick">✓</span><span>פקודה קיימת מוכיחה שזה עובד<span class="d">לא ״נראה לי״.</span></span></div>
+        <div class="cond"><span class="tick">✓</span><span>אין חשבון חיצוני, מסך, אישור או תשלום<span class="d">אין מה לחסום באמצע.</span></span></div>
+        <p style="margin:12px 0 0;font-size:12.5px">
+          תנאי אחד חסר — הופך לבריף לחלון שני.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="verify-title">
+    <h2 id="verify-title">איך בודקים שזה עובד אצלך</h2>
+    <p class="sub">שתי דקות, בתוך החלון שלך. אין מה להתקין.</p>
+    <div class="runway">
+      <ol>
+        <li>
+          <span class="where">פתח חלון סוכן חדש בתיקיית הפרויקט.</span>
+          <span class="see">זה החלון שבו אתה עובד בדרך כלל — לא קובץ תצוגה.</span>
+        </li>
+        <li>
+          <span class="where">שאל: ״where were we״</span>
+          <span class="see">הכישור אמור להיכנס לפעולה, לקרוא את המצב, ולהחזיר דוח קצר.</span>
+        </li>
+        <li>
+          <span class="where">בדוק שהדוח בנוי משלושה חלקים:</span>
+          <span class="see">
+            שורה אחת של מצב → קישורי עבודה או ״אין״ → שורת
+            <span dir="ltr">Found</span> קצרה. ואחריה צעד אחד מומלץ.
+            לא רשימת קבצים, לא פלט פקודות.
+          </span>
+        </li>
+        <li>
+          <span class="where">בדוק את מקרה העצירה: שים קובץ שלא שייך לשום משימה.</span>
+          <span class="see">
+            הוא חייב לעצור ולשאול שאלה אחת — ״של מי העבודה הזאת?״ —
+            ולא לנתב לפי גודל, ולא לגעת בקובץ.
+          </span>
+        </li>
+        <li>
+          <span class="where">אם רוצים לראות את הקלט הגולמי מאחורי הדוח:</span>
+          <span class="cmd">node skills/local-agent-orchestrator/scripts/repo-triage.js</span>
+          <span class="see">
+            תראה כותרת <span dir="ltr">Forensic Repository Triage</span>, ואחריה
+            עץ עבודה, ענפים, worktrees, stashes ו-PRs פתוחים.
+          </span>
+        </li>
+      </ol>
+      <p class="note">
+        אם פקודת <span dir="ltr">gh</span> נכשלת, הדוח יכתוב שורת
+        <span dir="ltr">WARN</span> ולא יציג ״אפס PRs פתוחים״ כברירת מחדל.
+        זו השאלה שהכי קל לטעות בה — והיא עכשיו גלויה.
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var rows = [
+    {
+      row: "Clean, on base, synced, no open PR, small clear task",
+      next: "Do it here (Step 2), then commit/push/PR",
+      why: "הכל נקי ומסונכרן. אין סיבה לפתוח חלון שני — עושים את זה כאן, ומסיימים בקומיט, בדחיפה ובפתיחת PR.",
+      stop: false
+    },
+    {
+      row: "Clean, on feature branch, commits unpushed, no PR",
+      next: "iv-review-build-and-pr",
+      why: "העבודה קיימת על הענף אבל עוד לא נדחפה ולא נפתח PR. השלב הבא הוא סקירה, אימות ופתיחת PR.",
+      stop: false
+    },
+    {
+      row: "Open PR, no coderabbit review, no trigger from any author",
+      next: "With approval, post @coderabbitai review",
+      why: "PR פתוח ואף אחד עוד לא ביקש סקירה. מבקשים אישור, מפרסמים את הטריגר בנוסח הקבוע, ומעבירים את התשובה לשלב הבא.",
+      stop: false
+    },
+    {
+      row: "Open PR with change requests or failing checks",
+      next: "v-babysit-pr-and-merge",
+      why: "יש מה לתקן או מה להמתין לו. שלב הליווי מטפל בהערות, בשלבים ירוקים, ובמיזוג.",
+      stop: false
+    },
+    {
+      row: "Dirty, scoped small task, no PR",
+      next: "iii-build-plan",
+      why: "העץ מלוכלך אבל השיוך ברור: השינויים שייכים למשימה הזאת ורק לה. זו עבודת בנייה, לא ניהול.",
+      stop: false
+    },
+    {
+      row: "Dirt you cannot attribute is never routed by size",
+      next: "STOP — ask one question",
+      why: "לכלוך שאין לו מקור לא מנותב לפי גודל. לא stashing, לא מחיקה, לא קומיט, לא ענף חדש. שואלים שאלה אחת: של מי העבודה הזאת?",
+      stop: true
+    }
+  ];
+
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var rowText = document.getElementById('rowText');
+  var nextText = document.getElementById('nextText');
+  var whyText = document.getElementById('whyText');
+
+  function pick(i) {
+    var r = rows[i];
+    if (!r) return;
+    chips.forEach(function (c, idx) {
+      c.setAttribute('aria-selected', idx === i ? 'true' : 'false');
+    });
+    rowText.textContent = r.row;
+    nextText.textContent = r.next;
+    nextText.setAttribute('data-stop', r.stop ? '1' : '0');
+    whyText.textContent = r.why;
+  }
+
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () { pick(Number(c.dataset.i)); });
+  });
+
+  pick(0);
+})();
+</script>
+</body>
+</html>
