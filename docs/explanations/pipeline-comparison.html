@@ -284,8 +284,8 @@
     <div class="flow-col">
       <div class="col-title hermes">🔷 Hermes Pipeline (Stations I–VI)</div>
       <div class="stage hermes">
-        <div class="stage-name">Pipeline-Triage <span class="align-badge align-red">Unique</span></div>
-        <div class="stage-desc">State gate: dirty tree, unpushed commits, open PR. <span class="stage-skill">pipeline-triage</span></div>
+        <div class="stage-name">Local Agent Orchestrator <span class="align-badge align-red">Unique</span></div>
+        <div class="stage-desc">State gate + routing: dirty tree, unpushed commits, open PR. <span class="stage-skill">local-agent-orchestrator</span></div>
       </div>
       <div class="stage hermes">
         <div class="stage-name">Create-Issue <span class="align-badge align-red">Unique</span></div>
@@ -354,7 +354,7 @@
       <tr>
         <td>0</td>
         <td><span class="tag tag-mattopocock">—</span> No gate</td>
-        <td><span class="tag tag-hermes">pipeline-triage</span> Inspects git/PR state, starts CR early</td>
+        <td><span class="tag tag-hermes">local-agent-orchestrator</span> Inspects git/PR state, picks one route</td>
         <td><span class="tag tag-unique">Hermes</span> Lead gate missing</td>
       </tr>
       <tr>
@@ -478,7 +478,7 @@
         <h3>Matt Pocock ← Hermes</h3>
       </div>
       <ul>
-        <li><strong>Pipeline-triage gate</strong> — check dirty tree / unpushed commits / open PR before starting work</li>
+        <li><strong>Local-agent-orchestrator gate</strong> — check dirty tree / unpushed commits / open PR before starting work</li>
         <li><strong>Station III-B feedback loop</strong> — structured corrections between build and review (not just retro after)</li>
         <li><strong>Quick-fix fast lane</strong> — trivial work bypasses the entire pipeline straight to main</li>
         <li><strong>Clean Exit Gate</strong> — 7-check verification (merge, base sync, no leftover branches, zero open findings) before declaring done</li>
@@ -505,7 +505,7 @@
       <tr><td>Clean exit verification</td><td>None (implicit)</td>
       <td>7-check Clean Exit Gate (merge, sync, prune, no stashes, zero findings)</td></tr>
       <tr><td>Fast lane for trivial work</td><td>No</td><td>Yes (quick-fix at 4 divert points)</td></tr>
-      <tr><td>State gate before work</td><td>No</td><td>Yes (pipeline-triage)</td></tr>
+      <tr><td>State gate before work</td><td>No</td><td>Yes (local-agent-orchestrator)</td></tr>
     </tbody>
   </table>
 </div>
