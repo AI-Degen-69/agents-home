@@ -14,8 +14,8 @@ Spend top to bottom. A row higher up costs less of what is scarce.
 | --- | --- | --- | --- | --- |
 | 1 | OpenCode free tier | free, daily reset 00:00 Asia/Jerusalem | daily request quota | 9 models, small context on some |
 | 2 | Freebuff | hours per day | Starter: 21 h/day + 60 h/month wallet | unused hours refund when you close early |
-| 3 | Antigravity free account | 6 free accounts | free-tier quota, smaller than Pro | only Gemini 3.8 Flash + Claude Opus 4.6 + Sonnet 4.6 |
-| 4 | Antigravity Pro | one Google AI Pro plan | 5-hour + weekly window | best models live here; bank it for hard work |
+| 3 | Antigravity free account | 6 free accounts | free-tier quota, smaller than Pro | Gemini 3.8 Flash only after Nov 30 |
+| 4 | Antigravity Pro | one Google AI Pro plan | **two buckets**: Gemini; Claude + GPT. Each 5-hour + weekly | best models live here; bank it for hard work |
 | 5 | Inception | 100M free tokens per month, then stop | monthly token cap, never exceeded | no payment beyond the free grant |
 | 6 | sail-ai-degen | $5 free credit per month | monthly dollar cap, never exceeded | no payment beyond the credit |
 | 7 | OpenRouter | free tier | free-tier rate limit | route only `:free` IDs |
@@ -24,25 +24,54 @@ Hard caps at rank 6 and 7 are one-shot budgets. Check the remainder before spend
 
 ## Antigravity
 
-One paid Google AI Pro plan plus six free accounts. Switch accounts in the app; the plan does not change mid-session. Effort is selectable per model, and the picker offers Low / Medium / High unless the row says otherwise.
+One paid Google AI Pro plan plus six free accounts. **Two quota buckets, not one:** the
+Gemini models draw on a Gemini bucket, and the Claude and GPT models draw on a separate
+bucket. Each has a five-hour window and a weekly window. Burning a Claude run does not
+touch the Gemini pool, so an Orchestrator run that plans on Claude and executes on Hydrogen
+splits its cost across both.
 
-| # | Model | Effort | Pool |
-| --- | --- | --- | --- |
-| AG-1 | Gemini 3.8 Flash | Low / Medium / High | Pro + all 6 free |
-| AG-2 | Claude Opus 5.5 | Low / Medium / High | Pro only |
-| AG-3 | Claude Sonnet 5.5 | Low / Medium / High | Pro only |
-| AG-4 | Claude Opus 4.6 | Low / Medium / High | 6 free accounts only |
-| AG-5 | Gemini 4 Neon | Low / Medium / High / Extra High | Pro only |
-| AG-6 | Gemini 4 Argon | Low / Medium / High | Pro only |
-| AG-7 | Gemini 4 Hydrogen | Low / Medium / High / Extra High | Pro only |
-| AG-8 | GPT-OSS 120B | Medium only | unconfirmed, carries a Notice flag |
-| AG-9 | Claude Sonnet 4.6 | Low / Medium / High | 6 free accounts only |
+### Models
 
-Free accounts reach AG-1, AG-4 and AG-9 only: Gemini 3.8 Flash plus the two deprecated Claude 4.6 models. That is B at best, so **every S and S+ path needs the Pro plan**.
+| # | Model | Thinking | Plan | Note |
+| --- | --- | --- | --- | --- |
+| AG-1 | Gemini 3.8 Flash | Low / Medium / High | Free, Pro, Ultra, Enterprise | the only model left on Free after Nov 30 |
+| AG-2 | Claude Opus 5.5 (Thinking) | Low / Medium / High | Pro paid (non-trial), Ultra, Enterprise | can be the planner |
+| AG-3 | Claude Sonnet 5.5 (Thinking) | Low / Medium / High | Pro paid (non-trial), Ultra, Enterprise | can be the executor |
+| AG-4 | Claude Opus 4.6 (Thinking) | Low / Medium / High | Free and Pro | **removed Nov 30, 2026** |
+| AG-5 | Gemini 4 Neon | Low / Medium / High / Extra | Pro (paid or premium-device trial), Ultra | default model; 512K ctx here, not 1M |
+| AG-6 | Gemini 4 Argon | Low / Medium / High | Pro†, Ultra | can be the planner |
+| AG-7 | Gemini 4 Hydrogen | Low / Medium / High / Extra | Pro paid (non-trial), Ultra | default executor |
+| AG-8 | GPT-OSS 120B | Medium only | Free and Pro | **removed Nov 30, 2026** |
+| AG-9 | Claude Sonnet 4.6 (Thinking) | Low / Medium / High | Free and Pro | **removed Nov 30, 2026** |
+| AG-10 | Gemini 4 Carbon | Low / Medium / High | **Ultra only** | shows Unavailable on Pro |
 
-**Orchestrator** is a pick, not a model. It wraps AG-5, AG-6, or AG-2 and routes routine steps to a faster executor. It is a cost mode: same ceiling, fewer tokens, no provenance. See capability.md for when to pick it over the flat model.
+Enterprise-only rows: Gemini 3.7 Flash, Gemini 3.6 Flash, Gemini 3.1 Pro.
 
-Gemini 4 Carbon shows as Unavailable on this plan. Do not route it.
+Free accounts reach AG-1, AG-4, AG-8 and AG-9 today, and **only AG-1 after Nov 30, 2026**.
+That is B at best, so every S and S+ path needs the paid Pro plan.
+
+The App and CLI map the tiers as Low / Medium / High / Extra (CLI: `--effort xhigh`,
+`--model gemini-4-neon-xhigh`). Medium is the default on every Gemini 4 row.
+
+### Orchestrator — two roles, one conversation
+
+Not a model. It pairs a **planner** with an **executor** inside one session.
+
+| Role | What it does | Supported |
+| --- | --- | --- |
+| Planner | explores the codebase, writes the plan, reviews progress, answers questions | Gemini 4 Neon (default), Gemini 4 Carbon, Gemini 4 Argon, Claude Opus 5.5 |
+| Executor | searches, edits files, runs builds and tests, verifies against the plan | Gemini 4 Hydrogen (default), Claude Sonnet 5.5 |
+
+- Defaults: **Settings > Models > Orchestrator Settings**. Per-conversation planner override:
+  hover Orchestrator in the App. CLI: one Orchestrator row with a Planner selector, executor
+  pinned to Hydrogen. Enterprise: Carbon High + Hydrogen High, fixed.
+- Flow: read-only plan → executor implements → control returns on friction (a verification
+  failing twice, an interface that behaves differently, a design choice the plan left open)
+  → planner repairs the plan and hands back. On long tasks the planner reviews progress, and
+  it reviews again whenever you send a message.
+- A question, review, or explanation is answered by the **planner directly**. It is not
+  delegated to the executor.
+- Vendor measure: Terminal-Bench 4.1 near-Carbon task success, **24% less quota, 19% faster**.
 
 ## OpenCode
 

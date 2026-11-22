@@ -48,81 +48,81 @@ rule). Add a new harness by copying the block and renaming.
 
 ## Antigravity
 
-The Pro plan holds the only S+ models in the inventory. Effort is selectable, so the
-grade depends on the tier picked. Each row lists the ladder.
+The only S+ surface in the inventory, and the only one where one run can spend two quota
+buckets at once. Grades follow the **selected thinking tier**, because the picker exposes it.
 
 ### Grades (best → worst)
 
 | Grade | Meaning | Models at this tier |
 |---|---|---|
-| S+ | Reserve: irreversible / money-adjacent / subtle-invariant work | AG-5 Neon (medium, high, extra high), AG-2 Opus 5.5 (high), AG-7 Hydrogen (high, extra high) |
-| S | Top: long-horizon agentic coding, multi-step reasoning, review | AG-6 Argon (high, medium), AG-2 Opus 5.5 (medium) |
-| A | Competent: well-scoped edits under tests, straightforward research | AG-5 Neon (low), AG-3 Sonnet 5.5 (high), AG-7 Hydrogen (medium) |
-| B | Light / probe: mechanical work, babysitting, free verification passes | AG-1 Gemini 3.8 Flash (medium, high), AG-3 Sonnet 5.5 (medium), AG-2 Opus 5.5 (low), AG-7 Hydrogen (low) |
-| C | Weak fit: below the bar, deprecated, or unverified | AG-4 Opus 4.6, AG-9 Sonnet 4.6, AG-3 Sonnet 5.5 (low), AG-1 Gemini 3.8 Flash (low), AG-8 GPT-OSS 120B |
+| S+ | Reserve: irreversible / money-adjacent / subtle-invariant work | AG-5 Neon (Medium 55, High 60, Extra 61), AG-7 Hydrogen (High 51, Extra 54), AG-2 Opus 5.5 (High 52), AG-10 Carbon (Ultra only) |
+| S | Top: long-horizon agentic coding, multi-step reasoning, review | AG-6 Argon (High 50), AG-2 Opus 5.5 (Medium 48) |
+| A | Competent: well-scoped edits under tests, straightforward research | AG-5 Neon (Low 44), AG-3 Sonnet 5.5 (High 41), AG-7 Hydrogen (Medium 41) |
+| B | Light / probe: mechanical work, babysitting, free verification passes | AG-1 Gemini 3.8 Flash (Medium 30, High 31), AG-2 Opus 5.5 (Low 35), AG-3 Sonnet 5.5 (Medium 30), AG-7 Hydrogen (Low 27) |
+| C | Weak fit: deprecated, retiring, or unverified | AG-4 Opus 4.6, AG-9 Sonnet 4.6, AG-8 GPT-OSS 120B, AG-3 Sonnet 5.5 (Low 25), AG-1 Gemini 3.8 Flash (Low 22) |
 | D | Do not route | none |
 
 ### Evidence
 
 | # | Model | Grade | One line | Source |
 |---|---|---|---|---|
-| AG-5 | Gemini 4 Neon | S+ | AA 61 extra-high / 60 high / 55 medium / 44 low; agentic coding focus; 283M output tokens at extra high vs 62.9M at medium — route Medium | artificialanalysis.ai/models/gemini-4-neon |
-| AG-7 | Gemini 4 Hydrogen | S+ | AA 54 extra-high / 51 high / 41 medium / 27 low; cheapest S+ at $1.50/$7.50, 163 tok/s, but 304M tokens at extra high | artificialanalysis.ai/models/gemini-4-hydrogen |
-| AG-2 | Claude Opus 5.5 | S+ | AA 52 high / 48 medium / 35 low; TB 4.0 66.4% vendor; the picker offers no xhigh or max, so High is the top | artificialanalysis.ai/models/claude-opus-5-5 |
-| AG-6 | Gemini 4 Argon | S | AA 50 high / 48 medium; same model as Freebuff FB-10; slowest row here at 26.2 min/task, $4/$20 | artificialanalysis.ai/models/gemini-4-argon |
-| AG-3 | Claude Sonnet 5.5 | A | AA 41 high / 30 medium / 25 low; no xhigh or max in the picker, so A is its ceiling on this harness | artificialanalysis.ai/models/claude-sonnet-5-5 |
-| AG-1 | Gemini 3.8 Flash | B | AA 31 high / 30 medium / 22 low; TB 4.0 19.1% — cheap supervised path, escalate if it flounders | artificialanalysis.ai/models/gemini-3-8-flash |
-| AG-4 | Claude Opus 4.6 | C | Deprecated; AA withdrew the index (N/A). 1M ctx, $5/$25. Only free-account alternative to AG-1 | artificialanalysis.ai/models/claude-opus-4-6 |
-| AG-8 | GPT-OSS 120B | C | Medium effort only, carries a Notice flag; no AA page read — unverified, probe before routing | picker 2026-11-22 |
-| AG-9 | Claude Sonnet 4.6 | C | Deprecated; AA withdrew the index (N/A). 1M ctx, $3/$15. Free-account row, alongside AG-4 | artificialanalysis.ai/models/claude-sonnet-4-6 |
+| AG-5 | Gemini 4 Neon | S+ | AA 61 Extra / 60 High / 55 Medium / 44 Low; #1 AA Coding Agent Index 58.6; AutomationBench 56.3; 32% cheaper than Carbon at High; 512K ctx on this harness | antigravity.google/docs/models + artificialanalysis.ai/models/gemini-4-neon |
+| AG-7 | Gemini 4 Hydrogen | S+ | AA 54 Extra / 51 High / 41 Medium / 27 Low; TB 4.1 57% vs 3.8 Flash 18.2%; $1.50/$7.50 | antigravity.google/blog/gemini-4-hydrogen-in-google-antigravity |
+| AG-2 | Claude Opus 5.5 | S+ | AA 52 High / 48 Medium / 35 Low; TB 4.0 66.4% vendor; the picker stops at High | artificialanalysis.ai/models/claude-opus-5-5 |
+| AG-6 | Gemini 4 Argon | S | AA 50 High / 48 Medium; slowest row at 26.2 min/task, $4/$20; planner-capable | artificialanalysis.ai/models/gemini-4-argon |
+| AG-10 | Gemini 4 Carbon | S+ | AA 60 highest; the strongest planner listed; Ultra only, so it reads Unavailable on Pro | antigravity.google/docs/models |
+| AG-3 | Claude Sonnet 5.5 | A | AA 41 High / 30 Medium / 25 Low; executor-capable; no Extra tier in the picker | artificialanalysis.ai/models/claude-sonnet-5-5 |
+| AG-1 | Gemini 3.8 Flash | B | AA 31 High / 30 Medium / 22 Low; TB 4.1 18.2% | antigravity.google/docs/models |
+| AG-4 | Claude Opus 4.6 | C | Deprecated, AA index withdrawn; **retires Nov 30, 2026** | artificialanalysis.ai/models/claude-opus-4-6 |
+| AG-9 | Claude Sonnet 4.6 | C | Deprecated, AA index withdrawn; **retires Nov 30, 2026** | artificialanalysis.ai/models/claude-sonnet-4-6 |
+| AG-8 | GPT-OSS 120B | C | Medium only, Notice flag, no AA read; **retires Nov 30, 2026** | picker 2026-11-22 |
 
-**Free accounts top out at B.** AG-1 Gemini 3.8 Flash is the only usable free-tier model, and both Claude 4.6 rows are deprecated with no AA index. Every S and S+ path needs the Pro plan: Neon, Argon, Hydrogen, Opus 5.5, Sonnet 5.5.
+### Orchestrator — grade the pair, not the planner alone
 
-Gemini 4 Carbon appears in the picker as Unavailable. Do not route it.
+It is a planner/executor pair with a documented, closed supported list.
 
-### Orchestrator — a cost mode, not a capability mode
-
-Tooltip: "Offloads routine steps to a faster executor. Same quality, fewer tokens used."
-It wraps AG-5 Neon, AG-6 Argon, or AG-2 Opus 5.5 at Low / Medium / High.
-
-It changes **which model executes a step**. It does not change the ceiling of the model you
-picked and it adds no capability. It trades token spend for provenance.
-
-**Ask one question about each offloaded step: is it evidence, or is it judgment?**
-
-- **Evidence steps** produce something a tool can check: run the tests, read the file, diff,
-  grep, lint, list, build. A wrong one fails loudly.
-- **Judgment steps** produce a claim about the code: what this diff means, whether the design
-  is safe, what the requirement actually is, which test to write.
-
-Orchestrator is safe when it takes **only evidence steps** and a deterministic check runs after
-each one. The judge stays the model you picked, and a bad step is rejected before any conclusion
-exists. It is unsafe when it takes a **comprehension or judgment step**, because a wrong summary
-does not fail loudly. It quietly rewrites the artifact the big model is looking at, so the review
-ends up sound about the summary and wrong about the code, and the unnamed executor hides which.
-
-**So the axis is not build-versus-audit. It is whether the offloaded step can be checked.**
-
-| Situation | Verdict |
+| Role | Models |
 | --- | --- |
-| Long build, tests or compiler after every step | Orchestrator is the cost mode to take |
-| Review where the reviewer reads the diff itself, executor runs tests/lint/build | Orchestrator is fine |
-| Review where the executor summarises the code first | Flat model |
-| Formal audit, incident trail, compliance, security sign-off | Flat model |
-| Migration with subtle invariants, irreversible operation | Flat model |
-| Repo with no test or type checker | Flat model |
+| Planner | Gemini 4 Neon (default), Gemini 4 Carbon (Ultra only), Gemini 4 Argon, Claude Opus 5.5 |
+| Executor | Gemini 4 Hydrogen (default), Claude Sonnet 5.5 |
 
-**Audit stays flat for a reason that is not capability.** Neon does not review worse through an
-orchestrator. But an audit's product is a claim about what was examined. If a delegated step
-condensed the evidence, the audit's scope is the condensation, and you cannot sign for a scope
-you cannot see. That is a provenance limit, not an intelligence limit.
+**Flow.** Read-only planning phase, then the executor implements. Control returns to the
+planner on friction: a verification failing twice, an interface that behaves differently, or a
+design choice the plan left open. The planner also reviews progress on long tasks.
 
-**Grade:** the run's ceiling is X's grade. The effective grade is one step lower until a
-deterministic check gates every offloaded step.
+**A review is not delegated.** A question, review, or explanation is answered by the planner
+directly. That is why a review through Orchestrator keeps its evidence chain intact: Neon reads
+the code, not a summary of it.
 
-**First use is an A/B, not a default.** Run one representative task flat on Neon Medium, then
-the same task through Orchestrator-on-Neon-Medium. Compare pass rate and window spent, and
-record both numbers here. Until that exists, treat the mode as unverified.
+**Grading rule.** Both roles are graded. A run's grade is the **lower of the two** tiers in use,
+not the planner's alone. Orchestrator-on-Neon-Medium with Hydrogen at High is 55 and 51: both
+S+, so the run is S+ at a fraction of Neon's token cost. Hydrogen at Medium (41) drags the same
+run down to A. Set the executor tier deliberately; it is the cheap half of the pair.
+
+**Use it for:** feature work, bug fixes, refactoring, multi-file debugging, and reviews where
+you want Neon's judgment with Hydrogen's execution. That is the vendor's own recommended default.
+
+**Skip it for:** work where one model must hold the whole problem at maximum depth — designing a
+distributed system from scratch, untangling concurrency races, multi-repo migrations. The docs
+name those cases and route them to a flat Neon, Carbon, or Argon.
+
+**Cost:** vendor measure on Terminal-Bench 4.1 is near-Carbon success at **24% less quota and
+19% faster**. Treat the numbers as vendor-reported; the pair is free to try inside the window.
+
+**Two-bucket trick:** planner on Claude Opus 5.5 draws the Claude bucket, executor Hydrogen draws
+the Gemini bucket. That splits one run across both pools.
+
+### Plan gating
+
+| Row | Free | Pro | Ultra |
+| --- | --- | --- | --- |
+| Gemini 4 Neon, Argon | no | yes | yes |
+| Gemini 4 Hydrogen, Opus 5.5, Sonnet 5.5 | no | paid non-trial only | yes |
+| Gemini 4 Carbon | no | no | yes |
+| Orchestrator | no | yes | yes |
+
+A free account reaches Gemini 3.8 Flash (B) and three rows that retire on Nov 30. It cannot
+close out an S or S+ task on any plan tier.
 
 ## OpenCode
 
@@ -342,12 +342,12 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 | Task class | Required grade | Harness | Earned by | Notes / risk |
 |---|---|---|---|---|
 | Planning / strategy | S | Antigravity | M2 / M3 | Opus 5.5 at High (52) or Medium (48); Sonnet 5.5 at High (41) is only A. Fallback Freebuff FB-10 (Argon 50). |
-| Long-horizon agentic coding (build) | S | Antigravity | M2 / AG-5 | Opus 5.5 at High (52, TB 4.0 66.4% vendor) or Gemini 4 Neon at Medium (55, cheaper per token). Orchestrator-on-Neon-Medium is the cost mode for a long build that tests gate. M1 (B) supervised only. |
+| Long-horizon agentic coding (build) | S | Antigravity | Orchestrator (Neon + Hydrogen) | The vendor default: Neon at Medium (55) plans and reviews, Hydrogen at High (51) executes. Both S+, so the pair grades S+. Flat Neon or Opus 5.5 High when one model must hold the whole problem — distributed design, concurrency races, multi-repo migrations. |
 | Multi-step review / audit (judgment) | S | Antigravity | M2 | Opus 5.5 is the strongest reviewer here; security-flavored audits may be served by Opus 4.8 via safeguards. |
 | Well-scoped code edits (tests decide) | A | Antigravity | M3 / AG-5 | Sonnet 5.5 at High = 41 = A is the cheap path; Neon at Low (44) also lands in A. M1 (31) as fallback under tests. |
 | Mechanical execution / babysitting | B | Antigravity | M1 / M3 | M1 (31, 22 at low) and M3 at Medium/Low (30/25) are what you can afford to burn; M2 is not. |
 | Research / extraction (no hard guarantees) | S | Antigravity | M2 / AG-5 | Opus 5.5 (HLE 67.7% with tools, GDPval 1846 Elo); Neon at Medium (55) is the cheaper S+ researcher if the window allows. |
-| Final irreversible verification | S+ | Antigravity | AG-5 / AG-7 / M2 | Selectable at last: Neon at Medium 55 or above, Hydrogen at High 51 or above, Opus 5.5 at High 52. Prefer Neon at Medium (62.9M tokens) over Extra High (283M). Keep a human on the final step. |
+| Final irreversible verification | S+ | Antigravity | AG-5 / AG-7 / M2 | Neon at Medium 55 or above, Hydrogen at High 51, Opus 5.5 at High 52. An Orchestrator pair (Neon Medium + Hydrogen High) also grades S+ and spends less. Prefer Neon Medium (62.9M tokens) over Extra (283M). Keep a human on the final step. |
 | Planning / strategy | S | OpenCode | — | No S on OpenCode — best is OC-3 (32) and OC-5 (27), both B. Plan here only as an explicit downgrade with tests as arbiter, else route to Antigravity M2. |
 | Long-horizon agentic coding (build) | S | OpenCode | — | No S builder on OpenCode — best B supervised only; real S builds go to Antigravity M2. |
 | Multi-step review / audit (judgment) | S | OpenCode | — | No S reviewer on OpenCode — escalate to Antigravity M2. |
@@ -377,13 +377,19 @@ Harness + Earned-by columns pin it to the model actually on that harness.
 
 ## Risk flags
 
-- **S+ exists, but only on the Pro plan (Nov 22, 2026):** Gemini 4 Neon reaches 55
-  at Medium and 61 at Extra High, Hydrogen reaches 51 at High, and Opus 5.5
-  reaches 52 at High. All are Pro-only. The six free accounts reach Gemini 3.8
-  Flash (B) plus the deprecated Claude Opus 4.6 and Sonnet 4.6 (C), so a free
-  account cannot close out an S or S+ task.
-- **Neon cost:** 62.9M output tokens per task at Medium, 283M at Extra High. Route
-  Medium unless the 5-hour window is wide open.
+- **S+ exists, but only on the paid Pro plan (Nov 22, 2026):** Neon reaches 55 at
+  Medium and 61 at Extra; Hydrogen reaches 51 at High; Opus 5.5 reaches 52 at High.
+  Free accounts reach Gemini 3.8 Flash (B) plus three rows that retire on Nov 30,
+  so they cannot close out an S or S+ task.
+- **Neon context is 512K on Antigravity,** not the 1M on the AA card. Check the cap
+  before routing a large repo.
+- **Neon cost:** 62.9M output tokens per task at Medium, 283M at Extra. Route Medium
+  unless the 5-hour window is wide open.
+- **Two quota buckets (Nov 22, 2026):** Gemini models and Claude/GPT models are metered
+  separately, each with a five-hour and a weekly window. An Opus-planned,
+  Hydrogen-executed Orchestrator run spends both buckets instead of draining one.
+- **Three rows retire Nov 30, 2026:** Claude Opus 4.6, Claude Sonnet 4.6 and
+  GPT-OSS 120B. After that date a free account has Gemini 3.8 Flash only.
 - **Claude rows are capped at High (Nov 22, 2026):** the picker offers Low /
   Medium / High only. Opus 5.5 reads 52 / 48 / 35, Sonnet 5.5 reads 41 / 30 / 25,
   so Sonnet's AA-max 54 is unreachable here. Grade the tier, never the model card.
@@ -391,11 +397,13 @@ Harness + Earned-by columns pin it to the model actually on that harness.
   ladder High 41 (A) / Medium 30 (B) / Low 25 (C); High is its ceiling on this
   harness. $2/$10, 1M ctx. Prefer M3 over M2 for cost-sensitive A work; M2 stays
   the stronger reviewer. Watch the Claude bucket, not just the Gemini one.
-- **Orchestrator is a cost mode, not a model:** it wraps Neon, Argon, or Opus 5.5 and
-  sends some steps to an undisclosed executor. The rule is per step, not per task: safe
-  when the offloaded step is evidence a tool can check, unsafe when it is comprehension or
-  judgment the big model then trusts. Audits and signed reviews stay flat because their
-  product is a claim about what was examined. First use is an A/B against the flat model.
+- **Orchestrator is a planner/executor pair, not a model:** the supported list is closed
+  (planners Neon, Carbon, Argon, Opus 5.5; executors Hydrogen, Sonnet 5.5). Questions and
+  reviews go to the planner directly, so a review keeps its evidence chain. Grade a run by
+  the lower of the two tiers, and set the executor tier deliberately: Hydrogen at Medium
+  drags an S+ plan down to A.
+- **Claude rows in an Orchestrator pair are metered separately:** an Opus 5.5 planner draws
+  the Claude bucket while Hydrogen draws the Gemini bucket.
 - **Board re-tiered on AA Intelligence Index v5.0.** Bands **S+ 51+ · S 46–50 ·
   A 39–45 · B 26–38 · C <26**. Highest measured is Gemini 4 Neon at 61. Every
   grade in this file is stamped on v5.0. v4.3.2 numbers are historical: Gemini 3.8
