@@ -28,6 +28,8 @@ Write the state in plain sentences. Do not paste command output.
 ## Rules
 
 - Name a file only when it changes the decision. A list of every changed file buries the answer.
+- Report only what the checks showed.
+- List each stash with its number and a one-line classification of its contents.
 - When dirt has no origin, the report stops at `Found` with the question.
 - When two paths fit, say both in one sentence and recommend the safer one.
 - Fresh session and model choice go on one line. No essay.

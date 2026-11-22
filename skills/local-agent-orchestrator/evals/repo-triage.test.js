@@ -33,6 +33,7 @@ test('repo-triage --json outputs expected schema', () => {
   assert.ok(Array.isArray(data.stashes));
   assert.ok(Array.isArray(data.prs));
   assert.ok(Array.isArray(data.issues));
+  assert.ok(Array.isArray(data.warnings));
 });
 
 test('repo-triage --help prints help text and exits 0', () => {

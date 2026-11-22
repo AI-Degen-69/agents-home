@@ -18,7 +18,7 @@ Dirt you cannot attribute is never routed by size.
 
 1. Can every changed file be traced to the stated task, an open issue, or merged work named in this session?
 2. **Yes** — scoped. Continue to the table.
-3. **No** — stop. Do not route, stash, discard, commit, or branch away from it. Report the foreign paths and ask whose work it is.
+3. **No** — stop. Do not route, stash, discard, commit, or branch away from it. Report the foreign paths and ask one question: whose work is this?
 4. **Mixed** — treat the whole tree as unknown-origin. Ask.
 5. **Dirt that appears mid-session** means another writer is active right now. Treat it as unknown-origin even when the content traces to a real issue, because the writer may be mid-edit. Offer an isolated worktree.
 
