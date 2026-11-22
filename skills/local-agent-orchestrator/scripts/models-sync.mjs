@@ -22,6 +22,9 @@ const DROPPED = new Set([
   'opencode/iceman-free',
   'sail-ai-degen/glm-5.3-flex',
   'sail-ai-degen/kimi-k3',
+  'inception/mercury-2.5',
+  'inception/mercury-2',
+  'inception/mercury-edit-2',
 ]);
 
 function live() {

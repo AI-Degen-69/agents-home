@@ -66,9 +66,8 @@ The `~vendor/model-latest` aliases are paid routing shortcuts, not free tier.
 | # | Model ID | Notes |
 | --- | --- | --- |
 | IN-1 | `inception/mercury-3` | 1M ctx, effort low/medium/high, fastest decode |
-| IN-2 | `inception/mercury-2.5` | previous generation |
-| IN-3 | `inception/mercury-2` | cheaper |
-| IN-4 | `inception/mercury-edit-2` | edits only |
+
+Only `mercury-3` is routed. The older generations and the edit-only model are dropped. **Data policy:** Inception trains on prompts by default. Use it for public or throwaway code only, and confirm the dashboard toggle is off before anything private.
 
 ### `sail-ai-degen/*` — $5 free credit per month
 

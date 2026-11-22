@@ -223,6 +223,23 @@ Probe-verified models stay C until a benchmark page exists.
 | SA-2 | GLM-5.3 | C | 4.6s probe; no benchmark page read yet — unproven | first-party probe 2026-11-22 |
 | SA-3 | GLM-5.3 balanced | C | Same weights, balanced effort tier, 16.2s on a one-word reply | first-party probe 2026-11-22 |
 
+## Inception
+
+### Grades (best → worst)
+
+| Grade | Meaning | Models |
+|---|---|---|
+| C | Weak fit | IN-1 Mercury 3 — fast, unproven intelligence, trains on prompts |
+| D | Do not route | Mercury 2.5 (AA 12), Mercury 2 (AA 11), Mercury Edit 2 (edits only) |
+
+### Evidence
+
+| # | Model | Grade | One line | Source |
+|---|---|---|---|---|
+| IN-1 | Mercury 3 | C | Diffusion LLM, 1M ctx; probe: TTFT 0.71s, 415 tok/s, clean tool calls; no AA page; family prior 11-12 | docs.inceptionlabs.ai + first-party probe 2026-10-21 |
+
+**Data-policy stop:** Inception trains on prompts and outputs by default. Never send private or confidential repo content. Public or throwaway code only, and only after the dashboard toggle is confirmed off.
+
 ## Freebuff
 
 Freebuff is **time-billed, not token-billed** (see models.md hours): a daily hour
