@@ -240,6 +240,27 @@ Probe-verified models stay C until a benchmark page exists.
 
 **Data-policy stop:** Inception trains on prompts and outputs by default. Never send private or confidential repo content. Public or throwaway code only, and only after the dashboard toggle is confirmed off.
 
+## OpenRouter
+
+Free tier only. Paid variants are out of scope.
+
+### Grades (best → worst)
+
+| Grade | Meaning | Models |
+|---|---|---|
+| B | Light / probe | OR-1 Particle-1 — B provisional, 32 ceiling inherited from its DeepSeek base |
+| C | Weak fit | OR-2 ERNIE 5.5 Flash Preview, OR-3 Nemotron 3 Ultra (AA 12), OR-4 Nemotron 3.5 Super VL (AA 14) |
+| D | Do not route | Nemotron 3.5 Lightning, Nemotron 3 Nano Omni |
+
+### Evidence
+
+| # | Model | Grade | One line | Source |
+|---|---|---|---|---|
+| OR-1 | Particle-1 | B prov. | Post-trained on DeepSeek V4.1 Flash (AA 32); agentic coding, 1M ctx, token-efficient; no independent page; 1.4s probe | openrouter.ai/api/v1/models + probe 2026-11-22 |
+| OR-2 | ERNIE 5.5 Flash Preview | C | 280B, 1M ctx, reasoning + tools; preview and free-only; no AA page; 2.2s probe | openrouter.ai/api/v1/models + probe 2026-11-22 |
+| OR-3 | Nemotron 3 Ultra | C | AA 12 | artificialanalysis.ai/models/nvidia-nemotron-3-ultra-550b-a55b |
+| OR-4 | Nemotron 3.5 Super VL | C | AA 14, 170M output tokens/task | artificialanalysis.ai/models/nemotron-3-5-super-vl |
+
 ## Freebuff
 
 Freebuff is **time-billed, not token-billed** (see models.md hours): a daily hour

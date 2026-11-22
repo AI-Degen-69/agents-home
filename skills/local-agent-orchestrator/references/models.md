@@ -57,7 +57,14 @@ Dropped 2026-11-22: `flint-40b-free`, `iceman-free` (no evidence), `Nemotron 3 U
 
 357 IDs visible, free tier only. Route only IDs ending `:free`; everything else is unavailable:
 
-`openrouter/baidu/ernie-5.5-flash-preview:free`, `openrouter/google/gemma-4-26b-a4b-it:free`, `openrouter/google/gemma-4-31b-it:free`, `openrouter/inclusionai/ling-3.2-flash:free`, `openrouter/liquid/lfm-3-1.7b:free`, `openrouter/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free`, `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free`, `openrouter/nvidia/nemotron-3.5-lightning:free`, `openrouter/nvidia/nemotron-3.5-super-vl:free`, `openrouter/particle-ai/particle-1:free`, `openrouter/recursive/flint-v1.0:free`.
+| # | Model ID | Grade | Note |
+| --- | --- | --- | --- |
+| OR-1 | `openrouter/particle-ai/particle-1:free` | B | post-trained on DeepSeek V4.1 Flash; 1.4s probe |
+| OR-2 | `openrouter/baidu/ernie-5.5-flash-preview:free` | C | 280B, 1M ctx, preview; 2.2s probe |
+| OR-3 | `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free` | C | AA 12 |
+| OR-4 | `openrouter/nvidia/nemotron-3.5-super-vl:free` | C | AA 14, verbose |
+
+Pending review: `openrouter/google/gemma-4-31b-it:free`, `openrouter/google/gemma-4-26b-a4b-it:free`, `openrouter/inclusionai/ling-3.2-flash:free`, `openrouter/recursive/flint-v1.0:free`, `openrouter/liquid/lfm-3-1.7b:free`.
 
 The `~vendor/model-latest` aliases are paid routing shortcuts, not free tier.
 

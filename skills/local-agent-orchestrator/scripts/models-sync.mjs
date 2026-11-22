@@ -25,6 +25,8 @@ const DROPPED = new Set([
   'inception/mercury-2.5',
   'inception/mercury-2',
   'inception/mercury-edit-2',
+  'openrouter/nvidia/nemotron-3.5-lightning:free',
+  'openrouter/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
 ]);
 
 function live() {
