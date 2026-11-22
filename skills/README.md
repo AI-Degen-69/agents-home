@@ -19,13 +19,13 @@ via links back to the canonical folder — **and the link type matters per harne
 
 ## Global Issue-to-PR Pipeline (Stations I–VI + system skills)
 
-The canonical delivery pipeline lives in numbered folders (`i-pick-issue` through `vi-close-pipeline`). **A numbered prefix means the skill is a step in the chain, invoked in order — I → II → III → IIIB → IV → V → VI.** Everything without a numeral is a system skill: the `pipeline-triage` state gate, the `create-issue` intake branch, the `quick-fix` fast lane, the `retro` post-merge analysis skill, and the ad-hoc `present-pr` visual presentation skill.
+The canonical delivery pipeline lives in numbered folders (`i-pick-issue` through `vi-close-pipeline`). **A numbered prefix means the skill is a step in the chain, invoked in order — I → II → III → IIIB → IV → V → VI.** Everything without a numeral is a system skill: the `local-agent-orchestrator` state gate, the `create-issue` intake branch, the `quick-fix` fast lane, the `retro` post-merge analysis skill, and the ad-hoc `present-pr` visual presentation skill.
 Detailed documentation of the entire pipeline and its reporting rules is in:
 👉 [`issue-to-pr-skill-workflow.md`](../docs/issue-to-pr-skill-workflow.md) — it summarizes the rules and points to each station's local-only template for the exact Hebrew shape.
 
 | Step | Canonical Name | Purpose |
 |---|---|---|---|
-| **Gate** (not numbered, runs before I) | `pipeline-triage` | State gate — inspect git/PR state, start a missing `coderabbit` review early, route to the one station that resumes or closes the work |
+| **Gate** (not numbered, runs before I) | `local-agent-orchestrator` | State gate and small-task orchestrator — inspect git/PR state, start a missing `coderabbit` review early, decide act-vs-prompt and fresh-vs-same session, route the prompt to the cheapest capable model from the live inventory, then carry the git work through commit/push/PR |
 | **I** | `i-pick-issue` | Pick & Orchestrate — Discovery (backlog mapping, prioritizing) → operator picks the issue → execution-mode gate → drives II–VI |
 | **Intake** (branch off I, not numbered) | `create-issue` | Intake branch — raw idea → researched GitHub issue (`[TAG]` title, only relevant existing labels), then posts its own `@coderabbitai plan` request (prompt body only; skipped only for genuinely trivial work; no wait, no retry); its output re-enters Discovery |
 | **Lane** (not numbered, diverts from I, II, III, IV) | `quick-fix` | Fast lane for trivial work — verifies, commits, and pushes **straight to the base branch**, skipping II–VI: no branch, no PR, no reviewers, no CodeRabbit wait. Gated by a hard 7-box checklist (all must pass, no override) behind a **label precondition** — a divert station runs the gate only for a `quick-fix`-labeled issue (Station I also on an explicit operator request); direct `/quick-fix` always runs the full gate. Any failure routes back into the normal pipeline. Exits to `i-pick-issue` |

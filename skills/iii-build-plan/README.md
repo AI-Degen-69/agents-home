@@ -21,7 +21,7 @@ atomic local commits, and simplification — no push, no PR here.
 |---|---|
 | `tasks/plan.md` exists with open tasks | No plan yet → `ii-plan-issue` first |
 | Continuing the next task in an unfinished plan | Operator reported corrections on fresh build → `iiib-iterate-after-build` |
-| Resuming interrupted build work (`pipeline-triage` says so) | Code is already reviewed and pushed → `v-babysit-pr-and-merge` |
+| Resuming interrupted build work (`local-agent-orchestrator` says so) | Code is already reviewed and pushed → `v-babysit-pr-and-merge` |
 
 ## How it works (short)
 

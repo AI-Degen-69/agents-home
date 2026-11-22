@@ -265,7 +265,7 @@ headline-only, never as data.
 - **BenchLM** (`data.benchlm.ai`) — secondary benchmark + price source, approved
   2026-10-28. REST `https://data.benchlm.ai/v1`, MCP `https://data.benchlm.ai/mcp`
   (Streamable HTTP); auth `Authorization: Bearer <key>`, key from env
-  `BENCHLM_DATA_KEY` or the gitignored `skills/model-routed-triage/.env`. Free plan: 250 successful reads/month, 30 req/min, current
+  `BENCHLM_DATA_KEY` or the gitignored `skills/local-agent-orchestrator/.env`. Free plan: 250 successful reads/month, 30 req/min, current
   state plus only the last 30 days of history; usage and coverage checks are free.
   A model snapshot costs 3 reads (rankings + benchmark results + pricing); the
   skill's 14 covered models are ~42 reads per full sweep.

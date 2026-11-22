@@ -142,7 +142,7 @@ routing, no deploy. It never escalates itself into a full workbench run.
 ## Conventions
 
 - **The worked-on skill is the star.** Title format: `Skill: <name>`, plus group tag when it belongs to one (numbered Pipeline
-  stations `i`–`vii`, or the system skills `pipeline-triage` / `create-issue`).
+  stations `i`–`vii`, or the system skills `local-agent-orchestrator` / `create-issue`).
   Line below: `Path:` + full path; if Junction show `→` target and always work on the
   original. Workbench machinery gets one compact line each.
   Never enumerate steps or check-ids in the headline of the reply.

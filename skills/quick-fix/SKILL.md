@@ -8,7 +8,7 @@ description: Quick-fix lane — the fast path for trivial work. Use when a task 
 The escape hatch from the 6-station pipeline, for work so small that a PR, a
 review round, and a CodeRabbit wait would cost more than the change itself.
 
-**Not a station.** Like `pipeline-triage`, `create-issue`, and `present-pr`, this
+**Not a station.** Like `local-agent-orchestrator`, `create-issue`, and `present-pr`, this
 is an unnumbered system skill. It is a *lane*, not a step: it replaces
 Stations II–VI entirely, never part of them.
 
@@ -75,10 +75,10 @@ Requirements, all required:
 
 - On the **base branch** (`main` / `master`) — the lane pushes there directly, so a wrong branch means a wrong target.
 - **Only the lane's own work in the tree.** Two cases are normal and both pass:
-  a **clean tree** (Station I, II, III diverts), and the **Station IV handoff** — the gated files already staged on the base branch by `git merge --squash`, which is exactly what that divert produces. Any *other* changed file, or unpushed commits belonging to different work, is foreign dirt → route to `pipeline-triage`. Never absorb another stream's changes, and never stash them away to make the tree look clean.
-- **In sync** with `origin/<base>`. If behind, `git pull --ff-only` first. If that pull is refused because it would overwrite the staged handoff, stop and route to `pipeline-triage` — never reset or stash away the lane's own work to force it through.
+  a **clean tree** (Station I, II, III diverts), and the **Station IV handoff** — the gated files already staged on the base branch by `git merge --squash`, which is exactly what that divert produces. Any *other* changed file, or unpushed commits belonging to different work, is foreign dirt → route to `local-agent-orchestrator`. Never absorb another stream's changes, and never stash them away to make the tree look clean.
+- **In sync** with `origin/<base>`. If behind, `git pull --ff-only` first. If that pull is refused because it would overwrite the staged handoff, stop and route to `local-agent-orchestrator` — never reset or stash away the lane's own work to force it through.
 
-**Branch protection may reject the direct push.** If `git push origin <base>` is refused, the quick lane does not fight the rules and does not open a PR as a silent substitute: report the rejection and route to `pipeline-triage` to pick the proper path. A protected base branch is the operator's deliberate choice, not an obstacle to route around.
+**Branch protection may reject the direct push.** If `git push origin <base>` is refused, the quick lane does not fight the rules and does not open a PR as a silent substitute: report the rejection and route to `local-agent-orchestrator` to pick the proper path. A protected base branch is the operator's deliberate choice, not an obstacle to route around.
 
 ### 3. Implement (minimal by construction)
 

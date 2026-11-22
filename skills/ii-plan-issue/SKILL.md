@@ -22,7 +22,7 @@ This skill implements **Station II (Define & Plan)** of the 6-station pipeline (
 
 ### Option A: Invoked with an Issue Number (e.g. `/ii-plan-issue 42`)
 1. **Fetch Issue Details:** Run `gh issue view <number> --comments` — title, body, labels, and all discussion comments.
-2. **Check tree clean first:** Run `git status --short --branch` — if the tree is dirty stop and route to `pipeline-triage` before claiming or branching.
+2. **Check tree clean first:** Run `git status --short --branch` — if the tree is dirty stop and route to `local-agent-orchestrator` before claiming or branching.
 3. **Claim the Issue:** Run `gh issue edit <number> --add-assignee @me` to signal work has begun.
 4. **Create the feature branch:** see canonical rule in Step 0B (`i<number>/<slug>` from the issue title, e.g. issue #69 `Increase button size` → `i69/increase-button-size`).
 5. Set this issue as the primary planning target.
@@ -31,7 +31,7 @@ This skill implements **Station II (Define & Plan)** of the 6-station pipeline (
 1. **Fetch All Open Issues:** Run `gh issue list --state open --limit 50`.
 2. **Group Logically:** Identify project areas (labels or codebase architecture).
 3. **Recommend exactly one issue:** highest-priority first (unblockers and core dependencies, then quick wins), with a one-line rationale.
-4. **Proceed immediately — do not pause to ask.** Invoking `/ii-plan-issue` with no arguments **is** the operator's consent to auto-pick the recommended issue, claim it, and branch — a second confirmation would defeat the mode. Check tree clean (`git status --short --branch`, dirty → `pipeline-triage`), then **check the starting branch**: you must be on the base branch (`master`/`main`). On a feature branch — even a clean one with unpushed commits — stop and route to `pipeline-triage`: Step 0B branches from the current HEAD, so a new issue's branch would inherit that other work's commits. Only from the base branch: claim the recommended issue (`gh issue edit <number> --add-assignee @me`), create the feature branch per Step 0B (`i<number>/<slug>` from the issue title), and go straight to Section 2 on it. The consent covers the claim and the branch only — never a scope expansion, and the report still names which issue was auto-picked so the operator can redirect.
+4. **Proceed immediately — do not pause to ask.** Invoking `/ii-plan-issue` with no arguments **is** the operator's consent to auto-pick the recommended issue, claim it, and branch — a second confirmation would defeat the mode. Check tree clean (`git status --short --branch`, dirty → `local-agent-orchestrator`), then **check the starting branch**: you must be on the base branch (`master`/`main`). On a feature branch — even a clean one with unpushed commits — stop and route to `local-agent-orchestrator`: Step 0B branches from the current HEAD, so a new issue's branch would inherit that other work's commits. Only from the base branch: claim the recommended issue (`gh issue edit <number> --add-assignee @me`), create the feature branch per Step 0B (`i<number>/<slug>` from the issue title), and go straight to Section 2 on it. The consent covers the claim and the branch only — never a scope expansion, and the report still names which issue was auto-picked so the operator can redirect.
 
 ### If `gh` fails (not authenticated, offline, or issue not found)
 Stop the issue-dependent steps. Say in plain language exactly what failed, and ask the user for the issue number/title (or to run `gh auth login`). **Never fabricate issue content and never plan from imagined data (do not invent content).**
@@ -112,7 +112,7 @@ Branch format is `i<number>/<slug>` from the current HEAD. Derive `<slug>` from 
    the branch then sits checked out there, `git worktree add <path> <branch>` fails with
    'already used by worktree', and the recovery checkout dance touches the operator's live
    tree. Every later station runs inside that worktree.
-1. Tree was already checked clean in Section 1 — if dirty now, stop and route to `pipeline-triage` before branching.
+1. Tree was already checked clean in Section 1 — if dirty now, stop and route to `local-agent-orchestrator` before branching.
 2. Run `git branch --show-current` — if already on the issue's branch reuse it, including under the repo's own naming convention (an operator-created worktree or repo-specific format beats the canonical `i<number>/<slug>`; the repo's AGENTS.md outranks this skill).
 3. Else if the branch exists locally or on remote (`git branch --list` / `git ls-remote --heads origin`), checkout it (`git switch <branch>`, fallback `git checkout <branch>`).
 4. Else create it from HEAD (`git switch -c i<number>/<slug>`, fallback `git checkout -b i<number>/<slug>`).

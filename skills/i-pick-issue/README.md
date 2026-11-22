@@ -11,7 +11,7 @@ pick and execution mode, then orchestrates Stations II through VI.
 ## Pipeline position
 
 - **Station:** I of VI (single entry point for Issue work).
-- **Previous:** `pipeline-triage` — only when the tree is dirty, commits are
+- **Previous:** `local-agent-orchestrator` — only when the tree is dirty, commits are
   unpushed, or a PR is open.
 - **Next:** `ii-plan-issue <issue-id>` (Plan).
 
@@ -21,7 +21,7 @@ pick and execution mode, then orchestrates Stations II through VI.
 |---|---|
 | Any work that starts from (or ends as) a GitHub issue + PR | Quick questions, small fixes, exploration → `using-agent-skills` |
 | Choosing what to build next from the backlog | Brand-new idea with nothing to pick → `create-issue` first |
-| Driving stations II→VI in step-by-step or full mode | Repo carries unfinished work → `pipeline-triage` first |
+| Driving stations II→VI in step-by-step or full mode | Repo carries unfinished work → `local-agent-orchestrator` first |
 
 ## How it works (short)
 

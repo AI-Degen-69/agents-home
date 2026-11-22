@@ -61,7 +61,7 @@
         { "id": "station-iv-handoff", "type": "regex", "pattern": "iv-review-build-and-pr", "must_match": true, "why": "Station IV review must follow build" },
         { "id": "station-v-handoff", "type": "regex", "pattern": "v-babysit-pr-and-merge", "must_match": true, "why": "Station V merge must follow review" },
         { "id": "station-vi-handoff", "type": "regex", "pattern": "vi-close-pipeline", "must_match": true, "why": "Station VI closeout must be the final station" },
-        { "id": "router-gate", "type": "regex", "pattern": "pipeline-triage", "must_match": true, "why": "the router gate must reference pipeline-triage for dirty repos" }
+        { "id": "router-gate", "type": "regex", "pattern": "local-agent-orchestrator", "must_match": true, "why": "the router gate must reference local-agent-orchestrator for dirty repos" }
       ],
       "live_assertions": [
         "The issue details are read by Station I, and the claim happens in Station II after its clean-tree check",

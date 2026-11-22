@@ -21,7 +21,7 @@ to build.
 |---|---|
 | A GitHub issue needs to become an executable plan | No issue yet — brand-new idea → `create-issue` |
 | Resuming planning on an open issue with new context | Plan already exists and code is green → `iii-build-plan` |
-| Right-sizing scope before any code is written | The tree is dirty with unknown work → `pipeline-triage` first |
+| Right-sizing scope before any code is written | The tree is dirty with unknown work → `local-agent-orchestrator` first |
 
 ## How it works (short)
 

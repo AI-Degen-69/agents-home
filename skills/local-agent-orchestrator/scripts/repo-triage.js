@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Automated forensic triage data collector for model-routed-triage.
+// Automated forensic triage data collector for local-agent-orchestrator.
 // Gathers live repository state across branches, worktrees, stashes, PRs, and issues
 // in a single pass, calculating branch divergence and ancestry relative to main.
 //

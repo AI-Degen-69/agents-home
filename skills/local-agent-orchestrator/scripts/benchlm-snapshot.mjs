@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// BenchLM per-model snapshot for model-routed-triage (see handbook §9.1).
+// BenchLM per-model snapshot for local-agent-orchestrator (see handbook §9.1).
 // Pulls BenchAlign ranks, board scores and prices for the skill's models,
 // 3 reads per model on the Free plan (250/month, 30 req/min).
 //
