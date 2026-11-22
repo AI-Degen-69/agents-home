@@ -64,7 +64,7 @@ Dropped 2026-11-22: `flint-40b-free`, `iceman-free` (no evidence), `Nemotron 3 U
 | OR-3 | `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free` | C | AA 12 |
 | OR-4 | `openrouter/nvidia/nemotron-3.5-super-vl:free` | C | AA 14, verbose |
 
-Pending review: `openrouter/google/gemma-4-31b-it:free`, `openrouter/google/gemma-4-26b-a4b-it:free`, `openrouter/inclusionai/ling-3.2-flash:free`, `openrouter/recursive/flint-v1.0:free`, `openrouter/liquid/lfm-3-1.7b:free`.
+Dropped 2026-11-22 from this surface: gemma-4-31b, gemma-4-26b-a4b, ling-3.2-flash, flint-v1.0, lfm-3-1.7b, nemotron-3.5-lightning, nemotron-3-nano-omni. None showed coding evidence above the free bar.
 
 The `~vendor/model-latest` aliases are paid routing shortcuts, not free tier.
 
@@ -124,6 +124,8 @@ Time-based, not token-based. Starter is 21 h/day plus a 60 h monthly wallet that
 
 ## Update log
 
+- 2026-11-22 — pass 4 review. OpenRouter closes at four rows: Particle-1, ERNIE 5.5 Flash Preview, Nemotron 3 Ultra, Nemotron 3.5 Super VL. Seven free IDs dropped for lack of coding evidence.
+- 2026-11-22 — pass 3 review. Inception keeps only `mercury-3`; the older generations and the edit-only model are dropped.
 - 2026-11-22 — pass 2 review. Probed all five sail IDs: three answer, `glm-5.3-flex` and `kimi-k3` fail at the API. Copilot removed — its chat endpoint rejects every model this token reaches.
 - 2026-11-22 — pass 1 review with the operator. Dropped `flint-40b-free` and `iceman-free`; probed `hy4-flash-free` (7s) and `tidepool-alpha-free` (5.3s), both unproven and graded C. Removed the `google/*` and `freellmapi/*` surfaces from routing. OpenCode free tier is now 9 rows.
 - 2026-11-22 — rebuilt from live enumeration. 421 OpenCode IDs across 7 providers; Antigravity reduced to 4 rows after the free-account correction; Cline and Hermes dropped; OpenRouter documented for the first time; three dead rows removed.

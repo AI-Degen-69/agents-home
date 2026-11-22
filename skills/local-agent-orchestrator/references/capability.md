@@ -250,7 +250,7 @@ Free tier only. Paid variants are out of scope.
 |---|---|---|
 | B | Light / probe | OR-1 Particle-1 — base-class accuracy at ~45% fewer tokens |
 | C | Weak fit | OR-2 ERNIE 5.5 Flash Preview, OR-3 Nemotron 3 Ultra (AA 12), OR-4 Nemotron 3.5 Super VL (AA 14) |
-| D | Do not route | Nemotron 3.5 Lightning, Nemotron 3 Nano Omni |
+| D | Do not route | Nemotron 3.5 Lightning, Nemotron 3 Nano Omni, Gemma 4 31B, Gemma 4 26B-A4B, Ling 3.2 Flash, Flint v1.0, LFM 3 1.7B — no coding evidence above the free bar |
 
 ### Evidence
 
