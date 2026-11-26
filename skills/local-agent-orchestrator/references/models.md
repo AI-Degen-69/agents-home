@@ -2,7 +2,7 @@
 
 What this machine can actually reach, at what cost, right now. **Generated, not hand-written.** IDs come from `opencode models` and each harness's own picker. Grep this file before recommending a model; if the ID is absent, the model is not available.
 
-Last enumeration: **2026-11-22**. Refresh with `node scripts/models-sync.mjs` (see `--help`).
+Last enumeration: **2026-11-26** (delta refresh of the `opencode/*` free tier; OpenRouter and the other providers still carry their 2026-11-22 enumeration). Refresh with `node scripts/models-sync.mjs` (see `--help`).
 
 Grades are not here. `capability.md` carries them, keyed by the same IDs. An ID with no grade is `[unverified]` and cannot be a top pick.
 
@@ -89,13 +89,14 @@ Four documented providers behind one CLI. The provider prefix is part of the mod
 | OC-1 | `opencode/beam-free` | Low → Max | 1M ctx |
 | OC-2 | `opencode/big-pickle` | none | stealth, no effort control |
 | OC-3 | `opencode/deepseek-v4.1-flash-free` | Low / High / Max | 200K ctx on free, strongest free coder |
-| OC-4 | `opencode/longcat-2.5-free` | none | 1M ctx, slow |
+| OC-4 | `opencode/seaglass-alpha-free` | — | new free ID, no benchmark |
 | OC-5 | `opencode/mimo-v2.6-flash-free` | Low → Max | full effort ladder |
 | OC-6 | `opencode/nemotron-3.5-lightning-free` | none | speed tier |
 | OC-7 | `opencode/nemotron-3.5-super-vl-free` | Low → Extra High | 1M ctx |
 | OC-8 | `opencode/hy4-flash-free` | — | answers in ~7s, no benchmark |
 | OC-9 | `opencode/tidepool-alpha-free` | — | answers in ~5s, no benchmark |
 Dropped 2026-11-22: `flint-40b-free`, `iceman-free` (no evidence), `Nemotron 3 Ultra` (gone). `GLM-5.3-Flash` left the tier.
+Dropped 2026-11-26: `longcat-2.5-free` (left the free tier).
 ### `openrouter/*` — free tier
 
 357 IDs visible, free tier only. Route only IDs ending `:free`; everything else is unavailable:
