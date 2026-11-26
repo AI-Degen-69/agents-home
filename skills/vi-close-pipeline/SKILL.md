@@ -20,7 +20,7 @@ Post-merge closeout that leaves the repository carrying only live knowledge — 
 - `references/english-template.md` — English chat output contract (default, success + blocked templates). Read before writing any report.
 - `references/hebrew-template.md` — Hebrew chat output contract (when operator requests Hebrew output).
 - `references/concurrent-git-state-recovery.md` — recipe for recovering a commit that landed on a foreign branch mid-session.
-- `references/worktree-and-branch-cleanup.md` — clearing post-merge residue: fast-forward without a dirty-tree dead end, verifying a worktree before removal, `Permission denied` / `Device or resource busy` on directory delete, worktrees that appear mid-session, branch deletion after a merge, and the doc blast radius of a deletion.
+- `references/worktree-and-branch-cleanup.md` — clearing post-merge git residue **that Station V Step 5b could not finish** (5b already deletes the merged branch local + remote, the worktree that hosted it, and every `[gone]`-upstream ref): fast-forward without a dirty-tree dead end, verifying a worktree before removal, `Permission denied` / `Device or resource busy` on directory delete, worktrees that appear mid-session, guarded branch deletion after a merge, and the doc blast radius of a deletion.
 - `scripts/grade.js` — deterministic grader for the eval set (`audit` / `case` modes, zero dependencies). Use to verify eval output.
 - `evals/evals.json` — this skill's own eval set (2 cases).
 
@@ -47,6 +47,8 @@ A file is a **prune candidate** if it carries an identity of specific, finished 
 4. **Location signal (weak, corroborating only):** lives outside recognized knowledge homes — typical scratch spots are `tasks/`, `scratch/`, temp dirs, repo root — but ANY path can host a candidate, and ANY path can host a keeper.
 
 Scan the whole repo (excluding `.git/`, dependency folders, build output) for `*.md`, `*.txt`, `*.html`, loose scripts, and scratch-like directories. Match candidates against the just-merged issue AND against any other closed issue whose leftovers are still lying around.
+
+**Git residue follows the same "whose is it?" rule.** Branch, worktree and stash discovery here covers only what Station V Step 5b could not finish, or residue of *other* issues: 5b already deletes the merged branch (local + remote), the worktree directory that hosted it, and every `[gone]`-upstream ref, so a hit is never "the merge forgot something" unless a 5b line reported `pending` or `declined`. Read the state with `git branch -vv` (any `[gone]`), `git worktree list`, `git stash list`, `gh pr status` — an empty `upstream=` field is not stale, and an active head with an open PR is not a leftover.
 
 ---
 
@@ -102,7 +104,12 @@ Dead or zombie code tied to the merged work (unused modules, superseded APIs, or
 
 1. **Dry-run preview table first** — Keep / Delete / Relocate / Dead-code, with path, classification, issue state, and rationale per row. Get operator approval when anything is non-obvious. Include every doc that *points at* a deletion target in the table: deleting `tasks/` orphans a README layout line, and that line belongs in the same deletions-only commit.
 2. Delete approved files; verify and remove now-empty directories.
-2b. Clear the merged branch's on-disk residue — worktrees first, then local and remote branches — per `references/worktree-and-branch-cleanup.md`. A merged PR removes nothing locally. `git merge --ff-only origin/main` syncs the base branch where `git pull --ff-only` dead-ends on a dirty runtime artifact.
+2b. Clear the git residue **Step 5b left behind, not the residue it already removed**. `v-babysit-pr-and-merge` Step 5b normally ends with the merged branch deleted locally and on the remote, the hosting worktree removed and pruned, `[gone]`-upstream branches swept and the base fast-forwarded — re-running those deletions is a no-op at best and a way to delete a live branch at worst. Read the state first (`git branch -vv`, `git worktree list`, `git ls-remote --heads origin`), then treat only these as this station's work, per `references/worktree-and-branch-cleanup.md`:
+    - a 5b step that reported **pending** (the worktree was the agent's own live workspace) or **declined** (a `git push origin --delete` refused, a `[gone]` branch left unmerged as somebody's unpushed work);
+    - residue belonging to **another** issue, or a session handle (`freebuff/context-target-*`, `*.worktrees/<issue-slug>`) — leave live sessions alone and name the owner;
+    - an empty directory left after a `Permission denied` worktree removal.
+
+    `git merge --ff-only origin/main` syncs the base branch where `git pull --ff-only` dead-ends on a dirty runtime artifact.
 3. Handle dead code per Section 6.
 4. **Docs-only sweeps skip the PR.** When the entire change is markdown deletions/relocations or archived HTML under `docs/` — no code, tests, config, or runtime touched — commit and push straight to the base branch. No feature branch, no PR, no CodeRabbit round: a review cycle on a doc move buys nothing and the operator has said so.
 5. Commit(s), keeping concerns separate:
@@ -150,8 +157,8 @@ The pipeline is NOT closed until every check passes:
 2. Confirm checkout is on the base branch (`master`/`main` per `gh repo view --json defaultBranchRef`).
 3. `git status --porcelain` → **empty**.
 4. `git status` → `up to date with 'origin/<base>'` (no ahead/behind).
-5. Remote branches: `git ls-remote --heads origin` → **no merged feature branch survives on the server**, and `git branch` → no leftover merged feature branches. This half reads server state, because the local half cannot see it: `git fetch --prune` only drops stale *remote-tracking refs*, and `git branch` without `-a` never lists the remote at all. A merged branch still present in that output **fails** this check. **An unrelated active branch does not** — a head that still belongs to an open PR is not a leftover, and failing on it would strand closeout on a healthy repo; treat only branches with no open PR as violations. Station V step 5b owns deleting it (`git push origin --delete <branch>`); this gate observes and blocks, it does not delete.
-6. Worktrees: `git worktree list` shows the primary checkout and nothing belonging to this issue. **Re-read it here, not from session start** — a concurrent harness can register a worktree mid-sweep, and a stale reading misreports the gate. A worktree holding another actor's live uncommitted work is theirs: leave it, name the owner, report the check blocked rather than deleting their state.
+5. Remote branches: `git ls-remote --heads origin` → **no merged feature branch survives on the server**, and `git branch` → no leftover merged feature branches. This half reads server state, because the local half cannot see it: `git fetch --prune` only drops stale *remote-tracking refs*, and `git branch` without `-a` never lists the remote at all. A merged branch still present in that output **fails** this check. **An unrelated active branch does not** — a head that still belongs to an open PR is not a leftover, and failing on it would strand closeout on a healthy repo; treat only branches with no open PR as violations. Station V Step 5b owns deleting it (`git push origin --delete <branch>`), and after a normal handoff none of it survives — this check passes without action. A survivor means 5b reported `pending`/`declined` or never ran, so name the ref **and** the missing 5b step rather than re-deriving it here; this gate observes and blocks, it does not delete. Also fail on a local branch left at `[gone]` (`git for-each-ref --format='%(refname:short)|%(upstream:track)' refs/heads`): 5b's sweep proves merged-before-delete, so an unmerged `[gone]` branch is an operator decision, and an empty `upstream=` field is not stale at all.
+6. Worktrees: `git worktree list` shows the primary checkout and nothing belonging to this issue. Step 5b step 6 already removed this issue's worktree, with one documented exception — the host pinned the agent inside it, which 5b reports as `pending` — so a registration here belongs to another issue or session and is classified by **ownership, not recency**. **Re-read it here, not from session start** — a concurrent harness can register a worktree mid-sweep, and a stale reading misreports the gate. A worktree holding another actor's live uncommitted work is theirs: leave it, name the owner, report the check blocked rather than deleting their state.
 7. Stashes: none related to this issue remain (list any foreign stashes in the report).
 8. NOTICED-BUT-NOT-TOUCHING ledger contains zero rows with status `open` (absent ledger counts as zero).
 
@@ -159,7 +166,7 @@ If any check fails → fix it or escalate with the exact state. **Never declare 
 
 ### Blocked / Incomplete — a real outcome, not a failure to hide
 
-The Clean Exit Gate has exactly two honest endings: **closed** (all seven checks green) or
+The Clean Exit Gate has exactly two honest endings: **closed** (all eight checks green) or
 **blocked** (at least one check could not be made green). Report the blocked state as its
 own outcome — never round it up to "closed" and never bury it under the success summary.
 
@@ -169,7 +176,7 @@ that make closeout **incomplete** rather than merely delayed:
 
 1. **Foreign dirt** in `git status --porcelain` you did not create and may not commit.
 2. **Failed push** — local commits unpushed, or the remote rejected the push.
-3. **Residual branches, worktrees, or stashes** tied to this issue (or unattributable ones) — including a merged branch that survived on the remote (`git ls-remote --heads origin` still lists it). Clear it with `git push origin --delete <branch>`; never round a surviving branch up to "closed".
+3. **Residual branches, worktrees, or stashes** tied to this issue (or unattributable ones) — including a merged branch that survived on the remote (`git ls-remote --heads origin` still lists it). Confirm Step 5b actually completed first: a normal handoff leaves none of these, and a survivor means 5b's step 6 or 7 returned `pending`/`declined`. Clear only what it missed (`git push origin --delete <branch>`, guarded `git branch -d` after the ancestry proof, worktree removal per the reference); never round a surviving branch up to "closed".
 4. **API failure** — `gh` unauthenticated, rate-limited, or the tracker unreachable, so an
    issue-close or PR-merge state could not be confirmed.
 5. **Unresolved `open` rows** in the NOTICED-BUT-NOT-TOUCHING ledger awaiting operator disposition.

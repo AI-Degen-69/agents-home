@@ -4,6 +4,19 @@ A merged PR is remote-only. Nothing on disk is deleted by `gh pr merge` — the 
 branch and any staged-but-never-committed file inside that worktree survive. This file is the
 recipe for clearing that residue without destroying anyone else's work.
 
+## 0. Baseline — Station V Step 5b already ran
+
+`v-babysit-pr-and-merge` Step 5b ends a normal run with: the merged branch deleted locally (ancestry
+proof first, `-d` before `-D`) and on the remote, the worktree that hosted it removed and pruned,
+every other branch carrying a `[gone]` upstream swept, `git fetch --prune` done, and the base
+fast-forwarded with `HEAD == origin/<base>` verified. Nothing in this file is a re-run of that.
+
+It covers the three cases 5b hands off: **pending** (the worktree was the agent's own live
+workspace), **declined** (a delete refused by protection or missing scope), and **not-this-issue's
+residue** (another session's worktree, another issue's branch). Re-verify with
+`git branch -vv`, `git worktree list` and `git ls-remote --heads origin` before deleting anything —
+a blind `git branch -D` on an already-clean repo is how a live branch gets destroyed.
+
 ## 1. Sync the base branch without a dirty-tree dead end
 
 ```bash
@@ -78,9 +91,26 @@ no work. Anything else is another actor's live state: leave it and name the owne
 ## 5. Branch deletion
 
 ```bash
-git branch -D <merged-branch>
+git merge-base --is-ancestor <merged-branch> origin/main   # exit 0 = fully merged
+git log --oneline origin/main..<merged-branch>             # must be empty
+git branch -d <merged-branch>                             # refuses if the tip is not reachable
 git push origin --delete <merged-branch>     # often already gone: merging with branch deletion does it
 ```
+
+`-d` first, same contract as Step 5b: `-D` is licensed only when the tip is not an ancestor
+*because of the merge method* (`--squash` / `--rebase` replay commits, so the content landed under
+a different SHA). A non-empty `origin/main..<branch>` log under a plain merge means the branch
+carries unmerged work — escalate, never force-delete it.
+
+Branches whose remote ref is already gone are swept the same way:
+
+```bash
+git for-each-ref --format='%(refname:short)|%(upstream:short)|%(upstream:track)' refs/heads
+```
+
+Filter on `[gone]`, prove merged, then `git branch -d`. An **empty** `upstream=` field is not
+stale — that branch never had a remote to lose — and an unmerged `[gone]` branch is somebody's
+unpushed work: leave it and report it by name.
 
 `error: unable to delete '<branch>': remote ref does not exist` after a merged PR is the expected
 success case, not a failure — the merge already deleted it. Confirm with
