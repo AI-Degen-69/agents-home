@@ -19,6 +19,9 @@
 
 *Sourced from the PR body's `## How to verify` / issue body when one exists — same commands, same expected values; any deliberate deviation named in one line. If they disagree with what you write here, fix the difference, do not publish both.*
 
+## 🧹 Repo State After Merge:
+branch: `main` | clean | synced | worktree removed — merged branch deleted locally and on the remote, the worktree directory that hosted it deleted, no branch left pointing at a gone upstream.
+
 ---
 
 ## ➡️ Next Step:
